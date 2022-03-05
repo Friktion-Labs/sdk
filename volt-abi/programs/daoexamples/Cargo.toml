@@ -1,0 +1,32 @@
+[package]
+name = "daoexamples"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "daoexamples"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = ["mainnet"]
+mainnet = []
+
+[dependencies]
+anchor-lang = { version="0.22.1", features=[] }
+anchor-spl = { version="0.22.1", features=["dex"] }
+volt-abi = { path = "../volt-abi", features = ["cpi"]}
+num-traits = "0.2.14"
+solana-program = "1.8.2"
+spl-token = { version = "3.2.0", features = ["no-entrypoint"] }
+spl-stake-pool = "0.6.3"
+vipers = "2.0.1"
+spl-associated-token-account = { version = "1.0.3", features = [
+  "no-entrypoint"
+] }
+arrayref = "0.3.6"
+num-derive = "0.2"
+num_enum = "0.5.0"
