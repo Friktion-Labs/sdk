@@ -13,6 +13,7 @@ export type VoltTypes = AnchorTypes<
   {
     voltVault: VoltVault;
     extraVoltData: ExtraVoltData;
+    whitelist: Whitelist;
     round: Round;
     pendingDeposit: PendingDeposit;
     pendingWithdrawal: PendingWithdrawal;
@@ -33,6 +34,7 @@ export type PendingWithdrawal = VoltAccounts["PendingWithdrawal"];
 export type Round = VoltAccounts["Round"];
 export type VoltVault = VoltAccounts["VoltVault"];
 export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
+export type Whitelist = VoltAccounts["Whitelist"];
 export type WithKey = {
   key: PublicKey;
 };
@@ -43,6 +45,7 @@ export type PendingWithdrawalWithKey = PendingWithdrawal & WithKey;
 export type RoundWithKey = Round & WithKey;
 export type VoltVaultWithKey = VoltVault & WithKey;
 export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
+export type WhitelistWithKey = Whitelist & WithKey;
 
 export type OptionMarket = {
   optionMint: PublicKey;

@@ -24,6 +24,10 @@ export type ProviderLike =
       wallet: AnchorWallet | SolanaContribWallet;
     };
 
+export type SimplProvider = {
+  connection: Connection;
+};
+
 /**
  * There are lots of different Provider derivatives. FriktionSDK shouldn't
  * require usage of Solana provider.

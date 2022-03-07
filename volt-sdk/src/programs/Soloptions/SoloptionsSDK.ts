@@ -16,7 +16,7 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
-import {TextEncoder} from "util";
+
 import { getAssociatedTokenAddress } from "../../../friktion-utils";
 import type { FriktionSDK } from "../..";
 import {

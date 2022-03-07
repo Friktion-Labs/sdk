@@ -33,6 +33,7 @@ import type {
   OptionMarketWithKey,
   VoltProgram,
   VoltVault,
+  Whitelist,
 } from "./programs/Volt";
 
 export type LegacyAnchorPrograms = {
@@ -234,6 +235,12 @@ export class FriktionSDK {
         })
       )
     );
+  }
+
+  async getWhitelist(key: PublicKey): Promise<Whitelist> {
+    const whitelist: Whitelist =
+      await this.programs.Volt.account.whitelist.fetch(key);
+    return whitelist;
   }
 
   async initWhitelist(

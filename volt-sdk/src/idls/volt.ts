@@ -739,6 +739,16 @@ export type VoltIDL = {
           "isSigner": true
         },
         {
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityCheck",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultMint",
           "isMut": true,
           "isSigner": false
@@ -755,7 +765,7 @@ export type VoltIDL = {
         },
         {
           "name": "extraVoltData",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -925,6 +935,16 @@ export type VoltIDL = {
           "isSigner": true
         },
         {
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityCheck",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultMint",
           "isMut": true,
           "isSigner": false
@@ -935,17 +955,17 @@ export type VoltIDL = {
           "isSigner": false
         },
         {
+          "name": "vaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "extraVoltData",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
           "isMut": false,
           "isSigner": false
         },
@@ -1982,144 +2002,6 @@ export type VoltIDL = {
       "args": []
     },
     {
-      "name": "transferPremium",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "premiumUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "transferDeposit",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "underlyingUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "transferDepositInside",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "underlyingUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
       "name": "initWhitelist",
       "accounts": [
         {
@@ -2243,6 +2125,11 @@ export type VoltIDL = {
         },
         {
           "name": "daoProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "daoAuthority",
           "isMut": false,
           "isSigner": false
         },
@@ -2542,7 +2429,7 @@ export type VoltIDL = {
             "type": "bool"
           },
           {
-            "name": "extraKeyOne",
+            "name": "daoAuthority",
             "type": "publicKey"
           },
           {
@@ -2930,6 +2817,20 @@ export type VoltIDL = {
           },
           {
             "name": "Ask"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoltType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "ShortOptions"
+          },
+          {
+            "name": "Entropy"
           }
         ]
       }
@@ -3647,6 +3548,26 @@ export type VoltIDL = {
       "code": 6136,
       "name": "VoltMustBeForDao",
       "msg": "volt must be for dao"
+    },
+    {
+      "code": 6137,
+      "name": "InvalidDaoAuthority",
+      "msg": "invalid dao authority"
+    },
+    {
+      "code": 6138,
+      "name": "DaoAuthorityMustSign",
+      "msg": "dao authority must sign"
+    },
+    {
+      "code": 6139,
+      "name": "InvalidPendingDepositKey",
+      "msg": "invalid pending deposit key"
+    },
+    {
+      "code": 6140,
+      "name": "InvalidAuthorityCheck",
+      "msg": "invalid authority check"
     }
   ]
 };
@@ -4391,6 +4312,16 @@ export const VoltIDLJsonRaw = {
           "isSigner": true
         },
         {
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityCheck",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultMint",
           "isMut": true,
           "isSigner": false
@@ -4407,7 +4338,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           "name": "extraVoltData",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -4577,6 +4508,16 @@ export const VoltIDLJsonRaw = {
           "isSigner": true
         },
         {
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityCheck",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultMint",
           "isMut": true,
           "isSigner": false
@@ -4587,17 +4528,17 @@ export const VoltIDLJsonRaw = {
           "isSigner": false
         },
         {
+          "name": "vaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "extraVoltData",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
           "isMut": false,
           "isSigner": false
         },
@@ -5634,144 +5575,6 @@ export const VoltIDLJsonRaw = {
       "args": []
     },
     {
-      "name": "transferPremium",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "premiumUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "transferDeposit",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "underlyingUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "transferDepositInside",
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "underlyingUserAcct",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
       "name": "initWhitelist",
       "accounts": [
         {
@@ -5895,6 +5698,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           "name": "daoProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "daoAuthority",
           "isMut": false,
           "isSigner": false
         },
@@ -6194,7 +6002,7 @@ export const VoltIDLJsonRaw = {
             "type": "bool"
           },
           {
-            "name": "extraKeyOne",
+            "name": "daoAuthority",
             "type": "publicKey"
           },
           {
@@ -6582,6 +6390,20 @@ export const VoltIDLJsonRaw = {
           },
           {
             "name": "Ask"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoltType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "ShortOptions"
+          },
+          {
+            "name": "Entropy"
           }
         ]
       }
@@ -7299,6 +7121,26 @@ export const VoltIDLJsonRaw = {
       "code": 6136,
       "name": "VoltMustBeForDao",
       "msg": "volt must be for dao"
+    },
+    {
+      "code": 6137,
+      "name": "InvalidDaoAuthority",
+      "msg": "invalid dao authority"
+    },
+    {
+      "code": 6138,
+      "name": "DaoAuthorityMustSign",
+      "msg": "dao authority must sign"
+    },
+    {
+      "code": 6139,
+      "name": "InvalidPendingDepositKey",
+      "msg": "invalid pending deposit key"
+    },
+    {
+      "code": 6140,
+      "name": "InvalidAuthorityCheck",
+      "msg": "invalid authority check"
     }
   ]
 };

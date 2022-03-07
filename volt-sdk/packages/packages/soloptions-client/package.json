@@ -1,0 +1,9 @@
+{
+  "name": "@soloptions/client",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@project-serum/swap": "^0.1.0-alpha.34"
+  }
+}

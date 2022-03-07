@@ -8,12 +8,12 @@ export type DaoExamplesIDL = {
         {
           "name": "authority",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "voltProgramId",
@@ -38,6 +38,11 @@ export type DaoExamplesIDL = {
         {
           "name": "extraVoltData",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whitelist",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -121,12 +126,12 @@ export const DaoExamplesIDLJsonRaw = {
         {
           "name": "authority",
           "isMut": true,
-          "isSigner": false
+          "isSigner": true
         },
         {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          "name": "daoAuthority",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "voltProgramId",
@@ -151,6 +156,11 @@ export const DaoExamplesIDLJsonRaw = {
         {
           "name": "extraVoltData",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whitelist",
+          "isMut": false,
           "isSigner": false
         },
         {

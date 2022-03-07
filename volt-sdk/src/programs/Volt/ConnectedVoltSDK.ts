@@ -1,6 +1,4 @@
 import { Market } from "@project-serum/serum";
-import type { SolanaProvider } from "@saberhq/solana-contrib";
-import { TransactionEnvelope } from "@saberhq/solana-contrib";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -8,6 +6,7 @@ import {
 } from "@solana/spl-token";
 import type {
   AccountMeta,
+  Connection,
   Signer,
   TransactionInstruction,
 } from "@solana/web3.js";
@@ -26,8 +25,6 @@ import {
   REFERRAL_AUTHORITY,
   SOLOPTIONS_FEE_OWNER,
 } from "../..";
-import type { ProviderLike } from "../../miscUtils";
-import { providerToContribProvider } from "../../miscUtils";
 import { InertiaSDK, SoloptionsSDK } from "..";
 import type { ExtraVoltData } from ".";
 import {
@@ -45,33 +42,27 @@ import type {
 } from "./voltTypes";
 
 export class ConnectedVoltSDK extends VoltSDK {
-  readonly providerMut: SolanaProvider;
+  readonly connection: Connection;
   readonly wallet: PublicKey;
   readonly extraVoltData?: ExtraVoltData | undefined;
 
   constructor(
-    providerMut: ProviderLike,
+    connection: Connection,
+    user: PublicKey,
     voltSDK: VoltSDK,
     extraVoltData?: ExtraVoltData | undefined
   ) {
-    if (!providerMut.wallet) {
-      throw new Error(
-        "providerMut passed to ConnectedVoltSDK is missing wallet"
-      );
-    }
     super(voltSDK.sdk, voltSDK.voltVault, voltSDK.voltKey);
 
-    this.providerMut = providerToContribProvider(providerMut);
+    this.connection = connection;
+    this.wallet = user;
+    // = providerToContribProvider(providerMut);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.extraVoltData = extraVoltData;
 
     // There is an obscure bug where the wallet.publicKey was a naked BN and not
     // a PublicKey. Please use this.user instead of this.providerMut.wallet.publicKey
-    this.wallet = new PublicKey(this.providerMut.wallet.publicKey);
-  }
-
-  createTransactionEnvelope(instructions: TransactionInstruction[]) {
-    return new TransactionEnvelope(this.providerMut, instructions);
+    this.wallet = new PublicKey(this.wallet);
   }
 
   /**
@@ -84,9 +75,11 @@ export class ConnectedVoltSDK extends VoltSDK {
     trueDepositAmount: Decimal,
     underlyingTokenSource: PublicKey,
     vaultTokenDestination: PublicKey,
+    daoAuthority?: PublicKey,
     decimals?: number
     // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
+    // if (!pdaStr) pdaStr = "";
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -96,7 +89,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltKey,
       this.voltVault,
       this.wallet,
-      // this.extraVoltData.isForDao ? this.extraVoltData.daoProgramId : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -125,15 +117,24 @@ export class ConnectedVoltSDK extends VoltSDK {
     const depositAccountsStruct: Parameters<
       VoltProgram["instruction"]["deposit"]["accounts"]
     >[0] = {
-      authority: this.providerMut.wallet.publicKey,
+      authority: this.wallet,
+      daoAuthority:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : SystemProgram.programId,
+      authorityCheck:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
 
       vaultAuthority: this.voltVault.vaultAuthority,
-      whitelist:
-        this.extraVoltData?.isWhitelisted && this.extraVoltData?.whitelist
-          ? this.extraVoltData.whitelist
-          : SystemProgram.programId,
+      whitelist: this?.extraVoltData?.whitelist ?? SystemProgram.programId,
 
       vaultMint: this.voltVault.vaultMint,
 
@@ -152,6 +153,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
+
+    Object.entries(depositAccountsStruct).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
 
     return this.sdk.programs.Volt.instruction.deposit(normalizedDepositAmount, {
       accounts: depositAccountsStruct,
@@ -203,7 +208,8 @@ export class ConnectedVoltSDK extends VoltSDK {
   async withdraw(
     withdrawAmount: BN,
     userVaultTokens: PublicKey,
-    underlyingTokenDestination: PublicKey
+    underlyingTokenDestination: PublicKey,
+    daoAuthority?: PublicKey
     // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
     const { roundInfoKey, roundUnderlyingTokensKey, pendingWithdrawalInfoKey } =
@@ -221,6 +227,18 @@ export class ConnectedVoltSDK extends VoltSDK {
     >[0] = {
       authority: this.wallet,
 
+      daoAuthority:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : SystemProgram.programId,
+      authorityCheck:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : this.wallet,
       vaultMint: this.voltVault.vaultMint,
 
       voltVault: this.voltKey,
@@ -759,7 +777,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const underlyingToken = new Token(
-      this.providerMut.connection,
+      this.connection,
       optionMarket.underlyingAssetMint,
       TOKEN_PROGRAM_ID,
       undefined as unknown as Signer
@@ -1061,7 +1079,7 @@ export class ConnectedVoltSDK extends VoltSDK {
         this.sdk.programs.Volt.programId
       );
     const spotSerumMarket = await Market.load(
-      this.providerMut.connection,
+      this.connection,
       spotSerumMarketKey,
       {},
       serumProgramId
@@ -1173,7 +1191,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     return instruction;
   }
 
-  async attachDao(daoProgramId: PublicKey): Promise<TransactionInstruction> {
+  async attachDao(
+    daoProgramId: PublicKey,
+    daoAuthority: PublicKey
+  ): Promise<TransactionInstruction> {
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
     const attachDaoAccounts: {
       [K in keyof Parameters<
@@ -1187,6 +1208,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       extraVoltData: extraVoltKey,
 
       daoProgram: daoProgramId,
+
+      daoAuthority: daoAuthority,
     };
 
     const instruction = this.sdk.programs.Volt.instruction.attachDao({
@@ -1345,7 +1368,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const spotSerumMarket = await Market.load(
-      this.providerMut.connection,
+      this.connection,
       spotSerumMarketKey,
       {},
       serumProgramId
