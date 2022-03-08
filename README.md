@@ -13,44 +13,217 @@
 
 ## MAINNET VOLTS
 
-volt:  Ef2CD9yhQE7BvReQXct68uuYFW8GLKj62u2YPfmua3JY
-mint:  SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt
-
-volt:  A2jbvwftkAzU5hLUmBePdfqZQsop7jydZirLS5NsRVtx
-mint:  2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk
-
-volt:  AkiyRN63QjUqa39tJ1wNhZv6NRdn17AVEvZj4VqCVFX
-mint:  So11111111111111111111111111111111111111112
-
-volt:  9q5kEMkY28NXjxovpr1ssLLCAHgmyYzNmgAksp6voeJ8
-mint:  7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj
-
-volt:  9RcdLHX8rkfjo4ze2uyvhfQGjX6wAZtbvmBf3aK6wqrG
-mint:  mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So
-
-volt:  2evPXRLaTZj92DM93sdryeszwqoC9C6DoWa1TKHn1AzU
-mint:  EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
-
-volt:  CzFUVBXaAxWRQ3JeJwsZHqDQUxBbUJLZtdoBQ3KPtsuB
-mint:  EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
-
-volt:  8qjBanq5cxc3FzsaEznKfpsbPwfMVoB6AxLXY7pe3fEX
-mint:  AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3
-
-volt:  CdZ1Mgo3927bsYdKK5rnzGtwek3NLWdvoTSSm2TJjdqW
-mint:  9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E
-
-volt:  9SPz2yjNc9V4FmdHrkYF1GfikGbe5rfwg6VPzhQJpPyt
-mint:  EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
-
-volt:  CbPemKEEe7Y7YgBmYtFaZiECrVTP5sGrYzrrrviSewKY
-mint:  So11111111111111111111111111111111111111112
-
-volt:  3ZYabzsHY2XGuVBBbAgrxitPhmHSKLDCKqEp3vpX9Jb1
-mint:  5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm
-
-volt:  DxSADpEUR8xULRdWwb37pN8mjPHHC5D8aRnyUAvVSYHa
-mint:  MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac
+{
+      "name": "BTC CALL",
+      "voltVaultId": "CdZ1Mgo3927bsYdKK5rnzGtwek3NLWdvoTSSm2TJjdqW",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
+      "depositTokenMint": "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
+      "shareTokenMint": "3BjcHXvyzMsjmeqE2qFLx45K4XFx3JPiyRnjJiF5MAHt",
+      "shareTokenSymbol": "fcBTC",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "SOL CALL",
+      "voltVaultId": "CbPemKEEe7Y7YgBmYtFaZiECrVTP5sGrYzrrrviSewKY",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "So11111111111111111111111111111111111111112",
+      "depositTokenMint": "So11111111111111111111111111111111111111112",
+      "shareTokenMint": "4Hnh1UCC6HLzx9NaGKnTVHR2bANcRrhydumdHCnrT3i2",
+      "shareTokenSymbol": "fcSOL",
+      "shareTokenDecimals": 9,
+      "voltType": 1,
+    },
+    {
+      "name": "SOL CALL HIGH VOLTAGE",
+      "voltVaultId": "6ESYJXX4tqSTZrTRQbHodQZEwU7jd4fKWvStBpttRB4c",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "So11111111111111111111111111111111111111112",
+      "depositTokenMint": "So11111111111111111111111111111111111111112",
+      "shareTokenMint": "DNa849drqW19uBV5X9ohpJ5brRGzq856gk3HDRqveFrA",
+      "shareTokenSymbol": "fcSOLHigh",
+      "shareTokenDecimals": 9,
+      "voltType": 1,
+      "isVoltage": true
+    },
+    {
+      "name": "mSOL CALL",
+      "voltVaultId": "9RcdLHX8rkfjo4ze2uyvhfQGjX6wAZtbvmBf3aK6wqrG",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+      "depositTokenMint": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+      "shareTokenMint": "6UA3yn28XecAHLTwoCtjfzy3WcyQj1x13bxnH8urUiKt",
+      "shareTokenSymbol": "fcmSOL",
+      "shareTokenDecimals": 9,
+      "voltType": 1,
+    },
+    {
+      "name": "ETH CALL",
+      "voltVaultId": "A2jbvwftkAzU5hLUmBePdfqZQsop7jydZirLS5NsRVtx",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk",
+      "depositTokenMint": "2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk",
+      "shareTokenMint": "GjnoPUjQiEUYWuKAbMax2cM1Eony8Yutc133wuSun9hS",
+      "shareTokenSymbol": "fcETH",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "FTT CALL",
+      "voltVaultId": "8qjBanq5cxc3FzsaEznKfpsbPwfMVoB6AxLXY7pe3fEX",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3",
+      "depositTokenMint": "AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3",
+      "shareTokenMint": "7wDh4VCTPwx41kvbLE6fkFgMEjnqw7NpGJvQtNabCm2B",
+      "shareTokenSymbol": "fcFTT",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "SRM CALL",
+      "voltVaultId": "Ef2CD9yhQE7BvReQXct68uuYFW8GLKj62u2YPfmua3JY",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+      "depositTokenMint": "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+      "shareTokenMint": "5SLqZSywodLS8ih6U2AAioZrxpgR149hR8SApmCB7r5X",
+      "shareTokenSymbol": "fcSRM",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "MNGO CALL",
+      "voltVaultId": "DxSADpEUR8xULRdWwb37pN8mjPHHC5D8aRnyUAvVSYHa",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
+      "depositTokenMint": "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
+      "shareTokenMint": "4sTuzTYfcE2NF7zy6Sy8XhVcNLa6JQSLrx3roy97n4sD",
+      "shareTokenSymbol": "fcMNGO",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "scnSOL CALL",
+      "voltVaultId": "3ZYabzsHY2XGuVBBbAgrxitPhmHSKLDCKqEp3vpX9Jb1",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm",
+      "depositTokenMint": "5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm",
+      "shareTokenMint": "5VmdHqvRMbXivuC34w4Hux9zb1y9moiBEQmXDrTR1kV",
+      "shareTokenSymbol": "fcscnSOL",
+      "shareTokenDecimals": 9,
+      "voltType": 1,
+    },
+    {
+      "name": "SBR CALL",
+      "voltVaultId": "5b2VBmdZAmnFpmWD6hi5xWFeaf4equVwNp25q1UWC9FP",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1",
+      "depositTokenMint": "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1",
+      "shareTokenMint": "DPMCwE9z9jXaDVDti5aKhdgCWGgsvioz6ZvB9eZjH7UE",
+      "shareTokenSymbol": "fcSBR",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "LUNA CALL",
+      "voltVaultId": "4jx7Fec8kmwvabqTYp9M7C2zPfhivFgiqqzajn9Ns2ba",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W",
+      "depositTokenMint": "F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W",
+      "shareTokenMint": "95sn4kgeJnnBfRCD8S2quu4HS9Y6vb7JDuXrarnmEjYE",
+      "shareTokenSymbol": "fcLUNA",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "RAY CALL",
+      "voltVaultId": "4LtxyBUH8PsRea21s7CaaYWtq7KutcZ4x8r6PTmUCcvs",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+      "depositTokenMint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+      "shareTokenMint": "SoAnGsHVqSyaN4MjWoPCcftC1V6oSeNxLJjF5TXrtuL",
+      "shareTokenSymbol": "fcRAY",
+      "shareTokenDecimals": 6,
+      "voltType": 1,
+    },
+    {
+      "name": "LUNA PUT",
+      "voltVaultId": "3aL9h1PVt2rbUPo11QZpRbpLJhWHrHCpizsirWhMXiXB",
+      "quoteMint": "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
+      "underlyingMint": "F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W",
+      "depositTokenMint": "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
+      "shareTokenMint": "74ozhToAS71nDVBtFZMMucdkNB95tV2o5fhtFGQeixwS",
+      "shareTokenSymbol": "fpLUNA",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    },
+    {
+      "name": "SOL PUT",
+      "voltVaultId": "2evPXRLaTZj92DM93sdryeszwqoC9C6DoWa1TKHn1AzU",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "So11111111111111111111111111111111111111112",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "EBPM7fvPN8EuA65Uc7DT9eGyDUZ1sqMLM8Rb8y2YxBYU",
+      "shareTokenSymbol": "fpSOL",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    },
+    {
+      "name": "SOL PUT HIGH VOLTAGE",
+      "voltVaultId": "BTuiZkgodmKKJtNDhVQGvAzqW1fdSNWasQADDTTyoAxN",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "So11111111111111111111111111111111111111112",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "G8jsAWUA2KdDn7XmV1sBqUdbEXESaPdjPWDEYCsnkRX2",
+      "shareTokenSymbol": "fpSOLHigh",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+      "isVoltage": true
+    },
+    {
+      "name": "MNGO PUT",
+      "voltVaultId": "9SPz2yjNc9V4FmdHrkYF1GfikGbe5rfwg6VPzhQJpPyt",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "CxHG1tPkeEHsAVmPF2UrjZK3W719J5DGFgMaLtUkBoeP",
+      "shareTokenSymbol": "fpMNGO",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    },
+    {
+      "name": "BTC PUT",
+      "voltVaultId": "CzFUVBXaAxWRQ3JeJwsZHqDQUxBbUJLZtdoBQ3KPtsuB",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "THjfJ7GUeW6aMU6dzYYFVs5LnKNvmPzgk2wbh3bWagC",
+      "shareTokenSymbol": "fpBTC",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    },
+    {
+      "name": "SOL PUT (tsUSDC deposit token)",
+      "voltVaultId": "FFhHmdwHS9myqQPQUMTu8hX56zQETNPC4Bu95ZGb1j5P",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "So11111111111111111111111111111111111111112",
+      "depositTokenMint": "Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip",
+      "shareTokenMint": "Fw8mw9zNyfngvBYuS2L6XWfvFE8fExQ3apZVw4Ery5oy",
+      "shareTokenSymbol": "fptsUSDCSOL",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    },
+    {
+      "name": "ETH PUT",
+      "voltVaultId": "2QRujUdQwz5p7XNQWh48KbyZ9AMEbG7WbkuqMMS9KdE5",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "2FPyTwcZLUg1MDrwsyoP4D6s1tM7hAkHYRjkNb5w6Pxk",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "2uTkms42P62dJ7JRaefc1HFkvyBeMP28J6MPmH1gVHoT",
+      "shareTokenSymbol": "fpETH",
+      "shareTokenDecimals": 6,
+      "voltType": 2,
+    }
 
 ## License
 
