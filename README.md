@@ -238,7 +238,7 @@ const depositTokenDecimals: number
 const friktionSDK: FriktionSDK
 // Decimal is from import Decimal from "decimal.js";
 const depositAmount: Decimal
-const vaultTokenAccount // load user's vaultTokenAccount using voltVault.vaultMint
+const vaultTokenAccount // load user's vaultTokenAccount using cVoltSDK.voltVault.vaultMint
 
 const cVoltSDK = new ConnectedVoltSDK(
     connection,
@@ -358,27 +358,36 @@ const friktionSDK: FriktionSDK
 // Decimal is from import Decimal from "decimal.js";
 const withdrawAmount: Decimal
 const depositTokenAccount // load user's depositTokenAccount
-const vaultTokenAccount // load user's vaultTokenAccount using voltVault.vaultMint
+const vaultTokenAccount // load user's vaultTokenAccount using cVoltSDK.voltVault.vaultMint
 
+const cVoltSDK = new ConnectedVoltSDK(
+    providerMut.connection,
+    providerMut.wallet.publicKey,
+    await friktionSDK.loadVoltByKey(voltVaultId),
+    undefined
+  );
+  const voltVault = cVoltSDK.voltVault;
+
+  const connection = providerMut.connection;
 
 // first we need to get this estimatedTotalUnderlyingWithoutPending
 
 let voltWriterTokenBalance = new Decimal(0);
-if (// publickey of the volt's writerTokenMint
-    vaultWriterTokenMint.toString() !==
+if (
+    voltVault.writerTokenMint.toString() !==
     "11111111111111111111111111111111"
 ) {
     voltWriterTokenBalance = await getAccountBalanceOrZero(
     connection,
-    vaultWriterTokenMint, // publickey of the volt's writerTokenMint
-    vaultWriterTokenPool // publickey of the volt's writerTokenPool
+    voltVault.writerTokenMint, // publickey of the volt's writerTokenMint
+    voltVault.writerTokenPool // publickey of the volt's writerTokenPool
     );
 }
 
 const voltDepositTokenBalance = await getAccountBalanceOrZero(
     connection,
-    depositTokenMint,
-    vaultDepositPool // publickey of the volt's depositPool
+    new PublicKey(depositTokenMintAddress),
+    voltVault.depositPool // publickey of the volt's depositPool
 );
 
 const depositNormFactor = new Decimal(
@@ -399,16 +408,6 @@ voltDepositTokenBalance
 }
 
 // now for the actual withdraw stuff
-
-const cVoltSDK = new ConnectedVoltSDK(
-    providerMut.connection,
-    providerMut.wallet.publicKey,
-    await friktionSDK.loadVoltByKey(voltVaultId),
-    undefined
-  );
-  const voltVault = cVoltSDK.voltVault;
-
-  const connection = providerMut.connection;
 
   try {
     let withdrawInstructions: TransactionInstruction[] = [];
