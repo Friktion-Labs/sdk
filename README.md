@@ -238,7 +238,7 @@ const depositTokenDecimals: number
 const friktionSDK: FriktionSDK
 // Decimal is from import Decimal from "decimal.js";
 const depositAmount: Decimal
-const vaultTokenAccount // load user's vaultTokenAccount
+const vaultTokenAccount // load user's vaultTokenAccount using voltVault.vaultMint
 
 const cVoltSDK = new ConnectedVoltSDK(
     connection,
@@ -344,6 +344,232 @@ const cVoltSDK = new ConnectedVoltSDK(
     const depositTx = new TransactionEnvelope(
       sProvider,
       depositInstructions,
+      signers
+    );
+```
+
+### Withdraw
+
+```
+const voltVaultId = new PublicKey("VOLT_VAULT_ID_HERE")
+const depositTokenMintAddress: string
+const depositTokenDecimals: number
+const friktionSDK: FriktionSDK
+// Decimal is from import Decimal from "decimal.js";
+const withdrawAmount: Decimal
+const depositTokenAccount // load user's depositTokenAccount
+const vaultTokenAccount // load user's vaultTokenAccount using voltVault.vaultMint
+// i will show u below this withdraw example how to get this estimatedTotalUnderlyingWithoutPending
+const estimatedTotalUnderlyingWithoutPending: Decimal
+
+const cVoltSDK = new ConnectedVoltSDK(
+    providerMut.connection,
+    providerMut.wallet.publicKey,
+    await friktionSDK.loadVoltByKey(voltVaultId),
+    undefined
+  );
+  const voltVault = cVoltSDK.voltVault;
+
+  const connection = providerMut.connection;
+  const ownedTokenAccounts = ownedTokenAccountsContext.ownedTokenAccounts;
+
+  try {
+    let withdrawInstructions: TransactionInstruction[] = [];
+    const signers: Signer[] = [];
+
+    let depositTokenDest: PublicKey | null;
+
+    if (depositTokenMintAddress === WRAPPED_SOL_ADDRESS) {
+      const rentBalance = await connection.getMinimumBalanceForRentExemption(
+        AccountLayout.span
+      );
+      // Check if the wrapped token account already exists
+      const {
+        instructions: wrapSolInstructions,
+        newTokenAccount: wrappedSolAccount,
+      } = await initializeTokenAccountTx({
+        connection: connection,
+        payerKey: wallet.publicKey,
+        mintPublicKey: new PublicKey(WRAPPED_SOL_ADDRESS),
+        owner: wallet.publicKey,
+        rentBalance: rentBalance,
+      });
+      withdrawInstructions = withdrawInstructions.concat(wrapSolInstructions);
+      signers.push(wrappedSolAccount);
+      depositTokenDest = wrappedSolAccount.publicKey;
+    } else {
+      if (!depositTokenAccount) {
+        const { tokenDest, createTokenAccountIx } =
+          await createAssociatedTokenAccountInstruction(
+            subvoltDef.depositToken.mintAccount,
+            wallet.publicKey
+          );
+        withdrawInstructions.push(createTokenAccountIx);
+        depositTokenDest = tokenDest;
+      } else {
+        depositTokenDest = depositTokenAccount.pubKey;
+      }
+    }
+
+    let pendingDepositInfo;
+
+    try {
+      pendingDepositInfo = await cVoltSDK.getPendingDepositForUser();
+    } catch (err) {
+      pendingDepositInfo = null;
+    }
+
+    if (!vaultTokenAccount) {
+        // getOrCreateATA is from @saberhq/token-utils
+        const ataResult = await getOrCreateATA({
+            provider: providerMut,
+            mint: voltVault.vaultMint,
+            owner: wallet.publicKey,
+        });
+        vaultTokenAccount = ataResult.address;
+
+        if (ataResult.instruction) {
+            withdrawInstructions.push(ataResult.instruction);
+        }
+    }
+
+    if (
+      pendingDepositInfo &&
+      pendingDepositInfo.roundNumber.lt(voltVault.roundNumber) &&
+      pendingDepositInfo?.numUnderlyingDeposited?.gtn(0)
+    ) {
+      console.log(
+        "claiming pending:",
+        pendingDepositInfo?.numUnderlyingDeposited.toString()
+      );
+      withdrawInstructions.push(await cVoltSDK.claimPending(vaultTokenAccount));
+    }
+
+    let pendingWithdrawalInfo;
+
+    try {
+      pendingWithdrawalInfo = await cVoltSDK.getPendingWithdrawalForUser();
+    } catch (err) {
+      pendingWithdrawalInfo = null;
+    }
+    if (
+      pendingWithdrawalInfo &&
+      pendingWithdrawalInfo.roundNumber.lt(voltVault.roundNumber) &&
+      pendingWithdrawalInfo?.numVoltRedeemed?.gtn(0)
+    ) {
+      console.log("adding claim pending withdrawal instruction");
+      withdrawInstructions.push(
+        await cVoltSDK.claimPendingWithdrawal(depositTokenDest)
+      );
+    }
+
+    console.log("curr round # = ", voltVault.roundNumber.toString());
+    console.log("pending deposit info =", pendingDepositInfo);
+    console.log("pending withdrawal info =", pendingWithdrawalInfo);
+
+    const roundInfo = await cVoltSDK.getRoundByKey(
+        (
+            await VoltSDK.findRoundInfoAddress(
+                cVoltSDK.voltKey,
+                cVoltSDK.voltVault.roundNumber,
+                cVoltSDK.sdk.programs.Volt.programId
+                )
+        )[0]
+    );
+
+    const vaultMintSupply = (
+        await getMintSupplyOrZero(connection, voltVault.vaultMint)
+        ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
+
+    if (vaultMintSupply.equals(0)) {
+        error("Withdraw error:", "Zero vault mint supply!");
+        return false;
+    }
+
+    const normFactor = new Decimal(
+        10 ** depositTokenDecimals
+        );
+
+    const userVoltTokenBalance = vaultTokenAccount.amount;
+
+    let withdrawalAmountNormalized = withdrawAmount.mul(normFactor);
+    let withdrawalAmountVaultTokens = withdrawalAmountNormalized
+        .mul(vaultMintSupply)
+        .div(estimatedTotalUnderlyingWithoutPending.mul(normFactor))
+        .toFixed(0);
+
+    console.log(
+    "Real volt token price of this volt: ",
+    vaultMintSupply
+        .div(estimatedTotalUnderlyingWithoutPending.mul(normFactor))
+        .toString()
+    );
+
+    console.log(
+    "estimatedTotalUnderlyingWithoutPending of this volt: ",
+    estimatedTotalUnderlyingWithoutPending.mul(normFactor).toString()
+    );
+    console.log(
+    "withdrawal amount normalized: ",
+    withdrawalAmountNormalized.toString()
+    );
+
+    /** If user's is withdrawing between 99.8-102%, we set withdrawal to 100.0% */
+    if (userVoltTokenBalance) {
+        const withdrawalAmountVaultTokensDec = new Decimal(
+            withdrawalAmountVaultTokens
+        );
+        const withdrawRatio = withdrawalAmountVaultTokensDec
+            .div(userVoltTokenBalance)
+            .toNumber();
+        if (withdrawRatio > 0.998 && withdrawRatio < 1.02) {
+            console.log("Fixing withdraw to 100%. Ratio was ", withdrawRatio);
+            withdrawalAmountVaultTokens = userVoltTokenBalance.toString();
+        } else {
+            console.log(
+            "Not fixing withdraw to 100%. Ratio: ",
+            withdrawalAmountVaultTokensDec.div(userVoltTokenBalance).toNumber()
+            );
+        }
+    } else {
+        console.error(
+            "We dont have users volt token balance so cant fix to 100"
+        );
+    }
+
+    console.log(
+    "volt estimated underlying balance: ",
+    estimatedTotalUnderlyingWithoutPending.toString()
+    );
+
+    console.log(
+    "withdrawal amount vault tokens : ",
+    withdrawalAmountVaultTokens.toString()
+    );
+
+    const withdrawIns = await cVoltSDK.withdraw(
+        new BN(withdrawalAmountVaultTokens.toString()),
+        vaultTokenAccount,
+        depositTokenDest
+    );
+    withdrawInstructions.push(withdrawIns);
+    }
+    
+
+    if (depositTokenMintAddress === WRAPPED_SOL_ADDRESS) {
+      const closeWSolIx = Token.createCloseAccountInstruction(
+        TOKEN_PROGRAM_ID,
+        depositTokenDest,
+        wallet.publicKey, // Send any remaining SOL to the owner
+        wallet.publicKey,
+        []
+      );
+      withdrawInstructions.push(closeWSolIx);
+    }
+
+    const withdrawTx = new TransactionEnvelope(
+      providerMut,
+      withdrawInstructions,
       signers
     );
 ```
