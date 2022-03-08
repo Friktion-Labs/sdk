@@ -12,7 +12,7 @@
 - https://github.com/Friktion-Labs/external - Public Friktion SDK, published to https://www.npmjs.com/package/@friktion-labs/friktion-sdk
 
 ## MAINNET VOLTS
-
+```
 {
       "name": "BTC CALL",
       "voltVaultId": "CdZ1Mgo3927bsYdKK5rnzGtwek3NLWdvoTSSm2TJjdqW",
@@ -224,7 +224,7 @@
       "shareTokenDecimals": 6,
       "voltType": 2,
     }
-
+```
 ## Code Examples
 
 ### Deposit
