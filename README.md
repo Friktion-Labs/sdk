@@ -438,7 +438,7 @@ const cVoltSDK = new ConnectedVoltSDK(
       if (!depositTokenAccount) {
         const { tokenDest, createTokenAccountIx } =
           await createAssociatedTokenAccountInstruction(
-            subvoltDef.depositToken.mintAccount,
+            new PublicKey(depositTokenMintAddress),
             wallet.publicKey
           );
         withdrawInstructions.push(createTokenAccountIx);
