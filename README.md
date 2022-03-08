@@ -359,8 +359,46 @@ const friktionSDK: FriktionSDK
 const withdrawAmount: Decimal
 const depositTokenAccount // load user's depositTokenAccount
 const vaultTokenAccount // load user's vaultTokenAccount using voltVault.vaultMint
-// i will show u below this withdraw example how to get this estimatedTotalUnderlyingWithoutPending
-const estimatedTotalUnderlyingWithoutPending: Decimal
+
+
+// first we need to get this estimatedTotalUnderlyingWithoutPending
+
+let voltWriterTokenBalance = new Decimal(0);
+if (// publickey of the volt's writerTokenMint
+    vaultWriterTokenMint.toString() !==
+    "11111111111111111111111111111111"
+) {
+    voltWriterTokenBalance = await getAccountBalanceOrZero(
+    connection,
+    vaultWriterTokenMint, // publickey of the volt's writerTokenMint
+    vaultWriterTokenPool // publickey of the volt's writerTokenPool
+    );
+}
+
+const voltDepositTokenBalance = await getAccountBalanceOrZero(
+    connection,
+    depositTokenMint,
+    vaultDepositPool // publickey of the volt's depositPool
+);
+
+const depositNormFactor = new Decimal(
+    10 ** depositTokenDecimals
+    );
+
+let estimatedTotalUnderlyingWithoutPending = new Decimal(0);
+if (
+    isNotNullOrUndefined(voltWriterTokenBalance) ||
+    isNotNullOrUndefined(voltDepositTokenBalance) ||
+    isNotNullOrUndefined(underlyingAmountPerContract) ||
+    isNotNullOrUndefined(normFactor)
+) {
+estimatedTotalUnderlyingWithoutPending =
+voltDepositTokenBalance
+      .plus(voltWriterTokenBalance.mul(new Decimal(vaultUnderlyingAmountPerContract)))
+      .div(depositNormFactor)
+}
+
+// now for the actual withdraw stuff
 
 const cVoltSDK = new ConnectedVoltSDK(
     providerMut.connection,
