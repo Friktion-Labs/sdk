@@ -409,7 +409,6 @@ const cVoltSDK = new ConnectedVoltSDK(
   const voltVault = cVoltSDK.voltVault;
 
   const connection = providerMut.connection;
-  const ownedTokenAccounts = ownedTokenAccountsContext.ownedTokenAccounts;
 
   try {
     let withdrawInstructions: TransactionInstruction[] = [];
