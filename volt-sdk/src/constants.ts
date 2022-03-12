@@ -5,8 +5,17 @@ import { InertiaIDLJsonRaw } from "./idls/inertia";
 import { SoloptionsIDLJsonRaw } from "./idls/soloptions";
 import { VoltIDLJsonRaw } from "./idls/volt";
 
+export enum VoltType {
+  ShortOptions = 0,
+  Entropy = 1,
+}
+
 export const FRIKTION_PROGRAM_ID = new PublicKey(
   "VoLT1mJz1sbnxwq5Fv2SXjdVDgPXrb9tJyC8WpMDkSp"
+);
+
+export const ENTROPY_PROGRAM_ID = new PublicKey(
+  "FcfzrnurPFXwxbx332wScnD5P86DwhpLpBbQsnr6LcH5"
 );
 
 export const DAO_EXAMPLES_PROGRAM_ID = new PublicKey(
@@ -67,6 +76,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     LUNA: new PublicKey("F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W"),
     RAY: new PublicKey("4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"),
     TUSDCV2: new PublicKey("Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip"),
+    STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
   },
   SERUM_REFERRER_IDS: {
     EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: new PublicKey(
@@ -114,6 +124,9 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip: new PublicKey(
       "BRbrPkQFjtePRAAF4KoauWmKooG56H7jwx5bUknuMCh9"
     ),
+    StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT: new PublicKey(
+      "2nRHbu47Wt9jVJtcLxdmhn1YWbC1gzAuPKSuycyL4GGa"
+    ),
   },
 };
 
@@ -147,6 +160,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     LUNA: new PublicKey("F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W"),
     RAY: new PublicKey("4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"),
     TUSDCV2: new PublicKey("Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip"),
+    STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
   },
   SERUM_REFERRER_IDS: {
     E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF: new PublicKey(

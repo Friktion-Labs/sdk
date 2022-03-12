@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { Program, ProgramAccount } from "@project-serum/anchor";
-import { BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
+import { BN } from "@project-serum/anchor";
 import type { MarketProxy } from "@project-serum/serum";
 import { MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
@@ -26,7 +26,7 @@ import {
   PERFORMANCE_FEE_BPS,
   WITHDRAWAL_FEE_BPS,
 } from "../..";
-import { FRIKTION_PROGRAM_ID } from "../../constants";
+import { FRIKTION_PROGRAM_ID, VoltType } from "../../constants";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
@@ -49,6 +49,7 @@ import {
   getVaultOwnerAndNonce,
 } from "./serum";
 import { getBalanceOrZero } from "./utils";
+import { textEncoder } from "../../../utils/volt_helpers";
 
 export class VoltSDK {
   constructor(
@@ -128,7 +129,6 @@ export class VoltSDK {
     underlyingAmountPerContract,
     whitelistTokenMintKey,
     serumProgramId,
-    vaultType,
     transferTimeWindow,
     expirationInterval,
     upperBoundOtmStrikeFactor,
@@ -144,7 +144,6 @@ export class VoltSDK {
     underlyingAmountPerContract: BN;
     whitelistTokenMintKey: PublicKey;
     serumProgramId: PublicKey;
-    vaultType: anchor.BN;
     transferTimeWindow: anchor.BN;
     expirationInterval: anchor.BN;
     upperBoundOtmStrikeFactor: anchor.BN;
@@ -158,54 +157,26 @@ export class VoltSDK {
     const textEncoder = new TextEncoder();
 
     // If desired, change the SDK to allow custom seed
-    if (!seed) seed = new Keypair().publicKey;
-
-    const [vault, _vaultBump] = await PublicKey.findProgramAddress(
-      [
-        new u64(vaultType.toNumber()).toBuffer(),
-        seed.toBuffer(),
-        textEncoder.encode("vault"),
-      ],
-      sdk.programs.Volt.programId
+    const {
+      vault,
+      vaultBump,
+      vaultAuthorityBump,
+      extraVoltKey,
+      vaultMint,
+      vaultAuthority,
+      depositPoolKey,
+      premiumPoolKey,
+      permissionedMarketPremiumPoolKey,
+      whitelistTokenAccountKey,
+      seed: seedNew,
+    } = await VoltSDK.findInitializeAddresses(
+      sdk,
+      whitelistTokenMintKey,
+      VoltType.ShortOptions,
+      seed
     );
 
-    const [extraVoltData] = await VoltSDK.findExtraVoltDataAddress(vault);
-
-    const [vaultMint, _vaultMintBump] = await PublicKey.findProgramAddress(
-      [vault.toBuffer(), textEncoder.encode("vaultToken")],
-      sdk.programs.Volt.programId
-    );
-
-    // TODO: Move these into individual VoltSDK.findVaultAddress etc
-    const [vaultAuthority, _vaultAuthorityBump] =
-      await PublicKey.findProgramAddress(
-        [vault.toBuffer(), textEncoder.encode("vaultAuthority")],
-        sdk.programs.Volt.programId
-      );
-
-    const [depositPoolKey] = await PublicKey.findProgramAddress(
-      [vault.toBuffer(), textEncoder.encode("depositPool")],
-      sdk.programs.Volt.programId
-    );
-
-    const [premiumPoolKey] = await PublicKey.findProgramAddress(
-      [vault.toBuffer(), textEncoder.encode("premiumPool")],
-      sdk.programs.Volt.programId
-    );
-
-    const [permissionedMarketPremiumPoolKey] =
-      await PublicKey.findProgramAddress(
-        [vault.toBuffer(), textEncoder.encode("permissionedMarketPremiumPool")],
-        sdk.programs.Volt.programId
-      );
-
-    const [whitelistTokenAccountKey] =
-      await VoltSDK.findWhitelistTokenAccountAddress(
-        vault,
-        whitelistTokenMintKey,
-        sdk.programs.Volt.programId
-      );
-
+    seed = seedNew;
     console.log(
       "permissioned market premium mint: ",
       permissionedMarketPremiumMint.toString()
@@ -225,7 +196,7 @@ export class VoltSDK {
       voltVault: vault,
       vaultAuthority: vaultAuthority,
       vaultMint: vaultMint,
-      extraVoltData: extraVoltData,
+      extraVoltData: extraVoltKey,
 
       depositPool: depositPoolKey,
       premiumPool: premiumPoolKey,
@@ -255,10 +226,11 @@ export class VoltSDK {
     });
 
     const instruction = sdk.programs.Volt.instruction.initialize(
-      vaultType,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      new anchor.BN(VoltType.ShortOptions),
       transferTimeWindow,
-      _vaultBump,
-      _vaultAuthorityBump,
+      vaultBump,
+      vaultAuthorityBump,
       serumOrderSize,
       serumOrderType,
       serumSelfTradeBehavior,
@@ -280,6 +252,252 @@ export class VoltSDK {
     };
   }
 
+  static async findInitializeAddresses(
+    sdk: FriktionSDK,
+    whitelistTokenMintKey: PublicKey,
+    vaultType: VoltType,
+    seed?: PublicKey
+  ): Promise<{
+    vault: PublicKey;
+    vaultBump: number;
+    vaultAuthorityBump: number;
+    extraVoltKey: PublicKey;
+    vaultMint: PublicKey;
+    vaultAuthority: PublicKey;
+    depositPoolKey: PublicKey;
+    premiumPoolKey: PublicKey;
+    permissionedMarketPremiumPoolKey: PublicKey;
+    whitelistTokenAccountKey: PublicKey;
+    seed: PublicKey;
+  }> {
+    const textEncoder = new TextEncoder();
+
+    // If desired, change the SDK to allow custom seed
+    if (!seed) seed = new Keypair().publicKey;
+
+    const [vault, vaultBump] = await PublicKey.findProgramAddress(
+      [
+        new u64(vaultType).toBuffer(),
+        seed.toBuffer(),
+        textEncoder.encode("vault"),
+      ],
+      sdk.programs.Volt.programId
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(vault);
+
+    const [vaultMint, _vaultMintBump] = await PublicKey.findProgramAddress(
+      [vault.toBuffer(), textEncoder.encode("vaultToken")],
+      sdk.programs.Volt.programId
+    );
+
+    // TODO: Move these into individual VoltSDK.findVaultAddress etc
+    const [vaultAuthority, vaultAuthorityBump] =
+      await PublicKey.findProgramAddress(
+        [vault.toBuffer(), textEncoder.encode("vaultAuthority")],
+        sdk.programs.Volt.programId
+      );
+
+    const [depositPoolKey] = await PublicKey.findProgramAddress(
+      [vault.toBuffer(), textEncoder.encode("depositPool")],
+      sdk.programs.Volt.programId
+    );
+
+    const [premiumPoolKey] = await PublicKey.findProgramAddress(
+      [vault.toBuffer(), textEncoder.encode("premiumPool")],
+      sdk.programs.Volt.programId
+    );
+
+    const [permissionedMarketPremiumPoolKey] =
+      await PublicKey.findProgramAddress(
+        [vault.toBuffer(), textEncoder.encode("permissionedMarketPremiumPool")],
+        sdk.programs.Volt.programId
+      );
+
+    const [whitelistTokenAccountKey] =
+      await VoltSDK.findWhitelistTokenAccountAddress(
+        vault,
+        whitelistTokenMintKey,
+        sdk.programs.Volt.programId
+      );
+
+    return {
+      vault,
+      vaultBump,
+      vaultAuthorityBump,
+      extraVoltKey,
+      vaultMint,
+      vaultAuthority,
+      depositPoolKey,
+      premiumPoolKey,
+      permissionedMarketPremiumPoolKey,
+      whitelistTokenAccountKey,
+      seed,
+    };
+  }
+
+  static async findBackupPoolAddresses(
+    voltKey: PublicKey,
+    voltVault: VoltVault
+  ): Promise<{
+    backupOptionPoolKey: PublicKey;
+    backupWriterTokenPoolKey: PublicKey;
+  }> {
+    const [backupOptionPoolKey] = await PublicKey.findProgramAddress(
+      [
+        voltKey.toBuffer(),
+        voltVault.optionMint.toBuffer(),
+        textEncoder.encode("backupOptionPool"),
+      ],
+      FRIKTION_PROGRAM_ID
+    );
+    const [backupWriterTokenPoolKey] = await PublicKey.findProgramAddress(
+      [
+        voltKey.toBuffer(),
+        voltVault.writerTokenMint.toBuffer(),
+        textEncoder.encode("backupWriterTokenPool"),
+      ],
+      FRIKTION_PROGRAM_ID
+    );
+
+    return {
+      backupOptionPoolKey,
+      backupWriterTokenPoolKey,
+    };
+  }
+  // static async findEntropyAccountAddress(
+  //   voltKey: PublicKey
+  // ): Promise<[PublicKey, number]> {
+  //   const textEncoder = new TextEncoder();
+  //   return PublicKey.findProgramAddress(
+  //     [voltKey.toBuffer(), textEncoder.encode("entropyAccount")],
+  //     ENTROPY_PROGRAM_ID
+  //   );
+  // }
+
+  // static async initializeEntropyVolt({
+  //   sdk,
+  //   user,
+  //   underlyingAssetMint,
+  //   whitelistTokenMintKey,
+  //   serumProgramId,
+  //   entropyProgramId,
+  //   entropyGroup,
+  //   targetPerpMarket,
+  //   targetCollatRatio,
+  //   targetCollatLenience,
+  //   exitEarlyRatio,
+  //   capacity,
+  //   individualCapacity,
+  //   seed,
+  // }: {
+  //   sdk: FriktionSDK;
+  //   user: PublicKey;
+  //   underlyingAssetMint: PublicKey;
+  //   whitelistTokenMintKey: PublicKey;
+  //   serumProgramId: PublicKey;
+  //   entropyProgramId: PublicKey;
+  //   entropyGroup: PublicKey;
+  //   targetPerpMarket: PublicKey;
+  //   targetCollatRatio: number;
+  //   targetCollatLenience: number;
+  //   exitEarlyRatio: number;
+  //   capacity: anchor.BN;
+  //   individualCapacity: anchor.BN;
+  //   seed?: PublicKey;
+  // }): Promise<{
+  //   instruction: TransactionInstruction;
+  //   voltKey: PublicKey;
+  // }> {
+  //   const textEncoder = new TextEncoder();
+
+  //   // If desired, change the SDK to allow custom seed
+  //   if (!seed) seed = new Keypair().publicKey;
+
+  //   const {
+  //     vault,
+  //     vaultBump,
+  //     vaultAuthorityBump,
+  //     extraVoltKey,
+  //     vaultMint,
+  //     vaultAuthority,
+  //     depositPoolKey,
+  //     premiumPoolKey,
+  //     permissionedMarketPremiumPoolKey,
+  //     whitelistTokenAccountKey,
+  //   } = await VoltSDK.findInitializeAddresses(
+  //     sdk,
+  //     whitelistTokenMintKey,
+  //     VoltType.ShortOptions,
+  //     seed
+  //   );
+
+  //   const [entropyAccountKey] = await VoltSDK.findEntropyAccountAddress(vault);
+
+  //   const initializeEntropyAccounts: {
+  //     [K in keyof Parameters<
+  //       VoltProgram["instruction"]["initializeEntropy"]["accounts"]
+  //     >[0]]: PublicKey;
+  //   } = {
+  //     authority: user,
+
+  //     adminKey: user,
+
+  //     seed: seed,
+
+  //     voltVault: vault,
+  //     vaultAuthority: vaultAuthority,
+  //     vaultMint: vaultMint,
+  //     extraVoltData: extraVoltKey,
+
+  //     depositPool: depositPoolKey,
+
+  //     depositMint: underlyingAssetMint,
+
+  //     dexProgram: serumProgramId,
+
+  //     entropyProgramId: entropyProgramId,
+
+  //     entropyGroup: entropyGroup,
+
+  //     entropyAccount: entropyAccountKey,
+
+  //     targetPerpMarket: targetPerpMarket,
+
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     rent: SYSVAR_RENT_PUBKEY,
+  //     systemProgram: SystemProgram.programId,
+  //   };
+
+  //   const serumOrderSize = new anchor.BN(1);
+  //   const serumOrderType = OrderType.Limit;
+  //   // const serumLimit = new anchor.BN(65535);
+  //   const serumSelfTradeBehavior = SelfTradeBehavior.AbortTransaction;
+
+  //   Object.entries(initializeEntropyAccounts).map(function (key, value) {
+  //     console.log(key.toString() + " = " + value.toString());
+  //   });
+
+  //   const instruction: TransactionInstruction =
+  //     sdk.programs.Volt.instruction.initializeEntropy(
+  //       new anchor.BN(VoltType.Entropy),
+  //       vaultAuthorityBump,
+  //       targetCollatRatio,
+  //       targetCollatLenience,
+  //       exitEarlyRatio,
+  //       capacity,
+  //       individualCapacity,
+  //       {
+  //         accounts: initializeEntropyAccounts,
+  //       }
+  //     );
+
+  //   return {
+  //     instruction,
+  //     voltKey: vault,
+  //   };
+  // }
+
   /**
    * For an admin to create a volt
    *
@@ -292,7 +510,6 @@ export class VoltSDK {
     permissionedMarketPremiumMint,
     whitelistTokenMintKey,
     serumProgramId,
-    vaultType,
     transferTimeWindow,
     expirationInterval,
     upperBoundOtmStrikeFactor,
@@ -306,7 +523,6 @@ export class VoltSDK {
     permissionedMarketPremiumMint: PublicKey;
     whitelistTokenMintKey: PublicKey;
     serumProgramId: PublicKey;
-    vaultType: anchor.BN;
     transferTimeWindow: anchor.BN;
     expirationInterval: anchor.BN;
     upperBoundOtmStrikeFactor: anchor.BN;
@@ -326,7 +542,6 @@ export class VoltSDK {
       underlyingAmountPerContract: optionMarket.underlyingAmountPerContract,
       whitelistTokenMintKey,
       serumProgramId,
-      vaultType,
       transferTimeWindow,
       expirationInterval,
       upperBoundOtmStrikeFactor,

@@ -24,7 +24,7 @@ export type ProviderLike =
       wallet: AnchorWallet | SolanaContribWallet;
     };
 
-export type SimplProvider = {
+export type SimpleProvider = {
   connection: Connection;
 };
 

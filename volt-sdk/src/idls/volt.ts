@@ -1,7146 +1,7468 @@
 export type VoltIDL = {
-  "version": "0.1.0",
-  "name": "volt",
-  "instructions": [
+  version: "0.1.0";
+  name: "volt";
+  instructions: [
     {
-      "name": "initialize",
-      "accounts": [
+      name: "initialize";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "adminKey",
-          "isMut": false,
-          "isSigner": false
+          name: "adminKey";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "seed",
-          "isMut": true,
-          "isSigner": false
+          name: "seed";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "quoteAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumMint",
-          "isMut": false,
-          "isSigner": false
+          name: "permissionedMarketPremiumMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "whitelistTokenMint",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelistTokenMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "whitelistTokenAccount",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelistTokenAccount";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "vaultType",
-          "type": "u64"
+          name: "vaultType";
+          type: "u64";
         },
         {
-          "name": "transferWindow",
-          "type": "u64"
+          name: "transferWindow";
+          type: "u64";
         },
         {
-          "name": "bump",
-          "type": "u8"
+          name: "bump";
+          type: "u8";
         },
         {
-          "name": "bumpAuthority",
-          "type": "u8"
+          name: "bumpAuthority";
+          type: "u8";
         },
         {
-          "name": "serumOrderSizeOptions",
-          "type": "u64"
+          name: "serumOrderSizeOptions";
+          type: "u64";
         },
         {
-          "name": "serumOrderType",
-          "type": {
-            "defined": "OrderType"
-          }
+          name: "serumOrderType";
+          type: {
+            defined: "OrderType";
+          };
         },
         {
-          "name": "serumSelfTradeBehavior",
-          "type": {
-            "defined": "SelfTradeBehavior"
-          }
+          name: "serumSelfTradeBehavior";
+          type: {
+            defined: "SelfTradeBehavior";
+          };
         },
         {
-          "name": "expirationInterval",
-          "type": "u64"
+          name: "expirationInterval";
+          type: "u64";
         },
         {
-          "name": "upperBoundOtmStrikeFactor",
-          "type": "u64"
+          name: "upperBoundOtmStrikeFactor";
+          type: "u64";
         },
         {
-          "name": "underlyingAmountPerContract",
-          "type": "u64"
+          name: "underlyingAmountPerContract";
+          type: "u64";
         },
         {
-          "name": "vaultCapacity",
-          "type": "u64"
+          name: "vaultCapacity";
+          type: "u64";
         },
         {
-          "name": "individualCapacity",
-          "type": "u64"
+          name: "individualCapacity";
+          type: "u64";
         }
-      ]
+      ];
     },
     {
-      "name": "changeVars",
-      "accounts": [
+      name: "changeVars";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "capacity",
-          "type": "u64"
+          name: "capacity";
+          type: "u64";
         },
         {
-          "name": "individualCapacity",
-          "type": "u64"
+          name: "individualCapacity";
+          type: "u64";
         }
-      ]
+      ];
     },
     {
-      "name": "initNewAccounts",
-      "accounts": [
+      name: "initNewAccounts";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "roundNumber",
-          "type": "u64"
+          name: "roundNumber";
+          type: "u64";
         }
-      ]
+      ];
     },
     {
-      "name": "closeOldAccounts",
-      "accounts": [
+      name: "closeOldAccounts";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "newMint",
-          "isMut": false,
-          "isSigner": false
+          name: "newMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "startRound",
-      "accounts": [
+      name: "startRound";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "endRound",
-      "accounts": [
+      name: "endRound";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "clock";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "takePendingWithdrawalFees",
-      "accounts": [
+      name: "takePendingWithdrawalFees";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "claimPending",
-      "accounts": [
+      name: "claimPending";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "userVaultTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "userVaultTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositRoundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositRoundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositRoundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositRoundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "claimPendingWithdrawal",
-      "accounts": [
+      name: "claimPendingWithdrawal";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingWithdrawalRoundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalRoundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "cancelPendingWithdrawal",
-      "accounts": [
+      name: "cancelPendingWithdrawal";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "cancelPendingDeposit",
-      "accounts": [
+      name: "cancelPendingDeposit";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "deposit",
-      "accounts": [
+      name: "deposit";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "daoAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "authorityCheck",
-          "isMut": false,
-          "isSigner": false
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "depositAmount",
-          "type": "u64"
+          name: "depositAmount";
+          type: "u64";
         }
-      ]
+      ];
     },
     {
-      "name": "depositDao",
-      "accounts": [
+      name: "depositWithTransfer";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          name: "daoAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "solTransferAuthority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "underlyingTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "depositAmount",
-          "type": "u64"
-        },
-        {
-          "name": "pdaStr",
-          "type": "string"
+          name: "depositAmount";
+          type: "u64";
         }
-      ]
+      ];
     },
     {
-      "name": "withdraw",
-      "accounts": [
+      name: "depositDao";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: false;
+          isSigner: true;
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "payer";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "authorityCheck",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "withdrawAmount",
-          "type": "u64"
+          name: "depositAmount";
+          type: "u64";
+        },
+        {
+          name: "pdaStr";
+          type: "string";
         }
-      ]
+      ];
     },
     {
-      "name": "rebalanceSettle",
-      "accounts": [
+      name: "withdraw";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "soloptionsProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "daoAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenSource";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "quoteAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [
+        {
+          name: "withdrawAmount";
+          type: "u64";
+        }
+      ];
     },
     {
-      "name": "setNextOption",
-      "accounts": [
+      name: "rebalanceSettle";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "soloptionsProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "optionMint",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenMint",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "quoteAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "quoteAssetPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingAssetPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "feeOwner";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
-        {
-          "name": "openOrdersBump",
-          "type": "u8"
-        },
-        {
-          "name": "openOrdersInitBump",
-          "type": "u8"
-        }
-      ]
+      ];
+      args: [];
     },
     {
-      "name": "resetOptionMarket",
-      "accounts": [
+      name: "setNextOption";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "optionMint",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "optionPool",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "clock";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [
+        {
+          name: "openOrdersBump";
+          type: "u8";
+        },
+        {
+          name: "openOrdersInitBump";
+          type: "u8";
+        }
+      ];
     },
     {
-      "name": "rebalancePrepare",
-      "accounts": [
+      name: "resetOptionMarket";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "soloptionsProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingAssetPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "optionMint",
-          "isMut": true,
-          "isSigner": false
+          name: "backupOptionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": true,
-          "isSigner": false
+          name: "backupWriterTokenPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "optionProtocolFeeDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "clock";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "rebalanceSwapPremium",
-      "accounts": [
+      name: "rebalancePrepare";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "soloptionsProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tradingPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "srmReferralAcct",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "openOrdersMetadata",
-          "isMut": true,
-          "isSigner": false
+          name: "quoteAssetMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "marketBids",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "marketAsks",
-          "isMut": true,
-          "isSigner": false
+          name: "optionProtocolFeeDestination";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "feeOwner";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
+          name: "associatedTokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
+          name: "clock";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
-        {
-          "name": "clientOrderPrice",
-          "type": "u64"
-        },
-        {
-          "name": "clientOrderSize",
-          "type": "u64"
-        },
-        {
-          "name": "ulOpenOrdersBump",
-          "type": "u8"
-        }
-      ]
+      ];
+      args: [];
     },
     {
-      "name": "rebalanceEnter",
-      "accounts": [
+      name: "rebalanceSwapPremium";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "middlewareProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "tradingPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "market";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "srmReferralAcct";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "srmReferralAcct",
-          "isMut": false,
-          "isSigner": false
+          name: "serumVaultSigner";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrdersMetadata";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "serumMarketAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "marketBids";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "marketAsks";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "requestQueue";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "marketBids",
-          "isMut": true,
-          "isSigner": false
+          name: "eventQueue";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "marketAsks",
-          "isMut": true,
-          "isSigner": false
+          name: "coinVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
+          name: "pcVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "whitelistTokenAccount",
-          "isMut": false,
-          "isSigner": false
+          name: "feeOwner";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [
         {
-          "name": "clientOrderPrice",
-          "type": "u64"
+          name: "clientOrderPrice";
+          type: "u64";
         },
         {
-          "name": "clientOrderSize",
-          "type": "u64"
+          name: "clientOrderSize";
+          type: "u64";
         },
         {
-          "name": "clientOpenOrdersBump",
-          "type": "u8"
-        },
-        {
-          "name": "clientOpenOrdersInitBump",
-          "type": "u8"
+          name: "ulOpenOrdersBump";
+          type: "u8";
         }
-      ]
+      ];
     },
     {
-      "name": "closeOpenOrdersPls",
-      "accounts": [
+      name: "rebalanceEnter";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "middlewareProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "solWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "market",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "serumVaultSigner";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "srmReferralAcct";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "market";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "serumMarketAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "requestQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "eventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "marketBids";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "marketAsks";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "coinVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pcVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "whitelistTokenAccount";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "feeOwner";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [
+        {
+          name: "clientOrderPrice";
+          type: "u64";
+        },
+        {
+          name: "clientOrderSize";
+          type: "u64";
+        },
+        {
+          name: "clientOpenOrdersBump";
+          type: "u8";
+        },
+        {
+          name: "clientOpenOrdersInitBump";
+          type: "u8";
+        }
+      ];
     },
     {
-      "name": "settleEnterFunds",
-      "accounts": [
+      name: "closeOpenOrdersPls";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "middlewareProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "solWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "market";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "serumMarketAuthority",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "settlePermissionedMarketPremiumFunds",
-      "accounts": [
+      name: "settleEnterFunds";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "middlewareProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "serumVaultSigner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "market";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "serumMarketAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "coinVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pcVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "settleSwapPremiumFunds",
-      "accounts": [
+      name: "settlePermissionedMarketPremiumFunds";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "tradingPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "initWhitelist",
-      "accounts": [
+      name: "settleSwapPremiumFunds";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "seed",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "tradingPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pcReferrerWallet";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "serumVaultSigner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "market";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "coinVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pcVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "addWhitelist",
-      "accounts": [
+      name: "initWhitelist";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "seed";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "accountToAdd",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "removeWhitelist",
-      "accounts": [
+      name: "addWhitelist";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "accountToRemove",
-          "isMut": false,
-          "isSigner": false
+          name: "accountToAdd";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "attachWhitelist",
-      "accounts": [
+      name: "removeWhitelist";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "accountToRemove";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "attachDao",
-      "accounts": [
+      name: "attachWhitelist";
+      accounts: [
         {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
+          name: "authority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "daoProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      "args": []
+      ];
+      args: [];
     },
     {
-      "name": "initSerumMarket",
-      "accounts": [
+      name: "attachDao";
+      accounts: [
         {
-          "name": "userAuthority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority";
+          isMut: false;
+          isSigner: true;
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "daoProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "optionMarket",
-          "isMut": true,
-          "isSigner": false
+          name: "daoAuthority";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "serumMarket",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "pcMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "optionMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "bids",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "asks",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultSigner",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "marketAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
         }
-      ],
-      "args": [
+      ];
+      args: [];
+    },
+    {
+      name: "initSerumMarket";
+      accounts: [
         {
-          "name": "marketSpace",
-          "type": "u64"
+          name: "userAuthority";
+          isMut: true;
+          isSigner: true;
         },
         {
-          "name": "vaultSignerNonce",
-          "type": "u64"
+          name: "whitelist";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "coinLotSize",
-          "type": "u64"
+          name: "optionMarket";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pcLotSize",
-          "type": "u64"
+          name: "serumMarket";
+          isMut: true;
+          isSigner: false;
         },
         {
-          "name": "pcDustThreshold",
-          "type": "u64"
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "pcMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "optionMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "requestQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "eventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "bids";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "asks";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "coinVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pcVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultSigner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "marketAuthority";
+          isMut: false;
+          isSigner: false;
         }
-      ]
+      ];
+      args: [
+        {
+          name: "marketSpace";
+          type: "u64";
+        },
+        {
+          name: "vaultSignerNonce";
+          type: "u64";
+        },
+        {
+          name: "coinLotSize";
+          type: "u64";
+        },
+        {
+          name: "pcLotSize";
+          type: "u64";
+        },
+        {
+          name: "pcDustThreshold";
+          type: "u64";
+        }
+      ];
     }
-  ],
-  "accounts": [
+  ];
+  accounts: [
     {
-      "name": "Whitelist",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "Whitelist";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "admin",
-            "type": "publicKey"
+            name: "admin";
+            type: "publicKey";
           },
           {
-            "name": "addresses",
-            "type": {
-              "vec": "publicKey"
-            }
+            name: "addresses";
+            type: {
+              vec: "publicKey";
+            };
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "PendingDeposit",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "PendingDeposit";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized";
+            type: "bool";
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber";
+            type: "u64";
           },
           {
-            "name": "numUnderlyingDeposited",
-            "type": "u64"
+            name: "numUnderlyingDeposited";
+            type: "u64";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "PendingWithdrawal",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "PendingWithdrawal";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized";
+            type: "bool";
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber";
+            type: "u64";
           },
           {
-            "name": "numVoltRedeemed",
-            "type": "u64"
+            name: "numVoltRedeemed";
+            type: "u64";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "UlOpenOrdersMetadata",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "UlOpenOrdersMetadata";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized";
+            type: "bool";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "Round",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "Round";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "number",
-            "type": "u64"
+            name: "number";
+            type: "u64";
           },
           {
-            "name": "underlyingFromPendingDeposits",
-            "type": "u64"
+            name: "underlyingFromPendingDeposits";
+            type: "u64";
           },
           {
-            "name": "voltTokensFromPendingWithdrawals",
-            "type": "u64"
+            name: "voltTokensFromPendingWithdrawals";
+            type: "u64";
           },
           {
-            "name": "underlyingPreEnter",
-            "type": "u64"
+            name: "underlyingPreEnter";
+            type: "u64";
           },
           {
-            "name": "underlyingPostSettle",
-            "type": "u64"
+            name: "underlyingPostSettle";
+            type: "u64";
           },
           {
-            "name": "premiumFarmed",
-            "type": "u64"
+            name: "premiumFarmed";
+            type: "u64";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "ExtraVoltData",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "ExtraVoltData";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "isWhitelisted",
-            "type": "bool"
+            name: "isWhitelisted";
+            type: "bool";
           },
           {
-            "name": "whitelist",
-            "type": "publicKey"
+            name: "whitelist";
+            type: "publicKey";
           },
           {
-            "name": "isForDao",
-            "type": "bool"
+            name: "isForDao";
+            type: "bool";
           },
           {
-            "name": "daoProgramId",
-            "type": "publicKey"
+            name: "daoProgramId";
+            type: "publicKey";
           },
           {
-            "name": "depositMint",
-            "type": "publicKey"
+            name: "depositMint";
+            type: "publicKey";
           },
           {
-            "name": "targetCollatRatio",
-            "type": "f64"
+            name: "targetCollatRatio";
+            type: "f64";
           },
           {
-            "name": "targetCollatLenience",
-            "type": "f64"
+            name: "targetCollatLenience";
+            type: "f64";
           },
           {
-            "name": "exitEarlyRatio",
-            "type": "f64"
+            name: "exitEarlyRatio";
+            type: "f64";
           },
           {
-            "name": "targetProgramId",
-            "type": "publicKey"
+            name: "targetProgramId";
+            type: "publicKey";
           },
           {
-            "name": "entropyGroup",
-            "type": "publicKey"
+            name: "entropyGroup";
+            type: "publicKey";
           },
           {
-            "name": "entropyAccount",
-            "type": "publicKey"
+            name: "entropyAccount";
+            type: "publicKey";
           },
           {
-            "name": "targetPerpMarket",
-            "type": "publicKey"
+            name: "targetPerpMarket";
+            type: "publicKey";
           },
           {
-            "name": "haveResolvedDeposits",
-            "type": "bool"
+            name: "haveResolvedDeposits";
+            type: "bool";
           },
           {
-            "name": "haveRebalanced",
-            "type": "bool"
+            name: "doneRebalancing";
+            type: "bool";
           },
           {
-            "name": "daoAuthority",
-            "type": "publicKey"
+            name: "daoAuthority";
+            type: "publicKey";
           },
           {
-            "name": "extraKeyTwo",
-            "type": "publicKey"
+            name: "extraKeyTwo";
+            type: "publicKey";
           },
           {
-            "name": "extraKeyThree",
-            "type": "publicKey"
+            name: "extraKeyThree";
+            type: "publicKey";
           },
           {
-            "name": "extraKeyFour",
-            "type": "publicKey"
+            name: "extraKeyFour";
+            type: "publicKey";
           },
           {
-            "name": "extraKey5",
-            "type": "publicKey"
+            name: "extraKey5";
+            type: "publicKey";
           },
           {
-            "name": "extraKey6",
-            "type": "publicKey"
+            name: "extraKey6";
+            type: "publicKey";
           },
           {
-            "name": "extraKey7",
-            "type": "publicKey"
+            name: "extraKey7";
+            type: "publicKey";
           },
           {
-            "name": "extraKey8",
-            "type": "publicKey"
+            name: "extraKey8";
+            type: "publicKey";
           },
           {
-            "name": "extraKey9",
-            "type": "publicKey"
+            name: "extraKey9";
+            type: "publicKey";
           },
           {
-            "name": "extraKey10",
-            "type": "publicKey"
+            name: "extraKey10";
+            type: "publicKey";
           },
           {
-            "name": "extraKey11",
-            "type": "publicKey"
+            name: "extraKey11";
+            type: "publicKey";
           },
           {
-            "name": "extraKey12",
-            "type": "publicKey"
+            name: "extraKey12";
+            type: "publicKey";
           },
           {
-            "name": "unusedUintOne",
-            "type": "u64"
+            name: "netWithdrawals";
+            type: "u64";
           },
           {
-            "name": "unusedUintTwo",
-            "type": "u64"
+            name: "maxQuotePosChange";
+            type: "u64";
           },
           {
-            "name": "unusedUintThree",
-            "type": "u64"
+            name: "maxPxMove";
+            type: "f64";
           },
           {
-            "name": "unusedUintFour",
-            "type": "u64"
+            name: "unusedUintFour";
+            type: "u64";
           },
           {
-            "name": "unusedUintFive",
-            "type": "u64"
+            name: "unusedUintFive";
+            type: "u64";
           },
           {
-            "name": "unusedUintSix",
-            "type": "u64"
+            name: "unusedUintSix";
+            type: "u64";
           },
           {
-            "name": "unusedUint7",
-            "type": "u64"
+            name: "unusedUint7";
+            type: "u64";
           },
           {
-            "name": "unusedUint8",
-            "type": "u64"
+            name: "unusedUint8";
+            type: "u64";
           },
           {
-            "name": "unusedUint9",
-            "type": "u64"
+            name: "unusedUint9";
+            type: "u64";
           },
           {
-            "name": "unusedUint10",
-            "type": "u64"
+            name: "unusedUint10";
+            type: "u64";
           },
           {
-            "name": "unusedUint11",
-            "type": "u64"
+            name: "unusedUint11";
+            type: "u64";
           },
           {
-            "name": "unusedUint12",
-            "type": "u64"
+            name: "unusedUint12";
+            type: "u64";
           },
           {
-            "name": "unusedBoolOne",
-            "type": "bool"
+            name: "startedRebalancing";
+            type: "bool";
           },
           {
-            "name": "unusedBoolTwo",
-            "type": "bool"
+            name: "unusedBoolTwo";
+            type: "bool";
           },
           {
-            "name": "unusedBoolThree",
-            "type": "bool"
+            name: "unusedBoolThree";
+            type: "bool";
           },
           {
-            "name": "unusedBoolFour",
-            "type": "bool"
+            name: "unusedBoolFour";
+            type: "bool";
           },
           {
-            "name": "unusedBoolFive",
-            "type": "bool"
+            name: "unusedBoolFive";
+            type: "bool";
           },
           {
-            "name": "unusedBoolSix",
-            "type": "bool"
+            name: "unusedBoolSix";
+            type: "bool";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "VoltVault",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "VoltVault";
+      type: {
+        kind: "struct";
+        fields: [
           {
-            "name": "adminKey",
-            "type": "publicKey"
+            name: "adminKey";
+            type: "publicKey";
           },
           {
-            "name": "seed",
-            "type": "publicKey"
+            name: "seed";
+            type: "publicKey";
           },
           {
-            "name": "transferWindow",
-            "type": "u64"
+            name: "transferWindow";
+            type: "u64";
           },
           {
-            "name": "startTransferTime",
-            "type": "u64"
+            name: "startTransferTime";
+            type: "u64";
           },
           {
-            "name": "endTransferTime",
-            "type": "u64"
+            name: "endTransferTime";
+            type: "u64";
           },
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized";
+            type: "bool";
           },
           {
-            "name": "currOptionWasSettled",
-            "type": "bool"
+            name: "currOptionWasSettled";
+            type: "bool";
           },
           {
-            "name": "mustSwapPremiumToUnderlying",
-            "type": "bool"
+            name: "mustSwapPremiumToUnderlying";
+            type: "bool";
           },
           {
-            "name": "nextOptionWasSet",
-            "type": "bool"
+            name: "nextOptionWasSet";
+            type: "bool";
           },
           {
-            "name": "firstEverOptionWasSet",
-            "type": "bool"
+            name: "firstEverOptionWasSet";
+            type: "bool";
           },
           {
-            "name": "instantTransfersEnabled",
-            "type": "bool"
+            name: "instantTransfersEnabled";
+            type: "bool";
           },
           {
-            "name": "prepareIsFinished",
-            "type": "bool"
+            name: "prepareIsFinished";
+            type: "bool";
           },
           {
-            "name": "enterIsFinished",
-            "type": "bool"
+            name: "enterIsFinished";
+            type: "bool";
           },
           {
-            "name": "roundHasStarted",
-            "type": "bool"
+            name: "roundHasStarted";
+            type: "bool";
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber";
+            type: "u64";
           },
           {
-            "name": "totalUnderlyingPreEnter",
-            "type": "u64"
+            name: "totalUnderlyingPreEnter";
+            type: "u64";
           },
           {
-            "name": "totalUnderlyingPostSettle",
-            "type": "u64"
+            name: "totalUnderlyingPostSettle";
+            type: "u64";
           },
           {
-            "name": "totalVoltTokensPostSettle",
-            "type": "u64"
+            name: "totalVoltTokensPostSettle";
+            type: "u64";
           },
           {
-            "name": "vaultAuthority",
-            "type": "publicKey"
+            name: "vaultAuthority";
+            type: "publicKey";
           },
           {
-            "name": "depositPool",
-            "type": "publicKey"
+            name: "depositPool";
+            type: "publicKey";
           },
           {
-            "name": "premiumPool",
-            "type": "publicKey"
+            name: "premiumPool";
+            type: "publicKey";
           },
           {
-            "name": "optionPool",
-            "type": "publicKey"
+            name: "optionPool";
+            type: "publicKey";
           },
           {
-            "name": "writerTokenPool",
-            "type": "publicKey"
+            name: "writerTokenPool";
+            type: "publicKey";
           },
           {
-            "name": "vaultMint",
-            "type": "publicKey"
+            name: "vaultMint";
+            type: "publicKey";
           },
           {
-            "name": "underlyingAssetMint",
-            "type": "publicKey"
+            name: "underlyingAssetMint";
+            type: "publicKey";
           },
           {
-            "name": "quoteAssetMint",
-            "type": "publicKey"
+            name: "quoteAssetMint";
+            type: "publicKey";
           },
           {
-            "name": "optionMint",
-            "type": "publicKey"
+            name: "optionMint";
+            type: "publicKey";
           },
           {
-            "name": "writerTokenMint",
-            "type": "publicKey"
+            name: "writerTokenMint";
+            type: "publicKey";
           },
           {
-            "name": "optionMarket",
-            "type": "publicKey"
+            name: "optionMarket";
+            type: "publicKey";
           },
           {
-            "name": "vaultType",
-            "type": "u64"
+            name: "vaultType";
+            type: "u64";
           },
           {
-            "name": "underlyingAmountPerContract",
-            "type": "u64"
+            name: "underlyingAmountPerContract";
+            type: "u64";
           },
           {
-            "name": "quoteAmountPerContract",
-            "type": "u64"
+            name: "quoteAmountPerContract";
+            type: "u64";
           },
           {
-            "name": "expirationUnixTimestamp",
-            "type": "i64"
+            name: "expirationUnixTimestamp";
+            type: "i64";
           },
           {
-            "name": "expirationInterval",
-            "type": "u64"
+            name: "expirationInterval";
+            type: "u64";
           },
           {
-            "name": "upperBoundOtmStrikeFactor",
-            "type": "u64"
+            name: "upperBoundOtmStrikeFactor";
+            type: "u64";
           },
           {
-            "name": "haveTakenWithdrawalFees",
-            "type": "bool"
+            name: "haveTakenWithdrawalFees";
+            type: "bool";
           },
           {
-            "name": "serumSpotMarket",
-            "type": "publicKey"
+            name: "serumSpotMarket";
+            type: "publicKey";
           },
           {
-            "name": "openOrdersBump",
-            "type": "u8"
+            name: "openOrdersBump";
+            type: "u8";
           },
           {
-            "name": "openOrdersInitBump",
-            "type": "u8"
+            name: "openOrdersInitBump";
+            type: "u8";
           },
           {
-            "name": "ulOpenOrdersBump",
-            "type": "u8"
+            name: "ulOpenOrdersBump";
+            type: "u8";
           },
           {
-            "name": "ulOpenOrders",
-            "type": "publicKey"
+            name: "ulOpenOrders";
+            type: "publicKey";
           },
           {
-            "name": "ulOpenOrdersInitialized",
-            "type": "bool"
+            name: "ulOpenOrdersInitialized";
+            type: "bool";
           },
           {
-            "name": "bumpAuthority",
-            "type": "u8"
+            name: "bumpAuthority";
+            type: "u8";
           },
           {
-            "name": "serumOrderSizeOptions",
-            "type": "u64"
+            name: "serumOrderSizeOptions";
+            type: "u64";
           },
           {
-            "name": "individualCapacity",
-            "type": "u64"
+            name: "individualCapacity";
+            type: "u64";
           },
           {
-            "name": "serumOrderType",
-            "type": "u64"
+            name: "serumOrderType";
+            type: "u64";
           },
           {
-            "name": "serumLimit",
-            "type": "u16"
+            name: "serumLimit";
+            type: "u16";
           },
           {
-            "name": "serumSelfTradeBehavior",
-            "type": "u16"
+            name: "serumSelfTradeBehavior";
+            type: "u16";
           },
           {
-            "name": "serumClientOrderId",
-            "type": "u64"
+            name: "serumClientOrderId";
+            type: "u64";
           },
           {
-            "name": "whitelistTokenMint",
-            "type": "publicKey"
+            name: "whitelistTokenMint";
+            type: "publicKey";
           },
           {
-            "name": "permissionedMarketPremiumMint",
-            "type": "publicKey"
+            name: "permissionedMarketPremiumMint";
+            type: "publicKey";
           },
           {
-            "name": "permissionedMarketPremiumPool",
-            "type": "publicKey"
+            name: "permissionedMarketPremiumPool";
+            type: "publicKey";
           },
           {
-            "name": "capacity",
-            "type": "u64"
+            name: "capacity";
+            type: "u64";
           }
-        ]
-      }
+        ];
+      };
     }
-  ],
-  "types": [
+  ];
+  types: [
     {
-      "name": "SelfTradeBehavior",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "SelfTradeBehavior";
+      type: {
+        kind: "enum";
+        variants: [
           {
-            "name": "DecrementTake"
+            name: "DecrementTake";
           },
           {
-            "name": "CancelProvide"
+            name: "CancelProvide";
           },
           {
-            "name": "AbortTransaction"
+            name: "AbortTransaction";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "OrderType",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "OrderType";
+      type: {
+        kind: "enum";
+        variants: [
           {
-            "name": "Limit"
+            name: "Limit";
           },
           {
-            "name": "ImmediateOrCancel"
+            name: "ImmediateOrCancel";
           },
           {
-            "name": "PostOnly"
+            name: "PostOnly";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "NewSide",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "NewSide";
+      type: {
+        kind: "enum";
+        variants: [
           {
-            "name": "Bid"
+            name: "Bid";
           },
           {
-            "name": "Ask"
+            name: "Ask";
           }
-        ]
-      }
+        ];
+      };
     },
     {
-      "name": "VoltType",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "VoltType";
+      type: {
+        kind: "enum";
+        variants: [
           {
-            "name": "ShortOptions"
+            name: "ShortOptions";
           },
           {
-            "name": "Entropy"
+            name: "Entropy";
           }
-        ]
-      }
+        ];
+      };
     }
-  ],
-  "events": [
+  ];
+  events: [
     {
-      "name": "RedeemTokensEvent",
-      "fields": [
+      name: "RedeemTokensEvent";
+      fields: [
         {
-          "name": "user",
-          "type": "publicKey",
-          "index": true
+          name: "user";
+          type: "publicKey";
+          index: true;
         },
         {
-          "name": "iouMint",
-          "type": "publicKey",
-          "index": false
+          name: "iouMint";
+          type: "publicKey";
+          index: false;
         },
         {
-          "name": "destinationMint",
-          "type": "publicKey",
-          "index": false
+          name: "destinationMint";
+          type: "publicKey";
+          index: false;
         },
         {
-          "name": "amount",
-          "type": "u64",
-          "index": false
+          name: "amount";
+          type: "u64";
+          index: false;
         }
-      ]
+      ];
     }
-  ],
-  "errors": [
+  ];
+  errors: [
     {
-      "code": 6000,
-      "name": "ExpirationIsInThePast",
-      "msg": "Expiration must be in the future"
+      code: 6000;
+      name: "ExpirationIsInThePast";
+      msg: "Expiration must be in the future";
     },
     {
-      "code": 6001,
-      "name": "QuoteAndUnderlyingAssetMustDiffer",
-      "msg": "Same quote and underlying asset, cannot create market"
+      code: 6001;
+      name: "QuoteAndUnderlyingAssetMustDiffer";
+      msg: "Same quote and underlying asset, cannot create market";
     },
     {
-      "code": 6002,
-      "name": "QuoteOrUnderlyingAmountCannotBe0",
-      "msg": "Quote amount and underlying amount per contract must be > 0"
+      code: 6002;
+      name: "QuoteOrUnderlyingAmountCannotBe0";
+      msg: "Quote amount and underlying amount per contract must be > 0";
     },
     {
-      "code": 6003,
-      "name": "OptionMarketMustBeMintAuthority",
-      "msg": "OptionMarket must be the mint authority"
+      code: 6003;
+      name: "OptionMarketMustBeMintAuthority";
+      msg: "OptionMarket must be the mint authority";
     },
     {
-      "code": 6004,
-      "name": "OptionMarketMustOwnUnderlyingAssetPool",
-      "msg": "OptionMarket must own the underlying asset pool"
+      code: 6004;
+      name: "OptionMarketMustOwnUnderlyingAssetPool";
+      msg: "OptionMarket must own the underlying asset pool";
     },
     {
-      "code": 6005,
-      "name": "OptionMarketMustOwnQuoteAssetPool",
-      "msg": "OptionMarket must own the quote asset pool"
+      code: 6005;
+      name: "OptionMarketMustOwnQuoteAssetPool";
+      msg: "OptionMarket must own the quote asset pool";
     },
     {
-      "code": 6006,
-      "name": "ExpectedSPLTokenProgramId",
-      "msg": "Stop trying to spoof the SPL Token program! Shame on you"
+      code: 6006;
+      name: "ExpectedSPLTokenProgramId";
+      msg: "Stop trying to spoof the SPL Token program! Shame on you";
     },
     {
-      "code": 6007,
-      "name": "MintFeeMustBeOwnedByFeeOwner",
-      "msg": "Mint fee account must be owned by the FEE_OWNER"
+      code: 6007;
+      name: "MintFeeMustBeOwnedByFeeOwner";
+      msg: "Mint fee account must be owned by the FEE_OWNER";
     },
     {
-      "code": 6008,
-      "name": "ExerciseFeeMustBeOwnedByFeeOwner",
-      "msg": "Exercise fee account must be owned by the FEE_OWNER"
+      code: 6008;
+      name: "ExerciseFeeMustBeOwnedByFeeOwner";
+      msg: "Exercise fee account must be owned by the FEE_OWNER";
     },
     {
-      "code": 6009,
-      "name": "MintFeeTokenMustMatchUnderlyingAsset",
-      "msg": "Mint fee token must be the same as the underlying asset"
+      code: 6009;
+      name: "MintFeeTokenMustMatchUnderlyingAsset";
+      msg: "Mint fee token must be the same as the underlying asset";
     },
     {
-      "code": 6010,
-      "name": "ExerciseFeeTokenMustMatchQuoteAsset",
-      "msg": "Exercise fee token must be the same as the quote asset"
+      code: 6010;
+      name: "ExerciseFeeTokenMustMatchQuoteAsset";
+      msg: "Exercise fee token must be the same as the quote asset";
     },
     {
-      "code": 6011,
-      "name": "OptionMarketExpiredCantMint",
-      "msg": "OptionMarket is expired, can't mint"
+      code: 6011;
+      name: "OptionMarketExpiredCantMint";
+      msg: "OptionMarket is expired, can't mint";
     },
     {
-      "code": 6012,
-      "name": "UnderlyingPoolAccountDoesNotMatchMarket",
-      "msg": "Underlying pool account does not match the value on the OptionMarket"
+      code: 6012;
+      name: "UnderlyingPoolAccountDoesNotMatchMarket";
+      msg: "Underlying pool account does not match the value on the OptionMarket";
     },
     {
-      "code": 6013,
-      "name": "OptionTokenMintDoesNotMatchMarket",
-      "msg": "OptionToken mint does not match the value on the OptionMarket"
+      code: 6013;
+      name: "OptionTokenMintDoesNotMatchMarket";
+      msg: "OptionToken mint does not match the value on the OptionMarket";
     },
     {
-      "code": 6014,
-      "name": "WriterTokenMintDoesNotMatchMarket",
-      "msg": "WriterToken mint does not match the value on the OptionMarket"
+      code: 6014;
+      name: "WriterTokenMintDoesNotMatchMarket";
+      msg: "WriterToken mint does not match the value on the OptionMarket";
     },
     {
-      "code": 6015,
-      "name": "MintFeeKeyDoesNotMatchOptionMarket",
-      "msg": "MintFee key does not match the value on the OptionMarket"
+      code: 6015;
+      name: "MintFeeKeyDoesNotMatchOptionMarket";
+      msg: "MintFee key does not match the value on the OptionMarket";
     },
     {
-      "code": 6016,
-      "name": "SizeCantBeLessThanEqZero",
-      "msg": "The size argument must be > 0"
+      code: 6016;
+      name: "SizeCantBeLessThanEqZero";
+      msg: "The size argument must be > 0";
     },
     {
-      "code": 6017,
-      "name": "ExerciseFeeKeyDoesNotMatchOptionMarket",
-      "msg": "exerciseFee key does not match the value on the OptionMarket"
+      code: 6017;
+      name: "ExerciseFeeKeyDoesNotMatchOptionMarket";
+      msg: "exerciseFee key does not match the value on the OptionMarket";
     },
     {
-      "code": 6018,
-      "name": "QuotePoolAccountDoesNotMatchMarket",
-      "msg": "Quote pool account does not match the value on the OptionMarket"
+      code: 6018;
+      name: "QuotePoolAccountDoesNotMatchMarket";
+      msg: "Quote pool account does not match the value on the OptionMarket";
     },
     {
-      "code": 6019,
-      "name": "UnderlyingDestMintDoesNotMatchUnderlyingAsset",
-      "msg": "Underlying destination mint must match underlying asset mint address"
+      code: 6019;
+      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset";
+      msg: "Underlying destination mint must match underlying asset mint address";
     },
     {
-      "code": 6020,
-      "name": "FeeOwnerDoesNotMatchProgram",
-      "msg": "Fee owner does not match the program's fee owner"
+      code: 6020;
+      name: "FeeOwnerDoesNotMatchProgram";
+      msg: "Fee owner does not match the program's fee owner";
     },
     {
-      "code": 6021,
-      "name": "OptionMarketExpiredCantExercise",
-      "msg": "OptionMarket is expired, can't exercise"
+      code: 6021;
+      name: "OptionMarketExpiredCantExercise";
+      msg: "OptionMarket is expired, can't exercise";
     },
     {
-      "code": 6022,
-      "name": "OptionMarketNotExpiredCantClose",
-      "msg": "OptionMarket has not expired, can't close"
+      code: 6022;
+      name: "OptionMarketNotExpiredCantClose";
+      msg: "OptionMarket has not expired, can't close";
     },
     {
-      "code": 6023,
-      "name": "NotEnoughQuoteAssetsInPool",
-      "msg": "Not enough assets in the quote asset pool"
+      code: 6023;
+      name: "NotEnoughQuoteAssetsInPool";
+      msg: "Not enough assets in the quote asset pool";
     },
     {
-      "code": 6024,
-      "name": "InvalidAuth",
-      "msg": "Invalid auth token provided"
+      code: 6024;
+      name: "InvalidAuth";
+      msg: "Invalid auth token provided";
     },
     {
-      "code": 6025,
-      "name": "CoinMintIsNotOptionMint",
-      "msg": "Coin mint must match option mint"
+      code: 6025;
+      name: "CoinMintIsNotOptionMint";
+      msg: "Coin mint must match option mint";
     },
     {
-      "code": 6026,
-      "name": "CannotPruneActiveMarket",
-      "msg": "Cannot prune the market while it's still active"
+      code: 6026;
+      name: "CannotPruneActiveMarket";
+      msg: "Cannot prune the market while it's still active";
     },
     {
-      "code": 6027,
-      "name": "NumberOverflow",
-      "msg": "Numerical overflow"
+      code: 6027;
+      name: "NumberOverflow";
+      msg: "Numerical overflow";
     },
     {
-      "code": 6028,
-      "name": "InvalidOrderType",
-      "msg": "Invalid order type"
+      code: 6028;
+      name: "InvalidOrderType";
+      msg: "Invalid order type";
     },
     {
-      "code": 6029,
-      "name": "InvalidSelfTradeBehavior",
-      "msg": "Invalid self trade behavior"
+      code: 6029;
+      name: "InvalidSelfTradeBehavior";
+      msg: "Invalid self trade behavior";
     },
     {
-      "code": 6030,
-      "name": "Unauthorized",
-      "msg": "Unauthorized."
+      code: 6030;
+      name: "Unauthorized";
+      msg: "Unauthorized.";
     },
     {
-      "code": 6031,
-      "name": "InsufficientCollateral",
-      "msg": "Insufficient collateral to write options."
+      code: 6031;
+      name: "InsufficientCollateral";
+      msg: "Insufficient collateral to write options.";
     },
     {
-      "code": 6032,
-      "name": "InsufficientVaultTokens",
-      "msg": "Insufficient Vault tokens to redeem."
+      code: 6032;
+      name: "InsufficientVaultTokens";
+      msg: "Insufficient Vault tokens to redeem.";
     },
     {
-      "code": 6033,
-      "name": "ContractExpired",
-      "msg": "Options contract is expired."
+      code: 6033;
+      name: "ContractExpired";
+      msg: "Options contract is expired.";
     },
     {
-      "code": 6034,
-      "name": "ContractNotYetExpired",
-      "msg": "Cannot redeem until contract expiry."
+      code: 6034;
+      name: "ContractNotYetExpired";
+      msg: "Cannot redeem until contract expiry.";
     },
     {
-      "code": 6035,
-      "name": "InvalidMintAmount",
-      "msg": "mint amount was 0, skipping mint_helper()..."
+      code: 6035;
+      name: "InvalidMintAmount";
+      msg: "mint amount was 0, skipping mint_helper()...";
     },
     {
-      "code": 6036,
-      "name": "InvalidRebalanceExitTime",
-      "msg": "invalid time to exit position rebalanceExit()"
+      code: 6036;
+      name: "InvalidRebalanceExitTime";
+      msg: "invalid time to exit position rebalanceExit()";
     },
     {
-      "code": 6037,
-      "name": "InvalidRebalanceEntryTime",
-      "msg": "invalid time to enter position rebalanceEnter()"
+      code: 6037;
+      name: "InvalidRebalanceEntryTime";
+      msg: "invalid time to enter position rebalanceEnter()";
     },
     {
-      "code": 6038,
-      "name": "InvalidRebalancePrepareTime",
-      "msg": "invalid time to call rebalancePrepare()"
+      code: 6038;
+      name: "InvalidRebalancePrepareTime";
+      msg: "invalid time to call rebalancePrepare()";
     },
     {
-      "code": 6039,
-      "name": "InvalidWithdrawalTime",
-      "msg": "invalid time to withdraw"
+      code: 6039;
+      name: "InvalidWithdrawalTime";
+      msg: "invalid time to withdraw";
     },
     {
-      "code": 6040,
-      "name": "InvalidDepositTime",
-      "msg": "invalid time to deposit"
+      code: 6040;
+      name: "InvalidDepositTime";
+      msg: "invalid time to deposit";
     },
     {
-      "code": 6041,
-      "name": "InvalidSetNextOptionTime",
-      "msg": "invalid time to set next option"
+      code: 6041;
+      name: "InvalidSetNextOptionTime";
+      msg: "invalid time to set next option";
     },
     {
-      "code": 6042,
-      "name": "InvalidDepositAmount",
-      "msg": "invalid deposit amount"
+      code: 6042;
+      name: "InvalidDepositAmount";
+      msg: "invalid deposit amount";
     },
     {
-      "code": 6043,
-      "name": "InvalidRebalanceSettleTime",
-      "msg": "invalid rebalance settle time"
+      code: 6043;
+      name: "InvalidRebalanceSettleTime";
+      msg: "invalid rebalance settle time";
     },
     {
-      "code": 6044,
-      "name": "InvalidRebalanceSettleState",
-      "msg": "invalid rebalance settle state"
+      code: 6044;
+      name: "InvalidRebalanceSettleState";
+      msg: "invalid rebalance settle state";
     },
     {
-      "code": 6045,
-      "name": "InvalidRebalanceEnterState",
-      "msg": "invalid rebalance enter state"
+      code: 6045;
+      name: "InvalidRebalanceEnterState";
+      msg: "invalid rebalance enter state";
     },
     {
-      "code": 6046,
-      "name": "OptionsPositionNotSettled",
-      "msg": "options position not settled, must be before withdrawal"
+      code: 6046;
+      name: "OptionsPositionNotSettled";
+      msg: "options position not settled, must be before withdrawal";
     },
     {
-      "code": 6047,
-      "name": "NonUnderlyingPoolsHaveAssets",
-      "msg": "non underlying pools have assets when attempting withdraw"
+      code: 6047;
+      name: "NonUnderlyingPoolsHaveAssets";
+      msg: "non underlying pools have assets when attempting withdraw";
     },
     {
-      "code": 6048,
-      "name": "VaultAuthorityMustBeVaultMintAuthority",
-      "msg": "volt must be vault mint authority"
+      code: 6048;
+      name: "VaultAuthorityMustBeVaultMintAuthority";
+      msg: "volt must be vault mint authority";
     },
     {
-      "code": 6049,
-      "name": "VaultAuthorityMustOwnDepositPool",
-      "msg": "volt must own deposit pool"
+      code: 6049;
+      name: "VaultAuthorityMustOwnDepositPool";
+      msg: "volt must own deposit pool";
     },
     {
-      "code": 6050,
-      "name": "VaultAuthorityMustOwnPremiumPool",
-      "msg": "volt must own premium pool"
+      code: 6050;
+      name: "VaultAuthorityMustOwnPremiumPool";
+      msg: "volt must own premium pool";
     },
     {
-      "code": 6051,
-      "name": "VoltVaulttMustOwnWriterTokenPool",
-      "msg": "volt must own writer token pool"
+      code: 6051;
+      name: "VoltVaulttMustOwnWriterTokenPool";
+      msg: "volt must own writer token pool";
     },
     {
-      "code": 6052,
-      "name": "VoltVaultMustOwnOptionPool",
-      "msg": "volt must own option pool"
+      code: 6052;
+      name: "VoltVaultMustOwnOptionPool";
+      msg: "volt must own option pool";
     },
     {
-      "code": 6053,
-      "name": "DepositPoolDoesNotMatchVoltVault",
-      "msg": "DepositPoolDoesNotMatchVoltVault"
+      code: 6053;
+      name: "DepositPoolDoesNotMatchVoltVault";
+      msg: "DepositPoolDoesNotMatchVoltVault";
     },
     {
-      "code": 6054,
-      "name": "OptionPoolDoesNotMatchVoltVault",
-      "msg": "OptionPoolDoesNotMatchVoltVault"
+      code: 6054;
+      name: "OptionPoolDoesNotMatchVoltVault";
+      msg: "OptionPoolDoesNotMatchVoltVault";
     },
     {
-      "code": 6055,
-      "name": "PremiumPoolDoesNotMatchVoltVault",
-      "msg": "PremiumPoolDoesNotMatchVoltVault"
+      code: 6055;
+      name: "PremiumPoolDoesNotMatchVoltVault";
+      msg: "PremiumPoolDoesNotMatchVoltVault";
     },
     {
-      "code": 6056,
-      "name": "TraidngPoolDoesNotMatchVoltVault",
-      "msg": "TradingPoolDoesNotMatchVoltVault"
+      code: 6056;
+      name: "TraidngPoolDoesNotMatchVoltVault";
+      msg: "TradingPoolDoesNotMatchVoltVault";
     },
     {
-      "code": 6057,
-      "name": "OptionMintDoesNotMatchOptionMarket",
-      "msg": "option mint does not match option market"
+      code: 6057;
+      name: "OptionMintDoesNotMatchOptionMarket";
+      msg: "option mint does not match option market";
     },
     {
-      "code": 6058,
-      "name": "NoOrdersInOptionOrderBook",
-      "msg": "NoBidsInOptionOrderBook"
+      code: 6058;
+      name: "NoOrdersInOptionOrderBook";
+      msg: "NoBidsInOptionOrderBook";
     },
     {
-      "code": 6059,
-      "name": "CpiProgramMustBeSomeInPlaceOrder",
-      "msg": "cpi program must be Some in place order"
+      code: 6059;
+      name: "CpiProgramMustBeSomeInPlaceOrder";
+      msg: "cpi program must be Some in place order";
     },
     {
-      "code": 6060,
-      "name": "NewOptionMustNotBeExpired",
-      "msg": "new option must not be expired"
+      code: 6060;
+      name: "NewOptionMustNotBeExpired";
+      msg: "new option must not be expired";
     },
     {
-      "code": 6061,
-      "name": "NewOptionMustHaveExactExpiry",
-      "msg": "new option has roughly target expiry (within lower/upper bounds)"
+      code: 6061;
+      name: "NewOptionMustHaveExactExpiry";
+      msg: "new option has roughly target expiry (within lower/upper bounds)";
     },
     {
-      "code": 6062,
-      "name": "NewOptionHasWrongUnderlyingAsset",
-      "msg": "new option has wrong underlying asset"
+      code: 6062;
+      name: "NewOptionHasWrongUnderlyingAsset";
+      msg: "new option has wrong underlying asset";
     },
     {
-      "code": 6063,
-      "name": "NewOptionHasWrongQuoteAsset",
-      "msg": "new option has wrong quote asset"
+      code: 6063;
+      name: "NewOptionHasWrongQuoteAsset";
+      msg: "new option has wrong quote asset";
     },
     {
-      "code": 6064,
-      "name": "NewOptionHasWrongContractSize",
-      "msg": "new option has wrong contract size"
+      code: 6064;
+      name: "NewOptionHasWrongContractSize";
+      msg: "new option has wrong contract size";
     },
     {
-      "code": 6065,
-      "name": "NewOptionHasInvalidStrike",
-      "msg": "new option has invalid strike"
+      code: 6065;
+      name: "NewOptionHasInvalidStrike";
+      msg: "new option has invalid strike";
     },
     {
-      "code": 6066,
-      "name": "RebalanceSettleHasLeftoverWriterTokens",
-      "msg": "rebalance settle has leftover writer tokens"
+      code: 6066;
+      name: "RebalanceSettleHasLeftoverWriterTokens";
+      msg: "rebalance settle has leftover writer tokens";
     },
     {
-      "code": 6067,
-      "name": "CurrentOptionMustNotBeExpired",
-      "msg": "current option must not be expired"
+      code: 6067;
+      name: "CurrentOptionMustNotBeExpired";
+      msg: "current option must not be expired";
     },
     {
-      "code": 6068,
-      "name": "CannotReinitializeVolt",
-      "msg": "cannot reinitialize an (already initialized) volt"
+      code: 6068;
+      name: "CannotReinitializeVolt";
+      msg: "cannot reinitialize an (already initialized) volt";
     },
     {
-      "code": 6069,
-      "name": "OldOptionAndWriterTokenPoolsMustBeEmpty",
-      "msg": "cannot reinitialize an (already initialized) volt"
+      code: 6069;
+      name: "OldOptionAndWriterTokenPoolsMustBeEmpty";
+      msg: "cannot reinitialize an (already initialized) volt";
     },
     {
-      "code": 6070,
-      "name": "InvalidOldOptionWriterTokenPools",
-      "msg": "invalid old option writer token pools"
+      code: 6070;
+      name: "InvalidOldOptionWriterTokenPools";
+      msg: "invalid old option writer token pools";
     },
     {
-      "code": 6071,
-      "name": "VaultMintDoesNotMatchUserTokenAccount",
-      "msg": "vault mint does not match user token account"
+      code: 6071;
+      name: "VaultMintDoesNotMatchUserTokenAccount";
+      msg: "vault mint does not match user token account";
     },
     {
-      "code": 6072,
-      "name": "DepositPoolMintDoesNotMatchUserTokenAccount",
-      "msg": "deposit pool mint does not match user token account"
+      code: 6072;
+      name: "DepositPoolMintDoesNotMatchUserTokenAccount";
+      msg: "deposit pool mint does not match user token account";
     },
     {
-      "code": 6073,
-      "name": "VaultAuthorityDoesNotMatch",
-      "msg": "vault authority does not match"
+      code: 6073;
+      name: "VaultAuthorityDoesNotMatch";
+      msg: "vault authority does not match";
     },
     {
-      "code": 6074,
-      "name": "DexProgramIdDoesNotMatchAnchor",
-      "msg": "DEX program id does not match"
+      code: 6074;
+      name: "DexProgramIdDoesNotMatchAnchor";
+      msg: "DEX program id does not match";
     },
     {
-      "code": 6075,
-      "name": "InertiaProgramIdDoesNotMatch",
-      "msg": "Inertia program id does not match"
+      code: 6075;
+      name: "InertiaProgramIdDoesNotMatch";
+      msg: "Inertia program id does not match";
     },
     {
-      "code": 6076,
-      "name": "InvalidAuthorityForPermissionedInstruction",
-      "msg": "Invalid authority for permissioned instruction"
+      code: 6076;
+      name: "InvalidAuthorityForPermissionedInstruction";
+      msg: "Invalid authority for permissioned instruction";
     },
     {
-      "code": 6077,
-      "name": "WriterTokenMintDoesNotMatchOptionMarket",
-      "msg": "writer token mint does not match option market"
+      code: 6077;
+      name: "WriterTokenMintDoesNotMatchOptionMarket";
+      msg: "writer token mint does not match option market";
     },
     {
-      "code": 6078,
-      "name": "OptionMarketMustBeOwnedByProtocol",
-      "msg": "option market should be owned by protocol (e.g inertia)"
+      code: 6078;
+      name: "OptionMarketMustBeOwnedByProtocol";
+      msg: "option market should be owned by protocol (e.g inertia)";
     },
     {
-      "code": 6079,
-      "name": "UnderlyingAssetMintDoesNotMatchVoltVault",
-      "msg": "underlying asset mint does not match voltvault"
+      code: 6079;
+      name: "UnderlyingAssetMintDoesNotMatchVoltVault";
+      msg: "underlying asset mint does not match voltvault";
     },
     {
-      "code": 6080,
-      "name": "QuoteAssetMintDoesNotMatchVoltVault",
-      "msg": "quote asset mint does not match voltvault"
+      code: 6080;
+      name: "QuoteAssetMintDoesNotMatchVoltVault";
+      msg: "quote asset mint does not match voltvault";
     },
     {
-      "code": 6081,
-      "name": "VaultMintDoesNotMatchVoltVault",
-      "msg": "vault mint does not match volt vault"
+      code: 6081;
+      name: "VaultMintDoesNotMatchVoltVault";
+      msg: "vault mint does not match volt vault";
     },
     {
-      "code": 6082,
-      "name": "OptionMarketDoesNotMatchVoltVault",
-      "msg": "option market does not match volt vault"
+      code: 6082;
+      name: "OptionMarketDoesNotMatchVoltVault";
+      msg: "option market does not match volt vault";
     },
     {
-      "code": 6083,
-      "name": "WriterTokenPoolDoesNotMatchVoltVault",
-      "msg": "writer token pool does not match volt vault"
+      code: 6083;
+      name: "WriterTokenPoolDoesNotMatchVoltVault";
+      msg: "writer token pool does not match volt vault";
     },
     {
-      "code": 6084,
-      "name": "InvalidRebalanceSwapPremiumState",
-      "msg": "invalid rebalance swap premium state"
+      code: 6084;
+      name: "InvalidRebalanceSwapPremiumState";
+      msg: "invalid rebalance swap premium state";
     },
     {
-      "code": 6085,
-      "name": "ShouldBeUnreachable",
-      "msg": "should be unreachable code"
+      code: 6085;
+      name: "ShouldBeUnreachable";
+      msg: "should be unreachable code";
     },
     {
-      "code": 6086,
-      "name": "CantHaveMultiplePendingDeposits",
-      "msg": "shouldn't have multiple pending deposits"
+      code: 6086;
+      name: "CantHaveMultiplePendingDeposits";
+      msg: "shouldn't have multiple pending deposits";
     },
     {
-      "code": 6087,
-      "name": "InvalidStartRoundState",
-      "msg": "invalid start round state"
+      code: 6087;
+      name: "InvalidStartRoundState";
+      msg: "invalid start round state";
     },
     {
-      "code": 6088,
-      "name": "InvalidSetNextOptionState",
-      "msg": "invalid set next option state"
+      code: 6088;
+      name: "InvalidSetNextOptionState";
+      msg: "invalid set next option state";
     },
     {
-      "code": 6089,
-      "name": "InvalidClaimPendingState",
-      "msg": "invalid claim pending state"
+      code: 6089;
+      name: "InvalidClaimPendingState";
+      msg: "invalid claim pending state";
     },
     {
-      "code": 6090,
-      "name": "InvalidEndRoundState",
-      "msg": "invalid end round state"
+      code: 6090;
+      name: "InvalidEndRoundState";
+      msg: "invalid end round state";
     },
     {
-      "code": 6091,
-      "name": "CantHaveMultiplePendingWithdrawals",
-      "msg": "shouldn't have multiple pending deposits"
+      code: 6091;
+      name: "CantHaveMultiplePendingWithdrawals";
+      msg: "shouldn't have multiple pending deposits";
     },
     {
-      "code": 6092,
-      "name": "InvalidClaimPendingWithdrawalState",
-      "msg": "invalid claim pending withdrawal state"
+      code: 6092;
+      name: "InvalidClaimPendingWithdrawalState";
+      msg: "invalid claim pending withdrawal state";
     },
     {
-      "code": 6093,
-      "name": "InvalidNextOptionMarket",
-      "msg": "invalid next option market"
+      code: 6093;
+      name: "InvalidNextOptionMarket";
+      msg: "invalid next option market";
     },
     {
-      "code": 6094,
-      "name": "TokenNotRevoked",
-      "msg": "Auth token not revoked"
+      code: 6094;
+      name: "TokenNotRevoked";
+      msg: "Auth token not revoked";
     },
     {
-      "code": 6095,
-      "name": "NonWhitelistedUser",
-      "msg": "user is not whitelisted"
+      code: 6095;
+      name: "NonWhitelistedUser";
+      msg: "user is not whitelisted";
     },
     {
-      "code": 6096,
-      "name": "UserIsNotSigner",
-      "msg": "user is not signer"
+      code: 6096;
+      name: "UserIsNotSigner";
+      msg: "user is not signer";
     },
     {
-      "code": 6097,
-      "name": "InvalidWhitelistAuthority",
-      "msg": "authority does not match whitelist admin"
+      code: 6097;
+      name: "InvalidWhitelistAuthority";
+      msg: "authority does not match whitelist admin";
     },
     {
-      "code": 6098,
-      "name": "InvalidWhitelistAndOptionMarketCombination",
-      "msg": "whitelist and option market do not generate correct PDA"
+      code: 6098;
+      name: "InvalidWhitelistAndOptionMarketCombination";
+      msg: "whitelist and option market do not generate correct PDA";
     },
     {
-      "code": 6099,
-      "name": "RoundVoltTokensMintDoesNotMatchVoltVault",
-      "msg": "round volt tokens mint does not match volt vault"
+      code: 6099;
+      name: "RoundVoltTokensMintDoesNotMatchVoltVault";
+      msg: "round volt tokens mint does not match volt vault";
     },
     {
-      "code": 6100,
-      "name": "RoundUnderlyingTokensMintDoesNotMatchVoltVault",
-      "msg": "round underlying tokens mint does not match volt vault"
+      code: 6100;
+      name: "RoundUnderlyingTokensMintDoesNotMatchVoltVault";
+      msg: "round underlying tokens mint does not match volt vault";
     },
     {
-      "code": 6101,
-      "name": "UnderlyingAssetPoolDoesNotMatchOptionMarket",
-      "msg": "UnderlyingAssetPoolDoesNotMatchOptionMarket"
+      code: 6101;
+      name: "UnderlyingAssetPoolDoesNotMatchOptionMarket";
+      msg: "UnderlyingAssetPoolDoesNotMatchOptionMarket";
     },
     {
-      "code": 6102,
-      "name": "NoOppositeOrderOnSerumMarket",
-      "msg": "no opposite order on serum market"
+      code: 6102;
+      name: "NoOppositeOrderOnSerumMarket";
+      msg: "no opposite order on serum market";
     },
     {
-      "code": 6103,
-      "name": "BidPriceOnSerumMarketTooLow",
-      "msg": "bid price on serum market too low"
+      code: 6103;
+      name: "BidPriceOnSerumMarketTooLow";
+      msg: "bid price on serum market too low";
     },
     {
-      "code": 6104,
-      "name": "OfferPriceOnSerumMarketTooHigh",
-      "msg": "offer price on serum market too high"
+      code: 6104;
+      name: "OfferPriceOnSerumMarketTooHigh";
+      msg: "offer price on serum market too high";
     },
     {
-      "code": 6105,
-      "name": "UnderlyingOpenOrdersDoesNotMatchVoltVault",
-      "msg": "underlying open orders does not match volt vault"
+      code: 6105;
+      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault";
+      msg: "underlying open orders does not match volt vault";
     },
     {
-      "code": 6106,
-      "name": "MustHaveAtLeastOneMarketMakerAccessToken",
-      "msg": "must have at least one market maker access token"
+      code: 6106;
+      name: "MustHaveAtLeastOneMarketMakerAccessToken";
+      msg: "must have at least one market maker access token";
     },
     {
-      "code": 6107,
-      "name": "MiddlewareProgramIdDoesNotMatch",
-      "msg": "middleware program id does not match expected"
+      code: 6107;
+      name: "MiddlewareProgramIdDoesNotMatch";
+      msg: "middleware program id does not match expected";
     },
     {
-      "code": 6108,
-      "name": "FeeAccountOwnerDoesNotMatch",
-      "msg": "fee account owner does not match expected"
+      code: 6108;
+      name: "FeeAccountOwnerDoesNotMatch";
+      msg: "fee account owner does not match expected";
     },
     {
-      "code": 6109,
-      "name": "FeeAccountMintDoesNotMatchDepositPool",
-      "msg": "fee account mint does not match deposit pool"
+      code: 6109;
+      name: "FeeAccountMintDoesNotMatchDepositPool";
+      msg: "fee account mint does not match deposit pool";
     },
     {
-      "code": 6110,
-      "name": "VaultCapacityWouldBeExceeded",
-      "msg": "vault capacity would be exceeded"
+      code: 6110;
+      name: "VaultCapacityWouldBeExceeded";
+      msg: "vault capacity would be exceeded";
     },
     {
-      "code": 6111,
-      "name": "IndividualDepositCapacityWouldBeExceeded",
-      "msg": "individual deposit capacity would be exceeded"
+      code: 6111;
+      name: "IndividualDepositCapacityWouldBeExceeded";
+      msg: "individual deposit capacity would be exceeded";
     },
     {
-      "code": 6112,
-      "name": "UnsupportedOptionMarketProgramId",
-      "msg": "unsupported option market program ID"
+      code: 6112;
+      name: "UnsupportedOptionMarketProgramId";
+      msg: "unsupported option market program ID";
     },
     {
-      "code": 6113,
-      "name": "InvalidEndDcaRoundState",
-      "msg": "invalid end dca round state"
+      code: 6113;
+      name: "InvalidEndDcaRoundState";
+      msg: "invalid end dca round state";
     },
     {
-      "code": 6114,
-      "name": "RoundHasNotStarted",
-      "msg": "round has not started"
+      code: 6114;
+      name: "RoundHasNotStarted";
+      msg: "round has not started";
     },
     {
-      "code": 6115,
-      "name": "PermissionedMarketPremiumPoolDoesNotMatchVoltVault",
-      "msg": "permissioned makret premium pool does not match volt"
+      code: 6115;
+      name: "PermissionedMarketPremiumPoolDoesNotMatchVoltVault";
+      msg: "permissioned makret premium pool does not match volt";
     },
     {
-      "code": 6116,
-      "name": "TokenAccountOwnersDoNotMatch",
-      "msg": "token account owners do not match"
+      code: 6116;
+      name: "TokenAccountOwnersDoNotMatch";
+      msg: "token account owners do not match";
     },
     {
-      "code": 6117,
-      "name": "InvalidPermissionedMarketPremiumMint",
-      "msg": "invalid permissioned market premium mint"
+      code: 6117;
+      name: "InvalidPermissionedMarketPremiumMint";
+      msg: "invalid permissioned market premium mint";
     },
     {
-      "code": 6118,
-      "name": "PremiumPoolAmountMustBeGreaterThanZero",
-      "msg": "premium pool amount must be greater than zero"
+      code: 6118;
+      name: "PremiumPoolAmountMustBeGreaterThanZero";
+      msg: "premium pool amount must be greater than zero";
     },
     {
-      "code": 6119,
-      "name": "CantCloseNonEmptyTokenAccount",
-      "msg": "can't close non empty token account"
+      code: 6119;
+      name: "CantCloseNonEmptyTokenAccount";
+      msg: "can't close non empty token account";
     },
     {
-      "code": 6120,
-      "name": "MustFinishEnteringBeforeSettlingPermissionedMarketPremium",
-      "msg": "must finish entering before settling permissioned market premium funds"
+      code: 6120;
+      name: "MustFinishEnteringBeforeSettlingPermissionedMarketPremium";
+      msg: "must finish entering before settling permissioned market premium funds";
     },
     {
-      "code": 6121,
-      "name": "PendingWithdrawalInfoNotInitialized",
-      "msg": "pending withdrawal info must be initialized"
+      code: 6121;
+      name: "PendingWithdrawalInfoNotInitialized";
+      msg: "pending withdrawal info must be initialized";
     },
     {
-      "code": 6122,
-      "name": "PendingWithdrawalDoesNotExist",
-      "msg": "pending withdrawal does not exist"
+      code: 6122;
+      name: "PendingWithdrawalDoesNotExist";
+      msg: "pending withdrawal does not exist";
     },
     {
-      "code": 6123,
-      "name": "CannotCancelPendingWithdrawalFromOldRound",
-      "msg": "cannot cancel pending withdrawal from old round"
+      code: 6123;
+      name: "CannotCancelPendingWithdrawalFromOldRound";
+      msg: "cannot cancel pending withdrawal from old round";
     },
     {
-      "code": 6124,
-      "name": "InvalidTakePendingWithdrawalFeesState",
-      "msg": "invalid take pending withdrawal fees state"
+      code: 6124;
+      name: "InvalidTakePendingWithdrawalFeesState";
+      msg: "invalid take pending withdrawal fees state";
     },
     {
-      "code": 6125,
-      "name": "PendingDepositInfoNotInitialized",
-      "msg": "pending deposit info not initialized"
+      code: 6125;
+      name: "PendingDepositInfoNotInitialized";
+      msg: "pending deposit info not initialized";
     },
     {
-      "code": 6126,
-      "name": "PendingDepositDoesNotExist",
-      "msg": "pending deposits does not exist"
+      code: 6126;
+      name: "PendingDepositDoesNotExist";
+      msg: "pending deposits does not exist";
     },
     {
-      "code": 6127,
-      "name": "CannotCancelPendingDepositFromOldRound",
-      "msg": "cannot cancel pending deposit from old round"
+      code: 6127;
+      name: "CannotCancelPendingDepositFromOldRound";
+      msg: "cannot cancel pending deposit from old round";
     },
     {
-      "code": 6128,
-      "name": "VaultDestinationDoesNotMatchVoltVault",
-      "msg": "vault destination does not match volt vault"
+      code: 6128;
+      name: "VaultDestinationDoesNotMatchVoltVault";
+      msg: "vault destination does not match volt vault";
     },
     {
-      "code": 6129,
-      "name": "MustTakeWithdrawalFeesBeforeStartingRound",
-      "msg": "must take withdrawal fees before starting round"
+      code: 6129;
+      name: "MustTakeWithdrawalFeesBeforeStartingRound";
+      msg: "must take withdrawal fees before starting round";
     },
     {
-      "code": 6130,
-      "name": "RoundMustBeEnded",
-      "msg": "round must be ended"
+      code: 6130;
+      name: "RoundMustBeEnded";
+      msg: "round must be ended";
     },
     {
-      "code": 6131,
-      "name": "MustNotHaveSoldOptionTokens",
-      "msg": "must not have sold option tokens to reset"
+      code: 6131;
+      name: "MustNotHaveSoldOptionTokens";
+      msg: "must not have sold option tokens to reset";
     },
     {
-      "code": 6132,
-      "name": "CantCloseAccountUnlessEmpty",
-      "msg": "cannot close account unless empty"
+      code: 6132;
+      name: "CantCloseAccountUnlessEmpty";
+      msg: "cannot close account unless empty";
     },
     {
-      "code": 6133,
-      "name": "OpenOrderMustBeEmptyToClose",
-      "msg": "open orders must be empty to close"
+      code: 6133;
+      name: "OpenOrderMustBeEmptyToClose";
+      msg: "open orders must be empty to close";
     },
     {
-      "code": 6134,
-      "name": "InvalidWhitelistAccountVector",
-      "msg": "invalid whitelist account (vector)"
+      code: 6134;
+      name: "InvalidWhitelistAccountVector";
+      msg: "invalid whitelist account (vector)";
     },
     {
-      "code": 6135,
-      "name": "InvalidDaoProgramId",
-      "msg": "invalid dao program ID"
+      code: 6135;
+      name: "InvalidDaoProgramId";
+      msg: "invalid dao program ID";
     },
     {
-      "code": 6136,
-      "name": "VoltMustBeForDao",
-      "msg": "volt must be for dao"
+      code: 6136;
+      name: "VoltMustBeForDao";
+      msg: "volt must be for dao";
     },
     {
-      "code": 6137,
-      "name": "InvalidDaoAuthority",
-      "msg": "invalid dao authority"
+      code: 6137;
+      name: "InvalidDaoAuthority";
+      msg: "invalid dao authority";
     },
     {
-      "code": 6138,
-      "name": "DaoAuthorityMustSign",
-      "msg": "dao authority must sign"
+      code: 6138;
+      name: "DaoAuthorityMustSign";
+      msg: "dao authority must sign";
     },
     {
-      "code": 6139,
-      "name": "InvalidPendingDepositKey",
-      "msg": "invalid pending deposit key"
+      code: 6139;
+      name: "InvalidPendingDepositKey";
+      msg: "invalid pending deposit key";
     },
     {
-      "code": 6140,
-      "name": "InvalidAuthorityCheck",
-      "msg": "invalid authority check"
+      code: 6140;
+      name: "InvalidAuthorityCheck";
+      msg: "invalid authority check";
+    },
+    {
+      code: 6141;
+      name: "InvalidSettleDepositsState";
+      msg: "entropy: invalid settle deposits state";
+    },
+    {
+      code: 6142;
+      name: "InvalidVoltType";
+      msg: "invalid volt type";
+    },
+    {
+      code: 6143;
+      name: "CantFindPerpMarketIndex";
+      msg: "can't find perp market index";
+    },
+    {
+      code: 6144;
+      name: "AccountEquityLessThanZero";
+      msg: "account equity less than zero";
+    },
+    {
+      code: 6145;
+      name: "QuotePositionChangedTooMuch";
+      msg: "quote position changed too much";
+    },
+    {
+      code: 6146;
+      name: "MustMoveCloserToTargetCollateralization";
+      msg: "must move closer to target collateralization";
+    },
+    {
+      code: 6147;
+      name: "CollateralNotWithinLenience";
+      msg: "collateral not within lenience";
+    },
+    {
+      code: 6148;
+      name: "InvalidRebalancEntropyState";
+      msg: "invalid rebalance entropy state";
     }
-  ]
+  ];
 };
 export const VoltIDLJsonRaw = {
-  "version": "0.1.0",
-  "name": "volt",
-  "instructions": [
+  version: "0.1.0",
+  name: "volt",
+  instructions: [
     {
-      "name": "initialize",
-      "accounts": [
+      name: "initialize",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "adminKey",
-          "isMut": false,
-          "isSigner": false
+          name: "adminKey",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "seed",
-          "isMut": true,
-          "isSigner": false
+          name: "seed",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "quoteAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumMint",
-          "isMut": false,
-          "isSigner": false
+          name: "permissionedMarketPremiumMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "whitelistTokenMint",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelistTokenMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "whitelistTokenAccount",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelistTokenAccount",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
+      args: [
         {
-          "name": "vaultType",
-          "type": "u64"
+          name: "vaultType",
+          type: "u64",
         },
         {
-          "name": "transferWindow",
-          "type": "u64"
+          name: "transferWindow",
+          type: "u64",
         },
         {
-          "name": "bump",
-          "type": "u8"
+          name: "bump",
+          type: "u8",
         },
         {
-          "name": "bumpAuthority",
-          "type": "u8"
+          name: "bumpAuthority",
+          type: "u8",
         },
         {
-          "name": "serumOrderSizeOptions",
-          "type": "u64"
+          name: "serumOrderSizeOptions",
+          type: "u64",
         },
         {
-          "name": "serumOrderType",
-          "type": {
-            "defined": "OrderType"
-          }
+          name: "serumOrderType",
+          type: {
+            defined: "OrderType",
+          },
         },
         {
-          "name": "serumSelfTradeBehavior",
-          "type": {
-            "defined": "SelfTradeBehavior"
-          }
+          name: "serumSelfTradeBehavior",
+          type: {
+            defined: "SelfTradeBehavior",
+          },
         },
         {
-          "name": "expirationInterval",
-          "type": "u64"
+          name: "expirationInterval",
+          type: "u64",
         },
         {
-          "name": "upperBoundOtmStrikeFactor",
-          "type": "u64"
+          name: "upperBoundOtmStrikeFactor",
+          type: "u64",
         },
         {
-          "name": "underlyingAmountPerContract",
-          "type": "u64"
+          name: "underlyingAmountPerContract",
+          type: "u64",
         },
         {
-          "name": "vaultCapacity",
-          "type": "u64"
+          name: "vaultCapacity",
+          type: "u64",
         },
         {
-          "name": "individualCapacity",
-          "type": "u64"
-        }
-      ]
+          name: "individualCapacity",
+          type: "u64",
+        },
+      ],
     },
     {
-      "name": "changeVars",
-      "accounts": [
+      name: "changeVars",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
+      args: [
         {
-          "name": "capacity",
-          "type": "u64"
+          name: "capacity",
+          type: "u64",
         },
         {
-          "name": "individualCapacity",
-          "type": "u64"
-        }
-      ]
+          name: "individualCapacity",
+          type: "u64",
+        },
+      ],
     },
     {
-      "name": "initNewAccounts",
-      "accounts": [
+      name: "initNewAccounts",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
+      args: [
         {
-          "name": "roundNumber",
-          "type": "u64"
-        }
-      ]
+          name: "roundNumber",
+          type: "u64",
+        },
+      ],
     },
     {
-      "name": "closeOldAccounts",
-      "accounts": [
+      name: "closeOldAccounts",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "newMint",
-          "isMut": false,
-          "isSigner": false
+          name: "newMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "startRound",
-      "accounts": [
+      name: "startRound",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "endRound",
-      "accounts": [
+      name: "endRound",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "clock",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "takePendingWithdrawalFees",
-      "accounts": [
+      name: "takePendingWithdrawalFees",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "claimPending",
-      "accounts": [
+      name: "claimPending",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "userVaultTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "userVaultTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositRoundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositRoundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositRoundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositRoundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "claimPendingWithdrawal",
-      "accounts": [
+      name: "claimPendingWithdrawal",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingWithdrawalRoundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalRoundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokensForPendingWithdrawals",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "cancelPendingWithdrawal",
-      "accounts": [
+      name: "cancelPendingWithdrawal",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "cancelPendingDeposit",
-      "accounts": [
+      name: "cancelPendingDeposit",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "deposit",
-      "accounts": [
+      name: "deposit",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "daoAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "authorityCheck",
-          "isMut": false,
-          "isSigner": false
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
+      args: [
         {
-          "name": "depositAmount",
-          "type": "u64"
-        }
-      ]
+          name: "depositAmount",
+          type: "u64",
+        },
+      ],
     },
     {
-      "name": "depositDao",
-      "accounts": [
+      name: "depositWithTransfer",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          name: "daoAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "solTransferAuthority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "underlyingTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundVoltTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingDepositInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
+      args: [
         {
-          "name": "depositAmount",
-          "type": "u64"
+          name: "depositAmount",
+          type: "u64",
         },
-        {
-          "name": "pdaStr",
-          "type": "string"
-        }
-      ]
+      ],
     },
     {
-      "name": "withdraw",
-      "accounts": [
+      name: "depositDao",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: false,
+          isSigner: true,
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "payer",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "authorityCheck",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "whitelist",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingTokenDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingTokenSource",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultTokenSource",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundUnderlyingTokens",
-          "isMut": true,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pendingWithdrawalInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "feeAcct",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": [
+      args: [
         {
-          "name": "withdrawAmount",
-          "type": "u64"
-        }
-      ]
+          name: "depositAmount",
+          type: "u64",
+        },
+        {
+          name: "pdaStr",
+          type: "string",
+        },
+      ],
     },
     {
-      "name": "rebalanceSettle",
-      "accounts": [
+      name: "withdraw",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "soloptionsProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "daoAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultTokenSource",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "quoteAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "feeAcct",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [
+        {
+          name: "withdrawAmount",
+          type: "u64",
+        },
+      ],
     },
     {
-      "name": "setNextOption",
-      "accounts": [
+      name: "rebalanceSettle",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "soloptionsProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "optionMint",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenMint",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "quoteAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "quoteAssetPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingAssetPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "feeOwner",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": [
-        {
-          "name": "openOrdersBump",
-          "type": "u8"
-        },
-        {
-          "name": "openOrdersInitBump",
-          "type": "u8"
-        }
-      ]
+      args: [],
     },
     {
-      "name": "resetOptionMarket",
-      "accounts": [
+      name: "setNextOption",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "optionMint",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "optionPool",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "clock",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [
+        {
+          name: "openOrdersBump",
+          type: "u8",
+        },
+        {
+          name: "openOrdersInitBump",
+          type: "u8",
+        },
+      ],
     },
     {
-      "name": "rebalancePrepare",
-      "accounts": [
+      name: "resetOptionMarket",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "inertiaProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "soloptionsProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "underlyingAssetPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "underlyingAssetMint",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "optionMint",
-          "isMut": true,
-          "isSigner": false
+          name: "backupOptionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": true,
-          "isSigner": false
+          name: "backupWriterTokenPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "optionProtocolFeeDestination",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "clock",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "associatedTokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "rebalanceSwapPremium",
-      "accounts": [
+      name: "rebalancePrepare",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "inertiaProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "soloptionsProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultMint",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tradingPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "srmReferralAcct",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "optionMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "openOrdersMetadata",
-          "isMut": true,
-          "isSigner": false
+          name: "quoteAssetMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "marketBids",
-          "isMut": true,
-          "isSigner": false
+          name: "writerTokenMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "marketAsks",
-          "isMut": true,
-          "isSigner": false
+          name: "optionProtocolFeeDestination",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "feeOwner",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
+          name: "associatedTokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
+          name: "clock",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": [
-        {
-          "name": "clientOrderPrice",
-          "type": "u64"
-        },
-        {
-          "name": "clientOrderSize",
-          "type": "u64"
-        },
-        {
-          "name": "ulOpenOrdersBump",
-          "type": "u8"
-        }
-      ]
+      args: [],
     },
     {
-      "name": "rebalanceEnter",
-      "accounts": [
+      name: "rebalanceSwapPremium",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "middlewareProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "tradingPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "market",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "srmReferralAcct",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "srmReferralAcct",
-          "isMut": false,
-          "isSigner": false
+          name: "serumVaultSigner",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrdersMetadata",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "serumMarketAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "marketBids",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "marketAsks",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
+          name: "requestQueue",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "marketBids",
-          "isMut": true,
-          "isSigner": false
+          name: "eventQueue",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "marketAsks",
-          "isMut": true,
-          "isSigner": false
+          name: "coinVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
+          name: "pcVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "whitelistTokenAccount",
-          "isMut": false,
-          "isSigner": false
+          name: "feeOwner",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "feeOwner",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": [
+      args: [
         {
-          "name": "clientOrderPrice",
-          "type": "u64"
+          name: "clientOrderPrice",
+          type: "u64",
         },
         {
-          "name": "clientOrderSize",
-          "type": "u64"
+          name: "clientOrderSize",
+          type: "u64",
         },
         {
-          "name": "clientOpenOrdersBump",
-          "type": "u8"
+          name: "ulOpenOrdersBump",
+          type: "u8",
         },
-        {
-          "name": "clientOpenOrdersInitBump",
-          "type": "u8"
-        }
-      ]
+      ],
     },
     {
-      "name": "closeOpenOrdersPls",
-      "accounts": [
+      name: "rebalanceEnter",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "middlewareProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "solWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "market",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
+          name: "serumVaultSigner",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "srmReferralAcct",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "market",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "serumMarketAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "requestQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "eventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "marketBids",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "marketAsks",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "coinVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pcVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "whitelistTokenAccount",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "feeOwner",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [
+        {
+          name: "clientOrderPrice",
+          type: "u64",
+        },
+        {
+          name: "clientOrderSize",
+          type: "u64",
+        },
+        {
+          name: "clientOpenOrdersBump",
+          type: "u8",
+        },
+        {
+          name: "clientOpenOrdersInitBump",
+          type: "u8",
+        },
+      ],
     },
     {
-      "name": "settleEnterFunds",
-      "accounts": [
+      name: "closeOpenOrdersPls",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "middlewareProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "optionPool",
-          "isMut": true,
-          "isSigner": false
+          name: "solWallet",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "market",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "roundInfo",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "rent",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "serumMarketAuthority",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "settlePermissionedMarketPremiumFunds",
-      "accounts": [
+      name: "settleEnterFunds",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "middlewareProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "premiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "permissionedMarketPremiumPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rawOptionMarket",
-          "isMut": false,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "writerTokenMint",
-          "isMut": true,
-          "isSigner": false
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "pcReferrerWallet",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "serumVaultSigner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "market",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "serumMarketAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "coinVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pcVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "settleSwapPremiumFunds",
-      "accounts": [
+      name: "settlePermissionedMarketPremiumFunds",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "vaultAuthority",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "depositPool",
-          "isMut": true,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "tradingPool",
-          "isMut": true,
-          "isSigner": false
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pcReferrerWallet",
-          "isMut": true,
-          "isSigner": false
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "serumVaultSigner",
-          "isMut": false,
-          "isSigner": false
+          name: "rawOptionMarket",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "writerTokenMint",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "openOrders",
-          "isMut": true,
-          "isSigner": false
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "market",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "initWhitelist",
-      "accounts": [
+      name: "settleSwapPremiumFunds",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "seed",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "tradingPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pcReferrerWallet",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "serumVaultSigner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "market",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "coinVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pcVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "addWhitelist",
-      "accounts": [
+      name: "initWhitelist",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "seed",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "accountToAdd",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "removeWhitelist",
-      "accounts": [
+      name: "addWhitelist",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "whitelist",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "accountToRemove",
-          "isMut": false,
-          "isSigner": false
+          name: "accountToAdd",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "attachWhitelist",
-      "accounts": [
+      name: "removeWhitelist",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
+          name: "accountToRemove",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
         },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "attachDao",
-      "accounts": [
+      name: "attachWhitelist",
+      accounts: [
         {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
+          name: "authority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "daoProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "daoAuthority",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "voltVault",
-          "isMut": false,
-          "isSigner": false
+          name: "whitelist",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "extraVoltData",
-          "isMut": true,
-          "isSigner": false
-        }
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      "args": []
+      args: [],
     },
     {
-      "name": "initSerumMarket",
-      "accounts": [
+      name: "attachDao",
+      accounts: [
         {
-          "name": "userAuthority",
-          "isMut": true,
-          "isSigner": true
+          name: "authority",
+          isMut: false,
+          isSigner: true,
         },
         {
-          "name": "whitelist",
-          "isMut": true,
-          "isSigner": false
+          name: "daoProgram",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "optionMarket",
-          "isMut": true,
-          "isSigner": false
+          name: "daoAuthority",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "serumMarket",
-          "isMut": true,
-          "isSigner": false
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
         },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "dexProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "pcMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "optionMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "requestQueue",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "eventQueue",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "bids",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "asks",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "coinVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "pcVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultSigner",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "marketAuthority",
-          "isMut": false,
-          "isSigner": false
-        }
       ],
-      "args": [
+      args: [],
+    },
+    {
+      name: "initSerumMarket",
+      accounts: [
         {
-          "name": "marketSpace",
-          "type": "u64"
+          name: "userAuthority",
+          isMut: true,
+          isSigner: true,
         },
         {
-          "name": "vaultSignerNonce",
-          "type": "u64"
+          name: "whitelist",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "coinLotSize",
-          "type": "u64"
+          name: "optionMarket",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pcLotSize",
-          "type": "u64"
+          name: "serumMarket",
+          isMut: true,
+          isSigner: false,
         },
         {
-          "name": "pcDustThreshold",
-          "type": "u64"
-        }
-      ]
-    }
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "pcMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "requestQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "eventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "bids",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "asks",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "coinVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pcVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultSigner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "marketAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "marketSpace",
+          type: "u64",
+        },
+        {
+          name: "vaultSignerNonce",
+          type: "u64",
+        },
+        {
+          name: "coinLotSize",
+          type: "u64",
+        },
+        {
+          name: "pcLotSize",
+          type: "u64",
+        },
+        {
+          name: "pcDustThreshold",
+          type: "u64",
+        },
+      ],
+    },
   ],
-  "accounts": [
+  accounts: [
     {
-      "name": "Whitelist",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "Whitelist",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "admin",
-            "type": "publicKey"
+            name: "admin",
+            type: "publicKey",
           },
           {
-            "name": "addresses",
-            "type": {
-              "vec": "publicKey"
-            }
-          }
-        ]
-      }
+            name: "addresses",
+            type: {
+              vec: "publicKey",
+            },
+          },
+        ],
+      },
     },
     {
-      "name": "PendingDeposit",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "PendingDeposit",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized",
+            type: "bool",
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber",
+            type: "u64",
           },
           {
-            "name": "numUnderlyingDeposited",
-            "type": "u64"
-          }
-        ]
-      }
+            name: "numUnderlyingDeposited",
+            type: "u64",
+          },
+        ],
+      },
     },
     {
-      "name": "PendingWithdrawal",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "PendingWithdrawal",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized",
+            type: "bool",
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber",
+            type: "u64",
           },
           {
-            "name": "numVoltRedeemed",
-            "type": "u64"
-          }
-        ]
-      }
+            name: "numVoltRedeemed",
+            type: "u64",
+          },
+        ],
+      },
     },
     {
-      "name": "UlOpenOrdersMetadata",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "UlOpenOrdersMetadata",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "initialized",
-            "type": "bool"
-          }
-        ]
-      }
+            name: "initialized",
+            type: "bool",
+          },
+        ],
+      },
     },
     {
-      "name": "Round",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "Round",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "number",
-            "type": "u64"
+            name: "number",
+            type: "u64",
           },
           {
-            "name": "underlyingFromPendingDeposits",
-            "type": "u64"
+            name: "underlyingFromPendingDeposits",
+            type: "u64",
           },
           {
-            "name": "voltTokensFromPendingWithdrawals",
-            "type": "u64"
+            name: "voltTokensFromPendingWithdrawals",
+            type: "u64",
           },
           {
-            "name": "underlyingPreEnter",
-            "type": "u64"
+            name: "underlyingPreEnter",
+            type: "u64",
           },
           {
-            "name": "underlyingPostSettle",
-            "type": "u64"
+            name: "underlyingPostSettle",
+            type: "u64",
           },
           {
-            "name": "premiumFarmed",
-            "type": "u64"
-          }
-        ]
-      }
+            name: "premiumFarmed",
+            type: "u64",
+          },
+        ],
+      },
     },
     {
-      "name": "ExtraVoltData",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "ExtraVoltData",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "isWhitelisted",
-            "type": "bool"
+            name: "isWhitelisted",
+            type: "bool",
           },
           {
-            "name": "whitelist",
-            "type": "publicKey"
+            name: "whitelist",
+            type: "publicKey",
           },
           {
-            "name": "isForDao",
-            "type": "bool"
+            name: "isForDao",
+            type: "bool",
           },
           {
-            "name": "daoProgramId",
-            "type": "publicKey"
+            name: "daoProgramId",
+            type: "publicKey",
           },
           {
-            "name": "depositMint",
-            "type": "publicKey"
+            name: "depositMint",
+            type: "publicKey",
           },
           {
-            "name": "targetCollatRatio",
-            "type": "f64"
+            name: "targetCollatRatio",
+            type: "f64",
           },
           {
-            "name": "targetCollatLenience",
-            "type": "f64"
+            name: "targetCollatLenience",
+            type: "f64",
           },
           {
-            "name": "exitEarlyRatio",
-            "type": "f64"
+            name: "exitEarlyRatio",
+            type: "f64",
           },
           {
-            "name": "targetProgramId",
-            "type": "publicKey"
+            name: "targetProgramId",
+            type: "publicKey",
           },
           {
-            "name": "entropyGroup",
-            "type": "publicKey"
+            name: "entropyGroup",
+            type: "publicKey",
           },
           {
-            "name": "entropyAccount",
-            "type": "publicKey"
+            name: "entropyAccount",
+            type: "publicKey",
           },
           {
-            "name": "targetPerpMarket",
-            "type": "publicKey"
+            name: "targetPerpMarket",
+            type: "publicKey",
           },
           {
-            "name": "haveResolvedDeposits",
-            "type": "bool"
+            name: "haveResolvedDeposits",
+            type: "bool",
           },
           {
-            "name": "haveRebalanced",
-            "type": "bool"
+            name: "doneRebalancing",
+            type: "bool",
           },
           {
-            "name": "daoAuthority",
-            "type": "publicKey"
+            name: "daoAuthority",
+            type: "publicKey",
           },
           {
-            "name": "extraKeyTwo",
-            "type": "publicKey"
+            name: "extraKeyTwo",
+            type: "publicKey",
           },
           {
-            "name": "extraKeyThree",
-            "type": "publicKey"
+            name: "extraKeyThree",
+            type: "publicKey",
           },
           {
-            "name": "extraKeyFour",
-            "type": "publicKey"
+            name: "extraKeyFour",
+            type: "publicKey",
           },
           {
-            "name": "extraKey5",
-            "type": "publicKey"
+            name: "extraKey5",
+            type: "publicKey",
           },
           {
-            "name": "extraKey6",
-            "type": "publicKey"
+            name: "extraKey6",
+            type: "publicKey",
           },
           {
-            "name": "extraKey7",
-            "type": "publicKey"
+            name: "extraKey7",
+            type: "publicKey",
           },
           {
-            "name": "extraKey8",
-            "type": "publicKey"
+            name: "extraKey8",
+            type: "publicKey",
           },
           {
-            "name": "extraKey9",
-            "type": "publicKey"
+            name: "extraKey9",
+            type: "publicKey",
           },
           {
-            "name": "extraKey10",
-            "type": "publicKey"
+            name: "extraKey10",
+            type: "publicKey",
           },
           {
-            "name": "extraKey11",
-            "type": "publicKey"
+            name: "extraKey11",
+            type: "publicKey",
           },
           {
-            "name": "extraKey12",
-            "type": "publicKey"
+            name: "extraKey12",
+            type: "publicKey",
           },
           {
-            "name": "unusedUintOne",
-            "type": "u64"
+            name: "netWithdrawals",
+            type: "u64",
           },
           {
-            "name": "unusedUintTwo",
-            "type": "u64"
+            name: "maxQuotePosChange",
+            type: "u64",
           },
           {
-            "name": "unusedUintThree",
-            "type": "u64"
+            name: "maxPxMove",
+            type: "f64",
           },
           {
-            "name": "unusedUintFour",
-            "type": "u64"
+            name: "unusedUintFour",
+            type: "u64",
           },
           {
-            "name": "unusedUintFive",
-            "type": "u64"
+            name: "unusedUintFive",
+            type: "u64",
           },
           {
-            "name": "unusedUintSix",
-            "type": "u64"
+            name: "unusedUintSix",
+            type: "u64",
           },
           {
-            "name": "unusedUint7",
-            "type": "u64"
+            name: "unusedUint7",
+            type: "u64",
           },
           {
-            "name": "unusedUint8",
-            "type": "u64"
+            name: "unusedUint8",
+            type: "u64",
           },
           {
-            "name": "unusedUint9",
-            "type": "u64"
+            name: "unusedUint9",
+            type: "u64",
           },
           {
-            "name": "unusedUint10",
-            "type": "u64"
+            name: "unusedUint10",
+            type: "u64",
           },
           {
-            "name": "unusedUint11",
-            "type": "u64"
+            name: "unusedUint11",
+            type: "u64",
           },
           {
-            "name": "unusedUint12",
-            "type": "u64"
+            name: "unusedUint12",
+            type: "u64",
           },
           {
-            "name": "unusedBoolOne",
-            "type": "bool"
+            name: "startedRebalancing",
+            type: "bool",
           },
           {
-            "name": "unusedBoolTwo",
-            "type": "bool"
+            name: "unusedBoolTwo",
+            type: "bool",
           },
           {
-            "name": "unusedBoolThree",
-            "type": "bool"
+            name: "unusedBoolThree",
+            type: "bool",
           },
           {
-            "name": "unusedBoolFour",
-            "type": "bool"
+            name: "unusedBoolFour",
+            type: "bool",
           },
           {
-            "name": "unusedBoolFive",
-            "type": "bool"
+            name: "unusedBoolFive",
+            type: "bool",
           },
           {
-            "name": "unusedBoolSix",
-            "type": "bool"
-          }
-        ]
-      }
+            name: "unusedBoolSix",
+            type: "bool",
+          },
+        ],
+      },
     },
     {
-      "name": "VoltVault",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      name: "VoltVault",
+      type: {
+        kind: "struct",
+        fields: [
           {
-            "name": "adminKey",
-            "type": "publicKey"
+            name: "adminKey",
+            type: "publicKey",
           },
           {
-            "name": "seed",
-            "type": "publicKey"
+            name: "seed",
+            type: "publicKey",
           },
           {
-            "name": "transferWindow",
-            "type": "u64"
+            name: "transferWindow",
+            type: "u64",
           },
           {
-            "name": "startTransferTime",
-            "type": "u64"
+            name: "startTransferTime",
+            type: "u64",
           },
           {
-            "name": "endTransferTime",
-            "type": "u64"
+            name: "endTransferTime",
+            type: "u64",
           },
           {
-            "name": "initialized",
-            "type": "bool"
+            name: "initialized",
+            type: "bool",
           },
           {
-            "name": "currOptionWasSettled",
-            "type": "bool"
+            name: "currOptionWasSettled",
+            type: "bool",
           },
           {
-            "name": "mustSwapPremiumToUnderlying",
-            "type": "bool"
+            name: "mustSwapPremiumToUnderlying",
+            type: "bool",
           },
           {
-            "name": "nextOptionWasSet",
-            "type": "bool"
+            name: "nextOptionWasSet",
+            type: "bool",
           },
           {
-            "name": "firstEverOptionWasSet",
-            "type": "bool"
+            name: "firstEverOptionWasSet",
+            type: "bool",
           },
           {
-            "name": "instantTransfersEnabled",
-            "type": "bool"
+            name: "instantTransfersEnabled",
+            type: "bool",
           },
           {
-            "name": "prepareIsFinished",
-            "type": "bool"
+            name: "prepareIsFinished",
+            type: "bool",
           },
           {
-            "name": "enterIsFinished",
-            "type": "bool"
+            name: "enterIsFinished",
+            type: "bool",
           },
           {
-            "name": "roundHasStarted",
-            "type": "bool"
+            name: "roundHasStarted",
+            type: "bool",
           },
           {
-            "name": "roundNumber",
-            "type": "u64"
+            name: "roundNumber",
+            type: "u64",
           },
           {
-            "name": "totalUnderlyingPreEnter",
-            "type": "u64"
+            name: "totalUnderlyingPreEnter",
+            type: "u64",
           },
           {
-            "name": "totalUnderlyingPostSettle",
-            "type": "u64"
+            name: "totalUnderlyingPostSettle",
+            type: "u64",
           },
           {
-            "name": "totalVoltTokensPostSettle",
-            "type": "u64"
+            name: "totalVoltTokensPostSettle",
+            type: "u64",
           },
           {
-            "name": "vaultAuthority",
-            "type": "publicKey"
+            name: "vaultAuthority",
+            type: "publicKey",
           },
           {
-            "name": "depositPool",
-            "type": "publicKey"
+            name: "depositPool",
+            type: "publicKey",
           },
           {
-            "name": "premiumPool",
-            "type": "publicKey"
+            name: "premiumPool",
+            type: "publicKey",
           },
           {
-            "name": "optionPool",
-            "type": "publicKey"
+            name: "optionPool",
+            type: "publicKey",
           },
           {
-            "name": "writerTokenPool",
-            "type": "publicKey"
+            name: "writerTokenPool",
+            type: "publicKey",
           },
           {
-            "name": "vaultMint",
-            "type": "publicKey"
+            name: "vaultMint",
+            type: "publicKey",
           },
           {
-            "name": "underlyingAssetMint",
-            "type": "publicKey"
+            name: "underlyingAssetMint",
+            type: "publicKey",
           },
           {
-            "name": "quoteAssetMint",
-            "type": "publicKey"
+            name: "quoteAssetMint",
+            type: "publicKey",
           },
           {
-            "name": "optionMint",
-            "type": "publicKey"
+            name: "optionMint",
+            type: "publicKey",
           },
           {
-            "name": "writerTokenMint",
-            "type": "publicKey"
+            name: "writerTokenMint",
+            type: "publicKey",
           },
           {
-            "name": "optionMarket",
-            "type": "publicKey"
+            name: "optionMarket",
+            type: "publicKey",
           },
           {
-            "name": "vaultType",
-            "type": "u64"
+            name: "vaultType",
+            type: "u64",
           },
           {
-            "name": "underlyingAmountPerContract",
-            "type": "u64"
+            name: "underlyingAmountPerContract",
+            type: "u64",
           },
           {
-            "name": "quoteAmountPerContract",
-            "type": "u64"
+            name: "quoteAmountPerContract",
+            type: "u64",
           },
           {
-            "name": "expirationUnixTimestamp",
-            "type": "i64"
+            name: "expirationUnixTimestamp",
+            type: "i64",
           },
           {
-            "name": "expirationInterval",
-            "type": "u64"
+            name: "expirationInterval",
+            type: "u64",
           },
           {
-            "name": "upperBoundOtmStrikeFactor",
-            "type": "u64"
+            name: "upperBoundOtmStrikeFactor",
+            type: "u64",
           },
           {
-            "name": "haveTakenWithdrawalFees",
-            "type": "bool"
+            name: "haveTakenWithdrawalFees",
+            type: "bool",
           },
           {
-            "name": "serumSpotMarket",
-            "type": "publicKey"
+            name: "serumSpotMarket",
+            type: "publicKey",
           },
           {
-            "name": "openOrdersBump",
-            "type": "u8"
+            name: "openOrdersBump",
+            type: "u8",
           },
           {
-            "name": "openOrdersInitBump",
-            "type": "u8"
+            name: "openOrdersInitBump",
+            type: "u8",
           },
           {
-            "name": "ulOpenOrdersBump",
-            "type": "u8"
+            name: "ulOpenOrdersBump",
+            type: "u8",
           },
           {
-            "name": "ulOpenOrders",
-            "type": "publicKey"
+            name: "ulOpenOrders",
+            type: "publicKey",
           },
           {
-            "name": "ulOpenOrdersInitialized",
-            "type": "bool"
+            name: "ulOpenOrdersInitialized",
+            type: "bool",
           },
           {
-            "name": "bumpAuthority",
-            "type": "u8"
+            name: "bumpAuthority",
+            type: "u8",
           },
           {
-            "name": "serumOrderSizeOptions",
-            "type": "u64"
+            name: "serumOrderSizeOptions",
+            type: "u64",
           },
           {
-            "name": "individualCapacity",
-            "type": "u64"
+            name: "individualCapacity",
+            type: "u64",
           },
           {
-            "name": "serumOrderType",
-            "type": "u64"
+            name: "serumOrderType",
+            type: "u64",
           },
           {
-            "name": "serumLimit",
-            "type": "u16"
+            name: "serumLimit",
+            type: "u16",
           },
           {
-            "name": "serumSelfTradeBehavior",
-            "type": "u16"
+            name: "serumSelfTradeBehavior",
+            type: "u16",
           },
           {
-            "name": "serumClientOrderId",
-            "type": "u64"
+            name: "serumClientOrderId",
+            type: "u64",
           },
           {
-            "name": "whitelistTokenMint",
-            "type": "publicKey"
+            name: "whitelistTokenMint",
+            type: "publicKey",
           },
           {
-            "name": "permissionedMarketPremiumMint",
-            "type": "publicKey"
+            name: "permissionedMarketPremiumMint",
+            type: "publicKey",
           },
           {
-            "name": "permissionedMarketPremiumPool",
-            "type": "publicKey"
+            name: "permissionedMarketPremiumPool",
+            type: "publicKey",
           },
           {
-            "name": "capacity",
-            "type": "u64"
-          }
-        ]
-      }
-    }
+            name: "capacity",
+            type: "u64",
+          },
+        ],
+      },
+    },
   ],
-  "types": [
+  types: [
     {
-      "name": "SelfTradeBehavior",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "SelfTradeBehavior",
+      type: {
+        kind: "enum",
+        variants: [
           {
-            "name": "DecrementTake"
+            name: "DecrementTake",
           },
           {
-            "name": "CancelProvide"
+            name: "CancelProvide",
           },
           {
-            "name": "AbortTransaction"
-          }
-        ]
-      }
+            name: "AbortTransaction",
+          },
+        ],
+      },
     },
     {
-      "name": "OrderType",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "OrderType",
+      type: {
+        kind: "enum",
+        variants: [
           {
-            "name": "Limit"
+            name: "Limit",
           },
           {
-            "name": "ImmediateOrCancel"
+            name: "ImmediateOrCancel",
           },
           {
-            "name": "PostOnly"
-          }
-        ]
-      }
+            name: "PostOnly",
+          },
+        ],
+      },
     },
     {
-      "name": "NewSide",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "NewSide",
+      type: {
+        kind: "enum",
+        variants: [
           {
-            "name": "Bid"
+            name: "Bid",
           },
           {
-            "name": "Ask"
-          }
-        ]
-      }
+            name: "Ask",
+          },
+        ],
+      },
     },
     {
-      "name": "VoltType",
-      "type": {
-        "kind": "enum",
-        "variants": [
+      name: "VoltType",
+      type: {
+        kind: "enum",
+        variants: [
           {
-            "name": "ShortOptions"
+            name: "ShortOptions",
           },
           {
-            "name": "Entropy"
-          }
-        ]
-      }
-    }
+            name: "Entropy",
+          },
+        ],
+      },
+    },
   ],
-  "events": [
+  events: [
     {
-      "name": "RedeemTokensEvent",
-      "fields": [
+      name: "RedeemTokensEvent",
+      fields: [
         {
-          "name": "user",
-          "type": "publicKey",
-          "index": true
+          name: "user",
+          type: "publicKey",
+          index: true,
         },
         {
-          "name": "iouMint",
-          "type": "publicKey",
-          "index": false
+          name: "iouMint",
+          type: "publicKey",
+          index: false,
         },
         {
-          "name": "destinationMint",
-          "type": "publicKey",
-          "index": false
+          name: "destinationMint",
+          type: "publicKey",
+          index: false,
         },
         {
-          "name": "amount",
-          "type": "u64",
-          "index": false
-        }
-      ]
-    }
+          name: "amount",
+          type: "u64",
+          index: false,
+        },
+      ],
+    },
   ],
-  "errors": [
+  errors: [
     {
-      "code": 6000,
-      "name": "ExpirationIsInThePast",
-      "msg": "Expiration must be in the future"
+      code: 6000,
+      name: "ExpirationIsInThePast",
+      msg: "Expiration must be in the future",
     },
     {
-      "code": 6001,
-      "name": "QuoteAndUnderlyingAssetMustDiffer",
-      "msg": "Same quote and underlying asset, cannot create market"
+      code: 6001,
+      name: "QuoteAndUnderlyingAssetMustDiffer",
+      msg: "Same quote and underlying asset, cannot create market",
     },
     {
-      "code": 6002,
-      "name": "QuoteOrUnderlyingAmountCannotBe0",
-      "msg": "Quote amount and underlying amount per contract must be > 0"
+      code: 6002,
+      name: "QuoteOrUnderlyingAmountCannotBe0",
+      msg: "Quote amount and underlying amount per contract must be > 0",
     },
     {
-      "code": 6003,
-      "name": "OptionMarketMustBeMintAuthority",
-      "msg": "OptionMarket must be the mint authority"
+      code: 6003,
+      name: "OptionMarketMustBeMintAuthority",
+      msg: "OptionMarket must be the mint authority",
     },
     {
-      "code": 6004,
-      "name": "OptionMarketMustOwnUnderlyingAssetPool",
-      "msg": "OptionMarket must own the underlying asset pool"
+      code: 6004,
+      name: "OptionMarketMustOwnUnderlyingAssetPool",
+      msg: "OptionMarket must own the underlying asset pool",
     },
     {
-      "code": 6005,
-      "name": "OptionMarketMustOwnQuoteAssetPool",
-      "msg": "OptionMarket must own the quote asset pool"
+      code: 6005,
+      name: "OptionMarketMustOwnQuoteAssetPool",
+      msg: "OptionMarket must own the quote asset pool",
     },
     {
-      "code": 6006,
-      "name": "ExpectedSPLTokenProgramId",
-      "msg": "Stop trying to spoof the SPL Token program! Shame on you"
+      code: 6006,
+      name: "ExpectedSPLTokenProgramId",
+      msg: "Stop trying to spoof the SPL Token program! Shame on you",
     },
     {
-      "code": 6007,
-      "name": "MintFeeMustBeOwnedByFeeOwner",
-      "msg": "Mint fee account must be owned by the FEE_OWNER"
+      code: 6007,
+      name: "MintFeeMustBeOwnedByFeeOwner",
+      msg: "Mint fee account must be owned by the FEE_OWNER",
     },
     {
-      "code": 6008,
-      "name": "ExerciseFeeMustBeOwnedByFeeOwner",
-      "msg": "Exercise fee account must be owned by the FEE_OWNER"
+      code: 6008,
+      name: "ExerciseFeeMustBeOwnedByFeeOwner",
+      msg: "Exercise fee account must be owned by the FEE_OWNER",
     },
     {
-      "code": 6009,
-      "name": "MintFeeTokenMustMatchUnderlyingAsset",
-      "msg": "Mint fee token must be the same as the underlying asset"
+      code: 6009,
+      name: "MintFeeTokenMustMatchUnderlyingAsset",
+      msg: "Mint fee token must be the same as the underlying asset",
     },
     {
-      "code": 6010,
-      "name": "ExerciseFeeTokenMustMatchQuoteAsset",
-      "msg": "Exercise fee token must be the same as the quote asset"
+      code: 6010,
+      name: "ExerciseFeeTokenMustMatchQuoteAsset",
+      msg: "Exercise fee token must be the same as the quote asset",
     },
     {
-      "code": 6011,
-      "name": "OptionMarketExpiredCantMint",
-      "msg": "OptionMarket is expired, can't mint"
+      code: 6011,
+      name: "OptionMarketExpiredCantMint",
+      msg: "OptionMarket is expired, can't mint",
     },
     {
-      "code": 6012,
-      "name": "UnderlyingPoolAccountDoesNotMatchMarket",
-      "msg": "Underlying pool account does not match the value on the OptionMarket"
+      code: 6012,
+      name: "UnderlyingPoolAccountDoesNotMatchMarket",
+      msg: "Underlying pool account does not match the value on the OptionMarket",
     },
     {
-      "code": 6013,
-      "name": "OptionTokenMintDoesNotMatchMarket",
-      "msg": "OptionToken mint does not match the value on the OptionMarket"
+      code: 6013,
+      name: "OptionTokenMintDoesNotMatchMarket",
+      msg: "OptionToken mint does not match the value on the OptionMarket",
     },
     {
-      "code": 6014,
-      "name": "WriterTokenMintDoesNotMatchMarket",
-      "msg": "WriterToken mint does not match the value on the OptionMarket"
+      code: 6014,
+      name: "WriterTokenMintDoesNotMatchMarket",
+      msg: "WriterToken mint does not match the value on the OptionMarket",
     },
     {
-      "code": 6015,
-      "name": "MintFeeKeyDoesNotMatchOptionMarket",
-      "msg": "MintFee key does not match the value on the OptionMarket"
+      code: 6015,
+      name: "MintFeeKeyDoesNotMatchOptionMarket",
+      msg: "MintFee key does not match the value on the OptionMarket",
     },
     {
-      "code": 6016,
-      "name": "SizeCantBeLessThanEqZero",
-      "msg": "The size argument must be > 0"
+      code: 6016,
+      name: "SizeCantBeLessThanEqZero",
+      msg: "The size argument must be > 0",
     },
     {
-      "code": 6017,
-      "name": "ExerciseFeeKeyDoesNotMatchOptionMarket",
-      "msg": "exerciseFee key does not match the value on the OptionMarket"
+      code: 6017,
+      name: "ExerciseFeeKeyDoesNotMatchOptionMarket",
+      msg: "exerciseFee key does not match the value on the OptionMarket",
     },
     {
-      "code": 6018,
-      "name": "QuotePoolAccountDoesNotMatchMarket",
-      "msg": "Quote pool account does not match the value on the OptionMarket"
+      code: 6018,
+      name: "QuotePoolAccountDoesNotMatchMarket",
+      msg: "Quote pool account does not match the value on the OptionMarket",
     },
     {
-      "code": 6019,
-      "name": "UnderlyingDestMintDoesNotMatchUnderlyingAsset",
-      "msg": "Underlying destination mint must match underlying asset mint address"
+      code: 6019,
+      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset",
+      msg: "Underlying destination mint must match underlying asset mint address",
     },
     {
-      "code": 6020,
-      "name": "FeeOwnerDoesNotMatchProgram",
-      "msg": "Fee owner does not match the program's fee owner"
+      code: 6020,
+      name: "FeeOwnerDoesNotMatchProgram",
+      msg: "Fee owner does not match the program's fee owner",
     },
     {
-      "code": 6021,
-      "name": "OptionMarketExpiredCantExercise",
-      "msg": "OptionMarket is expired, can't exercise"
+      code: 6021,
+      name: "OptionMarketExpiredCantExercise",
+      msg: "OptionMarket is expired, can't exercise",
     },
     {
-      "code": 6022,
-      "name": "OptionMarketNotExpiredCantClose",
-      "msg": "OptionMarket has not expired, can't close"
+      code: 6022,
+      name: "OptionMarketNotExpiredCantClose",
+      msg: "OptionMarket has not expired, can't close",
     },
     {
-      "code": 6023,
-      "name": "NotEnoughQuoteAssetsInPool",
-      "msg": "Not enough assets in the quote asset pool"
+      code: 6023,
+      name: "NotEnoughQuoteAssetsInPool",
+      msg: "Not enough assets in the quote asset pool",
     },
     {
-      "code": 6024,
-      "name": "InvalidAuth",
-      "msg": "Invalid auth token provided"
+      code: 6024,
+      name: "InvalidAuth",
+      msg: "Invalid auth token provided",
     },
     {
-      "code": 6025,
-      "name": "CoinMintIsNotOptionMint",
-      "msg": "Coin mint must match option mint"
+      code: 6025,
+      name: "CoinMintIsNotOptionMint",
+      msg: "Coin mint must match option mint",
     },
     {
-      "code": 6026,
-      "name": "CannotPruneActiveMarket",
-      "msg": "Cannot prune the market while it's still active"
+      code: 6026,
+      name: "CannotPruneActiveMarket",
+      msg: "Cannot prune the market while it's still active",
     },
     {
-      "code": 6027,
-      "name": "NumberOverflow",
-      "msg": "Numerical overflow"
+      code: 6027,
+      name: "NumberOverflow",
+      msg: "Numerical overflow",
     },
     {
-      "code": 6028,
-      "name": "InvalidOrderType",
-      "msg": "Invalid order type"
+      code: 6028,
+      name: "InvalidOrderType",
+      msg: "Invalid order type",
     },
     {
-      "code": 6029,
-      "name": "InvalidSelfTradeBehavior",
-      "msg": "Invalid self trade behavior"
+      code: 6029,
+      name: "InvalidSelfTradeBehavior",
+      msg: "Invalid self trade behavior",
     },
     {
-      "code": 6030,
-      "name": "Unauthorized",
-      "msg": "Unauthorized."
+      code: 6030,
+      name: "Unauthorized",
+      msg: "Unauthorized.",
     },
     {
-      "code": 6031,
-      "name": "InsufficientCollateral",
-      "msg": "Insufficient collateral to write options."
+      code: 6031,
+      name: "InsufficientCollateral",
+      msg: "Insufficient collateral to write options.",
     },
     {
-      "code": 6032,
-      "name": "InsufficientVaultTokens",
-      "msg": "Insufficient Vault tokens to redeem."
+      code: 6032,
+      name: "InsufficientVaultTokens",
+      msg: "Insufficient Vault tokens to redeem.",
     },
     {
-      "code": 6033,
-      "name": "ContractExpired",
-      "msg": "Options contract is expired."
+      code: 6033,
+      name: "ContractExpired",
+      msg: "Options contract is expired.",
     },
     {
-      "code": 6034,
-      "name": "ContractNotYetExpired",
-      "msg": "Cannot redeem until contract expiry."
+      code: 6034,
+      name: "ContractNotYetExpired",
+      msg: "Cannot redeem until contract expiry.",
     },
     {
-      "code": 6035,
-      "name": "InvalidMintAmount",
-      "msg": "mint amount was 0, skipping mint_helper()..."
+      code: 6035,
+      name: "InvalidMintAmount",
+      msg: "mint amount was 0, skipping mint_helper()...",
     },
     {
-      "code": 6036,
-      "name": "InvalidRebalanceExitTime",
-      "msg": "invalid time to exit position rebalanceExit()"
+      code: 6036,
+      name: "InvalidRebalanceExitTime",
+      msg: "invalid time to exit position rebalanceExit()",
     },
     {
-      "code": 6037,
-      "name": "InvalidRebalanceEntryTime",
-      "msg": "invalid time to enter position rebalanceEnter()"
+      code: 6037,
+      name: "InvalidRebalanceEntryTime",
+      msg: "invalid time to enter position rebalanceEnter()",
     },
     {
-      "code": 6038,
-      "name": "InvalidRebalancePrepareTime",
-      "msg": "invalid time to call rebalancePrepare()"
+      code: 6038,
+      name: "InvalidRebalancePrepareTime",
+      msg: "invalid time to call rebalancePrepare()",
     },
     {
-      "code": 6039,
-      "name": "InvalidWithdrawalTime",
-      "msg": "invalid time to withdraw"
+      code: 6039,
+      name: "InvalidWithdrawalTime",
+      msg: "invalid time to withdraw",
     },
     {
-      "code": 6040,
-      "name": "InvalidDepositTime",
-      "msg": "invalid time to deposit"
+      code: 6040,
+      name: "InvalidDepositTime",
+      msg: "invalid time to deposit",
     },
     {
-      "code": 6041,
-      "name": "InvalidSetNextOptionTime",
-      "msg": "invalid time to set next option"
+      code: 6041,
+      name: "InvalidSetNextOptionTime",
+      msg: "invalid time to set next option",
     },
     {
-      "code": 6042,
-      "name": "InvalidDepositAmount",
-      "msg": "invalid deposit amount"
+      code: 6042,
+      name: "InvalidDepositAmount",
+      msg: "invalid deposit amount",
     },
     {
-      "code": 6043,
-      "name": "InvalidRebalanceSettleTime",
-      "msg": "invalid rebalance settle time"
+      code: 6043,
+      name: "InvalidRebalanceSettleTime",
+      msg: "invalid rebalance settle time",
     },
     {
-      "code": 6044,
-      "name": "InvalidRebalanceSettleState",
-      "msg": "invalid rebalance settle state"
+      code: 6044,
+      name: "InvalidRebalanceSettleState",
+      msg: "invalid rebalance settle state",
     },
     {
-      "code": 6045,
-      "name": "InvalidRebalanceEnterState",
-      "msg": "invalid rebalance enter state"
+      code: 6045,
+      name: "InvalidRebalanceEnterState",
+      msg: "invalid rebalance enter state",
     },
     {
-      "code": 6046,
-      "name": "OptionsPositionNotSettled",
-      "msg": "options position not settled, must be before withdrawal"
+      code: 6046,
+      name: "OptionsPositionNotSettled",
+      msg: "options position not settled, must be before withdrawal",
     },
     {
-      "code": 6047,
-      "name": "NonUnderlyingPoolsHaveAssets",
-      "msg": "non underlying pools have assets when attempting withdraw"
+      code: 6047,
+      name: "NonUnderlyingPoolsHaveAssets",
+      msg: "non underlying pools have assets when attempting withdraw",
     },
     {
-      "code": 6048,
-      "name": "VaultAuthorityMustBeVaultMintAuthority",
-      "msg": "volt must be vault mint authority"
+      code: 6048,
+      name: "VaultAuthorityMustBeVaultMintAuthority",
+      msg: "volt must be vault mint authority",
     },
     {
-      "code": 6049,
-      "name": "VaultAuthorityMustOwnDepositPool",
-      "msg": "volt must own deposit pool"
+      code: 6049,
+      name: "VaultAuthorityMustOwnDepositPool",
+      msg: "volt must own deposit pool",
     },
     {
-      "code": 6050,
-      "name": "VaultAuthorityMustOwnPremiumPool",
-      "msg": "volt must own premium pool"
+      code: 6050,
+      name: "VaultAuthorityMustOwnPremiumPool",
+      msg: "volt must own premium pool",
     },
     {
-      "code": 6051,
-      "name": "VoltVaulttMustOwnWriterTokenPool",
-      "msg": "volt must own writer token pool"
+      code: 6051,
+      name: "VoltVaulttMustOwnWriterTokenPool",
+      msg: "volt must own writer token pool",
     },
     {
-      "code": 6052,
-      "name": "VoltVaultMustOwnOptionPool",
-      "msg": "volt must own option pool"
+      code: 6052,
+      name: "VoltVaultMustOwnOptionPool",
+      msg: "volt must own option pool",
     },
     {
-      "code": 6053,
-      "name": "DepositPoolDoesNotMatchVoltVault",
-      "msg": "DepositPoolDoesNotMatchVoltVault"
+      code: 6053,
+      name: "DepositPoolDoesNotMatchVoltVault",
+      msg: "DepositPoolDoesNotMatchVoltVault",
     },
     {
-      "code": 6054,
-      "name": "OptionPoolDoesNotMatchVoltVault",
-      "msg": "OptionPoolDoesNotMatchVoltVault"
+      code: 6054,
+      name: "OptionPoolDoesNotMatchVoltVault",
+      msg: "OptionPoolDoesNotMatchVoltVault",
     },
     {
-      "code": 6055,
-      "name": "PremiumPoolDoesNotMatchVoltVault",
-      "msg": "PremiumPoolDoesNotMatchVoltVault"
+      code: 6055,
+      name: "PremiumPoolDoesNotMatchVoltVault",
+      msg: "PremiumPoolDoesNotMatchVoltVault",
     },
     {
-      "code": 6056,
-      "name": "TraidngPoolDoesNotMatchVoltVault",
-      "msg": "TradingPoolDoesNotMatchVoltVault"
+      code: 6056,
+      name: "TraidngPoolDoesNotMatchVoltVault",
+      msg: "TradingPoolDoesNotMatchVoltVault",
     },
     {
-      "code": 6057,
-      "name": "OptionMintDoesNotMatchOptionMarket",
-      "msg": "option mint does not match option market"
+      code: 6057,
+      name: "OptionMintDoesNotMatchOptionMarket",
+      msg: "option mint does not match option market",
     },
     {
-      "code": 6058,
-      "name": "NoOrdersInOptionOrderBook",
-      "msg": "NoBidsInOptionOrderBook"
+      code: 6058,
+      name: "NoOrdersInOptionOrderBook",
+      msg: "NoBidsInOptionOrderBook",
     },
     {
-      "code": 6059,
-      "name": "CpiProgramMustBeSomeInPlaceOrder",
-      "msg": "cpi program must be Some in place order"
+      code: 6059,
+      name: "CpiProgramMustBeSomeInPlaceOrder",
+      msg: "cpi program must be Some in place order",
     },
     {
-      "code": 6060,
-      "name": "NewOptionMustNotBeExpired",
-      "msg": "new option must not be expired"
+      code: 6060,
+      name: "NewOptionMustNotBeExpired",
+      msg: "new option must not be expired",
     },
     {
-      "code": 6061,
-      "name": "NewOptionMustHaveExactExpiry",
-      "msg": "new option has roughly target expiry (within lower/upper bounds)"
+      code: 6061,
+      name: "NewOptionMustHaveExactExpiry",
+      msg: "new option has roughly target expiry (within lower/upper bounds)",
     },
     {
-      "code": 6062,
-      "name": "NewOptionHasWrongUnderlyingAsset",
-      "msg": "new option has wrong underlying asset"
+      code: 6062,
+      name: "NewOptionHasWrongUnderlyingAsset",
+      msg: "new option has wrong underlying asset",
     },
     {
-      "code": 6063,
-      "name": "NewOptionHasWrongQuoteAsset",
-      "msg": "new option has wrong quote asset"
+      code: 6063,
+      name: "NewOptionHasWrongQuoteAsset",
+      msg: "new option has wrong quote asset",
     },
     {
-      "code": 6064,
-      "name": "NewOptionHasWrongContractSize",
-      "msg": "new option has wrong contract size"
+      code: 6064,
+      name: "NewOptionHasWrongContractSize",
+      msg: "new option has wrong contract size",
     },
     {
-      "code": 6065,
-      "name": "NewOptionHasInvalidStrike",
-      "msg": "new option has invalid strike"
+      code: 6065,
+      name: "NewOptionHasInvalidStrike",
+      msg: "new option has invalid strike",
     },
     {
-      "code": 6066,
-      "name": "RebalanceSettleHasLeftoverWriterTokens",
-      "msg": "rebalance settle has leftover writer tokens"
+      code: 6066,
+      name: "RebalanceSettleHasLeftoverWriterTokens",
+      msg: "rebalance settle has leftover writer tokens",
     },
     {
-      "code": 6067,
-      "name": "CurrentOptionMustNotBeExpired",
-      "msg": "current option must not be expired"
+      code: 6067,
+      name: "CurrentOptionMustNotBeExpired",
+      msg: "current option must not be expired",
     },
     {
-      "code": 6068,
-      "name": "CannotReinitializeVolt",
-      "msg": "cannot reinitialize an (already initialized) volt"
+      code: 6068,
+      name: "CannotReinitializeVolt",
+      msg: "cannot reinitialize an (already initialized) volt",
     },
     {
-      "code": 6069,
-      "name": "OldOptionAndWriterTokenPoolsMustBeEmpty",
-      "msg": "cannot reinitialize an (already initialized) volt"
+      code: 6069,
+      name: "OldOptionAndWriterTokenPoolsMustBeEmpty",
+      msg: "cannot reinitialize an (already initialized) volt",
     },
     {
-      "code": 6070,
-      "name": "InvalidOldOptionWriterTokenPools",
-      "msg": "invalid old option writer token pools"
+      code: 6070,
+      name: "InvalidOldOptionWriterTokenPools",
+      msg: "invalid old option writer token pools",
     },
     {
-      "code": 6071,
-      "name": "VaultMintDoesNotMatchUserTokenAccount",
-      "msg": "vault mint does not match user token account"
+      code: 6071,
+      name: "VaultMintDoesNotMatchUserTokenAccount",
+      msg: "vault mint does not match user token account",
     },
     {
-      "code": 6072,
-      "name": "DepositPoolMintDoesNotMatchUserTokenAccount",
-      "msg": "deposit pool mint does not match user token account"
+      code: 6072,
+      name: "DepositPoolMintDoesNotMatchUserTokenAccount",
+      msg: "deposit pool mint does not match user token account",
     },
     {
-      "code": 6073,
-      "name": "VaultAuthorityDoesNotMatch",
-      "msg": "vault authority does not match"
+      code: 6073,
+      name: "VaultAuthorityDoesNotMatch",
+      msg: "vault authority does not match",
     },
     {
-      "code": 6074,
-      "name": "DexProgramIdDoesNotMatchAnchor",
-      "msg": "DEX program id does not match"
+      code: 6074,
+      name: "DexProgramIdDoesNotMatchAnchor",
+      msg: "DEX program id does not match",
     },
     {
-      "code": 6075,
-      "name": "InertiaProgramIdDoesNotMatch",
-      "msg": "Inertia program id does not match"
+      code: 6075,
+      name: "InertiaProgramIdDoesNotMatch",
+      msg: "Inertia program id does not match",
     },
     {
-      "code": 6076,
-      "name": "InvalidAuthorityForPermissionedInstruction",
-      "msg": "Invalid authority for permissioned instruction"
+      code: 6076,
+      name: "InvalidAuthorityForPermissionedInstruction",
+      msg: "Invalid authority for permissioned instruction",
     },
     {
-      "code": 6077,
-      "name": "WriterTokenMintDoesNotMatchOptionMarket",
-      "msg": "writer token mint does not match option market"
+      code: 6077,
+      name: "WriterTokenMintDoesNotMatchOptionMarket",
+      msg: "writer token mint does not match option market",
     },
     {
-      "code": 6078,
-      "name": "OptionMarketMustBeOwnedByProtocol",
-      "msg": "option market should be owned by protocol (e.g inertia)"
+      code: 6078,
+      name: "OptionMarketMustBeOwnedByProtocol",
+      msg: "option market should be owned by protocol (e.g inertia)",
     },
     {
-      "code": 6079,
-      "name": "UnderlyingAssetMintDoesNotMatchVoltVault",
-      "msg": "underlying asset mint does not match voltvault"
+      code: 6079,
+      name: "UnderlyingAssetMintDoesNotMatchVoltVault",
+      msg: "underlying asset mint does not match voltvault",
     },
     {
-      "code": 6080,
-      "name": "QuoteAssetMintDoesNotMatchVoltVault",
-      "msg": "quote asset mint does not match voltvault"
+      code: 6080,
+      name: "QuoteAssetMintDoesNotMatchVoltVault",
+      msg: "quote asset mint does not match voltvault",
     },
     {
-      "code": 6081,
-      "name": "VaultMintDoesNotMatchVoltVault",
-      "msg": "vault mint does not match volt vault"
+      code: 6081,
+      name: "VaultMintDoesNotMatchVoltVault",
+      msg: "vault mint does not match volt vault",
     },
     {
-      "code": 6082,
-      "name": "OptionMarketDoesNotMatchVoltVault",
-      "msg": "option market does not match volt vault"
+      code: 6082,
+      name: "OptionMarketDoesNotMatchVoltVault",
+      msg: "option market does not match volt vault",
     },
     {
-      "code": 6083,
-      "name": "WriterTokenPoolDoesNotMatchVoltVault",
-      "msg": "writer token pool does not match volt vault"
+      code: 6083,
+      name: "WriterTokenPoolDoesNotMatchVoltVault",
+      msg: "writer token pool does not match volt vault",
     },
     {
-      "code": 6084,
-      "name": "InvalidRebalanceSwapPremiumState",
-      "msg": "invalid rebalance swap premium state"
+      code: 6084,
+      name: "InvalidRebalanceSwapPremiumState",
+      msg: "invalid rebalance swap premium state",
     },
     {
-      "code": 6085,
-      "name": "ShouldBeUnreachable",
-      "msg": "should be unreachable code"
+      code: 6085,
+      name: "ShouldBeUnreachable",
+      msg: "should be unreachable code",
     },
     {
-      "code": 6086,
-      "name": "CantHaveMultiplePendingDeposits",
-      "msg": "shouldn't have multiple pending deposits"
+      code: 6086,
+      name: "CantHaveMultiplePendingDeposits",
+      msg: "shouldn't have multiple pending deposits",
     },
     {
-      "code": 6087,
-      "name": "InvalidStartRoundState",
-      "msg": "invalid start round state"
+      code: 6087,
+      name: "InvalidStartRoundState",
+      msg: "invalid start round state",
     },
     {
-      "code": 6088,
-      "name": "InvalidSetNextOptionState",
-      "msg": "invalid set next option state"
+      code: 6088,
+      name: "InvalidSetNextOptionState",
+      msg: "invalid set next option state",
     },
     {
-      "code": 6089,
-      "name": "InvalidClaimPendingState",
-      "msg": "invalid claim pending state"
+      code: 6089,
+      name: "InvalidClaimPendingState",
+      msg: "invalid claim pending state",
     },
     {
-      "code": 6090,
-      "name": "InvalidEndRoundState",
-      "msg": "invalid end round state"
+      code: 6090,
+      name: "InvalidEndRoundState",
+      msg: "invalid end round state",
     },
     {
-      "code": 6091,
-      "name": "CantHaveMultiplePendingWithdrawals",
-      "msg": "shouldn't have multiple pending deposits"
+      code: 6091,
+      name: "CantHaveMultiplePendingWithdrawals",
+      msg: "shouldn't have multiple pending deposits",
     },
     {
-      "code": 6092,
-      "name": "InvalidClaimPendingWithdrawalState",
-      "msg": "invalid claim pending withdrawal state"
+      code: 6092,
+      name: "InvalidClaimPendingWithdrawalState",
+      msg: "invalid claim pending withdrawal state",
     },
     {
-      "code": 6093,
-      "name": "InvalidNextOptionMarket",
-      "msg": "invalid next option market"
+      code: 6093,
+      name: "InvalidNextOptionMarket",
+      msg: "invalid next option market",
     },
     {
-      "code": 6094,
-      "name": "TokenNotRevoked",
-      "msg": "Auth token not revoked"
+      code: 6094,
+      name: "TokenNotRevoked",
+      msg: "Auth token not revoked",
     },
     {
-      "code": 6095,
-      "name": "NonWhitelistedUser",
-      "msg": "user is not whitelisted"
+      code: 6095,
+      name: "NonWhitelistedUser",
+      msg: "user is not whitelisted",
     },
     {
-      "code": 6096,
-      "name": "UserIsNotSigner",
-      "msg": "user is not signer"
+      code: 6096,
+      name: "UserIsNotSigner",
+      msg: "user is not signer",
     },
     {
-      "code": 6097,
-      "name": "InvalidWhitelistAuthority",
-      "msg": "authority does not match whitelist admin"
+      code: 6097,
+      name: "InvalidWhitelistAuthority",
+      msg: "authority does not match whitelist admin",
     },
     {
-      "code": 6098,
-      "name": "InvalidWhitelistAndOptionMarketCombination",
-      "msg": "whitelist and option market do not generate correct PDA"
+      code: 6098,
+      name: "InvalidWhitelistAndOptionMarketCombination",
+      msg: "whitelist and option market do not generate correct PDA",
     },
     {
-      "code": 6099,
-      "name": "RoundVoltTokensMintDoesNotMatchVoltVault",
-      "msg": "round volt tokens mint does not match volt vault"
+      code: 6099,
+      name: "RoundVoltTokensMintDoesNotMatchVoltVault",
+      msg: "round volt tokens mint does not match volt vault",
     },
     {
-      "code": 6100,
-      "name": "RoundUnderlyingTokensMintDoesNotMatchVoltVault",
-      "msg": "round underlying tokens mint does not match volt vault"
+      code: 6100,
+      name: "RoundUnderlyingTokensMintDoesNotMatchVoltVault",
+      msg: "round underlying tokens mint does not match volt vault",
     },
     {
-      "code": 6101,
-      "name": "UnderlyingAssetPoolDoesNotMatchOptionMarket",
-      "msg": "UnderlyingAssetPoolDoesNotMatchOptionMarket"
+      code: 6101,
+      name: "UnderlyingAssetPoolDoesNotMatchOptionMarket",
+      msg: "UnderlyingAssetPoolDoesNotMatchOptionMarket",
     },
     {
-      "code": 6102,
-      "name": "NoOppositeOrderOnSerumMarket",
-      "msg": "no opposite order on serum market"
+      code: 6102,
+      name: "NoOppositeOrderOnSerumMarket",
+      msg: "no opposite order on serum market",
     },
     {
-      "code": 6103,
-      "name": "BidPriceOnSerumMarketTooLow",
-      "msg": "bid price on serum market too low"
+      code: 6103,
+      name: "BidPriceOnSerumMarketTooLow",
+      msg: "bid price on serum market too low",
     },
     {
-      "code": 6104,
-      "name": "OfferPriceOnSerumMarketTooHigh",
-      "msg": "offer price on serum market too high"
+      code: 6104,
+      name: "OfferPriceOnSerumMarketTooHigh",
+      msg: "offer price on serum market too high",
     },
     {
-      "code": 6105,
-      "name": "UnderlyingOpenOrdersDoesNotMatchVoltVault",
-      "msg": "underlying open orders does not match volt vault"
+      code: 6105,
+      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault",
+      msg: "underlying open orders does not match volt vault",
     },
     {
-      "code": 6106,
-      "name": "MustHaveAtLeastOneMarketMakerAccessToken",
-      "msg": "must have at least one market maker access token"
+      code: 6106,
+      name: "MustHaveAtLeastOneMarketMakerAccessToken",
+      msg: "must have at least one market maker access token",
     },
     {
-      "code": 6107,
-      "name": "MiddlewareProgramIdDoesNotMatch",
-      "msg": "middleware program id does not match expected"
+      code: 6107,
+      name: "MiddlewareProgramIdDoesNotMatch",
+      msg: "middleware program id does not match expected",
     },
     {
-      "code": 6108,
-      "name": "FeeAccountOwnerDoesNotMatch",
-      "msg": "fee account owner does not match expected"
+      code: 6108,
+      name: "FeeAccountOwnerDoesNotMatch",
+      msg: "fee account owner does not match expected",
     },
     {
-      "code": 6109,
-      "name": "FeeAccountMintDoesNotMatchDepositPool",
-      "msg": "fee account mint does not match deposit pool"
+      code: 6109,
+      name: "FeeAccountMintDoesNotMatchDepositPool",
+      msg: "fee account mint does not match deposit pool",
     },
     {
-      "code": 6110,
-      "name": "VaultCapacityWouldBeExceeded",
-      "msg": "vault capacity would be exceeded"
+      code: 6110,
+      name: "VaultCapacityWouldBeExceeded",
+      msg: "vault capacity would be exceeded",
     },
     {
-      "code": 6111,
-      "name": "IndividualDepositCapacityWouldBeExceeded",
-      "msg": "individual deposit capacity would be exceeded"
+      code: 6111,
+      name: "IndividualDepositCapacityWouldBeExceeded",
+      msg: "individual deposit capacity would be exceeded",
     },
     {
-      "code": 6112,
-      "name": "UnsupportedOptionMarketProgramId",
-      "msg": "unsupported option market program ID"
+      code: 6112,
+      name: "UnsupportedOptionMarketProgramId",
+      msg: "unsupported option market program ID",
     },
     {
-      "code": 6113,
-      "name": "InvalidEndDcaRoundState",
-      "msg": "invalid end dca round state"
+      code: 6113,
+      name: "InvalidEndDcaRoundState",
+      msg: "invalid end dca round state",
     },
     {
-      "code": 6114,
-      "name": "RoundHasNotStarted",
-      "msg": "round has not started"
+      code: 6114,
+      name: "RoundHasNotStarted",
+      msg: "round has not started",
     },
     {
-      "code": 6115,
-      "name": "PermissionedMarketPremiumPoolDoesNotMatchVoltVault",
-      "msg": "permissioned makret premium pool does not match volt"
+      code: 6115,
+      name: "PermissionedMarketPremiumPoolDoesNotMatchVoltVault",
+      msg: "permissioned makret premium pool does not match volt",
     },
     {
-      "code": 6116,
-      "name": "TokenAccountOwnersDoNotMatch",
-      "msg": "token account owners do not match"
+      code: 6116,
+      name: "TokenAccountOwnersDoNotMatch",
+      msg: "token account owners do not match",
     },
     {
-      "code": 6117,
-      "name": "InvalidPermissionedMarketPremiumMint",
-      "msg": "invalid permissioned market premium mint"
+      code: 6117,
+      name: "InvalidPermissionedMarketPremiumMint",
+      msg: "invalid permissioned market premium mint",
     },
     {
-      "code": 6118,
-      "name": "PremiumPoolAmountMustBeGreaterThanZero",
-      "msg": "premium pool amount must be greater than zero"
+      code: 6118,
+      name: "PremiumPoolAmountMustBeGreaterThanZero",
+      msg: "premium pool amount must be greater than zero",
     },
     {
-      "code": 6119,
-      "name": "CantCloseNonEmptyTokenAccount",
-      "msg": "can't close non empty token account"
+      code: 6119,
+      name: "CantCloseNonEmptyTokenAccount",
+      msg: "can't close non empty token account",
     },
     {
-      "code": 6120,
-      "name": "MustFinishEnteringBeforeSettlingPermissionedMarketPremium",
-      "msg": "must finish entering before settling permissioned market premium funds"
+      code: 6120,
+      name: "MustFinishEnteringBeforeSettlingPermissionedMarketPremium",
+      msg: "must finish entering before settling permissioned market premium funds",
     },
     {
-      "code": 6121,
-      "name": "PendingWithdrawalInfoNotInitialized",
-      "msg": "pending withdrawal info must be initialized"
+      code: 6121,
+      name: "PendingWithdrawalInfoNotInitialized",
+      msg: "pending withdrawal info must be initialized",
     },
     {
-      "code": 6122,
-      "name": "PendingWithdrawalDoesNotExist",
-      "msg": "pending withdrawal does not exist"
+      code: 6122,
+      name: "PendingWithdrawalDoesNotExist",
+      msg: "pending withdrawal does not exist",
     },
     {
-      "code": 6123,
-      "name": "CannotCancelPendingWithdrawalFromOldRound",
-      "msg": "cannot cancel pending withdrawal from old round"
+      code: 6123,
+      name: "CannotCancelPendingWithdrawalFromOldRound",
+      msg: "cannot cancel pending withdrawal from old round",
     },
     {
-      "code": 6124,
-      "name": "InvalidTakePendingWithdrawalFeesState",
-      "msg": "invalid take pending withdrawal fees state"
+      code: 6124,
+      name: "InvalidTakePendingWithdrawalFeesState",
+      msg: "invalid take pending withdrawal fees state",
     },
     {
-      "code": 6125,
-      "name": "PendingDepositInfoNotInitialized",
-      "msg": "pending deposit info not initialized"
+      code: 6125,
+      name: "PendingDepositInfoNotInitialized",
+      msg: "pending deposit info not initialized",
     },
     {
-      "code": 6126,
-      "name": "PendingDepositDoesNotExist",
-      "msg": "pending deposits does not exist"
+      code: 6126,
+      name: "PendingDepositDoesNotExist",
+      msg: "pending deposits does not exist",
     },
     {
-      "code": 6127,
-      "name": "CannotCancelPendingDepositFromOldRound",
-      "msg": "cannot cancel pending deposit from old round"
+      code: 6127,
+      name: "CannotCancelPendingDepositFromOldRound",
+      msg: "cannot cancel pending deposit from old round",
     },
     {
-      "code": 6128,
-      "name": "VaultDestinationDoesNotMatchVoltVault",
-      "msg": "vault destination does not match volt vault"
+      code: 6128,
+      name: "VaultDestinationDoesNotMatchVoltVault",
+      msg: "vault destination does not match volt vault",
     },
     {
-      "code": 6129,
-      "name": "MustTakeWithdrawalFeesBeforeStartingRound",
-      "msg": "must take withdrawal fees before starting round"
+      code: 6129,
+      name: "MustTakeWithdrawalFeesBeforeStartingRound",
+      msg: "must take withdrawal fees before starting round",
     },
     {
-      "code": 6130,
-      "name": "RoundMustBeEnded",
-      "msg": "round must be ended"
+      code: 6130,
+      name: "RoundMustBeEnded",
+      msg: "round must be ended",
     },
     {
-      "code": 6131,
-      "name": "MustNotHaveSoldOptionTokens",
-      "msg": "must not have sold option tokens to reset"
+      code: 6131,
+      name: "MustNotHaveSoldOptionTokens",
+      msg: "must not have sold option tokens to reset",
     },
     {
-      "code": 6132,
-      "name": "CantCloseAccountUnlessEmpty",
-      "msg": "cannot close account unless empty"
+      code: 6132,
+      name: "CantCloseAccountUnlessEmpty",
+      msg: "cannot close account unless empty",
     },
     {
-      "code": 6133,
-      "name": "OpenOrderMustBeEmptyToClose",
-      "msg": "open orders must be empty to close"
+      code: 6133,
+      name: "OpenOrderMustBeEmptyToClose",
+      msg: "open orders must be empty to close",
     },
     {
-      "code": 6134,
-      "name": "InvalidWhitelistAccountVector",
-      "msg": "invalid whitelist account (vector)"
+      code: 6134,
+      name: "InvalidWhitelistAccountVector",
+      msg: "invalid whitelist account (vector)",
     },
     {
-      "code": 6135,
-      "name": "InvalidDaoProgramId",
-      "msg": "invalid dao program ID"
+      code: 6135,
+      name: "InvalidDaoProgramId",
+      msg: "invalid dao program ID",
     },
     {
-      "code": 6136,
-      "name": "VoltMustBeForDao",
-      "msg": "volt must be for dao"
+      code: 6136,
+      name: "VoltMustBeForDao",
+      msg: "volt must be for dao",
     },
     {
-      "code": 6137,
-      "name": "InvalidDaoAuthority",
-      "msg": "invalid dao authority"
+      code: 6137,
+      name: "InvalidDaoAuthority",
+      msg: "invalid dao authority",
     },
     {
-      "code": 6138,
-      "name": "DaoAuthorityMustSign",
-      "msg": "dao authority must sign"
+      code: 6138,
+      name: "DaoAuthorityMustSign",
+      msg: "dao authority must sign",
     },
     {
-      "code": 6139,
-      "name": "InvalidPendingDepositKey",
-      "msg": "invalid pending deposit key"
+      code: 6139,
+      name: "InvalidPendingDepositKey",
+      msg: "invalid pending deposit key",
     },
     {
-      "code": 6140,
-      "name": "InvalidAuthorityCheck",
-      "msg": "invalid authority check"
-    }
-  ]
+      code: 6140,
+      name: "InvalidAuthorityCheck",
+      msg: "invalid authority check",
+    },
+    {
+      code: 6141,
+      name: "InvalidSettleDepositsState",
+      msg: "entropy: invalid settle deposits state",
+    },
+    {
+      code: 6142,
+      name: "InvalidVoltType",
+      msg: "invalid volt type",
+    },
+    {
+      code: 6143,
+      name: "CantFindPerpMarketIndex",
+      msg: "can't find perp market index",
+    },
+    {
+      code: 6144,
+      name: "AccountEquityLessThanZero",
+      msg: "account equity less than zero",
+    },
+    {
+      code: 6145,
+      name: "QuotePositionChangedTooMuch",
+      msg: "quote position changed too much",
+    },
+    {
+      code: 6146,
+      name: "MustMoveCloserToTargetCollateralization",
+      msg: "must move closer to target collateralization",
+    },
+    {
+      code: 6147,
+      name: "CollateralNotWithinLenience",
+      msg: "collateral not within lenience",
+    },
+    {
+      code: 6148,
+      name: "InvalidRebalancEntropyState",
+      msg: "invalid rebalance entropy state",
+    },
+  ],
 };

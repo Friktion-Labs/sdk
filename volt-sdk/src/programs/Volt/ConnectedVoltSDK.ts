@@ -45,12 +45,14 @@ export class ConnectedVoltSDK extends VoltSDK {
   readonly connection: Connection;
   readonly wallet: PublicKey;
   readonly extraVoltData?: ExtraVoltData | undefined;
+  readonly daoAuthority?: PublicKey | undefined;
 
   constructor(
     connection: Connection,
     user: PublicKey,
     voltSDK: VoltSDK,
-    extraVoltData?: ExtraVoltData | undefined
+    extraVoltData?: ExtraVoltData | undefined,
+    daoAuthority?: PublicKey | undefined
   ) {
     super(voltSDK.sdk, voltSDK.voltVault, voltSDK.voltKey);
 
@@ -59,6 +61,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     // = providerToContribProvider(providerMut);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.extraVoltData = extraVoltData;
+    this.daoAuthority = daoAuthority;
 
     // There is an obscure bug where the wallet.publicKey was a naked BN and not
     // a PublicKey. Please use this.user instead of this.providerMut.wallet.publicKey
@@ -77,9 +80,9 @@ export class ConnectedVoltSDK extends VoltSDK {
     vaultTokenDestination: PublicKey,
     daoAuthority?: PublicKey,
     decimals?: number
-    // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
-    // if (!pdaStr) pdaStr = "";
+    if (daoAuthority === undefined) daoAuthority = this.daoAuthority;
+    console.log("dao authority = ", daoAuthority?.toString());
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -88,7 +91,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      this.wallet,
+      daoAuthority !== undefined ? daoAuthority : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -163,6 +166,105 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
+  async depositWithTransfer(
+    trueDepositAmount: Decimal,
+    underlyingTokenSource: PublicKey,
+    vaultTokenDestination: PublicKey,
+    solTransferAuthority: PublicKey,
+    daoAuthority?: PublicKey,
+    decimals?: number
+  ): Promise<TransactionInstruction> {
+    if (daoAuthority === undefined) daoAuthority = this.daoAuthority;
+    console.log("dao authority = ", daoAuthority?.toString());
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      roundVoltTokensKey,
+      pendingDepositInfoKey,
+    } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      this.sdk.programs.Volt.programId
+    );
+
+    const normFactor = decimals
+      ? new Decimal(10 ** decimals)
+      : await this.getNormalizationFactor();
+
+    const normalizedDepositAmount = new BN(
+      trueDepositAmount.mul(normFactor).toString()
+    );
+
+    console.log(
+      "writer token pool = ",
+      this.voltVault.writerTokenPool.toString()
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    console.log("this.extraVoltData: ", this.extraVoltData);
+    console.log("extraVoltKey: ", extraVoltKey.toString());
+    console.log(
+      "SystemProgram.programId: ",
+      SystemProgram.programId.toString()
+    );
+    console.log("whitelist: ", this.extraVoltData?.whitelist);
+    const depositWithTransferAccounts: Parameters<
+      VoltProgram["instruction"]["depositWithTransfer"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      daoAuthority:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : SystemProgram.programId,
+      authorityCheck:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : this.wallet,
+      solTransferAuthority: solTransferAuthority,
+      // underlyingAssetMint: this.voltVault.underlyingAssetMint,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+
+      vaultAuthority: this.voltVault.vaultAuthority,
+      whitelist: this?.extraVoltData?.whitelist ?? SystemProgram.programId,
+
+      vaultMint: this.voltVault.vaultMint,
+
+      depositPool: this.voltVault.depositPool,
+      writerTokenPool: this.voltVault.writerTokenPool,
+
+      underlyingTokenSource: underlyingTokenSource,
+      vaultTokenDestination: vaultTokenDestination,
+
+      roundInfo: roundInfoKey,
+      roundVoltTokens: roundVoltTokensKey,
+      roundUnderlyingTokens: roundUnderlyingTokensKey,
+
+      pendingDepositInfo: pendingDepositInfoKey,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      // rent: SYSVAR_RENT_PUBKEY,
+    };
+
+    Object.entries(depositWithTransferAccounts).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
+
+    return this.sdk.programs.Volt.instruction.depositWithTransfer(
+      normalizedDepositAmount,
+      {
+        accounts: depositWithTransferAccounts,
+      }
+    );
+  }
+
   async getFeeTokenAccount() {
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -210,13 +312,14 @@ export class ConnectedVoltSDK extends VoltSDK {
     userVaultTokens: PublicKey,
     underlyingTokenDestination: PublicKey,
     daoAuthority?: PublicKey
-    // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
+    if (!daoAuthority) daoAuthority = this.daoAuthority;
+    console.log("dao authority = ", daoAuthority?.toString());
     const { roundInfoKey, roundUnderlyingTokensKey, pendingWithdrawalInfoKey } =
       await VoltSDK.findUsefulAddresses(
         this.voltKey,
         this.voltVault,
-        this.wallet,
+        daoAuthority !== undefined ? daoAuthority : this.wallet,
         this.sdk.programs.Volt.programId
       );
 
@@ -278,18 +381,20 @@ export class ConnectedVoltSDK extends VoltSDK {
   async cancelPendingWithdrawal(
     userVaultTokens: PublicKey
   ): Promise<TransactionInstruction> {
+    const authority =
+      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
     const { roundInfoKey, pendingWithdrawalInfoKey } =
       await VoltSDK.findUsefulAddresses(
         this.voltKey,
         this.voltVault,
-        this.wallet,
+        authority,
         this.sdk.programs.Volt.programId
       );
 
     const cancelPendingWithdrawalAccountsStruct: Parameters<
       VoltProgram["instruction"]["cancelPendingWithdrawal"]["accounts"]
     >[0] = {
-      authority: this.wallet,
+      authority: authority,
 
       vaultMint: this.voltVault.vaultMint,
 
@@ -318,18 +423,20 @@ export class ConnectedVoltSDK extends VoltSDK {
   async cancelPendingDeposit(
     userUnderlyingTokens: PublicKey
   ): Promise<TransactionInstruction> {
+    const authority =
+      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
     const { roundInfoKey, roundUnderlyingTokensKey, pendingDepositInfoKey } =
       await VoltSDK.findUsefulAddresses(
         this.voltKey,
         this.voltVault,
-        this.wallet,
+        authority,
         this.sdk.programs.Volt.programId
       );
 
     const cancelPendingDepositAccountsStruct: Parameters<
       VoltProgram["instruction"]["cancelPendingDeposit"]["accounts"]
     >[0] = {
-      authority: this.wallet,
+      authority: authority,
 
       vaultMint: this.voltVault.vaultMint,
 
@@ -356,10 +463,12 @@ export class ConnectedVoltSDK extends VoltSDK {
     vaultTokenDestination: PublicKey
     // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
+    const authority =
+      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
     const { pendingDepositInfoKey } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      this.wallet,
+      authority,
       this.sdk.programs.Volt.programId
     );
 
@@ -377,7 +486,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     const claimPendingStruct: Parameters<
       VoltProgram["instruction"]["claimPending"]["accounts"]
     >[0] = {
-      authority: this.wallet,
+      authority: authority,
 
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -400,12 +509,13 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async claimPendingWithdrawal(
     underlyingTokenDestinationKey: PublicKey
-    // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
+    const authority =
+      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
     const [pendingWithdrawalInfoKey] =
       await VoltSDK.findPendingWithdrawalInfoAddress(
         this.voltKey,
-        this.wallet,
+        authority,
         this.sdk.programs.Volt.programId
       );
 
@@ -423,7 +533,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     const claimPendingWithdrawalStruct: Parameters<
       VoltProgram["instruction"]["claimPendingWithdrawal"]["accounts"]
     >[0] = {
-      authority: this.wallet,
+      authority: authority,
 
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -545,11 +655,14 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
     const startRoundStruct: Parameters<
       VoltProgram["instruction"]["startRound"]["accounts"]
     >[0] = {
       authority: this.wallet,
       voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
       underlyingAssetMint: this.voltVault.underlyingAssetMint,
@@ -738,6 +851,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltVault.optionMarket
     );
 
+    const { backupOptionPoolKey, backupWriterTokenPoolKey } =
+      await VoltSDK.findBackupPoolAddresses(this.voltKey, this.voltVault);
+
     const resetOptionMarketAccounts: Parameters<
       VoltProgram["instruction"]["resetOptionMarket"]["accounts"]
     >[0] = {
@@ -754,6 +870,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionMint: optionMarket.optionMint,
       writerTokenMint: optionMarket.writerTokenMint,
 
+      backupOptionPool: backupOptionPoolKey,
+      backupWriterTokenPool: backupWriterTokenPoolKey,
       underlyingAssetPool: optionMarket.underlyingAssetPool,
 
       systemProgram: SystemProgram.programId,

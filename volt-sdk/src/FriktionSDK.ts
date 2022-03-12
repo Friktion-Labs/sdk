@@ -53,6 +53,51 @@ export type FriktionSDKOpts = {
   network?: NetworkName;
 };
 
+/**
+ * The API needs to be stable!!! DONT CHANGE.
+ * NOTE: Adding new items is ok but under no circumstances change names of existing variables.
+ */
+
+export type VoltSnapshot = {
+  globalId: string;
+  voltVaultId: string;
+  quoteMint: string;
+  underlyingMint: string;
+  depositTokenMint: string;
+  shareTokenMint: string;
+  shareTokenSymbol: string;
+  shareTokenDecimals: number;
+  depositPool: string;
+  premiumPool: string;
+  depositTokenSymbol: string;
+  depositTokenCoingeckoId: string;
+  underlyingTokenSymbol: string;
+  underlyingTokenCoingeckoId: string;
+  voltType: number;
+  apy: number;
+  abnormalEpochLength?: number;
+  isVoltage?: boolean;
+  extraVaultDataId?: string;
+  isInCircuits?: boolean;
+  highVoltage?: string;
+};
+
+export type FriktionSnapshot = {
+  updateTime: number;
+  totalTvlUSD: number;
+  coinsByCoingeckoId: Record<string, number>;
+  sharePricesByGlobalId: Record<string, number>;
+  pricesByCoingeckoId: Record<string, number>;
+  depositTokenByGlobalId: Record<string, number>;
+  usdValueByGlobalId: Record<string, number>;
+  globalIdToDepositTokenCoingeckoId: Record<string, string>;
+  apyByGlobalId: Record<string, number>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  allMainnetVolts: VoltSnapshot | {}[];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  allDevnetVolts: VoltSnapshot | {}[];
+};
+
 export const DefaultFriktionSDKOpts = {
   network: "mainnet-beta",
 };
