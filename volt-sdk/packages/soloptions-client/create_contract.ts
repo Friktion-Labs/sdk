@@ -1,21 +1,19 @@
 import * as anchor from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
 import {
   PublicKey,
   Signer,
   SystemProgram,
-  TransactionInstruction,
+  TransactionInstruction
 } from "@solana/web3.js";
-import { getAssociatedTokenAddress } from "../soloptions-common";
 import {
-  SoloptionsContract,
   SoloptionsContractWithKey,
-  SoloptionsProgram,
+  SoloptionsProgram
 } from "../../src/programs/Soloptions/soloptionsTypes";
+import { getAssociatedTokenAddress } from "../soloptions-common";
 import { getProgramAddress } from "./util";
 
 export interface NewContractParams {
