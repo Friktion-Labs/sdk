@@ -1,11 +1,8 @@
-use anchor_lang::{declare_id, require};
-use anchor_spl::token::{Mint, Token, TokenAccount};
 use anchor_lang::prelude::*;
-use anchor_lang::prelude::Context;
+use anchor_lang::{declare_id, require};
 mod types;
 use crate::types::*;
 
-// #[cfg(feature = "mainnet")]
 declare_id!("DAo2pDtpiBFDu4TTiv2WggP6PfQ6FnKqwSRYxpMjyuV2");
 #[macro_export]
 macro_rules! gen_dao_signer_seeds {
@@ -16,7 +13,6 @@ macro_rules! gen_dao_signer_seeds {
 
 #[program]
 pub mod daoexamples {
-
 
     use anchor_lang::prelude::CpiContext;
     use solana_program::msg;
@@ -62,9 +58,16 @@ pub mod daoexamples {
                 gen_dao_signer_seeds!(bump),
             ),
             deposit_amount,
-        ).unwrap();
+        )
+        .unwrap();
         Ok(())
     }
+}
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("invalid deposit program id")]
+    InvalidDepositProgramId,
 }
 
 // #[derive(Accounts)]
@@ -137,9 +140,3 @@ pub mod daoexamples {
 //     /// CHECK: skip
 //     pub token_program: AccountInfo<'info>,
 // }
-
-#[error_code]
-pub enum ErrorCode {
-    #[msg("invalid deposit program id")]
-    InvalidDepositProgramId,
-}

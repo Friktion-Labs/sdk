@@ -1,5 +1,5 @@
-use anchor_lang::{account,Accounts};
 use anchor_lang::prelude::*;
+use anchor_lang::{account, Accounts};
 #[derive(Accounts)]
 #[instruction(
     deposit_amount: u64,
@@ -72,7 +72,6 @@ pub struct DepositDaoExampleAccounts<'info> {
     pub token_program: AccountInfo<'info>,
 }
 
-
 #[derive(Accounts)]
 #[instruction(
     withdraw_amount: u64,
@@ -142,10 +141,8 @@ pub struct Withdraw<'info> {
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
     pub token_program: AccountInfo<'info>,
-    rent: Sysvar<'info, Rent>
+    rent: Sysvar<'info, Rent>,
 }
-
-
 
 #[derive(Accounts)]
 pub struct ClaimPendingDeposit<'info> {
@@ -189,8 +186,6 @@ pub struct ClaimPendingDeposit<'info> {
     /// CHECK: skip
     pub token_program: AccountInfo<'info>,
 }
-
-
 
 #[derive(Accounts)]
 pub struct ClaimPendingWithdrawal<'info> {

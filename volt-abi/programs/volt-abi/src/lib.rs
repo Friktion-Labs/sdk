@@ -9,35 +9,22 @@ mod volt_abi {
 
     use super::*;
 
-    pub(crate) fn deposit(
-        cx: Context<Deposit>,
-        amount: u64,
-    ) -> Result<()> {
+    pub(crate) fn deposit(cx: Context<Deposit>, amount: u64) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn withdraw(
-        cx: Context<Withdraw>,
-        amount: u64,
-    ) -> Result<()> {
+    pub(crate) fn withdraw(cx: Context<Withdraw>, amount: u64) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn claim_pending_deposit(
-        cx: Context<ClaimPendingDeposit>,
-    ) -> Result<()> {
+    pub(crate) fn claim_pending_deposit(cx: Context<ClaimPendingDeposit>) -> Result<()> {
         Ok(())
     }
-    pub(crate) fn claim_pending_withdrawal(
-        cx: Context<ClaimPendingWithdrawal>,
-    ) -> Result<()> {
+    pub(crate) fn claim_pending_withdrawal(cx: Context<ClaimPendingWithdrawal>) -> Result<()> {
         Ok(())
     }
     // ========== TRADING ==========
-
-
 }
-
 
 #[account]
 #[derive(Default)]
@@ -84,7 +71,6 @@ pub struct PendingWithdrawal {
     // this is incremented with new deposits, and decremented after calling claim_pending
     pub num_volt_redeemed: u64,
 }
-
 
 #[derive(Accounts)]
 #[instruction(
@@ -150,14 +136,13 @@ pub struct Deposit<'info> {
 
     /// CHECK: skip
     #[account(mut)]
-    pub pending_deposit_info: Box<Account<'info,PendingDeposit>>,
+    pub pending_deposit_info: Box<Account<'info, PendingDeposit>>,
 
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
     pub token_program: AccountInfo<'info>,
 }
-
 
 #[derive(Accounts)]
 #[instruction(
@@ -171,7 +156,6 @@ pub struct Withdraw<'info> {
     #[account()]
     /// CHECK: skip
     pub dao_authority: AccountInfo<'info>,
-
 
     #[account(mut)]
     /// CHECK: skip
@@ -194,7 +178,6 @@ pub struct Withdraw<'info> {
     /// CHECK: skip
     pub deposit_pool: AccountInfo<'info>,
 
-
     #[account(mut)]
     // user controlled token account w/ mint == underlying mint
     /// CHECK: skip
@@ -209,23 +192,20 @@ pub struct Withdraw<'info> {
     /// CHECK: skip
     pub round_info: AccountInfo<'info>,
 
-
     #[account(mut)]
     /// CHECK: skip
     pub round_underlying_tokens: AccountInfo<'info>,
 
     #[account(init_if_needed, payer=authority)]
     /// CHECK: skip
-    pub pending_withdrawal_info:  Box<Account<'info,PendingDeposit>>,
+    pub pending_withdrawal_info: Box<Account<'info, PendingDeposit>>,
 
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
     pub token_program: AccountInfo<'info>,
-    rent: Sysvar<'info, Rent>
+    rent: Sysvar<'info, Rent>,
 }
-
-
 
 #[derive(Accounts)]
 pub struct ClaimPendingDeposit<'info> {
@@ -262,8 +242,6 @@ pub struct ClaimPendingDeposit<'info> {
     pub token_program: AccountInfo<'info>,
 }
 
-
-
 #[derive(Accounts)]
 pub struct ClaimPendingWithdrawal<'info> {
     #[account(mut, signer)]
@@ -286,7 +264,6 @@ pub struct ClaimPendingWithdrawal<'info> {
     #[account(mut)]
     /// CHECK: skip
     pub round_info: AccountInfo<'info>,
-
 
     /// CHECK: skip
     #[account(mut)]

@@ -1,1 +1,0 @@
-# friktion-utils
