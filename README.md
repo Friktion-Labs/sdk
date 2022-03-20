@@ -348,7 +348,9 @@ const cVoltSDK = new ConnectedVoltSDK(
     );
 ```
 
-### Withdraw
+### Withdraw (option 1)
+
+#### Option 1: You specify the num vault tokens to withdraw
 
 ```
 const voltVaultId = new PublicKey("VOLT_VAULT_ID_HERE")
@@ -592,6 +594,142 @@ voltDepositTokenBalance
     }
     
 
+    if (depositTokenMintAddress === WRAPPED_SOL_ADDRESS) {
+      const closeWSolIx = Token.createCloseAccountInstruction(
+        TOKEN_PROGRAM_ID,
+        depositTokenDest,
+        wallet.publicKey, // Send any remaining SOL to the owner
+        wallet.publicKey,
+        []
+      );
+      withdrawInstructions.push(closeWSolIx);
+    }
+
+    const withdrawTx = new TransactionEnvelope(
+      providerMut,
+      withdrawInstructions,
+      signers
+    );
+```
+
+### Withdraw (option 2)
+
+#### Option 2: You specify the human amount and the sdk will calculate num vault tokens for you
+
+```
+const voltVaultId = new PublicKey("VOLT_VAULT_ID_HERE")
+const depositTokenMintAddress: string
+const depositTokenDecimals: number
+const friktionSDK: FriktionSDK
+// Decimal is from import Decimal from "decimal.js";
+const withdrawAmount: Decimal
+const depositTokenAccount // load user's depositTokenAccount
+const vaultTokenAccount // load user's vaultTokenAccount using cVoltSDK.voltVault.vaultMint
+
+
+const cVoltSDK = new ConnectedVoltSDK(
+    providerMut.connection,
+    providerMut.wallet.publicKey,
+    await sdk.loadVoltByKey(voltVaultId),
+    extraVoltData ? extraVoltData : undefined
+  );
+  const voltVault = cVoltSDK.voltVault;
+  const connection = providerMut.connection;
+
+  try {
+    let withdrawInstructions: TransactionInstruction[] = [];
+    const signers: Signer[] = [];
+
+    let depositTokenDest: PublicKey | null;
+
+    if (depositTokenMintAddress === WRAPPED_SOL_ADDRESS) {
+      const rentBalance = await connection.getMinimumBalanceForRentExemption(
+        AccountLayout.span
+      );
+      // Check if the wrapped token account already exists
+      const {
+        instructions: wrapSolInstructions,
+        newTokenAccount: wrappedSolAccount,
+      } = await initializeTokenAccountTx({
+        connection: connection,
+        payerKey: wallet.publicKey,
+        mintPublicKey: new PublicKey(WRAPPED_SOL_ADDRESS),
+        owner: wallet.publicKey,
+        rentBalance: rentBalance,
+      });
+      withdrawInstructions = withdrawInstructions.concat(wrapSolInstructions);
+      signers.push(wrappedSolAccount);
+      depositTokenDest = wrappedSolAccount.publicKey;
+    } else {
+      if (!depositTokenAccount) {
+        const { tokenDest, createTokenAccountIx } =
+          await createAssociatedTokenAccountInstruction(
+            new PublicKey(depositTokenMintAddress),
+            wallet.publicKey
+          );
+        withdrawInstructions.push(createTokenAccountIx);
+        depositTokenDest = tokenDest;
+      } else {
+        depositTokenDest = depositTokenAccount.pubKey;
+      }
+    }
+
+    let pendingDepositInfo;
+
+    try {
+      pendingDepositInfo = await cVoltSDK.getPendingDepositForUser();
+    } catch (err) {
+      pendingDepositInfo = null;
+    }
+
+    if (!vaultTokenAccount) {
+      const ataResult = await getOrCreateATA({
+        provider: providerMut,
+        mint: voltVault.vaultMint,
+        owner: wallet.publicKey,
+      });
+      vaultTokenAccount = ataResult.address;
+
+      if (ataResult.instruction) {
+        withdrawInstructions.push(ataResult.instruction);
+      }
+    }
+
+    if (
+      pendingDepositInfo &&
+      pendingDepositInfo.roundNumber.lt(voltVault.roundNumber) &&
+      pendingDepositInfo?.numUnderlyingDeposited?.gtn(0)
+    ) {
+      withdrawInstructions.push(await cVoltSDK.claimPending(vaultTokenAccount));
+    }
+
+    let pendingWithdrawalInfo;
+
+    try {
+      pendingWithdrawalInfo = await cVoltSDK.getPendingWithdrawalForUser();
+    } catch (err) {
+      pendingWithdrawalInfo = null;
+    }
+    if (
+      pendingWithdrawalInfo &&
+      pendingWithdrawalInfo.roundNumber.lt(voltVault.roundNumber) &&
+      pendingWithdrawalInfo?.numVoltRedeemed?.gtn(0)
+    ) {
+      withdrawInstructions.push(
+        await cVoltSDK.claimPendingWithdrawal(depositTokenDest)
+      );
+    }
+
+    const withdrawIns = await cVoltSDK.withdrawHumanAmount(
+      new BN(withdrawAmount),
+      new PublicKey(depositTokenMintAddress)
+      vaultTokenAccount,
+      // you can pass in userVoltTokenBalance to calc num vault tokens to withdraw
+      null,
+      depositTokenDest
+    );
+    withdrawInstructions.push(withdrawIns);
+    
     if (depositTokenMintAddress === WRAPPED_SOL_ADDRESS) {
       const closeWSolIx = Token.createCloseAccountInstruction(
         TOKEN_PROGRAM_ID,
