@@ -301,6 +301,11 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
+          name: "exerciseFeeAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -419,119 +424,6 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-    },
-    {
-      name: "createSerumMarket";
-      accounts: [
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "contract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "serumMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "requestQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "bids";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "asks";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "quoteVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "serumMarketAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultSigner";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "associatedTokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "vaultSignerNonce";
-          type: "u64";
-        },
-        {
-          name: "baseLotSize";
-          type: "u64";
-        },
-        {
-          name: "quoteLotSize";
-          type: "u64";
-        },
-        {
-          name: "quoteDustThreshold";
-          type: "u64";
-        }
-      ];
     }
   ];
   accounts: [
@@ -644,7 +536,7 @@ export type InertiaIDL = {
     },
     {
       code: 6001;
-      name: "InvalidContractExpiry";
+      name: "TooEarlyToExercise";
       msg: "Invalid contract expiry.";
     },
     {
@@ -1117,6 +1009,11 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "exerciseFeeAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -1236,119 +1133,6 @@ export const InertiaIDLJsonRaw = {
         },
       ],
     },
-    {
-      name: "createSerumMarket",
-      accounts: [
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "contract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "serumMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "requestQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "bids",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "asks",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "serumMarketAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultSigner",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "associatedTokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "vaultSignerNonce",
-          type: "u64",
-        },
-        {
-          name: "baseLotSize",
-          type: "u64",
-        },
-        {
-          name: "quoteLotSize",
-          type: "u64",
-        },
-        {
-          name: "quoteDustThreshold",
-          type: "u64",
-        },
-      ],
-    },
   ],
   accounts: [
     {
@@ -1460,7 +1244,7 @@ export const InertiaIDLJsonRaw = {
     },
     {
       code: 6001,
-      name: "InvalidContractExpiry",
+      name: "TooEarlyToExercise",
       msg: "Invalid contract expiry.",
     },
     {

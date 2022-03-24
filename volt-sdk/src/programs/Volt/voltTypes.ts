@@ -75,19 +75,9 @@ export type VoltIXAccounts = {
       VoltProgram["instruction"]["initialize"]["accounts"]
     >[0]]: PublicKey;
   };
-  changeVars: {
+  changeCapacity: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["changeVars"]["accounts"]
-    >[0]]: PublicKey;
-  };
-  initNewAccounts: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["initNewAccounts"]["accounts"]
-    >[0]]: PublicKey;
-  };
-  closeOldAccounts: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["closeOldAccounts"]["accounts"]
+      VoltProgram["instruction"]["changeCapacity"]["accounts"]
     >[0]]: PublicKey;
   };
   startRound: {

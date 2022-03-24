@@ -157,7 +157,7 @@ export type VoltIDL = {
       ];
     },
     {
-      name: "changeVars";
+      name: "changeCapacity";
       accounts: [
         {
           name: "authority";
@@ -172,16 +172,6 @@ export type VoltIDL = {
         {
           name: "roundInfo";
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
           isSigner: false;
         },
         {
@@ -210,108 +200,6 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
-    },
-    {
-      name: "initNewAccounts";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "roundNumber";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "closeOldAccounts";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "newMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
     },
     {
       name: "startRound";
@@ -1504,11 +1392,6 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "feeOwner";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -1636,11 +1519,6 @@ export type VoltIDL = {
         },
         {
           name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeOwner";
           isMut: true;
           isSigner: false;
         },
@@ -1784,11 +1662,6 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "feeOwner";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -1827,62 +1700,6 @@ export type VoltIDL = {
           type: "u8";
         }
       ];
-    },
-    {
-      name: "closeOpenOrdersPls";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "solWallet";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "market";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
     },
     {
       name: "settleEnterFunds";
@@ -2396,16 +2213,6 @@ export type VoltIDL = {
           isSigner: true;
         },
         {
-          name: "adminKey";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "seed";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "voltVault";
           isMut: true;
           isSigner: false;
@@ -2428,11 +2235,6 @@ export type VoltIDL = {
         {
           name: "depositPool";
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositMint";
-          isMut: false;
           isSigner: false;
         },
         {
@@ -2467,57 +2269,52 @@ export type VoltIDL = {
         },
         {
           name: "entropyGroup";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "entropyAccount";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "targetPerpMarket";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrdersAi";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "entropyCache";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "rootBank";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "nodeBank";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "vault";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "eventQueue";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "bids";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "asks";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -3179,6 +2976,20 @@ export type VoltIDL = {
     }
   ];
   types: [
+    {
+      name: "OptionsProtocol";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "Soloptions";
+          },
+          {
+            name: "Inertia";
+          }
+        ];
+      };
+    },
     {
       name: "SelfTradeBehavior";
       type: {
@@ -4029,6 +3840,26 @@ export type VoltIDL = {
       code: 6151;
       name: "TargetCollateralRatioMustBePositive";
       msg: "target collateral ratio must be positive";
+    },
+    {
+      code: 6152;
+      name: "RoundNumberMustNotOverflow";
+      msg: "round number must not overflow";
+    },
+    {
+      code: 6153;
+      name: "InvalidWhitelistTokenAccountMint";
+      msg: "invalid whitelist token account mint";
+    },
+    {
+      code: 6154;
+      name: "SoloptionsProgramIdDoesNotMatch";
+      msg: "soloptions program id does not match";
+    },
+    {
+      code: 6155;
+      name: "WhitelistTokenAccountOwnerIsNotUser";
+      msg: "whitelist token account owner is not user";
     }
   ];
 };
@@ -4191,7 +4022,7 @@ export const VoltIDLJsonRaw = {
       ],
     },
     {
-      name: "changeVars",
+      name: "changeCapacity",
       accounts: [
         {
           name: "authority",
@@ -4206,16 +4037,6 @@ export const VoltIDLJsonRaw = {
         {
           name: "roundInfo",
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
           isSigner: false,
         },
         {
@@ -4244,108 +4065,6 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
-    },
-    {
-      name: "initNewAccounts",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "roundNumber",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "closeOldAccounts",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "newMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
     },
     {
       name: "startRound",
@@ -5538,11 +5257,6 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "feeOwner",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -5670,11 +5384,6 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeOwner",
           isMut: true,
           isSigner: false,
         },
@@ -5818,11 +5527,6 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "feeOwner",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -5861,62 +5565,6 @@ export const VoltIDLJsonRaw = {
           type: "u8",
         },
       ],
-    },
-    {
-      name: "closeOpenOrdersPls",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "solWallet",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "market",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
     },
     {
       name: "settleEnterFunds",
@@ -6430,16 +6078,6 @@ export const VoltIDLJsonRaw = {
           isSigner: true,
         },
         {
-          name: "adminKey",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "seed",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "voltVault",
           isMut: true,
           isSigner: false,
@@ -6462,11 +6100,6 @@ export const VoltIDLJsonRaw = {
         {
           name: "depositPool",
           isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositMint",
-          isMut: false,
           isSigner: false,
         },
         {
@@ -6501,57 +6134,52 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "entropyGroup",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "entropyAccount",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "targetPerpMarket",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrdersAi",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "entropyCache",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "rootBank",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "nodeBank",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "vault",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "eventQueue",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "bids",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "asks",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -7213,6 +6841,20 @@ export const VoltIDLJsonRaw = {
     },
   ],
   types: [
+    {
+      name: "OptionsProtocol",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "Soloptions",
+          },
+          {
+            name: "Inertia",
+          },
+        ],
+      },
+    },
     {
       name: "SelfTradeBehavior",
       type: {
@@ -8063,6 +7705,26 @@ export const VoltIDLJsonRaw = {
       code: 6151,
       name: "TargetCollateralRatioMustBePositive",
       msg: "target collateral ratio must be positive",
+    },
+    {
+      code: 6152,
+      name: "RoundNumberMustNotOverflow",
+      msg: "round number must not overflow",
+    },
+    {
+      code: 6153,
+      name: "InvalidWhitelistTokenAccountMint",
+      msg: "invalid whitelist token account mint",
+    },
+    {
+      code: 6154,
+      name: "SoloptionsProgramIdDoesNotMatch",
+      msg: "soloptions program id does not match",
+    },
+    {
+      code: 6155,
+      name: "WhitelistTokenAccountOwnerIsNotUser",
+      msg: "whitelist token account owner is not user",
     },
   ],
 };

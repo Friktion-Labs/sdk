@@ -20,6 +20,7 @@ import {
 } from "@solana/web3.js";
 import { Decimal } from "decimal.js";
 
+import { textEncoder } from "../../../utils/volt_helpers";
 import type { FriktionSDK } from "../..";
 import {
   OPTIONS_PROGRAM_IDS,
@@ -49,7 +50,6 @@ import {
   getVaultOwnerAndNonce,
 } from "./serum";
 import { getBalanceOrZero } from "./utils";
-import { textEncoder } from "../../../utils/volt_helpers";
 
 export class VoltSDK {
   constructor(
@@ -154,8 +154,6 @@ export class VoltSDK {
     instruction: TransactionInstruction;
     voltKey: PublicKey;
   }> {
-    const textEncoder = new TextEncoder();
-
     // If desired, change the SDK to allow custom seed
     const {
       vault,

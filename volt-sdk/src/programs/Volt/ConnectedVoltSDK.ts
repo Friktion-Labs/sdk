@@ -37,7 +37,6 @@ import type {
   OptionsProtocol,
   PendingDepositWithKey,
   PendingWithdrawalWithKey,
-  VoltIXAccounts,
   VoltProgram,
 } from "./voltTypes";
 
@@ -157,10 +156,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    Object.entries(depositAccountsStruct).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
-
     return this.sdk.programs.Volt.instruction.deposit(normalizedDepositAmount, {
       accounts: depositAccountsStruct,
     });
@@ -253,10 +248,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       // rent: SYSVAR_RENT_PUBKEY,
     };
 
-    Object.entries(depositWithTransferAccounts).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
-
     return this.sdk.programs.Volt.instruction.depositWithTransfer(
       normalizedDepositAmount,
       {
@@ -301,6 +292,214 @@ export class ConnectedVoltSDK extends VoltSDK {
   async getInertiaExerciseFeeAccount() {
     return await InertiaSDK.getGenericInertiaExerciseFeeAccount(
       this.voltVault.quoteAssetMint
+    );
+  }
+
+  async getAccountBalance(
+    connection: Connection,
+    mintAddress: PublicKey,
+    tokenAccount: PublicKey
+  ): Promise<{ balance: Decimal; token: Token }> {
+    const token = new Token(
+      connection,
+      mintAddress,
+      TOKEN_PROGRAM_ID,
+      null as unknown as Signer
+    );
+
+    const account = await token.getAccountInfo(tokenAccount);
+    const balance = new Decimal(account.amount.toString());
+
+    return { balance, token };
+  }
+
+  async getAccountBalanceOrZero(
+    connection: Connection,
+    mintAddress: PublicKey,
+    tokenAccount: PublicKey
+  ): Promise<{ balance: Decimal; token: Token | null }> {
+    try {
+      const res = await this.getAccountBalance(
+        connection,
+        mintAddress,
+        tokenAccount
+      );
+
+      return res;
+    } catch (err) {
+      console.error(err);
+      return { balance: new Decimal(0), token: null };
+    }
+  }
+
+  async getMintSupply(
+    connection: Connection,
+    vaultMint: PublicKey
+  ): Promise<Decimal> {
+    const token = new Token(
+      connection,
+      vaultMint,
+      TOKEN_PROGRAM_ID,
+      null as unknown as Signer
+    );
+    try {
+      const mintInfo = await token.getMintInfo();
+      return new Decimal(mintInfo.supply.toString());
+    } catch (e) {
+      console.error(e);
+      return new Decimal(0);
+    }
+  }
+
+  async getMintSupplyOrZero(
+    connection: Connection,
+    vaultMint: PublicKey
+  ): Promise<Decimal> {
+    try {
+      return await this.getMintSupply(connection, vaultMint);
+    } catch (err) {
+      console.log(err);
+      return new Decimal(0);
+    }
+  }
+
+  /**
+   * Do not provide withdrawAmount in num of vault tokens. Provide human amount.
+   * you must normalize yourself
+   */
+  async withdrawHumanAmount(
+    withdrawAmount: BN,
+    depositTokenMint: PublicKey,
+    userVaultTokens: PublicKey,
+    userVoltTokenBalance: Decimal | null,
+    underlyingTokenDestination: PublicKey,
+    daoAuthority?: PublicKey
+  ): Promise<TransactionInstruction> {
+    if (!daoAuthority) daoAuthority = this.daoAuthority;
+    console.log("dao authority = ", daoAuthority?.toString());
+    const { roundInfoKey, roundUnderlyingTokensKey, pendingWithdrawalInfoKey } =
+      await VoltSDK.findUsefulAddresses(
+        this.voltKey,
+        this.voltVault,
+        daoAuthority !== undefined ? daoAuthority : this.wallet,
+        this.sdk.programs.Volt.programId
+      );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    let voltWriterTokenBalance = new Decimal(0);
+    if (
+      this.voltVault.writerTokenMint.toString() !==
+      "11111111111111111111111111111111"
+    ) {
+      const res = await this.getAccountBalanceOrZero(
+        this.connection,
+        this.voltVault.writerTokenMint,
+        this.voltVault.writerTokenPool
+      );
+      voltWriterTokenBalance = res.balance;
+    }
+
+    const res = await this.getAccountBalanceOrZero(
+      this.connection,
+      depositTokenMint,
+      this.voltVault.depositPool
+    );
+    const voltDepositTokenBalance = res.balance;
+    if (res.token === null) throw new Error("Could not find Deposit token");
+    const normFactor = new Decimal(
+      10 ** (await res.token.getMintInfo()).decimals
+    );
+
+    const estimatedTotalWithoutPendingDepositTokenAmount =
+      voltDepositTokenBalance
+        .plus(
+          voltWriterTokenBalance.mul(
+            new Decimal(this.voltVault.underlyingAmountPerContract.toString())
+          )
+        )
+        .div(normFactor);
+    const roundInfo = await this.getRoundByKey(
+      (
+        await VoltSDK.findRoundInfoAddress(
+          this.voltKey,
+          this.voltVault.roundNumber,
+          this.sdk.programs.Volt.programId
+        )
+      )[0]
+    );
+    const vaultMintSupply = (
+      await this.getMintSupplyOrZero(this.connection, this.voltVault.vaultMint)
+    ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
+    const humanAmount = new Decimal(withdrawAmount.toString());
+    const withdrawalAmountNormalized = humanAmount.mul(normFactor);
+    let withdrawalAmountVaultTokens = withdrawalAmountNormalized
+      .mul(vaultMintSupply)
+      .div(estimatedTotalWithoutPendingDepositTokenAmount.mul(normFactor))
+      .toFixed(0);
+
+    /** If user's is withdrawing between 99.8-102%, we set withdrawal to 100.0% */
+    if (userVoltTokenBalance) {
+      const withdrawalAmountVaultTokensDec = new Decimal(
+        withdrawalAmountVaultTokens
+      );
+      const withdrawRatio = withdrawalAmountVaultTokensDec
+        .div(userVoltTokenBalance)
+        .toNumber();
+      if (withdrawRatio > 0.998 && withdrawRatio < 1.02) {
+        withdrawalAmountVaultTokens = userVoltTokenBalance.toString();
+      }
+    }
+
+    const withdrawAccountsStruct: Parameters<
+      VoltProgram["instruction"]["withdraw"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      daoAuthority:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : SystemProgram.programId,
+      authorityCheck:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : this.wallet,
+      vaultMint: this.voltVault.vaultMint,
+
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      extraVoltData: extraVoltKey,
+      whitelist:
+        this.extraVoltData?.isWhitelisted && this.extraVoltData?.whitelist
+          ? this.extraVoltData.whitelist
+          : SystemProgram.programId,
+
+      depositPool: this.voltVault.depositPool,
+      underlyingTokenDestination: underlyingTokenDestination,
+      vaultTokenSource: userVaultTokens,
+
+      roundInfo: roundInfoKey,
+
+      roundUnderlyingTokens: roundUnderlyingTokensKey,
+
+      pendingWithdrawalInfo: pendingWithdrawalInfoKey,
+
+      feeAcct: await this.getFeeTokenAccount(),
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      rent: SYSVAR_RENT_PUBKEY,
+    };
+
+    return this.sdk.programs.Volt.instruction.withdraw(
+      new BN(withdrawalAmountVaultTokens.toString()),
+      {
+        accounts: withdrawAccountsStruct,
+      }
     );
   }
 
@@ -557,59 +756,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
-  async initNewAccounts(roundNumber: BN): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    const initNewAccounts: VoltIXAccounts["initNewAccounts"] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      // permissionedMarketPremiumPool: SystemProgram.programId,
-      // permissionedMarketPremiumMint: SystemProgram.programId,
-      // permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
-      // permissionedMarketPremiumMint: permissionedMarketPremiumMintKey,
-
-      extraVoltData: extraVoltKey,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
-    };
-
-    return this.sdk.programs.Volt.instruction.initNewAccounts(roundNumber, {
-      accounts: initNewAccounts,
-    });
-  }
-
-  async closeOldAccounts(newMint: PublicKey) {
-    const [permissionedMarketPremiumPoolKey] =
-      await VoltSDK.findPermissionedMarketPremiumPoolAddress(
-        this.voltKey,
-        this.sdk.programs.Volt.programId
-      );
-
-    const closeOldAccountsStruct: VoltIXAccounts["closeOldAccounts"] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
-
-      depositPool: this.voltVault.depositPool,
-      premiumPool: this.voltVault.premiumPool,
-
-      newMint: newMint,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
-    };
-
-    return this.sdk.programs.Volt.instruction.closeOldAccounts({
-      accounts: closeOldAccountsStruct,
-    });
-  }
-
-  async changeVars(
+  async changeCapacity(
     capacity: BN,
     individualCapacity: BN
   ): Promise<TransactionInstruction> {
@@ -620,21 +767,18 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const changeVarsAccounts: Parameters<
-      VoltProgram["instruction"]["changeVars"]["accounts"]
+      VoltProgram["instruction"]["changeCapacity"]["accounts"]
     >[0] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
-
       roundInfo: roundInfo,
-      depositPool: this.voltVault.depositPool,
-      vaultMint: this.voltVault.vaultMint,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    return this.sdk.programs.Volt.instruction.changeVars(
+    return this.sdk.programs.Volt.instruction.changeCapacity(
       capacity,
       individualCapacity,
       {
@@ -943,7 +1087,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       underlyingAssetPool: optionMarket.underlyingAssetPool,
 
       optionProtocolFeeDestination: feeDestinationKey,
-      feeOwner: INERTIA_FEE_OWNER,
 
       systemProgram: SystemProgram.programId,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -1092,18 +1235,11 @@ export class ConnectedVoltSDK extends VoltSDK {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       pcVault: optionSerumMarket._decoded.quoteVault as PublicKey,
 
-      feeOwner: INERTIA_FEE_OWNER,
-
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,
     };
-
-    console.log("rebalance enter struct: ");
-    Object.entries(rebalanceEnterStruct).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
 
     return this.sdk.programs.Volt.instruction.rebalanceEnter(
       clientPrice,
@@ -1265,8 +1401,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       pcVault: spotSerumMarket._decoded.quoteVault as PublicKey,
 
       roundInfo: roundKey,
-
-      feeOwner: INERTIA_FEE_OWNER,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -1445,6 +1579,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       dexProgram: optionSerumMarketProxy.dexProgramId,
       openOrders: openOrdersKey,
+
       market: optionSerumMarketProxy.market.address,
       serumMarketAuthority: marketAuthority,
 
@@ -1461,6 +1596,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
     };
+
+    Object.entries(settleEnterFundsStruct).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
 
     return this.sdk.programs.Volt.instruction.settleEnterFunds({
       accounts: settleEnterFundsStruct,

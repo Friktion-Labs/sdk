@@ -247,6 +247,8 @@ export class InertiaSDK {
       "ClaimablePool",
       ...seeds
     );
+
+    console.log("token program id = ", TOKEN_PROGRAM_ID.toString());
     const settleAccounts: InertiaIXAccounts["settle"] = {
       authority: params.user,
       oracleAi: this.optionMarket.oracleAi,
@@ -255,6 +257,8 @@ export class InertiaSDK {
       underlyingMint: this.optionMarket.underlyingMint,
       quoteMint: this.optionMarket.quoteMint,
       contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
+
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };
