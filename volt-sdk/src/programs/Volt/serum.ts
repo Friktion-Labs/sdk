@@ -100,7 +100,6 @@ export class Validation implements Middleware {
   }
 
   initOpenOrders(ix: TransactionInstruction) {
-    console.log("proxying open orders through Volt SDK middleware");
     ix.data = Buffer.concat([Buffer.from([0]), ix.data]);
     this.addPdaKeys(ix);
   }
@@ -139,12 +138,6 @@ export class Validation implements Middleware {
   }
 
   addPdaKeys(ix: TransactionInstruction) {
-    console.log(
-      "prepending whitelist key = ",
-      this.whitelistKey.toString(),
-      ", prepending option market key = ",
-      this.optionMarketKey.toString()
-    );
     ix.keys = [
       { pubkey: this.whitelistKey, isWritable: false, isSigner: false },
       { pubkey: this.optionMarketKey, isWritable: false, isSigner: false },

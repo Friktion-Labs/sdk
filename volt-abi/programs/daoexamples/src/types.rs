@@ -66,6 +66,10 @@ pub struct DepositDaoExampleAccounts<'info> {
     #[account(mut)]
     pub pending_deposit_info: AccountInfo<'info>,
 
+    #[account(mut)]
+    /// CHECK: skip
+    pub epoch_info: AccountInfo<'info>,
+
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip

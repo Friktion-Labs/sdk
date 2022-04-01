@@ -61,6 +61,8 @@ export type FriktionSDKOpts = {
 export type VoltSnapshot = {
   globalId: string;
   voltVaultId: string;
+  extraVaultDataId: string;
+  vaultAuthority: string;
   quoteMint: string;
   underlyingMint: string;
   depositTokenMint: string;
@@ -77,7 +79,6 @@ export type VoltSnapshot = {
   apy: number;
   abnormalEpochLength?: number;
   isVoltage?: boolean;
-  extraVaultDataId?: string;
   isInCircuits?: boolean;
   highVoltage?: string;
 };

@@ -28,6 +28,89 @@ mod volt_abi {
 
 #[account]
 #[derive(Default)]
+pub struct FriktionEpochInfo {
+    pub number: u64,
+    pub volt_token_supply: u64,
+    pub pnl: u64,
+    pub performance_fees: u64,
+    pub withdrawal_fees: u64,
+    pub pending_withdrawals: u64,
+    pub pending_deposits: u64,
+    // in volt tokens
+    pub canceled_withdrawals: u64,
+    pub canceled_deposits: u64,
+    pub total_withdrawals: u64,
+    pub total_deposits: u64,
+    pub instant_deposits: u64,
+    pub instant_withdrawals: u64,
+    pub dao_deposits: u64,
+    pub minted_options: u64,
+
+    pub enter_num_times_called: u64,
+    pub swap_premium_num_times_called: u64,
+
+    pub option_key: Pubkey,
+
+    pub extra_key_four: Pubkey,
+    pub extra_key_5: Pubkey,
+    pub extra_key_6: Pubkey,
+    pub extra_key_7: Pubkey,
+    pub extra_key_8: Pubkey,
+    pub extra_key_9: Pubkey,
+    pub extra_key_10: Pubkey,
+    pub extra_key_11: Pubkey,
+    pub extra_key_12: Pubkey,
+
+    pub unused_uint_four: u64,
+    pub unused_uint_five: u64,
+    pub unused_uint_six: u64,
+    pub unused_uint_7: u64,
+    pub unused_uint_8: u64,
+    pub unused_uint_9: u64,
+    pub unused_uint_10: u64,
+    pub unused_uint_11: u64,
+    pub unused_uint_12: u64,
+
+    pub unused_bool_one: bool,
+    pub unused_bool_two: bool,
+    pub unused_bool_three: bool,
+    pub unused_bool_four: bool,
+    pub unused_bool_five: bool,
+    pub unused_bool_six: bool,
+}
+
+#[account]
+#[derive(Default)]
+/**
+ * Epoch-specific PDA. Stores all information specific to that epoch.
+ * New rounds are initialized in start_round.
+ * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal
+ */
+pub struct Round {
+    // numerical ranking of this round. round numbers start at 1, and are incremented
+    // following each successful call of start_round
+    pub number: u64,
+
+    // total # of underlying from pending deposits created during this round.
+    // NOTE: this has to be stored in the Round account in order to calculate correct
+    // proportion of vault tokens for each user in claim_pending
+    pub underlying_from_pending_deposits: u64,
+
+    // total # of volt tokens from pending withdrawals created during this round.
+    // NOTE: this has to be stored in the Round account in order to calculate correct
+    // proportion of underlying tokens for each user in claim_pending_withdrawal
+    pub volt_tokens_from_pending_withdrawals: u64,
+
+    pub underlying_pre_enter: u64,
+
+    pub underlying_post_settle: u64,
+
+    pub premium_farmed: u64,
+    // pub unused_space: [u64; 7],
+}
+
+#[account]
+#[derive(Default)]
 /**
  * User-specific PDA. Tracks information about their pending deposits.
  *  NOTES:
@@ -138,6 +221,10 @@ pub struct Deposit<'info> {
     #[account(mut)]
     pub pending_deposit_info: Box<Account<'info, PendingDeposit>>,
 
+    #[account(mut)]
+    /// CHECK: skip
+    pub epoch_info: AccountInfo<'info>,
+
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
@@ -200,6 +287,10 @@ pub struct Withdraw<'info> {
     /// CHECK: skip
     pub pending_withdrawal_info: Box<Account<'info, PendingDeposit>>,
 
+    #[account(mut)]
+    /// CHECK: skip
+    pub epoch_info: AccountInfo<'info>,
+
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
@@ -235,6 +326,10 @@ pub struct ClaimPendingDeposit<'info> {
     /// CHECK: skip
     #[account(mut)]
     pub pending_deposit_info: AccountInfo<'info>,
+
+    #[account(mut)]
+    /// CHECK: skip
+    pub epoch_info: AccountInfo<'info>,
 
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,
@@ -272,6 +367,10 @@ pub struct ClaimPendingWithdrawal<'info> {
     #[account(mut)]
     /// CHECK: skip
     pub round_underlying_tokens_for_pending_withdrawals: AccountInfo<'info>,
+
+    #[account(mut)]
+    /// CHECK: skip
+    pub epoch_info: AccountInfo<'info>,
 
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,

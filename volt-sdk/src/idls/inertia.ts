@@ -703,6 +703,11 @@ export type InertiaIDL = {
       code: 6034;
       name: "MustBeNonZeroClose";
       msg: "must be non zero close position";
+    },
+    {
+      code: 6035;
+      name: "OptionHasAlreadyBeenCranked";
+      msg: "option has already been cranked";
     }
   ];
 };
@@ -1411,6 +1416,11 @@ export const InertiaIDLJsonRaw = {
       code: 6034,
       name: "MustBeNonZeroClose",
       msg: "must be non zero close position",
+    },
+    {
+      code: 6035,
+      name: "OptionHasAlreadyBeenCranked",
+      msg: "option has already been cranked",
     },
   ],
 };

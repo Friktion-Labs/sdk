@@ -32,6 +32,7 @@ import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
   ExtraVoltDataWithKey,
+  FriktionEpochInfoWithKey,
   OptionMarketWithKey,
   OptionsProtocol,
   PendingDeposit,
@@ -289,7 +290,6 @@ export class VoltSDK {
       sdk.programs.Volt.programId
     );
 
-    // TODO: Move these into individual VoltSDK.findVaultAddress etc
     const [vaultAuthority, vaultAuthorityBump] =
       await PublicKey.findProgramAddress(
         [vault.toBuffer(), textEncoder.encode("vaultAuthority")],
@@ -363,6 +363,7 @@ export class VoltSDK {
       backupWriterTokenPoolKey,
     };
   }
+
   // static async findEntropyAccountAddress(
   //   voltKey: PublicKey
   // ): Promise<[PublicKey, number]> {
@@ -918,8 +919,7 @@ export class VoltSDK {
   }
 
   /**
-   * @deprecated If you are in the dapp, just fucking get the number from the
-   * registry
+   * normalization factor based on # of decimals of underlying token
    */
   async getNormalizationFactor() {
     if (typeof window !== "undefined") {
@@ -968,6 +968,22 @@ export class VoltSDK {
         voltKey.toBuffer(),
         whitelistMintKey.toBuffer(),
         textEncoder.encode("whitelistTokenAccount"),
+      ],
+      voltProgramId
+    );
+  }
+
+  static async findEpochInfoAddress(
+    voltKey: PublicKey,
+    roundNumber: BN,
+    voltProgramId: PublicKey
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [
+        voltKey.toBuffer(),
+        new u64(roundNumber.toString()).toBuffer(),
+        textEncoder.encode("epochInfo"),
       ],
       voltProgramId
     );
@@ -1050,6 +1066,8 @@ export class VoltSDK {
     roundVoltTokensKeyBump: number;
     roundUnderlyingPendingWithdrawalsKey: PublicKey;
     roundUnderlyingPendingWithdrawalsBump: number;
+    epochInfoKey: PublicKey;
+    epochInfoBump: number;
   }> {
     const [roundInfoKey, roundInfoKeyBump] = await VoltSDK.findRoundInfoAddress(
       voltKey,
@@ -1080,6 +1098,12 @@ export class VoltSDK {
       voltProgramId
     );
 
+    const [epochInfoKey, epochInfoBump] = await VoltSDK.findEpochInfoAddress(
+      voltKey,
+      roundNumber,
+      voltProgramId
+    );
+
     return {
       roundInfoKey,
       roundInfoKeyBump,
@@ -1089,6 +1113,8 @@ export class VoltSDK {
       roundVoltTokensKeyBump,
       roundUnderlyingPendingWithdrawalsKey,
       roundUnderlyingPendingWithdrawalsBump,
+      epochInfoKey,
+      epochInfoBump,
     };
   }
 
@@ -1106,6 +1132,8 @@ export class VoltSDK {
     roundUnderlyingTokensKey: PublicKey;
     pendingWithdrawalInfoKey: PublicKey;
     roundUnderlyingPendingWithdrawalsKey: PublicKey;
+    epochInfoKey: PublicKey;
+    epochInfoBump: number;
   }> {
     const { pendingDepositInfoKey, mostRecentVoltTokensKey } =
       await VoltSDK.findPendingDepositAddresses(voltKey, user, voltProgramId);
@@ -1126,6 +1154,8 @@ export class VoltSDK {
       roundUnderlyingTokensKey,
       roundVoltTokensKey,
       roundUnderlyingPendingWithdrawalsKey,
+      epochInfoKey,
+      epochInfoBump,
     } = await VoltSDK.findRoundAddresses(
       voltKey,
       voltVault.roundNumber,
@@ -1141,6 +1171,8 @@ export class VoltSDK {
       roundUnderlyingTokensKey,
       pendingWithdrawalInfoKey,
       roundUnderlyingPendingWithdrawalsKey,
+      epochInfoKey,
+      epochInfoBump,
     };
   }
 
@@ -1297,6 +1329,40 @@ export class VoltSDK {
 
     return { openOrdersKey, openOrdersBump };
   }
+
+  async getEpochInfoByKey(key: PublicKey): Promise<FriktionEpochInfoWithKey> {
+    console.log("get epoch info by key, ", key.toString());
+    const acct = await this.sdk.programs.Volt.account.friktionEpochInfo.fetch(
+      key
+    );
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
+  }
+
+  async getEpochInfoByNumber(
+    roundNumber: anchor.BN
+  ): Promise<FriktionEpochInfoWithKey> {
+    const key = (
+      await VoltSDK.findEpochInfoAddress(
+        this.voltKey,
+        roundNumber,
+        this.sdk.programs.Volt.programId
+      )
+    )[0];
+    return await this.getEpochInfoByKey(key);
+  }
+
+  async getCurrentEpochInfo(): Promise<FriktionEpochInfoWithKey> {
+    return await this.getEpochInfoByNumber(this.voltVault.roundNumber);
+  }
+
+  async getCurrentRound(): Promise<RoundWithKey> {
+    return await this.getRoundByNumber(this.voltVault.roundNumber);
+  }
+
   async getAllRounds(): Promise<RoundWithKey[]> {
     const accts =
       (await this.sdk.programs.Volt.account.round.all()) as unknown as ProgramAccount<Round>[];
@@ -1320,17 +1386,6 @@ export class VoltSDK {
       await VoltSDK.findRoundInfoAddress(
         this.voltKey,
         roundNumber,
-        this.sdk.programs.Volt.programId
-      )
-    )[0];
-    return this.getRoundByKey(key);
-  }
-
-  async getCurrentRound(): Promise<RoundWithKey> {
-    const key = (
-      await VoltSDK.findRoundInfoAddress(
-        this.voltKey,
-        this.voltVault.roundNumber,
         this.sdk.programs.Volt.programId
       )
     )[0];

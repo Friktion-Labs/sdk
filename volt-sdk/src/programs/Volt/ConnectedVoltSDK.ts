@@ -87,6 +87,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokensKey,
       roundVoltTokensKey,
       pendingDepositInfoKey,
+      epochInfoKey,
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -109,13 +110,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    console.log("this.extraVoltData: ", this.extraVoltData);
-    console.log("extraVoltKey: ", extraVoltKey.toString());
-    console.log(
-      "SystemProgram.programId: ",
-      SystemProgram.programId.toString()
-    );
-    console.log("whitelist: ", this.extraVoltData?.whitelist);
     const depositAccountsStruct: Parameters<
       VoltProgram["instruction"]["deposit"]["accounts"]
     >[0] = {
@@ -152,6 +146,8 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       pendingDepositInfo: pendingDepositInfoKey,
 
+      epochInfo: epochInfoKey,
+
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
@@ -176,6 +172,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokensKey,
       roundVoltTokensKey,
       pendingDepositInfoKey,
+      epochInfoKey,
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -242,6 +239,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokens: roundUnderlyingTokensKey,
 
       pendingDepositInfo: pendingDepositInfoKey,
+      epochInfo: epochInfoKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -252,6 +250,112 @@ export class ConnectedVoltSDK extends VoltSDK {
       normalizedDepositAmount,
       {
         accounts: depositWithTransferAccounts,
+      }
+    );
+  }
+
+  async depositWithClaim(
+    trueDepositAmount: Decimal,
+    underlyingTokenSource: PublicKey,
+    vaultTokenDestination: PublicKey,
+    shouldTransferSol = false,
+    solTransferAuthority?: PublicKey,
+    daoAuthority?: PublicKey,
+    decimals?: number
+  ): Promise<TransactionInstruction> {
+    if (daoAuthority === undefined) daoAuthority = this.daoAuthority;
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      roundVoltTokensKey,
+      pendingDepositInfoKey,
+    } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      this.sdk.programs.Volt.programId
+    );
+
+    const normFactor = decimals
+      ? new Decimal(10 ** decimals)
+      : await this.getNormalizationFactor();
+
+    const normalizedDepositAmount = new BN(
+      trueDepositAmount.mul(normFactor).toString()
+    );
+
+    let pendingDepositInfo: PendingDepositWithKey | undefined;
+    try {
+      pendingDepositInfo = await this.getPendingDepositByKey(
+        pendingDepositInfoKey
+      );
+    } catch (err) {
+      // pass
+    }
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const {
+      roundInfoKey: pendingDepositRoundInfoKey,
+      roundVoltTokensKey: pendingDepositRoundVoltTokensKey,
+    } = await VoltSDK.findRoundAddresses(
+      this.voltKey,
+      pendingDepositInfo?.roundNumber ?? new BN(0),
+      this.sdk.programs.Volt.programId
+    );
+    const depositWithClaimAccounts: Parameters<
+      VoltProgram["instruction"]["depositWithClaim"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      daoAuthority:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : SystemProgram.programId,
+      authorityCheck:
+        daoAuthority !== undefined
+          ? daoAuthority
+          : this.extraVoltData?.isForDao
+          ? this.extraVoltData.daoAuthority
+          : this.wallet,
+      solTransferAuthority: solTransferAuthority
+        ? solTransferAuthority
+        : this.wallet,
+      // underlyingAssetMint: this.voltVault.underlyingAssetMint,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+
+      vaultAuthority: this.voltVault.vaultAuthority,
+      whitelist: this?.extraVoltData?.whitelist ?? SystemProgram.programId,
+
+      vaultMint: this.voltVault.vaultMint,
+
+      depositPool: this.voltVault.depositPool,
+      writerTokenPool: this.voltVault.writerTokenPool,
+
+      underlyingTokenSource: underlyingTokenSource,
+      vaultTokenDestination: vaultTokenDestination,
+
+      roundInfo: roundInfoKey,
+      roundVoltTokens: roundVoltTokensKey,
+      roundUnderlyingTokens: roundUnderlyingTokensKey,
+
+      pendingDepositInfo: pendingDepositInfoKey,
+
+      pendingDepositRoundInfo: pendingDepositRoundInfoKey,
+      pendingDepositRoundVoltTokens: pendingDepositRoundVoltTokensKey,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      // rent: SYSVAR_RENT_PUBKEY,
+    };
+
+    return this.sdk.programs.Volt.instruction.depositWithClaim(
+      normalizedDepositAmount,
+      shouldTransferSol,
+      {
+        accounts: depositWithClaimAccounts,
       }
     );
   }
@@ -377,13 +481,17 @@ export class ConnectedVoltSDK extends VoltSDK {
   ): Promise<TransactionInstruction> {
     if (!daoAuthority) daoAuthority = this.daoAuthority;
     console.log("dao authority = ", daoAuthority?.toString());
-    const { roundInfoKey, roundUnderlyingTokensKey, pendingWithdrawalInfoKey } =
-      await VoltSDK.findUsefulAddresses(
-        this.voltKey,
-        this.voltVault,
-        daoAuthority !== undefined ? daoAuthority : this.wallet,
-        this.sdk.programs.Volt.programId
-      );
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      pendingWithdrawalInfoKey,
+      epochInfoKey,
+    } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      this.sdk.programs.Volt.programId
+    );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
@@ -451,7 +559,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       }
     }
 
-    const withdrawAccountsStruct: Parameters<
+    const withdrawHumanAccountsStruct: Parameters<
       VoltProgram["instruction"]["withdraw"]["accounts"]
     >[0] = {
       authority: this.wallet,
@@ -488,6 +596,8 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       pendingWithdrawalInfo: pendingWithdrawalInfoKey,
 
+      epochInfo: epochInfoKey,
+
       feeAcct: await this.getFeeTokenAccount(),
 
       systemProgram: SystemProgram.programId,
@@ -498,7 +608,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     return this.sdk.programs.Volt.instruction.withdraw(
       new BN(withdrawalAmountVaultTokens.toString()),
       {
-        accounts: withdrawAccountsStruct,
+        accounts: withdrawHumanAccountsStruct,
       }
     );
   }
@@ -514,13 +624,17 @@ export class ConnectedVoltSDK extends VoltSDK {
   ): Promise<TransactionInstruction> {
     if (!daoAuthority) daoAuthority = this.daoAuthority;
     console.log("dao authority = ", daoAuthority?.toString());
-    const { roundInfoKey, roundUnderlyingTokensKey, pendingWithdrawalInfoKey } =
-      await VoltSDK.findUsefulAddresses(
-        this.voltKey,
-        this.voltVault,
-        daoAuthority !== undefined ? daoAuthority : this.wallet,
-        this.sdk.programs.Volt.programId
-      );
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      pendingWithdrawalInfoKey,
+      epochInfoKey,
+    } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      this.sdk.programs.Volt.programId
+    );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
@@ -561,6 +675,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokens: roundUnderlyingTokensKey,
 
       pendingWithdrawalInfo: pendingWithdrawalInfoKey,
+      epochInfo: epochInfoKey,
 
       feeAcct: await this.getFeeTokenAccount(),
 
@@ -582,7 +697,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   ): Promise<TransactionInstruction> {
     const authority =
       this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
-    const { roundInfoKey, pendingWithdrawalInfoKey } =
+    const { roundInfoKey, pendingWithdrawalInfoKey, epochInfoKey } =
       await VoltSDK.findUsefulAddresses(
         this.voltKey,
         this.voltVault,
@@ -606,6 +721,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       pendingWithdrawalInfo: pendingWithdrawalInfoKey,
 
+      epochInfo: epochInfoKey,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -624,13 +740,17 @@ export class ConnectedVoltSDK extends VoltSDK {
   ): Promise<TransactionInstruction> {
     const authority =
       this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
-    const { roundInfoKey, roundUnderlyingTokensKey, pendingDepositInfoKey } =
-      await VoltSDK.findUsefulAddresses(
-        this.voltKey,
-        this.voltVault,
-        authority,
-        this.sdk.programs.Volt.programId
-      );
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      pendingDepositInfoKey,
+      epochInfoKey,
+    } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      authority,
+      this.sdk.programs.Volt.programId
+    );
 
     const cancelPendingDepositAccountsStruct: Parameters<
       VoltProgram["instruction"]["cancelPendingDeposit"]["accounts"]
@@ -648,6 +768,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokens: roundUnderlyingTokensKey,
       pendingDepositInfo: pendingDepositInfoKey,
 
+      epochInfo: epochInfoKey,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -658,12 +779,42 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
+  async claimPendingWithoutSigning(
+    vaultTokenDestination: PublicKey,
+    replacementAuthority?: PublicKey
+  ): Promise<TransactionInstruction> {
+    const ix: TransactionInstruction = await this.claimPending(
+      vaultTokenDestination,
+      replacementAuthority
+    );
+    if (ix.keys[0] === undefined) throw new Error("eat my ass");
+    ix.keys[0].isSigner = false;
+    return ix;
+  }
+
+  async claimPendingWithdrawalWithoutSigning(
+    underlyingTokenDestinationKey: PublicKey,
+    replacementAuthority?: PublicKey
+  ): Promise<TransactionInstruction> {
+    const ix: TransactionInstruction = await this.claimPendingWithdrawal(
+      underlyingTokenDestinationKey,
+      replacementAuthority
+    );
+    if (ix.keys[0] === undefined) throw new Error("eat my ass");
+    ix.keys[0].isSigner = false;
+    return ix;
+  }
+
   async claimPending(
-    vaultTokenDestination: PublicKey
+    vaultTokenDestination: PublicKey,
+    replacementAuthority?: PublicKey
     // additionalSigners?: Signer[]
   ): Promise<TransactionInstruction> {
-    const authority =
-      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
+    const authority = replacementAuthority
+      ? replacementAuthority
+      : this.daoAuthority
+      ? this.daoAuthority
+      : this.wallet;
     const { pendingDepositInfoKey } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -707,10 +858,14 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async claimPendingWithdrawal(
-    underlyingTokenDestinationKey: PublicKey
+    underlyingTokenDestinationKey: PublicKey,
+    replacementAuthority?: PublicKey
   ): Promise<TransactionInstruction> {
-    const authority =
-      this.daoAuthority !== undefined ? this.daoAuthority : this.wallet;
+    const authority = replacementAuthority
+      ? replacementAuthority
+      : this.daoAuthority
+      ? this.daoAuthority
+      : this.wallet;
     const [pendingWithdrawalInfoKey] =
       await VoltSDK.findPendingWithdrawalInfoAddress(
         this.voltKey,
@@ -793,6 +948,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokensKey,
       roundVoltTokensKey,
       roundUnderlyingPendingWithdrawalsKey,
+      epochInfoKey,
     } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber.addn(1),
@@ -800,6 +956,11 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    console.log(
+      "ul mint in start round = ",
+      this.voltVault.underlyingAssetMint.toString()
+    );
 
     const startRoundStruct: Parameters<
       VoltProgram["instruction"]["startRound"]["accounts"]
@@ -809,6 +970,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
+      depositPool: this.voltVault.depositPool,
       underlyingAssetMint: this.voltVault.underlyingAssetMint,
       vaultMint: this.voltVault.vaultMint,
 
@@ -818,12 +980,17 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokensForPendingWithdrawals:
         roundUnderlyingPendingWithdrawalsKey,
 
+      epochInfo: epochInfoKey,
+
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,
     };
 
+    Object.entries(startRoundStruct).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
     return this.sdk.programs.Volt.instruction.startRound({
       accounts: startRoundStruct,
     });
@@ -835,6 +1002,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundUnderlyingTokensKey,
       roundVoltTokensKey,
       roundUnderlyingPendingWithdrawalsKey,
+      epochInfoKey,
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -858,6 +1026,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundVoltTokens: roundVoltTokensKey,
       roundUnderlyingTokensForPendingWithdrawals:
         roundUnderlyingPendingWithdrawalsKey,
+      epochInfo: epochInfoKey,
 
       feeAcct: await this.getFeeTokenAccount(),
 
@@ -873,7 +1042,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async takePendingWithdrawalFees(): Promise<TransactionInstruction> {
-    const { roundUnderlyingPendingWithdrawalsKey } =
+    const { roundUnderlyingPendingWithdrawalsKey, epochInfoKey } =
       await VoltSDK.findUsefulAddresses(
         this.voltKey,
         this.voltVault,
@@ -890,6 +1059,8 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       roundUnderlyingTokensForPendingWithdrawals:
         roundUnderlyingPendingWithdrawalsKey,
+
+      epochInfo: epochInfoKey,
 
       feeAcct: await this.getFeeTokenAccount(),
 
@@ -944,7 +1115,7 @@ export class ConnectedVoltSDK extends VoltSDK {
         optionSerumMarketProxy
       );
 
-    const [roundKey] = await VoltSDK.findRoundInfoAddress(
+    const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
@@ -964,6 +1135,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
+      vaultMint: this.voltVault.vaultMint,
 
       depositPool: this.voltVault.depositPool,
       optionPool: optionPoolKey,
@@ -973,7 +1145,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionMint: optionMarket.optionMint,
       writerTokenMint: optionMarket.writerTokenMint,
 
-      roundInfo: roundKey,
+      roundInfo: roundInfoKey,
+
+      epochInfo: epochInfoKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -1065,6 +1239,11 @@ export class ConnectedVoltSDK extends VoltSDK {
       throw new Error("weird options protocol");
     }
 
+    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
     const rebalancePrepareStruct: Parameters<
       VoltProgram["instruction"]["rebalancePrepare"]["accounts"]
     >[0] = {
@@ -1087,6 +1266,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       underlyingAssetPool: optionMarket.underlyingAssetPool,
 
       optionProtocolFeeDestination: feeDestinationKey,
+
+      epochInfo: epochInfoKey,
 
       systemProgram: SystemProgram.programId,
       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -1190,6 +1371,11 @@ export class ConnectedVoltSDK extends VoltSDK {
     const srmReferralAcct =
       referralSRMAcctReplacement || this.sdk.net.REFERRAL_SRM_OR_MSRM_ACCOUNT;
 
+    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
     const rebalanceEnterStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEnter"]["accounts"]
     >[0] = {
@@ -1215,6 +1401,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       whitelistTokenAccount: whitelistTokenAccountKey,
 
+      epochInfo: epochInfoKey,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -1260,7 +1447,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     if (optionMarket === null)
       throw new Error("option market on volt vault does not exist");
 
-    const [roundKey] = await VoltSDK.findRoundInfoAddress(
+    const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
@@ -1290,7 +1477,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       quoteAssetPool: optionMarket.quoteAssetPool,
       underlyingAssetPool: optionMarket.underlyingAssetPool,
 
-      roundInfo: roundKey,
+      roundInfo: roundInfoKey,
+      epochInfo: epochInfoKey,
 
       feeOwner: INERTIA_FEE_OWNER,
       systemProgram: SystemProgram.programId,
@@ -1344,7 +1532,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       spotSerumMarket.programId
     );
 
-    const [roundKey] = await VoltSDK.findRoundInfoAddress(
+    const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
@@ -1400,7 +1588,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       pcVault: spotSerumMarket._decoded.quoteVault as PublicKey,
 
-      roundInfo: roundKey,
+      roundInfo: roundInfoKey,
+      epochInfo: epochInfoKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -1466,6 +1655,27 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const instruction = this.sdk.programs.Volt.instruction.attachDao({
       accounts: attachDaoAccounts,
+    });
+
+    return instruction;
+  }
+
+  async detachDao(): Promise<TransactionInstruction> {
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+    const detachDaoAccounts: {
+      [K in keyof Parameters<
+        VoltProgram["instruction"]["detachDao"]["accounts"]
+      >[0]]: PublicKey;
+    } = {
+      authority: this.wallet,
+
+      voltVault: this.voltKey,
+
+      extraVoltData: extraVoltKey,
+    };
+
+    const instruction = this.sdk.programs.Volt.instruction.detachDao({
+      accounts: detachDaoAccounts,
     });
 
     return instruction;

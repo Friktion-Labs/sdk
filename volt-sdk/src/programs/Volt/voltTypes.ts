@@ -15,6 +15,7 @@ export type VoltTypes = AnchorTypes<
     extraVoltData: ExtraVoltData;
     whitelist: Whitelist;
     round: Round;
+    friktionEpochInfo: FriktionEpochInfo;
     pendingDeposit: PendingDeposit;
     pendingWithdrawal: PendingWithdrawal;
   }
@@ -32,6 +33,7 @@ export type VoltEvents = VoltTypes["Events"];
 export type PendingDeposit = VoltAccounts["PendingDeposit"];
 export type PendingWithdrawal = VoltAccounts["PendingWithdrawal"];
 export type Round = VoltAccounts["Round"];
+export type FriktionEpochInfo = VoltAccounts["FriktionEpochInfo"];
 export type VoltVault = VoltAccounts["VoltVault"];
 export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
 export type Whitelist = VoltAccounts["Whitelist"];
@@ -43,6 +45,7 @@ export type WithKey = {
 export type PendingDepositWithKey = PendingDeposit & WithKey;
 export type PendingWithdrawalWithKey = PendingWithdrawal & WithKey;
 export type RoundWithKey = Round & WithKey;
+export type FriktionEpochInfoWithKey = FriktionEpochInfo & WithKey;
 export type VoltVaultWithKey = VoltVault & WithKey;
 export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
 export type WhitelistWithKey = Whitelist & WithKey;

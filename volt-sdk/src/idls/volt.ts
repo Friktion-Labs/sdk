@@ -220,6 +220,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "vaultAuthority";
           isMut: false;
           isSigner: false;
@@ -251,6 +256,11 @@ export type VoltIDL = {
         },
         {
           name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -326,6 +336,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "feeAcct";
           isMut: true;
           isSigner: false;
@@ -373,6 +388,11 @@ export type VoltIDL = {
         },
         {
           name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -545,6 +565,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
@@ -602,6 +627,11 @@ export type VoltIDL = {
         },
         {
           name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -703,6 +733,11 @@ export type VoltIDL = {
         },
         {
           name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -813,6 +848,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
@@ -827,6 +867,126 @@ export type VoltIDL = {
         {
           name: "depositAmount";
           type: "u64";
+        }
+      ];
+    },
+    {
+      name: "depositWithClaim";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "daoAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "solTransferAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authorityCheck";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingTokenSource";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositRoundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositRoundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "depositAmount";
+          type: "u64";
+        },
+        {
+          name: "doTransfer";
+          type: "bool";
         }
       ];
     },
@@ -900,6 +1060,11 @@ export type VoltIDL = {
         },
         {
           name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -995,6 +1160,11 @@ export type VoltIDL = {
         },
         {
           name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -1115,6 +1285,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "feeOwner";
           isMut: true;
           isSigner: false;
@@ -1156,6 +1331,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "depositPool";
           isMut: false;
           isSigner: false;
@@ -1172,6 +1352,11 @@ export type VoltIDL = {
         },
         {
           name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -1392,6 +1577,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
@@ -1519,6 +1709,11 @@ export type VoltIDL = {
         },
         {
           name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -1659,6 +1854,11 @@ export type VoltIDL = {
         {
           name: "whitelistTokenAccount";
           isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2070,6 +2270,27 @@ export type VoltIDL = {
           name: "daoAuthority";
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "detachDao";
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
         },
         {
           name: "voltVault";
@@ -2566,6 +2787,202 @@ export type VoltIDL = {
           {
             name: "premiumFarmed";
             type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "FriktionEpochInfo";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "vaultTokenPrice";
+            type: "f64";
+          },
+          {
+            name: "pctPnl";
+            type: "f64";
+          },
+          {
+            name: "number";
+            type: "u64";
+          },
+          {
+            name: "underlyingPreEnter";
+            type: "u64";
+          },
+          {
+            name: "underlyingPostSettle";
+            type: "u64";
+          },
+          {
+            name: "voltTokenSupply";
+            type: "u64";
+          },
+          {
+            name: "pnl";
+            type: "u64";
+          },
+          {
+            name: "performanceFees";
+            type: "u64";
+          },
+          {
+            name: "withdrawalFees";
+            type: "u64";
+          },
+          {
+            name: "pendingDeposits";
+            type: "u64";
+          },
+          {
+            name: "pendingWithdrawalsVoltTokens";
+            type: "u64";
+          },
+          {
+            name: "pendingWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "canceledWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "canceledDeposits";
+            type: "u64";
+          },
+          {
+            name: "totalWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "totalDeposits";
+            type: "u64";
+          },
+          {
+            name: "instantDeposits";
+            type: "u64";
+          },
+          {
+            name: "instantWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "daoDeposits";
+            type: "u64";
+          },
+          {
+            name: "mintedOptions";
+            type: "u64";
+          },
+          {
+            name: "enterNumTimesCalled";
+            type: "u64";
+          },
+          {
+            name: "swapPremiumNumTimesCalled";
+            type: "u64";
+          },
+          {
+            name: "optionKey";
+            type: "publicKey";
+          },
+          {
+            name: "extraKeyFour";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey5";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey6";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey7";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey8";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey9";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey10";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey11";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey12";
+            type: "publicKey";
+          },
+          {
+            name: "unusedUintFour";
+            type: "u64";
+          },
+          {
+            name: "unusedUintFive";
+            type: "u64";
+          },
+          {
+            name: "unusedUintSix";
+            type: "u64";
+          },
+          {
+            name: "unusedUint7";
+            type: "u64";
+          },
+          {
+            name: "unusedUint8";
+            type: "u64";
+          },
+          {
+            name: "unusedUint9";
+            type: "u64";
+          },
+          {
+            name: "unusedUint10";
+            type: "u64";
+          },
+          {
+            name: "unusedUint11";
+            type: "u64";
+          },
+          {
+            name: "unusedUint12";
+            type: "u64";
+          },
+          {
+            name: "unusedBoolOne";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolTwo";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolThree";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFour";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFive";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolSix";
+            type: "bool";
           }
         ];
       };
@@ -3238,7 +3655,7 @@ export type VoltIDL = {
     },
     {
       code: 6031;
-      name: "InsufficientCollateral";
+      name: "InsufficientCollateralForWriting";
       msg: "Insufficient collateral to write options.";
     },
     {
@@ -3860,6 +4277,21 @@ export type VoltIDL = {
       code: 6155;
       name: "WhitelistTokenAccountOwnerIsNotUser";
       msg: "whitelist token account owner is not user";
+    },
+    {
+      code: 6156;
+      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram";
+      msg: "sol transfer authority must be owned by volt program";
+    },
+    {
+      code: 6157;
+      name: "InsufficientCollateralForDeposit";
+      msg: "Insufficient collateral to deposit.";
+    },
+    {
+      code: 6158;
+      name: "SolTransferAuthorityMustBeWritableAndSigner";
+      msg: "sol transfer authority must be writable/signer";
     }
   ];
 };
@@ -4085,6 +4517,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "vaultAuthority",
           isMut: false,
           isSigner: false,
@@ -4116,6 +4553,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4191,6 +4633,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "feeAcct",
           isMut: true,
           isSigner: false,
@@ -4238,6 +4685,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4410,6 +4862,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "systemProgram",
           isMut: false,
           isSigner: false,
@@ -4467,6 +4924,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4568,6 +5030,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4678,6 +5145,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "systemProgram",
           isMut: false,
           isSigner: false,
@@ -4692,6 +5164,126 @@ export const VoltIDLJsonRaw = {
         {
           name: "depositAmount",
           type: "u64",
+        },
+      ],
+    },
+    {
+      name: "depositWithClaim",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "daoAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "solTransferAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authorityCheck",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingTokenSource",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "depositAmount",
+          type: "u64",
+        },
+        {
+          name: "doTransfer",
+          type: "bool",
         },
       ],
     },
@@ -4765,6 +5357,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4860,6 +5457,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -4980,6 +5582,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "feeOwner",
           isMut: true,
           isSigner: false,
@@ -5021,6 +5628,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "depositPool",
           isMut: false,
           isSigner: false,
@@ -5037,6 +5649,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -5257,6 +5874,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -5384,6 +6006,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -5524,6 +6151,11 @@ export const VoltIDLJsonRaw = {
         {
           name: "whitelistTokenAccount",
           isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -5935,6 +6567,27 @@ export const VoltIDLJsonRaw = {
           name: "daoAuthority",
           isMut: false,
           isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "detachDao",
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
         },
         {
           name: "voltVault",
@@ -6431,6 +7084,202 @@ export const VoltIDLJsonRaw = {
           {
             name: "premiumFarmed",
             type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "FriktionEpochInfo",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "vaultTokenPrice",
+            type: "f64",
+          },
+          {
+            name: "pctPnl",
+            type: "f64",
+          },
+          {
+            name: "number",
+            type: "u64",
+          },
+          {
+            name: "underlyingPreEnter",
+            type: "u64",
+          },
+          {
+            name: "underlyingPostSettle",
+            type: "u64",
+          },
+          {
+            name: "voltTokenSupply",
+            type: "u64",
+          },
+          {
+            name: "pnl",
+            type: "u64",
+          },
+          {
+            name: "performanceFees",
+            type: "u64",
+          },
+          {
+            name: "withdrawalFees",
+            type: "u64",
+          },
+          {
+            name: "pendingDeposits",
+            type: "u64",
+          },
+          {
+            name: "pendingWithdrawalsVoltTokens",
+            type: "u64",
+          },
+          {
+            name: "pendingWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "canceledWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "canceledDeposits",
+            type: "u64",
+          },
+          {
+            name: "totalWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "totalDeposits",
+            type: "u64",
+          },
+          {
+            name: "instantDeposits",
+            type: "u64",
+          },
+          {
+            name: "instantWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "daoDeposits",
+            type: "u64",
+          },
+          {
+            name: "mintedOptions",
+            type: "u64",
+          },
+          {
+            name: "enterNumTimesCalled",
+            type: "u64",
+          },
+          {
+            name: "swapPremiumNumTimesCalled",
+            type: "u64",
+          },
+          {
+            name: "optionKey",
+            type: "publicKey",
+          },
+          {
+            name: "extraKeyFour",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey5",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey6",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey7",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey8",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey9",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey10",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey11",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey12",
+            type: "publicKey",
+          },
+          {
+            name: "unusedUintFour",
+            type: "u64",
+          },
+          {
+            name: "unusedUintFive",
+            type: "u64",
+          },
+          {
+            name: "unusedUintSix",
+            type: "u64",
+          },
+          {
+            name: "unusedUint7",
+            type: "u64",
+          },
+          {
+            name: "unusedUint8",
+            type: "u64",
+          },
+          {
+            name: "unusedUint9",
+            type: "u64",
+          },
+          {
+            name: "unusedUint10",
+            type: "u64",
+          },
+          {
+            name: "unusedUint11",
+            type: "u64",
+          },
+          {
+            name: "unusedUint12",
+            type: "u64",
+          },
+          {
+            name: "unusedBoolOne",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolTwo",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolThree",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFour",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFive",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolSix",
+            type: "bool",
           },
         ],
       },
@@ -7103,7 +7952,7 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6031,
-      name: "InsufficientCollateral",
+      name: "InsufficientCollateralForWriting",
       msg: "Insufficient collateral to write options.",
     },
     {
@@ -7725,6 +8574,21 @@ export const VoltIDLJsonRaw = {
       code: 6155,
       name: "WhitelistTokenAccountOwnerIsNotUser",
       msg: "whitelist token account owner is not user",
+    },
+    {
+      code: 6156,
+      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram",
+      msg: "sol transfer authority must be owned by volt program",
+    },
+    {
+      code: 6157,
+      name: "InsufficientCollateralForDeposit",
+      msg: "Insufficient collateral to deposit.",
+    },
+    {
+      code: 6158,
+      name: "SolTransferAuthorityMustBeWritableAndSigner",
+      msg: "sol transfer authority must be writable/signer",
     },
   ],
 };

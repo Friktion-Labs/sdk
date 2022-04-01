@@ -52,6 +52,7 @@ pub mod daoexamples {
                     round_volt_tokens: ctx.accounts.round_volt_tokens.to_account_info(),
                     round_underlying_tokens: ctx.accounts.round_underlying_tokens.to_account_info(),
                     pending_deposit_info: ctx.accounts.pending_deposit_info.to_account_info(),
+                    epoch_info: ctx.accounts.epoch_info.to_account_info(),
                     system_program: ctx.accounts.system_program.to_account_info(),
                     token_program: ctx.accounts.token_program.to_account_info(),
                 },
