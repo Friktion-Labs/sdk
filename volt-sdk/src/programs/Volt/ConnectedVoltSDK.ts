@@ -1778,7 +1778,10 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   // Entropy Instructions
 
-  async rebalanceEntropy(): Promise<TransactionInstruction> {
+  async rebalanceEntropy(
+    clientBidPrice?: BN,
+    clientAskPrice?: BN
+  ): Promise<TransactionInstruction> {
     const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
       this.voltKey,
       this.voltVault.roundNumber,
@@ -1809,6 +1812,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       );
       perpMarketKey = this.extraVoltData.spotPerpMarket;
     }
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
@@ -1829,6 +1835,23 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    if (!clientBidPrice) {
+      const bids = await perpMarket.loadBids(this.connection);
+      const bestBid = bids.getBest();
+      if (!bestBid) {
+        throw new Error("no bid exists on the orderbook");
+      }
+      clientBidPrice = new BN(bestBid.price);
+    }
+    if (!clientAskPrice) {
+      const asks = await perpMarket.loadAsks(this.connection);
+      const bestAsk = asks.getBest();
+      if (!bestAsk) {
+        throw new Error("no ask exists on the orderbook");
+      }
+      clientAskPrice = new BN(bestAsk.price);
+    }
+
     const rebalanceEntropyStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEntropy"]["accounts"]
     >[0] = {
@@ -1836,8 +1859,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
       extraVoltData: extraVoltKey,
-
-      dexProgram: this.extraVoltData.serumProgramId,
+      entropyMetadata: entropyMetadataKey,
 
       entropyProgram: this.extraVoltData.entropyProgramId,
       entropyGroup: this.extraVoltData.entropyGroup,
@@ -1864,8 +1886,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     };
 
     return this.sdk.programs.Volt.instruction.rebalanceEntropy(
-      new BN("18446744073709551614"),
-      new BN("18446744073709551614"),
+      clientBidPrice,
+      clientAskPrice,
       {
         accounts: rebalanceEntropyStruct,
       }
@@ -1967,6 +1989,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
     );
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
 
     const setupRebalanceEntropyStruct: Parameters<
       VoltProgram["instruction"]["setupRebalanceEntropy"]["accounts"]
@@ -1975,6 +2000,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
+      entropyMetadata: entropyMetadataKey,
 
       vaultMint: this.voltVault.vaultMint,
       depositPool: this.voltVault.depositPool,
@@ -2047,6 +2073,9 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
 
     const entropyGroup = await client.getEntropyGroup(
       this.extraVoltData.entropyGroup
@@ -2073,6 +2102,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
+      entropyMetadata: entropyMetadataKey,
       vaultAuthority: this.voltVault.vaultAuthority,
       vaultMint: this.voltVault.vaultMint,
       roundVoltTokens: roundVoltTokensKey,

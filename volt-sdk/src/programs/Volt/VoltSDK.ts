@@ -488,6 +488,9 @@ export class VoltSDK {
     );
 
     const [entropyAccountKey] = await VoltSDK.findEntropyAccountAddress(vault);
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      vault
+    );
 
     const client = new EntropyClient(
       sdk.readonlyProvider.connection,
@@ -509,6 +512,7 @@ export class VoltSDK {
       vaultAuthority: vaultAuthority,
       vaultMint: vaultMint,
       extraVoltData: extraVoltKey,
+      entropyMetadata: entropyMetadataKey,
 
       depositPool: depositPoolKey,
 
@@ -1707,5 +1711,16 @@ export class VoltSDK {
       entropyAccount,
       entropyCache,
     };
+  }
+
+  static async findEntropyMetadataAddress(
+    voltKey: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("entropyMetadata")],
+      voltProgramId
+    );
   }
 }

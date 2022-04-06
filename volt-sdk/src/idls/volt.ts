@@ -2255,6 +2255,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "vaultAuthority";
           isMut: true;
           isSigner: false;
@@ -2383,6 +2388,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "entropyMetadata";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "vaultAuthority";
           isMut: false;
           isSigner: false;
@@ -2476,6 +2486,11 @@ export type VoltIDL = {
         {
           name: "extraVoltData";
           isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: false;
           isSigner: false;
         },
         {
@@ -2610,13 +2625,13 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "vaultAuthority";
-          isMut: true;
+          name: "entropyMetadata";
+          isMut: false;
           isSigner: false;
         },
         {
-          name: "dexProgram";
-          isMut: false;
+          name: "vaultAuthority";
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2707,12 +2722,12 @@ export type VoltIDL = {
       ];
       args: [
         {
-          name: "maxQuotePosChange";
+          name: "clientBidPrice";
           type: "u64";
         },
         {
-          name: "maxPxMove";
-          type: "f64";
+          name: "clientAskPrice";
+          type: "u64";
         }
       ];
     },
@@ -2915,6 +2930,14 @@ export type VoltIDL = {
             type: "u64";
           },
           {
+            name: "prevEntropyAccountDeposits";
+            type: "u64";
+          },
+          {
+            name: "initialEquity";
+            type: "f64";
+          },
+          {
             name: "newEquityPostDeposit";
             type: "f64";
           },
@@ -2937,6 +2960,82 @@ export type VoltIDL = {
           {
             name: "withdrawAmtNative";
             type: "u64";
+          },
+          {
+            name: "totalVoltSupply";
+            type: "u64";
+          },
+          {
+            name: "oraclePrice";
+            type: "f64";
+          },
+          {
+            name: "extraKey8";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey9";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey10";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey11";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey12";
+            type: "publicKey";
+          },
+          {
+            name: "unusedUintFour";
+            type: "u64";
+          },
+          {
+            name: "unusedUintFive";
+            type: "u64";
+          },
+          {
+            name: "unusedUintSix";
+            type: "u64";
+          },
+          {
+            name: "unusedUint12";
+            type: "u64";
+          },
+          {
+            name: "unusedFloat1";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat2";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat3";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat4";
+            type: "f64";
+          },
+          {
+            name: "unusedBoolOne";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolTwo";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolThree";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFour";
+            type: "bool";
           }
         ];
       };
@@ -3185,6 +3284,170 @@ export type VoltIDL = {
           {
             name: "requiredBasisFromOracle";
             type: "f64";
+          },
+          {
+            name: "extraKey3";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey4";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey5";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey6";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey7";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey8";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey9";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey10";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey11";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey12";
+            type: "publicKey";
+          },
+          {
+            name: "unusedUintFour";
+            type: "u64";
+          },
+          {
+            name: "unusedUintFive";
+            type: "u64";
+          },
+          {
+            name: "unusedUintSix";
+            type: "u64";
+          },
+          {
+            name: "unusedUint12";
+            type: "u64";
+          },
+          {
+            name: "unusedUint123";
+            type: "u64";
+          },
+          {
+            name: "unusedUint456";
+            type: "u64";
+          },
+          {
+            name: "unusedUint789";
+            type: "u64";
+          },
+          {
+            name: "unusedUint102";
+            type: "u64";
+          },
+          {
+            name: "unusedFloat1";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat2";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat3";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat4";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat5";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat6";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat7";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat8";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat9";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat10";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat11";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat12";
+            type: "f64";
+          },
+          {
+            name: "unusedBoolOne";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolTwo";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolThree";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFour";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFive";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolSix";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolSeven";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolEight";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolNine";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolTen";
+            type: "bool";
+          },
+          {
+            name: "vaultName";
+            type: "string";
           }
         ];
       };
@@ -4559,6 +4822,11 @@ export type VoltIDL = {
       code: 6171;
       name: "DepositsAndWithdrawalsAreTurnedOff";
       msg: "deposits and withdrawals are turned off";
+    },
+    {
+      code: 6172;
+      name: "UnrecognizedEntropyProgramId";
+      msg: "unrecognized entropy program id";
     }
   ];
 };
@@ -6819,6 +7087,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "entropyMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "vaultAuthority",
           isMut: true,
           isSigner: false,
@@ -6947,6 +7220,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "entropyMetadata",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "vaultAuthority",
           isMut: false,
           isSigner: false,
@@ -7040,6 +7318,11 @@ export const VoltIDLJsonRaw = {
         {
           name: "extraVoltData",
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: false,
           isSigner: false,
         },
         {
@@ -7174,13 +7457,13 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "vaultAuthority",
-          isMut: true,
+          name: "entropyMetadata",
+          isMut: false,
           isSigner: false,
         },
         {
-          name: "dexProgram",
-          isMut: false,
+          name: "vaultAuthority",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -7271,12 +7554,12 @@ export const VoltIDLJsonRaw = {
       ],
       args: [
         {
-          name: "maxQuotePosChange",
+          name: "clientBidPrice",
           type: "u64",
         },
         {
-          name: "maxPxMove",
-          type: "f64",
+          name: "clientAskPrice",
+          type: "u64",
         },
       ],
     },
@@ -7479,6 +7762,14 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
+            name: "prevEntropyAccountDeposits",
+            type: "u64",
+          },
+          {
+            name: "initialEquity",
+            type: "f64",
+          },
+          {
             name: "newEquityPostDeposit",
             type: "f64",
           },
@@ -7501,6 +7792,82 @@ export const VoltIDLJsonRaw = {
           {
             name: "withdrawAmtNative",
             type: "u64",
+          },
+          {
+            name: "totalVoltSupply",
+            type: "u64",
+          },
+          {
+            name: "oraclePrice",
+            type: "f64",
+          },
+          {
+            name: "extraKey8",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey9",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey10",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey11",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey12",
+            type: "publicKey",
+          },
+          {
+            name: "unusedUintFour",
+            type: "u64",
+          },
+          {
+            name: "unusedUintFive",
+            type: "u64",
+          },
+          {
+            name: "unusedUintSix",
+            type: "u64",
+          },
+          {
+            name: "unusedUint12",
+            type: "u64",
+          },
+          {
+            name: "unusedFloat1",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat2",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat3",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat4",
+            type: "f64",
+          },
+          {
+            name: "unusedBoolOne",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolTwo",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolThree",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFour",
+            type: "bool",
           },
         ],
       },
@@ -7749,6 +8116,170 @@ export const VoltIDLJsonRaw = {
           {
             name: "requiredBasisFromOracle",
             type: "f64",
+          },
+          {
+            name: "extraKey3",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey4",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey5",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey6",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey7",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey8",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey9",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey10",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey11",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey12",
+            type: "publicKey",
+          },
+          {
+            name: "unusedUintFour",
+            type: "u64",
+          },
+          {
+            name: "unusedUintFive",
+            type: "u64",
+          },
+          {
+            name: "unusedUintSix",
+            type: "u64",
+          },
+          {
+            name: "unusedUint12",
+            type: "u64",
+          },
+          {
+            name: "unusedUint123",
+            type: "u64",
+          },
+          {
+            name: "unusedUint456",
+            type: "u64",
+          },
+          {
+            name: "unusedUint789",
+            type: "u64",
+          },
+          {
+            name: "unusedUint102",
+            type: "u64",
+          },
+          {
+            name: "unusedFloat1",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat2",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat3",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat4",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat5",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat6",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat7",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat8",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat9",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat10",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat11",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat12",
+            type: "f64",
+          },
+          {
+            name: "unusedBoolOne",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolTwo",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolThree",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFour",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFive",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolSix",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolSeven",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolEight",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolNine",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolTen",
+            type: "bool",
+          },
+          {
+            name: "vaultName",
+            type: "string",
           },
         ],
       },
@@ -9123,6 +9654,11 @@ export const VoltIDLJsonRaw = {
       code: 6171,
       name: "DepositsAndWithdrawalsAreTurnedOff",
       msg: "deposits and withdrawals are turned off",
+    },
+    {
+      code: 6172,
+      name: "UnrecognizedEntropyProgramId",
+      msg: "unrecognized entropy program id",
     },
   ],
 };
