@@ -40,6 +40,11 @@ export type InertiaIXAccounts = {
       InertiaProgram["instruction"]["optionSettle"]["accounts"]
     >[0]]: PublicKey;
   };
+  revertSettle: {
+    [A in keyof Parameters<
+      InertiaProgram["instruction"]["revertOptionSettle"]["accounts"]
+    >[0]]: PublicKey;
+  };
   write: {
     [A in keyof Parameters<
       InertiaProgram["instruction"]["optionWrite"]["accounts"]

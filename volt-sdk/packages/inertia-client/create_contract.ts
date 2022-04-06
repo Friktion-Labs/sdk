@@ -143,8 +143,8 @@ export const newContractInstruction = async (
     wasSettleCranked: false,
     claimablePoolBump,
     extraKey1: extraKeys,
-    extraInt1: new anchor.BN(0),
-    extraInt2: new anchor.BN(0),
+    exerciseAmount: new anchor.BN(0),
+    totalAmount: new anchor.BN(0),
   };
 
   return [inertiaContractWithKey, newContractIx];
@@ -254,7 +254,7 @@ export const newContract = async (
     wasSettleCranked: false,
     claimablePoolBump,
     extraKey1: extraKeys,
-    extraInt1: new anchor.BN(0),
-    extraInt2: new anchor.BN(0),
+    exerciseAmount: new anchor.BN(0),
+    totalAmount: new anchor.BN(0),
   };
 };

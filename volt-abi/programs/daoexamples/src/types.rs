@@ -62,13 +62,12 @@ pub struct DepositDaoExampleAccounts<'info> {
     /// CHECK: skip
     pub round_underlying_tokens: AccountInfo<'info>,
 
-    /// CHECK: skip
-    #[account(mut)]
-    pub pending_deposit_info: AccountInfo<'info>,
-
     #[account(mut)]
     /// CHECK: skip
     pub epoch_info: AccountInfo<'info>,
+    /// CHECK: skip
+    #[account(mut)]
+    pub pending_deposit_info: AccountInfo<'info>,
 
     /// CHECK: skip
     pub system_program: AccountInfo<'info>,

@@ -81,12 +81,12 @@ export type DaoExamplesIDL = {
           isSigner: false;
         },
         {
-          name: "pendingDepositInfo";
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
         {
-          name: "epochInfo";
+          name: "pendingDepositInfo";
           isMut: true;
           isSigner: false;
         },
@@ -204,12 +204,12 @@ export const DaoExamplesIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "pendingDepositInfo",
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
         {
-          name: "epochInfo",
+          name: "pendingDepositInfo",
           isMut: true,
           isSigner: false,
         },

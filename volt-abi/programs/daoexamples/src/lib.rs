@@ -14,7 +14,6 @@ macro_rules! gen_dao_signer_seeds {
 #[program]
 pub mod daoexamples {
 
-    use anchor_lang::prelude::CpiContext;
     use solana_program::msg;
 
     use super::*;

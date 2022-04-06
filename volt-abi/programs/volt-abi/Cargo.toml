@@ -16,6 +16,6 @@ default = ["mainnet"]
 mainnet = []
 
 [dependencies]
-anchor-lang = { version="0.22.1", features=["init-if-needed"] }
-anchor-spl = { version="0.22.1", features=["dex"] }
-solana-program = "1.8.2"
+anchor-lang = { version="0.23.0", features=["init-if-needed"] }
+anchor-spl = { version="0.23.0", features=["dex"] }
+solana-program = "^1.8.14"

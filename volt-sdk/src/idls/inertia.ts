@@ -263,6 +263,67 @@ export type InertiaIDL = {
       ];
     },
     {
+      name: "revertOptionSettle";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "contract";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "oracleAi";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "quoteMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "contractUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "claimablePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "exerciseFeeAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "settlePrice";
+          type: "u64";
+        }
+      ];
+    },
+    {
       name: "optionSettle";
       accounts: [
         {
@@ -517,11 +578,11 @@ export type InertiaIDL = {
             type: "publicKey";
           },
           {
-            name: "extraInt1";
+            name: "exerciseAmount";
             type: "u64";
           },
           {
-            name: "extraInt2";
+            name: "totalAmount";
             type: "u64";
           }
         ];
@@ -976,6 +1037,67 @@ export const InertiaIDLJsonRaw = {
       ],
     },
     {
+      name: "revertOptionSettle",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "contract",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "oracleAi",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "quoteMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "contractUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "claimablePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "exerciseFeeAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "settlePrice",
+          type: "u64",
+        },
+      ],
+    },
+    {
       name: "optionSettle",
       accounts: [
         {
@@ -1230,11 +1352,11 @@ export const InertiaIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "extraInt1",
+            name: "exerciseAmount",
             type: "u64",
           },
           {
-            name: "extraInt2",
+            name: "totalAmount",
             type: "u64",
           },
         ],

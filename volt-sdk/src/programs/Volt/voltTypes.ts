@@ -16,6 +16,7 @@ export type VoltTypes = AnchorTypes<
     whitelist: Whitelist;
     round: Round;
     friktionEpochInfo: FriktionEpochInfo;
+    entropyRound: EntropyRound;
     pendingDeposit: PendingDeposit;
     pendingWithdrawal: PendingWithdrawal;
   }
@@ -37,6 +38,7 @@ export type FriktionEpochInfo = VoltAccounts["FriktionEpochInfo"];
 export type VoltVault = VoltAccounts["VoltVault"];
 export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
 export type Whitelist = VoltAccounts["Whitelist"];
+export type EntropyRound = VoltAccounts["EntropyRound"];
 export type WithKey = {
   key: PublicKey;
 };
@@ -46,6 +48,7 @@ export type PendingDepositWithKey = PendingDeposit & WithKey;
 export type PendingWithdrawalWithKey = PendingWithdrawal & WithKey;
 export type RoundWithKey = Round & WithKey;
 export type FriktionEpochInfoWithKey = FriktionEpochInfo & WithKey;
+export type EntropyRoundWithKey = EntropyRound & WithKey;
 export type VoltVaultWithKey = VoltVault & WithKey;
 export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
 export type WhitelistWithKey = Whitelist & WithKey;
@@ -63,6 +66,8 @@ export type OptionMarket = {
   quoteAmountPerContract: BN;
   expirationUnixTimestamp: BN;
   expired: boolean;
+  claimablePool: PublicKey;
+  underlyingPool: PublicKey;
   bumpSeed: number;
 };
 

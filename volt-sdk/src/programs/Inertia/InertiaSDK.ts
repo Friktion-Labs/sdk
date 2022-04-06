@@ -38,6 +38,10 @@ export interface InertiaNewMarketParams {
   exerciseFeeAccount: PublicKey;
 }
 
+export interface InertiaRevertSettleOptionParams {
+  user: PublicKey;
+}
+
 export interface InertiaSettleOptionParams {
   user: PublicKey;
   settlePrice: number;
@@ -265,6 +269,42 @@ export class InertiaSDK {
 
     return this.program.instruction.optionSettle(new BN(params.settlePrice), {
       accounts: settleAccounts,
+    });
+  }
+
+  async revertSettle(
+    params: InertiaRevertSettleOptionParams
+  ): Promise<TransactionInstruction> {
+    const seeds = [
+      this.optionMarket.underlyingMint,
+      this.optionMarket.quoteMint,
+      this.optionMarket.underlyingAmount,
+      this.optionMarket.quoteAmount,
+      this.optionMarket.expiryTs,
+      this.optionMarket.isCall.toNumber() > 0 ? true : false,
+    ] as const;
+    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+      this.program,
+      "ClaimablePool",
+      ...seeds
+    );
+
+    const revertSettleAccounts: InertiaIXAccounts["revertSettle"] = {
+      authority: params.user,
+      oracleAi: this.optionMarket.oracleAi,
+      contract: this.optionKey,
+      claimablePool,
+      underlyingMint: this.optionMarket.underlyingMint,
+      quoteMint: this.optionMarket.quoteMint,
+      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
+
+      tokenProgram: TOKEN_PROGRAM_ID,
+      clock: SYSVAR_CLOCK_PUBKEY,
+    };
+
+    return this.program.instruction.revertOptionSettle(new BN(0), {
+      accounts: revertSettleAccounts,
     });
   }
 

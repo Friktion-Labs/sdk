@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import type {
+  EntropyAccount,
+  EntropyCache,
+  EntropyGroup,
+  NodeBank,
+  RootBank,
+} from "@friktion-labs/entropy-client";
+import { EntropyClient } from "@friktion-labs/entropy-client";
 import type { Program, ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
@@ -27,10 +35,15 @@ import {
   PERFORMANCE_FEE_BPS,
   WITHDRAWAL_FEE_BPS,
 } from "../..";
-import { FRIKTION_PROGRAM_ID, VoltType } from "../../constants";
+import {
+  ENTROPY_PROGRAM_ID,
+  FRIKTION_PROGRAM_ID,
+  VoltType,
+} from "../../constants";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
+  EntropyRoundWithKey,
   ExtraVoltDataWithKey,
   FriktionEpochInfoWithKey,
   OptionMarketWithKey,
@@ -58,6 +71,23 @@ export class VoltSDK {
     readonly voltVault: VoltVault,
     readonly voltKey: PublicKey
   ) {}
+
+  voltType(): VoltType {
+    const vaultType = this.voltVault.vaultType.toNumber();
+    if (vaultType === 0) {
+      return VoltType.ShortOptions;
+    } else if (vaultType === 1) {
+      return VoltType.Entropy;
+    } else {
+      throw new Error(
+        "volt type = " + vaultType.toString() + " is not recognized"
+      );
+    }
+  }
+
+  isPremiumBased(): boolean {
+    return this.voltType() === VoltType.ShortOptions;
+  }
 
   static withdrawalFeeAmount(numTokensWithdrawn: BN): BN {
     if (numTokensWithdrawn.lten(0)) {
@@ -155,6 +185,7 @@ export class VoltSDK {
     instruction: TransactionInstruction;
     voltKey: PublicKey;
   }> {
+    if (!seed) seed = new Keypair().publicKey;
     // If desired, change the SDK to allow custom seed
     const {
       vault,
@@ -167,15 +198,15 @@ export class VoltSDK {
       premiumPoolKey,
       permissionedMarketPremiumPoolKey,
       whitelistTokenAccountKey,
-      seed: seedNew,
     } = await VoltSDK.findInitializeAddresses(
       sdk,
       whitelistTokenMintKey,
       VoltType.ShortOptions,
-      seed
+      {
+        seed,
+      }
     );
 
-    seed = seedNew;
     console.log(
       "permissioned market premium mint: ",
       permissionedMarketPremiumMint.toString()
@@ -255,7 +286,10 @@ export class VoltSDK {
     sdk: FriktionSDK,
     whitelistTokenMintKey: PublicKey,
     vaultType: VoltType,
-    seed?: PublicKey
+    pdaParams: {
+      seed?: PublicKey;
+      pdaStr?: string;
+    }
   ): Promise<{
     vault: PublicKey;
     vaultBump: number;
@@ -267,21 +301,39 @@ export class VoltSDK {
     premiumPoolKey: PublicKey;
     permissionedMarketPremiumPoolKey: PublicKey;
     whitelistTokenAccountKey: PublicKey;
-    seed: PublicKey;
+    seed?: PublicKey;
   }> {
     const textEncoder = new TextEncoder();
 
     // If desired, change the SDK to allow custom seed
-    if (!seed) seed = new Keypair().publicKey;
 
-    const [vault, vaultBump] = await PublicKey.findProgramAddress(
-      [
-        new u64(vaultType).toBuffer(),
-        seed.toBuffer(),
-        textEncoder.encode("vault"),
-      ],
-      sdk.programs.Volt.programId
-    );
+    let vault: PublicKey, vaultBump: number;
+
+    if (vaultType === VoltType.ShortOptions) {
+      let seed = pdaParams.seed;
+      if (!seed) seed = new Keypair().publicKey;
+      [vault, vaultBump] = await PublicKey.findProgramAddress(
+        [
+          new u64(vaultType).toBuffer(),
+          seed.toBuffer(),
+          textEncoder.encode("vault"),
+        ],
+        sdk.programs.Volt.programId
+      );
+    } else {
+      const pdaStr = pdaParams.pdaStr;
+      if (!pdaStr) {
+        throw new Error("must pass in pda string if not short options vault");
+      }
+      [vault, vaultBump] = await PublicKey.findProgramAddress(
+        [
+          new u64(vaultType).toBuffer(),
+          textEncoder.encode(pdaStr),
+          textEncoder.encode("vault"),
+        ],
+        sdk.programs.Volt.programId
+      );
+    }
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(vault);
 
@@ -330,7 +382,6 @@ export class VoltSDK {
       premiumPoolKey,
       permissionedMarketPremiumPoolKey,
       whitelistTokenAccountKey,
-      seed,
     };
   }
 
@@ -364,138 +415,159 @@ export class VoltSDK {
     };
   }
 
-  // static async findEntropyAccountAddress(
-  //   voltKey: PublicKey
-  // ): Promise<[PublicKey, number]> {
-  //   const textEncoder = new TextEncoder();
-  //   return PublicKey.findProgramAddress(
-  //     [voltKey.toBuffer(), textEncoder.encode("entropyAccount")],
-  //     ENTROPY_PROGRAM_ID
-  //   );
-  // }
+  static async findEntropyAccountAddress(
+    voltKey: PublicKey
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("entropyAccount")],
+      FRIKTION_PROGRAM_ID
+    );
+  }
 
-  // static async initializeEntropyVolt({
-  //   sdk,
-  //   user,
-  //   underlyingAssetMint,
-  //   whitelistTokenMintKey,
-  //   serumProgramId,
-  //   entropyProgramId,
-  //   entropyGroup,
-  //   targetPerpMarket,
-  //   targetCollatRatio,
-  //   targetCollatLenience,
-  //   exitEarlyRatio,
-  //   capacity,
-  //   individualCapacity,
-  //   seed,
-  // }: {
-  //   sdk: FriktionSDK;
-  //   user: PublicKey;
-  //   underlyingAssetMint: PublicKey;
-  //   whitelistTokenMintKey: PublicKey;
-  //   serumProgramId: PublicKey;
-  //   entropyProgramId: PublicKey;
-  //   entropyGroup: PublicKey;
-  //   targetPerpMarket: PublicKey;
-  //   targetCollatRatio: number;
-  //   targetCollatLenience: number;
-  //   exitEarlyRatio: number;
-  //   capacity: anchor.BN;
-  //   individualCapacity: anchor.BN;
-  //   seed?: PublicKey;
-  // }): Promise<{
-  //   instruction: TransactionInstruction;
-  //   voltKey: PublicKey;
-  // }> {
-  //   const textEncoder = new TextEncoder();
+  static async initializeEntropyVolt({
+    sdk,
+    user,
+    pdaStr,
+    underlyingAssetMint,
+    whitelistTokenMintKey,
+    serumProgramId,
+    entropyProgramId,
+    entropyGroupKey,
+    targetPerpMarket,
+    spotPerpMarket,
+    targetLeverageRatio,
+    targetLeverageLenience,
+    targetHedgeLenience,
+    exitEarlyRatio,
+    capacity,
+    individualCapacity,
+  }: {
+    sdk: FriktionSDK;
+    user: PublicKey;
+    pdaStr: string;
+    underlyingAssetMint: PublicKey;
+    whitelistTokenMintKey: PublicKey;
+    serumProgramId: PublicKey;
+    entropyProgramId: PublicKey;
+    entropyGroupKey: PublicKey;
+    targetPerpMarket: PublicKey;
+    spotPerpMarket: PublicKey;
+    targetLeverageRatio: number;
+    targetLeverageLenience: number;
+    targetHedgeLenience: number;
+    exitEarlyRatio: number;
+    capacity: anchor.BN;
+    individualCapacity: anchor.BN;
+  }): Promise<{
+    instruction: TransactionInstruction;
+    voltKey: PublicKey;
+  }> {
+    console.log("pda string: ", pdaStr);
 
-  //   // If desired, change the SDK to allow custom seed
-  //   if (!seed) seed = new Keypair().publicKey;
+    const textEncoder = new TextEncoder();
 
-  //   const {
-  //     vault,
-  //     vaultBump,
-  //     vaultAuthorityBump,
-  //     extraVoltKey,
-  //     vaultMint,
-  //     vaultAuthority,
-  //     depositPoolKey,
-  //     premiumPoolKey,
-  //     permissionedMarketPremiumPoolKey,
-  //     whitelistTokenAccountKey,
-  //   } = await VoltSDK.findInitializeAddresses(
-  //     sdk,
-  //     whitelistTokenMintKey,
-  //     VoltType.ShortOptions,
-  //     seed
-  //   );
+    const {
+      vault,
+      vaultBump,
+      vaultAuthorityBump,
+      extraVoltKey,
+      vaultMint,
+      vaultAuthority,
+      depositPoolKey,
+      premiumPoolKey,
+      permissionedMarketPremiumPoolKey,
+      whitelistTokenAccountKey,
+    } = await VoltSDK.findInitializeAddresses(
+      sdk,
+      whitelistTokenMintKey,
+      VoltType.Entropy,
+      {
+        pdaStr: pdaStr,
+      }
+    );
 
-  //   const [entropyAccountKey] = await VoltSDK.findEntropyAccountAddress(vault);
+    const [entropyAccountKey] = await VoltSDK.findEntropyAccountAddress(vault);
 
-  //   const initializeEntropyAccounts: {
-  //     [K in keyof Parameters<
-  //       VoltProgram["instruction"]["initializeEntropy"]["accounts"]
-  //     >[0]]: PublicKey;
-  //   } = {
-  //     authority: user,
+    const client = new EntropyClient(
+      sdk.readonlyProvider.connection,
+      ENTROPY_PROGRAM_ID
+    );
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
+    const entropyCacheKey = entropyGroup.entropyCache;
 
-  //     adminKey: user,
+    const initializeEntropyAccounts: {
+      [K in keyof Parameters<
+        VoltProgram["instruction"]["initializeEntropy"]["accounts"]
+      >[0]]: PublicKey;
+    } = {
+      authority: user,
 
-  //     seed: seed,
+      adminKey: user,
 
-  //     voltVault: vault,
-  //     vaultAuthority: vaultAuthority,
-  //     vaultMint: vaultMint,
-  //     extraVoltData: extraVoltKey,
+      voltVault: vault,
+      vaultAuthority: vaultAuthority,
+      vaultMint: vaultMint,
+      extraVoltData: extraVoltKey,
 
-  //     depositPool: depositPoolKey,
+      depositPool: depositPoolKey,
 
-  //     depositMint: underlyingAssetMint,
+      depositMint: underlyingAssetMint,
 
-  //     dexProgram: serumProgramId,
+      dexProgram: serumProgramId,
 
-  //     entropyProgramId: entropyProgramId,
+      entropyProgram: entropyProgramId,
 
-  //     entropyGroup: entropyGroup,
+      entropyGroup: entropyGroupKey,
 
-  //     entropyAccount: entropyAccountKey,
+      entropyAccount: entropyAccountKey,
 
-  //     targetPerpMarket: targetPerpMarket,
+      entropyCache: entropyCacheKey,
 
-  //     tokenProgram: TOKEN_PROGRAM_ID,
-  //     rent: SYSVAR_RENT_PUBKEY,
-  //     systemProgram: SystemProgram.programId,
-  //   };
+      powerPerpMarket: targetPerpMarket,
+      spotPerpMarket: spotPerpMarket,
 
-  //   const serumOrderSize = new anchor.BN(1);
-  //   const serumOrderType = OrderType.Limit;
-  //   // const serumLimit = new anchor.BN(65535);
-  //   const serumSelfTradeBehavior = SelfTradeBehavior.AbortTransaction;
+      tokenProgram: TOKEN_PROGRAM_ID,
+      rent: SYSVAR_RENT_PUBKEY,
+      systemProgram: SystemProgram.programId,
+    };
 
-  //   Object.entries(initializeEntropyAccounts).map(function (key, value) {
-  //     console.log(key.toString() + " = " + value.toString());
-  //   });
+    Object.entries(initializeEntropyAccounts).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
 
-  //   const instruction: TransactionInstruction =
-  //     sdk.programs.Volt.instruction.initializeEntropy(
-  //       new anchor.BN(VoltType.Entropy),
-  //       vaultAuthorityBump,
-  //       targetCollatRatio,
-  //       targetCollatLenience,
-  //       exitEarlyRatio,
-  //       capacity,
-  //       individualCapacity,
-  //       {
-  //         accounts: initializeEntropyAccounts,
-  //       }
-  //     );
+    console.log(
+      vaultAuthorityBump,
+      targetLeverageRatio,
+      targetLeverageLenience,
+      targetHedgeLenience,
+      exitEarlyRatio,
+      capacity,
+      individualCapacity,
+      true
+    );
+    // const instruction: TransactionInstruction =
+    const instruction: TransactionInstruction =
+      sdk.programs.Volt.instruction.initializeEntropy(
+        pdaStr,
+        vaultAuthorityBump,
+        targetLeverageRatio,
+        targetLeverageLenience,
+        targetHedgeLenience,
+        exitEarlyRatio,
+        capacity,
+        individualCapacity,
+        true,
+        {
+          accounts: initializeEntropyAccounts,
+        }
+      );
 
-  //   return {
-  //     instruction,
-  //     voltKey: vault,
-  //   };
-  // }
+    return {
+      instruction,
+      voltKey: vault,
+    };
+  }
 
   /**
    * For an admin to create a volt
@@ -638,7 +710,6 @@ export class VoltSDK {
     const coinLotSize = new BN(1);
     const pcLotSize = new BN(1);
     const pcDustThreshold = new BN(1);
-    console.log("adding create serum market instruction");
     const instructions = createFirstAccountsInstructions.concat([
       middlewareProgram.instruction.initSerumMarket(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -652,9 +723,6 @@ export class VoltSDK {
         }
       ),
     ]);
-    console.log("finished adding create serum market instruction!");
-
-    console.log("returning serum market key = ", serumMarketKey.toString());
     return {
       serumMarketKey,
       vaultOwner,
@@ -989,6 +1057,22 @@ export class VoltSDK {
     );
   }
 
+  static async findEntropyRoundInfoAddress(
+    voltKey: PublicKey,
+    roundNumber: BN,
+    voltProgramId: PublicKey
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [
+        voltKey.toBuffer(),
+        new u64(roundNumber.toString()).toBuffer(),
+        textEncoder.encode("entropyRoundInfo"),
+      ],
+      voltProgramId
+    );
+  }
+
   static async findRoundInfoAddress(
     voltKey: PublicKey,
     roundNumber: BN,
@@ -1066,6 +1150,8 @@ export class VoltSDK {
     roundVoltTokensKeyBump: number;
     roundUnderlyingPendingWithdrawalsKey: PublicKey;
     roundUnderlyingPendingWithdrawalsBump: number;
+    entropyRoundInfoKey: PublicKey;
+    entropyRoundInfoBump: number;
     epochInfoKey: PublicKey;
     epochInfoBump: number;
   }> {
@@ -1104,6 +1190,13 @@ export class VoltSDK {
       voltProgramId
     );
 
+    const [entropyRoundInfoKey, entropyRoundInfoBump] =
+      await VoltSDK.findEntropyRoundInfoAddress(
+        voltKey,
+        roundNumber,
+        voltProgramId
+      );
+
     return {
       roundInfoKey,
       roundInfoKeyBump,
@@ -1113,6 +1206,8 @@ export class VoltSDK {
       roundVoltTokensKeyBump,
       roundUnderlyingPendingWithdrawalsKey,
       roundUnderlyingPendingWithdrawalsBump,
+      entropyRoundInfoKey,
+      entropyRoundInfoBump,
       epochInfoKey,
       epochInfoBump,
     };
@@ -1359,6 +1454,33 @@ export class VoltSDK {
     return await this.getEpochInfoByNumber(this.voltVault.roundNumber);
   }
 
+  async getEntropyRoundByKey(key: PublicKey): Promise<EntropyRoundWithKey> {
+    console.log("get epoch info by key, ", key.toString());
+    const acct = await this.sdk.programs.Volt.account.entropyRound.fetch(key);
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
+  }
+
+  async getEntropyRoundByNumber(
+    roundNumber: anchor.BN
+  ): Promise<EntropyRoundWithKey> {
+    const key = (
+      await VoltSDK.findEntropyRoundInfoAddress(
+        this.voltKey,
+        roundNumber,
+        this.sdk.programs.Volt.programId
+      )
+    )[0];
+    return await this.getEntropyRoundByKey(key);
+  }
+
+  async getCurrentEntropyRound(): Promise<EntropyRoundWithKey> {
+    return await this.getEntropyRoundByNumber(this.voltVault.roundNumber);
+  }
+
   async getCurrentRound(): Promise<RoundWithKey> {
     return await this.getRoundByNumber(this.voltVault.roundNumber);
   }
@@ -1513,6 +1635,29 @@ export class VoltSDK {
     return optionMarket;
   }
 
+  async getRootAndNodeBank(entropyGroup: EntropyGroup): Promise<{
+    rootBank: RootBank;
+    nodeBank: NodeBank;
+  }> {
+    const connection = this.sdk.readonlyProvider.connection;
+    const banks = await entropyGroup.loadRootBanks(connection);
+
+    const rootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    const nodeBank = (await rootBank?.loadNodeBanks(connection))![0];
+
+    if (!rootBank || !nodeBank) {
+      throw new Error("root bank or node bank was undefined");
+    }
+
+    return {
+      rootBank,
+      nodeBank,
+    };
+  }
+
   async getOptionsProtocolForKey(key: PublicKey): Promise<OptionsProtocol> {
     const accountInfo =
       await this.sdk.readonlyProvider.connection.getAccountInfo(key);
@@ -1533,5 +1678,34 @@ export class VoltSDK {
     } else {
       throw new Error("owner is not a supported options protocol");
     }
+  }
+
+  async getEntropyObjects(): Promise<{
+    entropyClient: EntropyClient;
+    entropyGroup: EntropyGroup;
+    entropyAccount: EntropyAccount;
+    entropyCache: EntropyCache;
+  }> {
+    const connection = this.sdk.readonlyProvider.connection;
+    const extraVoltData = await this.getExtraVoltData();
+
+    const client = new EntropyClient(connection, ENTROPY_PROGRAM_ID);
+    const entropyGroup = await client.getEntropyGroup(
+      extraVoltData.entropyGroup
+    );
+
+    const entropyAccount = await client.getEntropyAccount(
+      extraVoltData.entropyAccount,
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
+    );
+
+    const entropyCache = await entropyGroup.loadCache(connection);
+
+    return {
+      entropyClient: client,
+      entropyGroup,
+      entropyAccount,
+      entropyCache,
+    };
   }
 }

@@ -36,6 +36,8 @@ export const convertInertiaContractToOptionMarket = (
     expirationUnixTimestamp: inertiaContract.expiryTs,
     expired: false,
     key: inertiaContract.key,
+    claimablePool: inertiaContract.claimablePool,
+    underlyingPool: inertiaContract.underlyingPool,
     bumpSeed: inertiaContract.contractBump,
   };
 };

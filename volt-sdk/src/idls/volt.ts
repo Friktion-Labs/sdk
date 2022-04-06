@@ -202,6 +202,32 @@ export type VoltIDL = {
       ];
     },
     {
+      name: "changeHedging";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "shouldHedge";
+          type: "bool";
+        }
+      ];
+    },
+    {
       name: "startRound";
       accounts: [
         {
@@ -987,106 +1013,6 @@ export type VoltIDL = {
         {
           name: "doTransfer";
           type: "bool";
-        }
-      ];
-    },
-    {
-      name: "depositDao";
-      accounts: [
-        {
-          name: "authority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "payer";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "depositAmount";
-          type: "u64";
-        },
-        {
-          name: "pdaStr";
-          type: "string";
         }
       ];
     },
@@ -2237,7 +2163,7 @@ export type VoltIDL = {
         },
         {
           name: "extraVoltData";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -2319,11 +2245,6 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "seed";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "voltVault";
           isMut: true;
           isSigner: false;
@@ -2374,7 +2295,17 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "targetPerpMarket";
+          name: "entropyCache";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "powerPerpMarket";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "spotPerpMarket";
           isMut: false;
           isSigner: false;
         },
@@ -2396,19 +2327,23 @@ export type VoltIDL = {
       ];
       args: [
         {
-          name: "vaultType";
-          type: "u64";
+          name: "vaultName";
+          type: "string";
         },
         {
           name: "bumpAuthority";
           type: "u8";
         },
         {
-          name: "targetCollatRatio";
+          name: "targetLeverageRatio";
           type: "f64";
         },
         {
-          name: "targetCollatLenience";
+          name: "targetLeverageLenience";
+          type: "f64";
+        },
+        {
+          name: "targetHedgeLenience";
           type: "f64";
         },
         {
@@ -2422,11 +2357,111 @@ export type VoltIDL = {
         {
           name: "individualCapacity";
           type: "u64";
+        },
+        {
+          name: "shouldHedge";
+          type: "bool";
         }
       ];
     },
     {
-      name: "rebalanceEntropy";
+      name: "endRoundEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyCache";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rootBank";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "nodeBank";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "setupRebalanceEntropy";
       accounts: [
         {
           name: "authority";
@@ -2479,6 +2514,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "dexProgram";
           isMut: false;
           isSigner: false;
@@ -2499,12 +2539,108 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "targetPerpMarket";
+          name: "entropyCache";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "powerPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rootBank";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "nodeBank";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "rebalanceEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
           isMut: true;
           isSigner: false;
         },
         {
           name: "entropyCache";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "powerPerpMarket";
           isMut: true;
           isSigner: false;
         },
@@ -2529,12 +2665,22 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "powerPerpEventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "bids";
           isMut: true;
           isSigner: false;
         },
         {
           name: "asks";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotPerpMarket";
           isMut: true;
           isSigner: false;
         },
@@ -2755,6 +2901,42 @@ export type VoltIDL = {
           {
             name: "initialized";
             type: "bool";
+          }
+        ];
+      };
+    },
+    {
+      name: "EntropyRound";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "instantDepositsNative";
+            type: "u64";
+          },
+          {
+            name: "newEquityPostDeposit";
+            type: "f64";
+          },
+          {
+            name: "depositAmt";
+            type: "f64";
+          },
+          {
+            name: "withdrawCompFromDeposit";
+            type: "u64";
+          },
+          {
+            name: "netDeposits";
+            type: "f64";
+          },
+          {
+            name: "depositAmtNative";
+            type: "u64";
+          },
+          {
+            name: "withdrawAmtNative";
+            type: "u64";
           }
         ];
       };
@@ -2988,6 +3170,26 @@ export type VoltIDL = {
       };
     },
     {
+      name: "EntropyMetadata";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "targetHedgeRatio";
+            type: "f64";
+          },
+          {
+            name: "rebalancingLenience";
+            type: "f64";
+          },
+          {
+            name: "requiredBasisFromOracle";
+            type: "f64";
+          }
+        ];
+      };
+    },
+    {
       name: "ExtraVoltData";
       type: {
         kind: "struct";
@@ -3013,11 +3215,11 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "targetCollatRatio";
+            name: "targetLeverage";
             type: "f64";
           },
           {
-            name: "targetCollatLenience";
+            name: "targetLeverageLenience";
             type: "f64";
           },
           {
@@ -3025,7 +3227,7 @@ export type VoltIDL = {
             type: "f64";
           },
           {
-            name: "targetProgramId";
+            name: "entropyProgramId";
             type: "publicKey";
           },
           {
@@ -3037,7 +3239,7 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "targetPerpMarket";
+            name: "powerPerpMarket";
             type: "publicKey";
           },
           {
@@ -3053,23 +3255,15 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "extraKeyTwo";
+            name: "serumProgramId";
             type: "publicKey";
           },
           {
-            name: "extraKeyThree";
+            name: "entropyCache";
             type: "publicKey";
           },
           {
-            name: "extraKeyFour";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey5";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey6";
+            name: "spotPerpMarket";
             type: "publicKey";
           },
           {
@@ -3097,6 +3291,14 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
+            name: "extraKey13";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey14";
+            type: "publicKey";
+          },
+          {
             name: "netWithdrawals";
             type: "u64";
           },
@@ -3105,7 +3307,7 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "maxPxMove";
+            name: "targetHedgeLenience";
             type: "f64";
           },
           {
@@ -3145,23 +3347,23 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "startedRebalancing";
+            name: "turnOffDepositsAndWithdrawals";
             type: "bool";
           },
           {
-            name: "unusedBoolTwo";
+            name: "rebalanceIsReady";
             type: "bool";
           },
           {
-            name: "unusedBoolThree";
+            name: "unusedBool1234";
             type: "bool";
           },
           {
-            name: "unusedBoolFour";
+            name: "doneRebalancingPowerPerp";
             type: "bool";
           },
           {
-            name: "unusedBoolFive";
+            name: "isHedgingOn";
             type: "bool";
           },
           {
@@ -4205,8 +4407,8 @@ export type VoltIDL = {
     },
     {
       code: 6141;
-      name: "InvalidSettleDepositsState";
-      msg: "entropy: invalid settle deposits state";
+      name: "InvalidEndEntropyRoundState";
+      msg: "entropy: invalid end entropy round state";
     },
     {
       code: 6142;
@@ -4255,43 +4457,108 @@ export type VoltIDL = {
     },
     {
       code: 6151;
-      name: "TargetCollateralRatioMustBePositive";
-      msg: "target collateral ratio must be positive";
+      name: "TargetCollateralRatioMustBeNegative";
+      msg: "target collateral ratio must be neggat";
     },
     {
       code: 6152;
+      name: "NewEquityMustBeHigherThanDepositAmount";
+      msg: "new equity must be higher than deposit amt";
+    },
+    {
+      code: 6153;
+      name: "InstantTransfersMustBeDisabled";
+      msg: "instant transfers must be enabled";
+    },
+    {
+      code: 6154;
+      name: "RebalanceMustBeReady";
+      msg: "rebalance must be ready";
+    },
+    {
+      code: 6155;
+      name: "IncorrectHedge";
+      msg: "spot hedge unbalanced";
+    },
+    {
+      code: 6156;
+      name: "VaultNameMustBeNonZeroLength";
+      msg: "vault name must be zero length";
+    },
+    {
+      code: 6157;
+      name: "VaultDoesNotSupportOverLeveragedStrategies";
+      msg: "vault does not support over leveraged strategies";
+    },
+    {
+      code: 6158;
+      name: "LenienceMustBeGreaterThanZero";
+      msg: "lenience must be greater than zero";
+    },
+    {
+      code: 6159;
+      name: "LenienceShouldNotBeGreaterThanLeverage";
+      msg: "lenience should not be greater than leverage";
+    },
+    {
+      code: 6160;
+      name: "HedgeLenienceMustBeGreaterThanZero";
+      msg: "hedge lenience should be greater than leverage";
+    },
+    {
+      code: 6161;
+      name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies";
+      msg: "exit early ratio must be < 1.0";
+    },
+    {
+      code: 6162;
       name: "RoundNumberMustNotOverflow";
       msg: "round number must not overflow";
     },
     {
-      code: 6153;
+      code: 6163;
       name: "InvalidWhitelistTokenAccountMint";
       msg: "invalid whitelist token account mint";
     },
     {
-      code: 6154;
+      code: 6164;
       name: "SoloptionsProgramIdDoesNotMatch";
       msg: "soloptions program id does not match";
     },
     {
-      code: 6155;
+      code: 6165;
       name: "WhitelistTokenAccountOwnerIsNotUser";
       msg: "whitelist token account owner is not user";
     },
     {
-      code: 6156;
+      code: 6166;
       name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram";
       msg: "sol transfer authority must be owned by volt program";
     },
     {
-      code: 6157;
+      code: 6167;
       name: "InsufficientCollateralForDeposit";
       msg: "Insufficient collateral to deposit.";
     },
     {
-      code: 6158;
+      code: 6168;
       name: "SolTransferAuthorityMustBeWritableAndSigner";
       msg: "sol transfer authority must be writable/signer";
+    },
+    {
+      code: 6169;
+      name: "VoltMustBeOfEntropyType";
+      msg: "volt must be entropy type";
+    },
+    {
+      code: 6170;
+      name: "VoltMustBeofShortOptionsType";
+      msg: "volt must be of short options type";
+    },
+    {
+      code: 6171;
+      name: "DepositsAndWithdrawalsAreTurnedOff";
+      msg: "deposits and withdrawals are turned off";
     }
   ];
 };
@@ -4495,6 +4762,32 @@ export const VoltIDLJsonRaw = {
         {
           name: "individualCapacity",
           type: "u64",
+        },
+      ],
+    },
+    {
+      name: "changeHedging",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "shouldHedge",
+          type: "bool",
         },
       ],
     },
@@ -5284,106 +5577,6 @@ export const VoltIDLJsonRaw = {
         {
           name: "doTransfer",
           type: "bool",
-        },
-      ],
-    },
-    {
-      name: "depositDao",
-      accounts: [
-        {
-          name: "authority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "payer",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmount",
-          type: "u64",
-        },
-        {
-          name: "pdaStr",
-          type: "string",
         },
       ],
     },
@@ -6534,7 +6727,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "extraVoltData",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -6616,11 +6809,6 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "seed",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "voltVault",
           isMut: true,
           isSigner: false,
@@ -6671,7 +6859,17 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "targetPerpMarket",
+          name: "entropyCache",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "powerPerpMarket",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "spotPerpMarket",
           isMut: false,
           isSigner: false,
         },
@@ -6693,19 +6891,23 @@ export const VoltIDLJsonRaw = {
       ],
       args: [
         {
-          name: "vaultType",
-          type: "u64",
+          name: "vaultName",
+          type: "string",
         },
         {
           name: "bumpAuthority",
           type: "u8",
         },
         {
-          name: "targetCollatRatio",
+          name: "targetLeverageRatio",
           type: "f64",
         },
         {
-          name: "targetCollatLenience",
+          name: "targetLeverageLenience",
+          type: "f64",
+        },
+        {
+          name: "targetHedgeLenience",
           type: "f64",
         },
         {
@@ -6720,10 +6922,110 @@ export const VoltIDLJsonRaw = {
           name: "individualCapacity",
           type: "u64",
         },
+        {
+          name: "shouldHedge",
+          type: "bool",
+        },
       ],
     },
     {
-      name: "rebalanceEntropy",
+      name: "endRoundEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyCache",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rootBank",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "nodeBank",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "setupRebalanceEntropy",
       accounts: [
         {
           name: "authority",
@@ -6776,6 +7078,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "dexProgram",
           isMut: false,
           isSigner: false,
@@ -6796,12 +7103,108 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "targetPerpMarket",
+          name: "entropyCache",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "powerPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rootBank",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "nodeBank",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "rebalanceEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
           isMut: true,
           isSigner: false,
         },
         {
           name: "entropyCache",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "powerPerpMarket",
           isMut: true,
           isSigner: false,
         },
@@ -6826,12 +7229,22 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "powerPerpEventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "bids",
           isMut: true,
           isSigner: false,
         },
         {
           name: "asks",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotPerpMarket",
           isMut: true,
           isSigner: false,
         },
@@ -7052,6 +7465,42 @@ export const VoltIDLJsonRaw = {
           {
             name: "initialized",
             type: "bool",
+          },
+        ],
+      },
+    },
+    {
+      name: "EntropyRound",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "instantDepositsNative",
+            type: "u64",
+          },
+          {
+            name: "newEquityPostDeposit",
+            type: "f64",
+          },
+          {
+            name: "depositAmt",
+            type: "f64",
+          },
+          {
+            name: "withdrawCompFromDeposit",
+            type: "u64",
+          },
+          {
+            name: "netDeposits",
+            type: "f64",
+          },
+          {
+            name: "depositAmtNative",
+            type: "u64",
+          },
+          {
+            name: "withdrawAmtNative",
+            type: "u64",
           },
         ],
       },
@@ -7285,6 +7734,26 @@ export const VoltIDLJsonRaw = {
       },
     },
     {
+      name: "EntropyMetadata",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "targetHedgeRatio",
+            type: "f64",
+          },
+          {
+            name: "rebalancingLenience",
+            type: "f64",
+          },
+          {
+            name: "requiredBasisFromOracle",
+            type: "f64",
+          },
+        ],
+      },
+    },
+    {
       name: "ExtraVoltData",
       type: {
         kind: "struct",
@@ -7310,11 +7779,11 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "targetCollatRatio",
+            name: "targetLeverage",
             type: "f64",
           },
           {
-            name: "targetCollatLenience",
+            name: "targetLeverageLenience",
             type: "f64",
           },
           {
@@ -7322,7 +7791,7 @@ export const VoltIDLJsonRaw = {
             type: "f64",
           },
           {
-            name: "targetProgramId",
+            name: "entropyProgramId",
             type: "publicKey",
           },
           {
@@ -7334,7 +7803,7 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "targetPerpMarket",
+            name: "powerPerpMarket",
             type: "publicKey",
           },
           {
@@ -7350,23 +7819,15 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "extraKeyTwo",
+            name: "serumProgramId",
             type: "publicKey",
           },
           {
-            name: "extraKeyThree",
+            name: "entropyCache",
             type: "publicKey",
           },
           {
-            name: "extraKeyFour",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey5",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey6",
+            name: "spotPerpMarket",
             type: "publicKey",
           },
           {
@@ -7394,6 +7855,14 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
+            name: "extraKey13",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey14",
+            type: "publicKey",
+          },
+          {
             name: "netWithdrawals",
             type: "u64",
           },
@@ -7402,7 +7871,7 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "maxPxMove",
+            name: "targetHedgeLenience",
             type: "f64",
           },
           {
@@ -7442,23 +7911,23 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "startedRebalancing",
+            name: "turnOffDepositsAndWithdrawals",
             type: "bool",
           },
           {
-            name: "unusedBoolTwo",
+            name: "rebalanceIsReady",
             type: "bool",
           },
           {
-            name: "unusedBoolThree",
+            name: "unusedBool1234",
             type: "bool",
           },
           {
-            name: "unusedBoolFour",
+            name: "doneRebalancingPowerPerp",
             type: "bool",
           },
           {
-            name: "unusedBoolFive",
+            name: "isHedgingOn",
             type: "bool",
           },
           {
@@ -8502,8 +8971,8 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6141,
-      name: "InvalidSettleDepositsState",
-      msg: "entropy: invalid settle deposits state",
+      name: "InvalidEndEntropyRoundState",
+      msg: "entropy: invalid end entropy round state",
     },
     {
       code: 6142,
@@ -8552,43 +9021,108 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6151,
-      name: "TargetCollateralRatioMustBePositive",
-      msg: "target collateral ratio must be positive",
+      name: "TargetCollateralRatioMustBeNegative",
+      msg: "target collateral ratio must be neggat",
     },
     {
       code: 6152,
+      name: "NewEquityMustBeHigherThanDepositAmount",
+      msg: "new equity must be higher than deposit amt",
+    },
+    {
+      code: 6153,
+      name: "InstantTransfersMustBeDisabled",
+      msg: "instant transfers must be enabled",
+    },
+    {
+      code: 6154,
+      name: "RebalanceMustBeReady",
+      msg: "rebalance must be ready",
+    },
+    {
+      code: 6155,
+      name: "IncorrectHedge",
+      msg: "spot hedge unbalanced",
+    },
+    {
+      code: 6156,
+      name: "VaultNameMustBeNonZeroLength",
+      msg: "vault name must be zero length",
+    },
+    {
+      code: 6157,
+      name: "VaultDoesNotSupportOverLeveragedStrategies",
+      msg: "vault does not support over leveraged strategies",
+    },
+    {
+      code: 6158,
+      name: "LenienceMustBeGreaterThanZero",
+      msg: "lenience must be greater than zero",
+    },
+    {
+      code: 6159,
+      name: "LenienceShouldNotBeGreaterThanLeverage",
+      msg: "lenience should not be greater than leverage",
+    },
+    {
+      code: 6160,
+      name: "HedgeLenienceMustBeGreaterThanZero",
+      msg: "hedge lenience should be greater than leverage",
+    },
+    {
+      code: 6161,
+      name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies",
+      msg: "exit early ratio must be < 1.0",
+    },
+    {
+      code: 6162,
       name: "RoundNumberMustNotOverflow",
       msg: "round number must not overflow",
     },
     {
-      code: 6153,
+      code: 6163,
       name: "InvalidWhitelistTokenAccountMint",
       msg: "invalid whitelist token account mint",
     },
     {
-      code: 6154,
+      code: 6164,
       name: "SoloptionsProgramIdDoesNotMatch",
       msg: "soloptions program id does not match",
     },
     {
-      code: 6155,
+      code: 6165,
       name: "WhitelistTokenAccountOwnerIsNotUser",
       msg: "whitelist token account owner is not user",
     },
     {
-      code: 6156,
+      code: 6166,
       name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram",
       msg: "sol transfer authority must be owned by volt program",
     },
     {
-      code: 6157,
+      code: 6167,
       name: "InsufficientCollateralForDeposit",
       msg: "Insufficient collateral to deposit.",
     },
     {
-      code: 6158,
+      code: 6168,
       name: "SolTransferAuthorityMustBeWritableAndSigner",
       msg: "sol transfer authority must be writable/signer",
+    },
+    {
+      code: 6169,
+      name: "VoltMustBeOfEntropyType",
+      msg: "volt must be entropy type",
+    },
+    {
+      code: 6170,
+      name: "VoltMustBeofShortOptionsType",
+      msg: "volt must be of short options type",
+    },
+    {
+      code: 6171,
+      name: "DepositsAndWithdrawalsAreTurnedOff",
+      msg: "deposits and withdrawals are turned off",
     },
   ],
 };

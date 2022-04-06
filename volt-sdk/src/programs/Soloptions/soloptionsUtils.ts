@@ -41,6 +41,8 @@ export const convertSoloptionsContractToOptionMarket = (
     quoteAmountPerContract: soloptionsContract.quoteAmount,
     expirationUnixTimestamp: soloptionsContract.expiryTs,
     expired: false,
+    claimablePool: soloptionsContract.quotePool,
+    underlyingPool: soloptionsContract.underlyingPool,
     key: soloptionsContract.key,
     bumpSeed: soloptionsContract.contractBump,
   };

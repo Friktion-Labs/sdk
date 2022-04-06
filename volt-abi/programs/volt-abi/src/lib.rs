@@ -283,9 +283,10 @@ pub struct Withdraw<'info> {
     /// CHECK: skip
     pub round_underlying_tokens: AccountInfo<'info>,
 
-    #[account(init_if_needed, payer=authority)]
+    // TODO: resolve space=0 weirdness, obviously not correct
+    #[account(init_if_needed, space=0, payer=authority)]
     /// CHECK: skip
-    pub pending_withdrawal_info: Box<Account<'info, PendingDeposit>>,
+    pub pending_withdrawal_info: Box<Account<'info, PendingWithdrawal>>,
 
     #[account(mut)]
     /// CHECK: skip
