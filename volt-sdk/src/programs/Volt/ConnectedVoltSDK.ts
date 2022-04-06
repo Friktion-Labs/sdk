@@ -2171,7 +2171,14 @@ export class ConnectedVoltSDK extends VoltSDK {
       const oraclePrice = await this.oraclePriceForDepositToken();
       const acctValueInDepositToken = acctEquity.div(oraclePrice);
       console.log(acctValueInDepositToken.toFixed(0));
-      return new BN(acctValueInDepositToken.toFixed(0));
+      const depositPoolBalance = await getAccountBalance(
+        this.connection,
+        depositTokenMint,
+        this.voltVault.depositPool
+      );
+      return new BN(acctValueInDepositToken.toFixed(0)).add(
+        new BN(depositPoolBalance.balance.toFixed(0))
+      );
     } else {
       throw new Error("volt type not recognized");
     }
