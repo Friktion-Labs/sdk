@@ -570,6 +570,8 @@ export class ConnectedVoltSDK extends VoltSDK {
         this.sdk.programs.Volt.programId
       );
 
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
     const cancelPendingWithdrawalAccountsStruct: Parameters<
       VoltProgram["instruction"]["cancelPendingWithdrawal"]["accounts"]
     >[0] = {
@@ -578,6 +580,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       vaultMint: this.voltVault.vaultMint,
 
       voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
       vaultTokenDestination: userVaultTokens,
@@ -617,6 +620,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
     const cancelPendingDepositAccountsStruct: Parameters<
       VoltProgram["instruction"]["cancelPendingDeposit"]["accounts"]
     >[0] = {
@@ -625,6 +630,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       vaultMint: this.voltVault.vaultMint,
 
       voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
       underlyingTokenDestination: userUnderlyingTokens,
@@ -698,12 +704,15 @@ export class ConnectedVoltSDK extends VoltSDK {
         this.sdk.programs.Volt.programId
       );
 
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
     const claimPendingStruct: Parameters<
       VoltProgram["instruction"]["claimPending"]["accounts"]
     >[0] = {
       authority: authority,
 
       voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
       pendingDepositRoundInfo: roundInfoKey,
@@ -749,12 +758,15 @@ export class ConnectedVoltSDK extends VoltSDK {
         this.sdk.programs.Volt.programId
       );
 
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
     const claimPendingWithdrawalStruct: Parameters<
       VoltProgram["instruction"]["claimPendingWithdrawal"]["accounts"]
     >[0] = {
       authority: authority,
 
       voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
       vaultMint: this.voltVault.vaultMint,
@@ -849,7 +861,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,
     };
 
@@ -931,7 +942,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
     };
 
     return this.sdk.programs.Volt.instruction.takePendingWithdrawalFees({
@@ -1782,12 +1792,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     clientBidPrice?: BN,
     clientAskPrice?: BN
   ): Promise<TransactionInstruction> {
-    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
-      this.voltKey,
-      this.voltVault.roundNumber,
-      this.sdk.programs.Volt.programId
-    );
-
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be loaded");
     }
@@ -1802,7 +1806,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     let perpMarket = powerPerpMarket;
-    let perpMarketKey = this.extraVoltData.powerPerpMarket;
 
     if (this.extraVoltData.doneRebalancingPowerPerp) {
       perpMarket = await client.getPerpMarket(
@@ -1810,7 +1813,6 @@ export class ConnectedVoltSDK extends VoltSDK {
         0,
         0
       );
-      perpMarketKey = this.extraVoltData.spotPerpMarket;
     }
     const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
       this.voltKey
@@ -1829,12 +1831,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       ];
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))![0];
 
-    const { entropyRoundInfoKey } = await VoltSDK.findRoundAddresses(
-      this.voltKey,
-      this.voltVault.roundNumber,
-      this.sdk.programs.Volt.programId
-    );
-
     if (!clientBidPrice) {
       const bids = await perpMarket.loadBids(this.connection);
       const bestBid = bids.getBest();
@@ -1852,6 +1848,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       clientAskPrice = new BN(bestAsk.price);
     }
 
+    const [entropyRoundInfoKey] = await VoltSDK.findEntropyRoundInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
     const rebalanceEntropyStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEntropy"]["accounts"]
     >[0] = {
@@ -1865,6 +1867,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyGroup: this.extraVoltData.entropyGroup,
       entropyAccount: this.extraVoltData.entropyAccount,
       entropyCache: this.extraVoltData.entropyCache,
+      entropyRound: entropyRoundInfoKey,
 
       spotPerpMarket: this.extraVoltData.spotPerpMarket,
       powerPerpEventQueue: powerPerpMarket.eventQueue,
@@ -1937,13 +1940,14 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  async setupRebalanceEntropy(): Promise<TransactionInstruction> {
+  async setupRebalanceEntropy(
+    clientOraclePx?: I80F48
+  ): Promise<TransactionInstruction> {
     const {
       roundVoltTokensKey,
       roundUnderlyingTokensKey,
       roundInfoKey,
       roundUnderlyingPendingWithdrawalsKey,
-      epochInfoKey,
     } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber,
@@ -1958,17 +1962,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     }
 
     const client = new EntropyClient(this.connection, ENTROPY_PROGRAM_ID);
-    const powerPerpMarket = await client.getPerpMarket(
-      this.extraVoltData.powerPerpMarket,
-      0,
-      0
-    );
-
-    const spotPerpMarket = await client.getPerpMarket(
-      this.extraVoltData.spotPerpMarket,
-      0,
-      0
-    );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
@@ -1983,6 +1976,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       ];
     console.log(await rootBank?.loadNodeBanks(this.connection));
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))![0];
+
+    if (!clientOraclePx)
+      clientOraclePx = await this.oraclePriceForDepositToken();
 
     const { entropyRoundInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
@@ -2034,23 +2030,21 @@ export class ConnectedVoltSDK extends VoltSDK {
       clock: SYSVAR_CLOCK_PUBKEY,
     };
 
-    return this.sdk.programs.Volt.instruction.setupRebalanceEntropy({
-      accounts: setupRebalanceEntropyStruct,
-    });
+    return this.sdk.programs.Volt.instruction.setupRebalanceEntropy(
+      clientOraclePx,
+      {
+        accounts: setupRebalanceEntropyStruct,
+      }
+    );
   }
 
   async endRoundEntropy(): Promise<TransactionInstruction> {
-    const {
-      roundVoltTokensKey,
-      roundUnderlyingTokensKey,
-      roundInfoKey,
-      roundUnderlyingPendingWithdrawalsKey,
-      epochInfoKey,
-    } = await VoltSDK.findRoundAddresses(
-      this.voltKey,
-      this.voltVault.roundNumber,
-      this.sdk.programs.Volt.programId
-    );
+    const { roundVoltTokensKey, roundUnderlyingPendingWithdrawalsKey } =
+      await VoltSDK.findRoundAddresses(
+        this.voltKey,
+        this.voltVault.roundNumber,
+        this.sdk.programs.Volt.programId
+      );
 
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be loaded");
@@ -2060,17 +2054,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     }
 
     const client = new EntropyClient(this.connection, ENTROPY_PROGRAM_ID);
-    const powerPerpMarket = await client.getPerpMarket(
-      this.extraVoltData.powerPerpMarket,
-      0,
-      0
-    );
-
-    const spotPerpMarket = await client.getPerpMarket(
-      this.extraVoltData.spotPerpMarket,
-      0,
-      0
-    );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
     const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
@@ -2106,6 +2089,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       vaultAuthority: this.voltVault.vaultAuthority,
       vaultMint: this.voltVault.vaultMint,
       roundVoltTokens: roundVoltTokensKey,
+      roundUnderlyingTokensForPendingWithdrawals:
+        roundUnderlyingPendingWithdrawalsKey,
+      signer: entropyGroup.signerKey,
 
       entropyRound: entropyRoundInfoKey,
 
@@ -2137,8 +2123,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       throw new Error("extra volt data must be loaded");
     }
 
-    const { entropyClient, entropyGroup, entropyCache, entropyAccount } =
-      await this.getEntropyObjects();
+    const { entropyGroup, entropyCache } = await this.getEntropyObjects();
 
     const quoteInfo = entropyGroup.getQuoteTokenInfo();
     if (
@@ -2163,54 +2148,66 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const voltType = this.voltType();
 
-    if (voltType === VoltType.ShortOptions) {
-      const res = await getAccountBalanceOrZero(
-        this.sdk.readonlyProvider.connection,
-        depositTokenMint,
-        this.voltVault.depositPool
-      );
-      if (res.token === null) throw new Error("Could not find Deposit token");
+    try {
+      if (voltType === VoltType.ShortOptions) {
+        const res: {
+          balance: Decimal;
+          token: Token | null;
+        } = await getAccountBalanceOrZero(
+          this.sdk.readonlyProvider.connection,
+          depositTokenMint,
+          this.voltVault.depositPool
+        );
+        if (res.token === null) throw new Error("Could not find Deposit token");
 
-      const normFactor = new Decimal(
-        10 ** (await res.token.getMintInfo()).decimals
-      );
+        const normFactor = new Decimal(
+          10 ** (await res.token.getMintInfo()).decimals
+        );
 
-      const voltDepositTokenBalance = res.balance;
-      const { balance: voltWriterTokenBalance } = await getAccountBalance(
-        this.sdk.readonlyProvider.connection,
-        this.voltVault.writerTokenMint,
-        this.voltVault.writerTokenPool
-      );
-      const estimatedTotalWithoutPendingDepositTokenAmount =
-        voltDepositTokenBalance
-          .plus(
-            voltWriterTokenBalance.mul(
-              new Decimal(this.voltVault.underlyingAmountPerContract.toString())
+        const voltDepositTokenBalance = res.balance;
+        const { balance: voltWriterTokenBalance } = await getAccountBalance(
+          this.sdk.readonlyProvider.connection,
+          this.voltVault.writerTokenMint,
+          this.voltVault.writerTokenPool
+        );
+        const estimatedTotalWithoutPendingDepositTokenAmount =
+          voltDepositTokenBalance
+            .plus(
+              voltWriterTokenBalance.mul(
+                new Decimal(
+                  this.voltVault.underlyingAmountPerContract.toString()
+                )
+              )
             )
-          )
-          .div(normFactor);
+            .div(normFactor);
 
-      return new BN(estimatedTotalWithoutPendingDepositTokenAmount.toFixed());
-    } else if (voltType === VoltType.Entropy) {
-      const { entropyGroup, entropyAccount, entropyCache } =
-        await this.getEntropyObjects();
-      const acctEquity: I80F48 = entropyAccount.getHealthUnweighted(
-        entropyGroup,
-        entropyCache
-      );
-      const oraclePrice = await this.oraclePriceForDepositToken();
-      const acctValueInDepositToken = acctEquity.div(oraclePrice);
-      console.log(acctValueInDepositToken.toFixed(0));
-      const depositPoolBalance = await getAccountBalance(
-        this.connection,
-        depositTokenMint,
-        this.voltVault.depositPool
-      );
-      return new BN(acctValueInDepositToken.toFixed(0)).add(
-        new BN(depositPoolBalance.balance.toFixed(0))
-      );
-    } else {
-      throw new Error("volt type not recognized");
+        return new BN(
+          estimatedTotalWithoutPendingDepositTokenAmount.toFixed(0)
+        );
+      } else if (voltType === VoltType.Entropy) {
+        const { entropyGroup, entropyAccount, entropyCache } =
+          await this.getEntropyObjects();
+        // eslint-disable-next-line
+        const acctEquity: I80F48 = entropyAccount.getHealthUnweighted(
+          entropyGroup,
+          entropyCache
+        );
+        const oraclePrice = await this.oraclePriceForDepositToken();
+        const acctValueInDepositToken = acctEquity.div(oraclePrice);
+        const depositPoolBalance = await getAccountBalance(
+          this.connection,
+          depositTokenMint,
+          this.voltVault.depositPool
+        );
+        return new BN(acctValueInDepositToken.toFixed(0)).add(
+          new BN(depositPoolBalance.balance.toFixed(0))
+        );
+      } else {
+        throw new Error("volt type not recognized");
+      }
+    } catch (err) {
+      console.error("could not load volt value: ", err);
+      throw new Error("could not load volt value");
     }
   }
 }

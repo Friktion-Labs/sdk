@@ -73,16 +73,36 @@ export class VoltSDK {
   ) {}
 
   voltType(): VoltType {
-    const vaultType = this.voltVault.vaultType.toNumber();
-    if (vaultType === 0) {
+    // const vaultType = this.voltVault.vaultType.toNumber();
+    // const ev = await this.getExtraVoltData();
+
+    console.log("premium pool = ", this.voltVault.premiumPool.toString());
+    if (
+      this.voltVault.premiumPool.toString() !==
+      SystemProgram.programId.toString()
+    ) {
       return VoltType.ShortOptions;
-    } else if (vaultType === 1) {
+    } else if (
+      this.voltVault.premiumPool.toString() ===
+      SystemProgram.programId.toString()
+    ) {
       return VoltType.Entropy;
     } else {
       throw new Error(
-        "volt type = " + vaultType.toString() + " is not recognized"
+        "volt type = " +
+          this.voltVault.vaultType.toString() +
+          " is not recognized"
       );
     }
+    // if (vaultType === 0) {
+    //   return VoltType.ShortOptions;
+    // } else if (vaultType === 1) {
+    //   return VoltType.Entropy;
+    // } else {
+    //   throw new Error(
+    //     "volt type = " + vaultType.toString() + " is not recognized"
+    //   );
+    // }
   }
 
   isPremiumBased(): boolean {

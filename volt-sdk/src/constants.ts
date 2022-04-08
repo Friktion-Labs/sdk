@@ -56,9 +56,6 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"
   ),
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
-  //   new PublicKey(
-  //   "JBPXzHLMDTN3BLACACcBHM1CAfNz2r1s6tUMUhCMgGCZ"
-  // ),
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
   mints: {
     USDC: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
