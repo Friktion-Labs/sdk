@@ -5054,7 +5054,7 @@ export type VoltIDL = {
     {
       code: 6164;
       name: "SoloptionsProgramIdDoesNotMatch";
-      msg: "soloptions program id does not match";
+      msg: "soloptions program id does not matchf";
     },
     {
       code: 6165;
@@ -10174,7 +10174,7 @@ export const VoltIDLJsonRaw = {
     {
       code: 6164,
       name: "SoloptionsProgramIdDoesNotMatch",
-      msg: "soloptions program id does not match",
+      msg: "soloptions program id does not matchf",
     },
     {
       code: 6165,

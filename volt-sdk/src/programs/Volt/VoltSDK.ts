@@ -1743,4 +1743,32 @@ export class VoltSDK {
       voltProgramId
     );
   }
+
+  async getPnlForRound(roundNumber: BN, subtractFees = true): Promise<Decimal> {
+    const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+    let pnlForRound = epochInfo.underlyingPreEnter.sub(
+      epochInfo.underlyingPreEnter
+    );
+    if (subtractFees && pnlForRound.gtn(0))
+      pnlForRound = pnlForRound.sub(VoltSDK.performanceFeeAmount(pnlForRound));
+    return new Decimal(pnlForRound.toString()).div(
+      await this.getNormalizationFactor()
+    );
+  }
+  // only works beginning with epoch on april 7
+  async getPnlForUserAndRound(
+    roundNumber: BN,
+    participatingVaultTokens: BN,
+    subtractFees = true
+  ): Promise<Decimal> {
+    const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+    const pnlForRound = await this.getPnlForRound(roundNumber, subtractFees);
+    const voltTokenSupplyForRound = epochInfo.voltTokenSupply;
+    const normFactor = await this.getNormalizationFactor();
+    const participatingPnl = pnlForRound
+      .mul(new Decimal(participatingVaultTokens.toString()).div(normFactor))
+      .div(new Decimal(voltTokenSupplyForRound.toString()).div(normFactor));
+
+    return new Decimal(participatingPnl.toString());
+  }
 }
