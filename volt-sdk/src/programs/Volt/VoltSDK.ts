@@ -11,6 +11,7 @@ import { EntropyClient } from "@friktion-labs/entropy-client";
 import type { Program, ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
+import { getMintInfo } from "@project-serum/common";
 import type { MarketProxy } from "@project-serum/serum";
 import { MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
@@ -48,11 +49,9 @@ import type {
   FriktionEpochInfoWithKey,
   OptionMarketWithKey,
   OptionsProtocol,
-  PendingDeposit,
   PendingDepositWithKey,
   PendingWithdrawal,
   PendingWithdrawalWithKey,
-  Round,
   RoundWithKey,
   VoltProgram,
   VoltVault,
@@ -64,6 +63,7 @@ import {
   getVaultOwnerAndNonce,
 } from "./serum";
 import { getBalanceOrZero } from "./utils";
+import type { PendingDeposit } from "./voltTypes";
 
 export class VoltSDK {
   constructor(
@@ -227,11 +227,6 @@ export class VoltSDK {
       }
     );
 
-    console.log(
-      "permissioned market premium mint: ",
-      permissionedMarketPremiumMint.toString()
-    );
-
     const initializeAccountsStruct: {
       [K in keyof Parameters<
         VoltProgram["instruction"]["initialize"]["accounts"]
@@ -277,7 +272,6 @@ export class VoltSDK {
 
     const instruction = sdk.programs.Volt.instruction.initialize(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      new anchor.BN(VoltType.ShortOptions),
       transferTimeWindow,
       vaultBump,
       vaultAuthorityBump,
@@ -485,19 +479,13 @@ export class VoltSDK {
   }> {
     console.log("pda string: ", pdaStr);
 
-    const textEncoder = new TextEncoder();
-
     const {
       vault,
-      vaultBump,
       vaultAuthorityBump,
       extraVoltKey,
       vaultMint,
       vaultAuthority,
       depositPoolKey,
-      premiumPoolKey,
-      permissionedMarketPremiumPoolKey,
-      whitelistTokenAccountKey,
     } = await VoltSDK.findInitializeAddresses(
       sdk,
       whitelistTokenMintKey,
@@ -757,16 +745,19 @@ export class VoltSDK {
     };
   }
 
-  async getBalancesForUser(pubkey: PublicKey): Promise<{
-    totalBalance: Decimal;
-    normalBalance: Decimal;
-    pendingDeposits: Decimal;
-    pendingWithdrawals: Decimal;
-    mintableShares: Decimal;
-    claimableUnderlying: Decimal;
-    normFactor: Decimal;
-    vaultNormFactor: Decimal;
-  } | null> {
+  async getBalancesForUser(pubkey: PublicKey): Promise<
+    | {
+        totalBalance: Decimal;
+        normalBalance: Decimal;
+        pendingDeposits: Decimal;
+        pendingWithdrawals: Decimal;
+        mintableShares: Decimal;
+        claimableUnderlying: Decimal;
+        normFactor: Decimal;
+        vaultNormFactor: Decimal;
+      }
+    | undefined
+  > {
     const voltVault = this.voltVault;
     const provider = this.sdk.readonlyProvider;
     const connection = this.sdk.readonlyProvider.connection;
@@ -882,6 +873,10 @@ export class VoltSDK {
         ).amount.toString()
       );
 
+      console.log(
+        "pending deposit round: ",
+        pendingDepositInfo.roundNumber.toString()
+      );
       userValueFromPendingDeposits =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0)
@@ -1510,12 +1505,14 @@ export class VoltSDK {
   }
 
   async getAllRounds(): Promise<RoundWithKey[]> {
-    const accts =
-      (await this.sdk.programs.Volt.account.round.all()) as unknown as ProgramAccount<Round>[];
-    return accts.map((acct) => ({
-      ...acct.account,
-      key: acct.publicKey,
-    }));
+    let roundNumber = new BN(1);
+    const roundList = [];
+    while (roundNumber.lt(this.voltVault.roundNumber)) {
+      const round = await this.getRoundByNumber(roundNumber);
+      roundList.push(round);
+      roundNumber = roundNumber.addn(1);
+    }
+    return roundList;
   }
 
   async getRoundByKey(key: PublicKey): Promise<RoundWithKey> {
@@ -1670,7 +1667,7 @@ export class VoltSDK {
       banks[
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
-    const nodeBank = (await rootBank?.loadNodeBanks(connection))![0];
+    const nodeBank = (await rootBank?.loadNodeBanks(connection))?.[0];
 
     if (!rootBank || !nodeBank) {
       throw new Error("root bank or node bank was undefined");
@@ -1770,5 +1767,25 @@ export class VoltSDK {
       .div(new Decimal(voltTokenSupplyForRound.toString()).div(normFactor));
 
     return new Decimal(participatingPnl.toString());
+  }
+
+  async getUserPendingDepositUnderlying(user: PublicKey): Promise<Decimal> {
+    const result = await this.getBalancesForUser(user);
+    if (!result) throw new Error("can't find data for user");
+    const { pendingDeposits } = result;
+    return pendingDeposits;
+  }
+
+  async getUserMintableShares(user: PublicKey): Promise<BN> {
+    const result = await this.getBalancesForUser(user);
+    if (!result) throw new Error("can't find data for user");
+    const { mintableShares } = result;
+    const vaultMintInfo = await getMintInfo(
+      this.sdk.readonlyProvider,
+      this.voltVault.vaultMint
+    );
+    return new BN(
+      mintableShares.mul(new Decimal(10).pow(vaultMintInfo.decimals)).toFixed(0)
+    );
   }
 }

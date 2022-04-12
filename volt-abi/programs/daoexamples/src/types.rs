@@ -70,6 +70,17 @@ pub struct DepositDaoExampleAccounts<'info> {
     pub pending_deposit_info: AccountInfo<'info>,
 
     /// CHECK: skip
+    pub entropy_program: AccountInfo<'info>,
+    /// CHECK: skip
+    pub entropy_group: AccountInfo<'info>,
+
+    /// CHECK: skip
+    pub entropy_account: AccountInfo<'info>,
+
+    /// CHECK: skip
+    pub entropy_cache: AccountInfo<'info>,
+
+    /// CHECK: skip
     pub system_program: AccountInfo<'info>,
     /// CHECK: skip
     pub token_program: AccountInfo<'info>,

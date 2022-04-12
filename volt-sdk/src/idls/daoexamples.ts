@@ -91,6 +91,26 @@ export type DaoExamplesIDL = {
           isSigner: false;
         },
         {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyCache";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
@@ -211,6 +231,26 @@ export const DaoExamplesIDLJsonRaw = {
         {
           name: "pendingDepositInfo",
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyCache",
+          isMut: false,
           isSigner: false,
         },
         {

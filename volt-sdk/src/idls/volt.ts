@@ -103,10 +103,6 @@ export type VoltIDL = {
       ];
       args: [
         {
-          name: "vaultType";
-          type: "u64";
-        },
-        {
           name: "transferWindow";
           type: "u64";
         },
@@ -224,6 +220,44 @@ export type VoltIDL = {
         {
           name: "shouldHedge";
           type: "bool";
+        }
+      ];
+    },
+    {
+      name: "setStrategyParams";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "targetLeverageRatio";
+          type: "f64";
+        },
+        {
+          name: "targetLeverageLenience";
+          type: "f64";
+        },
+        {
+          name: "targetHedgeRatio";
+          type: "f64";
+        },
+        {
+          name: "targetHedgeLenience";
+          type: "f64";
         }
       ];
     },
@@ -775,6 +809,26 @@ export type VoltIDL = {
         {
           name: "epochInfo";
           isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyCache";
+          isMut: false;
           isSigner: false;
         },
         {
@@ -1718,11 +1772,6 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
           name: "pcReferrerWallet";
           isMut: true;
           isSigner: false;
@@ -1798,17 +1847,12 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
           isMut: false;
           isSigner: false;
         },
@@ -4203,33 +4247,6 @@ export type VoltIDL = {
       };
     }
   ];
-  events: [
-    {
-      name: "RedeemTokensEvent";
-      fields: [
-        {
-          name: "user";
-          type: "publicKey";
-          index: true;
-        },
-        {
-          name: "iouMint";
-          type: "publicKey";
-          index: false;
-        },
-        {
-          name: "destinationMint";
-          type: "publicKey";
-          index: false;
-        },
-        {
-          name: "amount";
-          type: "u64";
-          index: false;
-        }
-      ];
-    }
-  ];
   errors: [
     {
       code: 6000;
@@ -5115,6 +5132,11 @@ export type VoltIDL = {
       code: 6176;
       name: "VaultMintSupplyMustBeZeroIfEquityIsZero";
       msg: "vault mint supply must be zero if equity is zero";
+    },
+    {
+      code: 6177;
+      name: "InvalidSetupRebalanceEntropyState";
+      msg: "invalid setup rebalance entropy state";
     }
   ];
 };
@@ -5222,10 +5244,6 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [
-        {
-          name: "vaultType",
-          type: "u64",
-        },
         {
           name: "transferWindow",
           type: "u64",
@@ -5344,6 +5362,44 @@ export const VoltIDLJsonRaw = {
         {
           name: "shouldHedge",
           type: "bool",
+        },
+      ],
+    },
+    {
+      name: "setStrategyParams",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "targetLeverageRatio",
+          type: "f64",
+        },
+        {
+          name: "targetLeverageLenience",
+          type: "f64",
+        },
+        {
+          name: "targetHedgeRatio",
+          type: "f64",
+        },
+        {
+          name: "targetHedgeLenience",
+          type: "f64",
         },
       ],
     },
@@ -5895,6 +5951,26 @@ export const VoltIDLJsonRaw = {
         {
           name: "epochInfo",
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyCache",
+          isMut: false,
           isSigner: false,
         },
         {
@@ -6838,11 +6914,6 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "pcReferrerWallet",
           isMut: true,
           isSigner: false,
@@ -6918,17 +6989,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
           isMut: false,
           isSigner: false,
         },
@@ -9323,33 +9389,6 @@ export const VoltIDLJsonRaw = {
       },
     },
   ],
-  events: [
-    {
-      name: "RedeemTokensEvent",
-      fields: [
-        {
-          name: "user",
-          type: "publicKey",
-          index: true,
-        },
-        {
-          name: "iouMint",
-          type: "publicKey",
-          index: false,
-        },
-        {
-          name: "destinationMint",
-          type: "publicKey",
-          index: false,
-        },
-        {
-          name: "amount",
-          type: "u64",
-          index: false,
-        },
-      ],
-    },
-  ],
   errors: [
     {
       code: 6000,
@@ -10235,6 +10274,11 @@ export const VoltIDLJsonRaw = {
       code: 6176,
       name: "VaultMintSupplyMustBeZeroIfEquityIsZero",
       msg: "vault mint supply must be zero if equity is zero",
+    },
+    {
+      code: 6177,
+      name: "InvalidSetupRebalanceEntropyState",
+      msg: "invalid setup rebalance entropy state",
     },
   ],
 };

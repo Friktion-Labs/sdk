@@ -162,6 +162,12 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
+      entropyGroup: this.extraVoltData?.entropyGroup ?? SystemProgram.programId,
+      entropyAccount:
+        this.extraVoltData?.entropyAccount ?? SystemProgram.programId,
+      entropyCache: this.extraVoltData?.entropyCache ?? SystemProgram.programId,
+      entropyProgram:
+        this.extraVoltData?.entropyProgramId ?? SystemProgram.programId,
     };
 
     return this.sdk.programs.Volt.instruction.deposit(normalizedDepositAmount, {
@@ -418,7 +424,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     withdrawAmount: Decimal,
     userVaultTokens: PublicKey,
     underlyingTokenDestination: PublicKey,
-    daoAuthority?: PublicKey
+    daoAuthority?: PublicKey,
+    normFactor?: Decimal | undefined
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
       await this.getVoltValueInDepositToken();
@@ -444,9 +451,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     const vaultMintSupply = (
       await getMintSupplyOrZero(this.connection, this.voltVault.vaultMint)
     ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
-    const normFactor = await this.getNormalizationFactor();
     const humanAmount = new Decimal(withdrawAmount.toString());
-    const withdrawalAmountNormalized = humanAmount.mul(normFactor);
+    const withdrawalAmountNormalized = humanAmount.mul(
+      normFactor ? normFactor : await this.getNormalizationFactor()
+    );
     let withdrawalAmountVaultTokens = withdrawalAmountNormalized
       .mul(vaultMintSupply)
       .div(
@@ -864,11 +872,135 @@ export class ConnectedVoltSDK extends VoltSDK {
       rent: SYSVAR_RENT_PUBKEY,
     };
 
-    Object.entries(startRoundStruct).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
     return this.sdk.programs.Volt.instruction.startRound({
       accounts: startRoundStruct,
+    });
+  }
+
+  async startRoundEntropy(): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) throw new Error("extra volt data must be set");
+
+    const {
+      roundInfoKey,
+      roundUnderlyingTokensKey,
+      roundVoltTokensKey,
+      roundUnderlyingPendingWithdrawalsKey,
+      epochInfoKey,
+      entropyRoundInfoKey,
+    } = await VoltSDK.findRoundAddresses(
+      this.voltKey,
+      this.voltVault.roundNumber.addn(1),
+      this.sdk.programs.Volt.programId
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const startRoundEntropyStruct: Parameters<
+      VoltProgram["instruction"]["startRoundEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      depositPool: this.voltVault.depositPool,
+      underlyingAssetMint: this.voltVault.underlyingAssetMint,
+      vaultMint: this.voltVault.vaultMint,
+
+      entropyProgram: this.extraVoltData.entropyProgramId,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+      entropyCache: this.extraVoltData.entropyCache,
+      entropyRound: entropyRoundInfoKey,
+
+      roundInfo: roundInfoKey,
+      roundUnderlyingTokens: roundUnderlyingTokensKey,
+      roundVoltTokens: roundVoltTokensKey,
+      roundUnderlyingTokensForPendingWithdrawals:
+        roundUnderlyingPendingWithdrawalsKey,
+
+      epochInfo: epochInfoKey,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      rent: SYSVAR_RENT_PUBKEY,
+    };
+
+    return this.sdk.programs.Volt.instruction.startRoundEntropy({
+      accounts: startRoundEntropyStruct,
+    });
+  }
+
+  async takePerformanceFeesEntropy(): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) throw new Error("extra volt data must be set");
+
+    const {
+      epochInfoKey,
+      entropyRoundInfoKey,
+      roundVoltTokensKey,
+      roundUnderlyingPendingWithdrawalsKey,
+    } = await VoltSDK.findRoundAddresses(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
+
+    const client = new EntropyClient(this.connection, ENTROPY_PROGRAM_ID);
+    const entropyGroup = await client.getEntropyGroup(
+      this.extraVoltData.entropyGroup
+    );
+    const banks = await entropyGroup.loadRootBanks(this.connection);
+
+    const rootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    const startRoundEntropyStruct: Parameters<
+      VoltProgram["instruction"]["takePerformanceFeesEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      entropyProgram: this.extraVoltData.entropyProgramId,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+      entropyCache: this.extraVoltData.entropyCache,
+      entropyRound: entropyRoundInfoKey,
+
+      vaultMint: this.voltVault.vaultMint,
+      roundVoltTokens: roundVoltTokensKey,
+      roundUnderlyingTokensForPendingWithdrawals:
+        roundUnderlyingPendingWithdrawalsKey,
+
+      epochInfo: epochInfoKey,
+      entropyMetadata: entropyMetadataKey,
+
+      systemProgram: SystemProgram.programId,
+
+      rootBank: rootBank?.publicKey as PublicKey,
+      nodeBank: nodeBank?.publicKey as PublicKey,
+      vault: nodeBank?.vault as PublicKey,
+
+      signer: entropyGroup.signerKey,
+
+      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+
+      tokenProgram: TOKEN_PROGRAM_ID,
+
+      feeAccount: await this.getFeeTokenAccount(),
+    };
+
+    return this.sdk.programs.Volt.instruction.takePerformanceFeesEntropy({
+      accounts: startRoundEntropyStruct,
     });
   }
 
@@ -1260,7 +1392,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       vaultAuthority: this.voltVault.vaultAuthority,
 
       optionPool: this.voltVault.optionPool,
-      premiumPool: this.voltVault.premiumPool,
 
       rawOptionMarket: this.voltVault.optionMarket,
 
@@ -1297,9 +1428,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       pcVault: optionSerumMarket._decoded.quoteVault as PublicKey,
 
-      systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
+      systemProgram: SystemProgram.programId,
       rent: SYSVAR_RENT_PUBKEY,
     };
 
@@ -1788,6 +1918,52 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   // Entropy Instructions
 
+  async changeHedging(shouldHedge: boolean): Promise<TransactionInstruction> {
+    const [extraVoltDataKey] = await VoltSDK.findExtraVoltDataAddress(
+      this.voltKey
+    );
+
+    const changeHedgingAccounts: Parameters<
+      VoltProgram["instruction"]["changeHedging"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltDataKey,
+    };
+
+    return this.sdk.programs.Volt.instruction.changeHedging(shouldHedge, {
+      accounts: changeHedgingAccounts,
+    });
+  }
+
+  async setStrategyParams(
+    targetLeverageRatio: Decimal,
+    targetLeverageLenience: Decimal,
+    targetHedgeRatio: Decimal,
+    targetHedgeLenience: Decimal
+  ): Promise<TransactionInstruction> {
+    const [extraVoltDataKey] = await VoltSDK.findExtraVoltDataAddress(
+      this.voltKey
+    );
+
+    const setStrategyAccounts: Parameters<
+      VoltProgram["instruction"]["setStrategyParams"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltDataKey,
+    };
+    return this.sdk.programs.Volt.instruction.setStrategyParams(
+      targetLeverageRatio.toNumber(),
+      targetLeverageLenience.toNumber(),
+      targetHedgeRatio.toNumber(),
+      targetHedgeLenience.toNumber(),
+      {
+        accounts: setStrategyAccounts,
+      }
+    );
+  }
+
   async rebalanceEntropy(
     clientBidPrice?: BN,
     clientAskPrice?: BN
@@ -1829,24 +2005,42 @@ export class ConnectedVoltSDK extends VoltSDK {
       banks[
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
-    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))![0];
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
-    if (!clientBidPrice) {
-      const bids = await perpMarket.loadBids(this.connection);
-      const bestBid = bids.getBest();
-      if (!bestBid) {
-        throw new Error("no bid exists on the orderbook");
-      }
-      clientBidPrice = new BN(bestBid.price);
-    }
     if (!clientAskPrice) {
       const asks = await perpMarket.loadAsks(this.connection);
       const bestAsk = asks.getBest();
       if (!bestAsk) {
         throw new Error("no ask exists on the orderbook");
       }
-      clientAskPrice = new BN(bestAsk.price);
+      clientAskPrice = new BN(
+        new Decimal(bestAsk.price)
+          .mul(new Decimal(perpMarket.quoteLotSize.toString()))
+          .toFixed(0)
+      );
     }
+
+    if (!clientBidPrice) {
+      const bids = await perpMarket.loadBids(this.connection);
+      const bestBid = bids.getBest();
+      if (!bestBid) {
+        // throw new Error("no bid exists on the orderbook");
+        clientBidPrice = clientAskPrice;
+      } else {
+        clientBidPrice = new BN(
+          new Decimal(bestBid.price)
+            .mul(new Decimal(perpMarket.quoteLotSize.toString()))
+            .toFixed(0)
+        );
+      }
+    }
+
+    console.log(
+      "client bid price = ",
+      clientBidPrice.toString(),
+      ", client ask price = ",
+      clientAskPrice.toString()
+    );
 
     const [entropyRoundInfoKey] = await VoltSDK.findEntropyRoundInfoAddress(
       this.voltKey,
@@ -1975,7 +2169,7 @@ export class ConnectedVoltSDK extends VoltSDK {
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
     console.log(await rootBank?.loadNodeBanks(this.connection));
-    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))![0];
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     if (!clientOraclePx)
       clientOraclePx = await this.oraclePriceForDepositToken();
@@ -2071,7 +2265,7 @@ export class ConnectedVoltSDK extends VoltSDK {
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
     console.log(await rootBank?.loadNodeBanks(this.connection));
-    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))![0];
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     const { entropyRoundInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
