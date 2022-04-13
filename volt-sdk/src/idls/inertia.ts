@@ -124,6 +124,7 @@ export type InertiaIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "optionWrite";
@@ -200,6 +201,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "closePosition";
@@ -261,6 +263,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "revertOptionSettle";
@@ -322,6 +325,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionSettle";
@@ -383,6 +387,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionExercise";
@@ -434,6 +439,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionRedeem";
@@ -485,6 +491,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     }
   ];
   accounts: [
@@ -898,6 +905,7 @@ export const InertiaIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "optionWrite",
@@ -974,6 +982,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "closePosition",
@@ -1035,6 +1044,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "revertOptionSettle",
@@ -1096,6 +1106,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionSettle",
@@ -1157,6 +1168,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionExercise",
@@ -1208,6 +1220,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionRedeem",
@@ -1259,6 +1272,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
   ],
   accounts: [

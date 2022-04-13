@@ -2048,6 +2048,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
     const rebalanceEntropyStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEntropy"]["accounts"]
     >[0] = {
@@ -2080,6 +2086,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,
+      epochInfo: epochInfoKey,
     };
 
     return this.sdk.programs.Volt.instruction.rebalanceEntropy(
@@ -2183,6 +2190,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltKey
     );
 
+    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
     const setupRebalanceEntropyStruct: Parameters<
       VoltProgram["instruction"]["setupRebalanceEntropy"]["accounts"]
     >[0] = {
@@ -2218,6 +2231,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       vault: nodeBank?.vault as PublicKey,
 
       signer: entropyGroup.signerKey,
+
+      epochInfo: epochInfoKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,

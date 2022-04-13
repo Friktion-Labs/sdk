@@ -102,6 +102,7 @@ export type SoloptionsIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "optionWrite";
@@ -178,6 +179,7 @@ export type SoloptionsIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionExercise";
@@ -254,6 +256,7 @@ export type SoloptionsIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionRedeem";
@@ -325,6 +328,7 @@ export type SoloptionsIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     }
   ];
   accounts: [
@@ -665,6 +669,7 @@ export const SoloptionsIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "optionWrite",
@@ -741,6 +746,7 @@ export const SoloptionsIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionExercise",
@@ -817,6 +823,7 @@ export const SoloptionsIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionRedeem",
@@ -888,6 +895,7 @@ export const SoloptionsIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
   ],
   accounts: [

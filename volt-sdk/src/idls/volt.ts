@@ -151,6 +151,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "changeCapacity";
@@ -196,6 +197,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "changeHedging";
@@ -222,6 +224,7 @@ export type VoltIDL = {
           type: "bool";
         }
       ];
+      returns: null;
     },
     {
       name: "setStrategyParams";
@@ -260,6 +263,7 @@ export type VoltIDL = {
           type: "f64";
         }
       ];
+      returns: null;
     },
     {
       name: "startRound";
@@ -341,6 +345,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "endRound";
@@ -422,6 +427,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "takePendingWithdrawalFees";
@@ -468,6 +474,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "claimPending";
@@ -524,6 +531,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "claimPendingWithdrawal";
@@ -585,6 +593,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "cancelPendingWithdrawal";
@@ -651,6 +660,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "cancelPendingDeposit";
@@ -722,6 +732,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "deposit";
@@ -848,6 +859,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "depositWithTransfer";
@@ -959,6 +971,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "depositWithClaim";
@@ -1079,6 +1092,7 @@ export type VoltIDL = {
           type: "bool";
         }
       ];
+      returns: null;
     },
     {
       name: "withdraw";
@@ -1185,6 +1199,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "rebalanceSettle";
@@ -1301,6 +1316,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "setNextOption";
@@ -1396,6 +1412,7 @@ export type VoltIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "resetOptionMarket";
@@ -1487,6 +1504,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "rebalancePrepare";
@@ -1598,6 +1616,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "rebalanceSwapPremium";
@@ -1737,6 +1756,7 @@ export type VoltIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "rebalanceEnter";
@@ -1880,6 +1900,7 @@ export type VoltIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "settleEnterFunds";
@@ -1981,6 +2002,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "settlePermissionedMarketPremiumFunds";
@@ -2037,6 +2059,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "settleSwapPremiumFunds";
@@ -2118,6 +2141,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "initWhitelist";
@@ -2149,6 +2173,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "addWhitelist";
@@ -2175,6 +2200,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "removeWhitelist";
@@ -2201,6 +2227,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "attachWhitelist";
@@ -2232,6 +2259,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "attachDao";
@@ -2263,6 +2291,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "detachDao";
@@ -2284,6 +2313,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "initializeEntropy";
@@ -2422,6 +2452,7 @@ export type VoltIDL = {
           type: "bool";
         }
       ];
+      returns: null;
     },
     {
       name: "takePerformanceFeesEntropy";
@@ -2538,6 +2569,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "startRoundEntropy";
@@ -2644,6 +2676,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "endRoundEntropy";
@@ -2755,6 +2788,7 @@ export type VoltIDL = {
         }
       ];
       args: [];
+      returns: null;
     },
     {
       name: "setupRebalanceEntropy";
@@ -2816,6 +2850,11 @@ export type VoltIDL = {
         },
         {
           name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
           isMut: true;
           isSigner: false;
         },
@@ -2896,6 +2935,7 @@ export type VoltIDL = {
           type: "f64";
         }
       ];
+      returns: null;
     },
     {
       name: "rebalanceEntropy";
@@ -2923,6 +2963,11 @@ export type VoltIDL = {
         {
           name: "entropyRound";
           isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
           isSigner: false;
         },
         {
@@ -3026,6 +3071,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "initSerumMarket";
@@ -3143,6 +3189,7 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     }
   ];
   accounts: [
@@ -3518,15 +3565,15 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "unusedUintFour";
+            name: "startRoundTime";
             type: "u64";
           },
           {
-            name: "unusedUintFive";
+            name: "beginAuctionTime";
             type: "u64";
           },
           {
-            name: "unusedUintSix";
+            name: "endAuctionTime";
             type: "u64";
           },
           {
@@ -5293,6 +5340,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "changeCapacity",
@@ -5338,6 +5386,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "changeHedging",
@@ -5364,6 +5413,7 @@ export const VoltIDLJsonRaw = {
           type: "bool",
         },
       ],
+      returns: null,
     },
     {
       name: "setStrategyParams",
@@ -5402,6 +5452,7 @@ export const VoltIDLJsonRaw = {
           type: "f64",
         },
       ],
+      returns: null,
     },
     {
       name: "startRound",
@@ -5483,6 +5534,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "endRound",
@@ -5564,6 +5616,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "takePendingWithdrawalFees",
@@ -5610,6 +5663,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "claimPending",
@@ -5666,6 +5720,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "claimPendingWithdrawal",
@@ -5727,6 +5782,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "cancelPendingWithdrawal",
@@ -5793,6 +5849,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "cancelPendingDeposit",
@@ -5864,6 +5921,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "deposit",
@@ -5990,6 +6048,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "depositWithTransfer",
@@ -6101,6 +6160,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "depositWithClaim",
@@ -6221,6 +6281,7 @@ export const VoltIDLJsonRaw = {
           type: "bool",
         },
       ],
+      returns: null,
     },
     {
       name: "withdraw",
@@ -6327,6 +6388,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "rebalanceSettle",
@@ -6443,6 +6505,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "setNextOption",
@@ -6538,6 +6601,7 @@ export const VoltIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "resetOptionMarket",
@@ -6629,6 +6693,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "rebalancePrepare",
@@ -6740,6 +6805,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "rebalanceSwapPremium",
@@ -6879,6 +6945,7 @@ export const VoltIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "rebalanceEnter",
@@ -7022,6 +7089,7 @@ export const VoltIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "settleEnterFunds",
@@ -7123,6 +7191,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "settlePermissionedMarketPremiumFunds",
@@ -7179,6 +7248,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "settleSwapPremiumFunds",
@@ -7260,6 +7330,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "initWhitelist",
@@ -7291,6 +7362,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "addWhitelist",
@@ -7317,6 +7389,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "removeWhitelist",
@@ -7343,6 +7416,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "attachWhitelist",
@@ -7374,6 +7448,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "attachDao",
@@ -7405,6 +7480,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "detachDao",
@@ -7426,6 +7502,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "initializeEntropy",
@@ -7564,6 +7641,7 @@ export const VoltIDLJsonRaw = {
           type: "bool",
         },
       ],
+      returns: null,
     },
     {
       name: "takePerformanceFeesEntropy",
@@ -7680,6 +7758,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "startRoundEntropy",
@@ -7786,6 +7865,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "endRoundEntropy",
@@ -7897,6 +7977,7 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+      returns: null,
     },
     {
       name: "setupRebalanceEntropy",
@@ -7958,6 +8039,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
           isMut: true,
           isSigner: false,
         },
@@ -8038,6 +8124,7 @@ export const VoltIDLJsonRaw = {
           type: "f64",
         },
       ],
+      returns: null,
     },
     {
       name: "rebalanceEntropy",
@@ -8065,6 +8152,11 @@ export const VoltIDLJsonRaw = {
         {
           name: "entropyRound",
           isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -8168,6 +8260,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "initSerumMarket",
@@ -8285,6 +8378,7 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
   ],
   accounts: [
@@ -8660,15 +8754,15 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "unusedUintFour",
+            name: "startRoundTime",
             type: "u64",
           },
           {
-            name: "unusedUintFive",
+            name: "beginAuctionTime",
             type: "u64",
           },
           {
-            name: "unusedUintSix",
+            name: "endAuctionTime",
             type: "u64",
           },
           {
