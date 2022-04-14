@@ -1773,6 +1773,7 @@ export class VoltSDK {
     subtractFees = true
   ): Promise<Decimal> {
     const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+    console.log(epochInfo);
     const pnlForRound = await this.getPnlForRound(roundNumber, subtractFees);
     const voltTokenSupplyForRound = epochInfo.voltTokenSupply;
     const normFactor = await this.getNormalizationFactor();
@@ -1811,23 +1812,30 @@ export class VoltSDK {
     let pendingDepositInfo: PendingDepositWithKey;
     try {
       pendingDepositInfo = await this.getPendingDepositForGivenUser(user);
-      if (pendingDepositInfo.roundNumber < roundNumber) {
+      if (pendingDepositInfo.roundNumber >= roundNumber) {
         return new BN(0);
       }
     } catch (err) {
       return new BN(0);
     }
 
-    const result = await this.getBalancesForUser(user);
-    if (!result) throw new Error("can't find data for user");
-    const { mintableShares } = result;
+    try {
+      const result = await this.getBalancesForUser(user);
+      if (!result) return new BN(0);
+      const { mintableShares } = result;
 
-    const vaultMintInfo = await getMintInfo(
-      this.sdk.readonlyProvider,
-      this.voltVault.vaultMint
-    );
-    return new BN(
-      mintableShares.mul(new Decimal(10).pow(vaultMintInfo.decimals)).toFixed(0)
-    );
+      const vaultMintInfo = await getMintInfo(
+        this.sdk.readonlyProvider,
+        this.voltVault.vaultMint
+      );
+      return new BN(
+        mintableShares
+          .mul(new Decimal(10).pow(vaultMintInfo.decimals))
+          .toFixed(0)
+      );
+    } catch (err) {
+      console.log(err);
+      return new BN(0);
+    }
   }
 }
