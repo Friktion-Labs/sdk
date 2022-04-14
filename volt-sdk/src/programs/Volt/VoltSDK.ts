@@ -1757,7 +1757,7 @@ export class VoltSDK {
 
   async getPnlForRound(roundNumber: BN, subtractFees = true): Promise<Decimal> {
     const epochInfo = await this.getEpochInfoByNumber(roundNumber);
-    let pnlForRound = epochInfo.underlyingPreEnter.sub(
+    let pnlForRound = epochInfo.underlyingPostSettle.sub(
       epochInfo.underlyingPreEnter
     );
     if (subtractFees && pnlForRound.gtn(0))
