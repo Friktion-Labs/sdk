@@ -1459,6 +1459,7 @@ export class VoltSDK {
   async getEpochInfoByNumber(
     roundNumber: anchor.BN
   ): Promise<FriktionEpochInfoWithKey> {
+    console.log("round number = ", roundNumber.toString());
     const key = (
       await VoltSDK.findEpochInfoAddress(
         this.voltKey,
@@ -1598,6 +1599,19 @@ export class VoltSDK {
       key: key,
     };
     return ret;
+  }
+
+  async getPendingDepositForGivenUser(
+    user: PublicKey
+  ): Promise<PendingDepositWithKey> {
+    const key = (
+      await VoltSDK.findPendingDepositInfoAddress(
+        this.voltKey,
+        user,
+        this.sdk.programs.Volt.programId
+      )
+    )[0];
+    return await this.getPendingDepositByKey(key);
   }
 
   async getAllPendingWithdrawals(): Promise<PendingWithdrawalWithKey[]> {
@@ -1777,9 +1791,37 @@ export class VoltSDK {
   }
 
   async getUserMintableShares(user: PublicKey): Promise<BN> {
+    return this.getUserMintableSharesForRound(user, this.voltVault.roundNumber);
+    // const result = await this.getBalancesForUser(user);
+    // if (!result) throw new Error("can't find data for user");
+    // const { mintableShares } = result;
+    // const vaultMintInfo = await getMintInfo(
+    //   this.sdk.readonlyProvider,
+    //   this.voltVault.vaultMint
+    // );
+    // return new BN(
+    //   mintableShares.mul(new Decimal(10).pow(vaultMintInfo.decimals)).toFixed(0)
+    // );
+  }
+
+  async getUserMintableSharesForRound(
+    user: PublicKey,
+    roundNumber: BN
+  ): Promise<BN> {
+    let pendingDepositInfo: PendingDepositWithKey;
+    try {
+      pendingDepositInfo = await this.getPendingDepositForGivenUser(user);
+      if (pendingDepositInfo.roundNumber < roundNumber) {
+        return new BN(0);
+      }
+    } catch (err) {
+      return new BN(0);
+    }
+
     const result = await this.getBalancesForUser(user);
     if (!result) throw new Error("can't find data for user");
     const { mintableShares } = result;
+
     const vaultMintInfo = await getMintInfo(
       this.sdk.readonlyProvider,
       this.voltVault.vaultMint

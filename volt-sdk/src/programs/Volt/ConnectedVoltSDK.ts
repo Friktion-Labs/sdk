@@ -1,3 +1,4 @@
+import type { EntropyCache, EntropyGroup } from "@friktion-labs/entropy-client";
 import {
   EntropyClient,
   I80F48,
@@ -1895,14 +1896,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async getPendingDepositForUser(): Promise<PendingDepositWithKey> {
-    const key = (
-      await VoltSDK.findPendingDepositInfoAddress(
-        this.voltKey,
-        this.wallet,
-        this.sdk.programs.Volt.programId
-      )
-    )[0];
-    return this.getPendingDepositByKey(key);
+    return await this.getPendingDepositForGivenUser(this.wallet);
   }
 
   async getPendingWithdrawalForUser(): Promise<PendingWithdrawalWithKey> {
@@ -2169,6 +2163,9 @@ export class ConnectedVoltSDK extends VoltSDK {
     const entropyGroup = await client.getEntropyGroup(
       this.extraVoltData.entropyGroup
     );
+    const entropyCache = await entropyGroup.loadCache(
+      this.sdk.readonlyProvider.connection
+    );
     const banks = await entropyGroup.loadRootBanks(this.connection);
 
     const rootBank =
@@ -2179,7 +2176,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     if (!clientOraclePx)
-      clientOraclePx = await this.oraclePriceForDepositToken();
+      clientOraclePx = this.oraclePriceForDepositToken(
+        entropyGroup,
+        entropyCache
+      );
 
     const { entropyRoundInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
@@ -2327,12 +2327,13 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   // entropy stuff: requires extra volt data
 
-  async oraclePriceForDepositToken(): Promise<I80F48> {
+  oraclePriceForDepositToken(
+    entropyGroup: EntropyGroup,
+    entropyCache: EntropyCache
+  ): I80F48 {
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be loaded");
     }
-
-    const { entropyGroup, entropyCache } = await this.getEntropyObjects();
 
     const quoteInfo = entropyGroup.getQuoteTokenInfo();
     if (
@@ -2401,7 +2402,10 @@ export class ConnectedVoltSDK extends VoltSDK {
           entropyGroup,
           entropyCache
         );
-        const oraclePrice = await this.oraclePriceForDepositToken();
+        const oraclePrice = this.oraclePriceForDepositToken(
+          entropyGroup,
+          entropyCache
+        );
         const acctValueInDepositToken = acctEquity.div(oraclePrice);
         const depositPoolBalance = await getAccountBalance(
           this.connection,
