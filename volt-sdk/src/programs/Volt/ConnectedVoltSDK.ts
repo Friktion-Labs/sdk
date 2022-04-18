@@ -1,4 +1,10 @@
-import type { EntropyCache, EntropyGroup } from "@friktion-labs/entropy-client";
+import type {
+  EntropyCache,
+  EntropyGroup,
+  PerpMarket,
+  RootBank,
+} from "@friktion-labs/entropy-client";
+import type NodeBank from "@friktion-labs/entropy-client";
 import {
   EntropyClient,
   I80F48,
@@ -1979,7 +1985,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     if (this.extraVoltData.doneRebalancingPowerPerp) {
       perpMarket = await client.getPerpMarket(
-        this.extraVoltData.spotPerpMarket,
+        this.extraVoltData.hedgingSpotPerpMarket,
         0,
         0
       );
@@ -2055,15 +2061,16 @@ export class ConnectedVoltSDK extends VoltSDK {
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
       extraVoltData: extraVoltKey,
+
       entropyMetadata: entropyMetadataKey,
 
-      entropyProgram: this.extraVoltData.entropyProgramId,
+      entropyProgram: ENTROPY_PROGRAM_ID,
       entropyGroup: this.extraVoltData.entropyGroup,
       entropyAccount: this.extraVoltData.entropyAccount,
       entropyCache: this.extraVoltData.entropyCache,
       entropyRound: entropyRoundInfoKey,
 
-      spotPerpMarket: this.extraVoltData.spotPerpMarket,
+      spotPerpMarket: this.extraVoltData.hedgingSpotPerpMarket,
       powerPerpEventQueue: powerPerpMarket.eventQueue,
       powerPerpMarket: this.extraVoltData.powerPerpMarket,
 
@@ -2092,6 +2099,341 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
+  async getGroupAndBanks(
+    client: EntropyClient,
+    mint: PublicKey
+  ): Promise<{
+    entropyGroup: EntropyGroup;
+    rootBank: RootBank | undefined;
+    nodeBank: NodeBank.NodeBank | undefined;
+    quoteRootBank: RootBank | undefined;
+    quoteNodeBank: NodeBank.NodeBank | undefined;
+  }> {
+    if (!this.extraVoltData) throw new Error("extra volt data must be defined");
+    const entropyGroup = await client.getEntropyGroup(
+      this.extraVoltData.entropyGroup
+    );
+    const banks = await entropyGroup.loadRootBanks(this.connection);
+
+    const bankIndex = entropyGroup.tokens.findIndex(
+      (ti) => ti.mint.toString() === mint.toString()
+    );
+
+    if (bankIndex === undefined)
+      throw new Error("bank index not found for mint = " + mint.toString());
+
+    const rootBank = banks[bankIndex];
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    const quoteRootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    const quoteNodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    return {
+      entropyGroup,
+      rootBank,
+      nodeBank,
+      quoteRootBank,
+      quoteNodeBank,
+    };
+  }
+
+  async getBidAskLimitsForSpot(
+    serumMarket: Market,
+    clientBidPrice?: BN,
+    clientAskPrice?: BN
+  ): Promise<{
+    bid: BN;
+    ask: BN;
+  }> {
+    if (!clientAskPrice) {
+      const asks = await serumMarket.loadAsks(this.connection);
+      console.log("asks = ", asks.getL2(10));
+      const bestAsk = asks.getL2(10)[0];
+      if (!bestAsk) {
+        throw new Error("no ask exists on the orderbook");
+      }
+      clientAskPrice = new BN(
+        new Decimal(bestAsk[0])
+          // @ts-ignore
+          .mul(new Decimal(serumMarket._decoded.quoteLotSize.toString()))
+          .toFixed(0)
+      );
+    }
+
+    if (!clientBidPrice) {
+      const bids = await serumMarket.loadBids(this.connection);
+      console.log("asks = ", bids.getL2(10));
+      const bestBid = bids.getL2(10)[0];
+      if (!bestBid) {
+        // throw new Error("no bid exists on the orderbook");
+        clientBidPrice = clientAskPrice;
+      } else {
+        clientBidPrice = new BN(
+          new Decimal(bestBid[0])
+            // @ts-ignore
+            .mul(new Decimal(serumMarket._decoded.quoteLotSize.toString()))
+            .toFixed(0)
+        );
+      }
+    }
+
+    console.log(
+      "client bid price = ",
+      clientBidPrice.toString(),
+      ", client ask price = ",
+      clientAskPrice.toString()
+    );
+
+    return {
+      bid: clientBidPrice,
+      ask: clientAskPrice,
+    };
+  }
+
+  async getBidAskLimitsForEntropy(
+    perpMarket: PerpMarket,
+    clientBidPrice?: BN,
+    clientAskPrice?: BN
+  ): Promise<{
+    bid: BN;
+    ask: BN;
+  }> {
+    if (!clientAskPrice) {
+      const asks = await perpMarket.loadAsks(this.connection);
+      const bestAsk = asks.getBest();
+      if (!bestAsk) {
+        throw new Error("no ask exists on the orderbook");
+      }
+      clientAskPrice = new BN(
+        new Decimal(bestAsk.price)
+          .mul(new Decimal(perpMarket.quoteLotSize.toString()))
+          .toFixed(0)
+      );
+    }
+
+    if (!clientBidPrice) {
+      const bids = await perpMarket.loadBids(this.connection);
+      const bestBid = bids.getBest();
+      if (!bestBid) {
+        // throw new Error("no bid exists on the orderbook");
+        clientBidPrice = clientAskPrice;
+      } else {
+        clientBidPrice = new BN(
+          new Decimal(bestBid.price)
+            .mul(new Decimal(perpMarket.quoteLotSize.toString()))
+            .toFixed(0)
+        );
+      }
+    }
+
+    console.log(
+      "client bid price = ",
+      clientBidPrice.toString(),
+      ", client ask price = ",
+      clientAskPrice.toString()
+    );
+
+    return {
+      bid: clientBidPrice,
+      ask: clientAskPrice,
+    };
+  }
+
+  async rebalanceSpotEntropy(
+    clientBidPrice?: BN,
+    clientAskPrice?: BN
+  ): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) {
+      throw new Error("extra volt data must be loaded");
+    }
+    if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
+      throw new Error("entropy program id must be set (currently default)");
+    }
+
+    const client = new EntropyClient(this.connection, ENTROPY_PROGRAM_ID);
+    const powerPerpMarket = await client.getPerpMarket(
+      this.extraVoltData.powerPerpMarket,
+      0,
+      0
+    );
+
+    const spotMarket = await Market.load(
+      this.connection,
+      this.extraVoltData.hedgingSpotMarket,
+      {},
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
+    );
+
+    const [ulOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
+      this.voltKey,
+      spotMarket.address
+    );
+
+    const { entropyGroup, rootBank, nodeBank, quoteRootBank, quoteNodeBank } =
+      await this.getGroupAndBanks(client, spotMarket.baseMintAddress);
+
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const [entropyRoundInfoKey] = await VoltSDK.findEntropyRoundInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
+    const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
+      this.voltKey,
+      this.voltVault.roundNumber,
+      this.sdk.programs.Volt.programId
+    );
+
+    const { bid, ask } = await this.getBidAskLimitsForSpot(
+      spotMarket,
+      clientBidPrice,
+      clientAskPrice
+    );
+    // @ts-ignore
+    const dexSigner = await PublicKey.createProgramAddress(
+      [
+        spotMarket.address.toBuffer(),
+        // @ts-ignore
+        spotMarket._decoded.vaultSignerNonce.toArrayLike(Buffer, "le", 8),
+      ],
+      // @ts-ignore
+      spotMarket._programId
+    );
+
+    const rebalanceSpotEntropyAccounts: Parameters<
+      VoltProgram["instruction"]["rebalanceSpotEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+      extraVoltData: extraVoltKey,
+
+      entropyMetadata: entropyMetadataKey,
+
+      entropyProgram: ENTROPY_PROGRAM_ID,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+      entropyCache: this.extraVoltData.entropyCache,
+
+      spotMarket: this.extraVoltData.hedgingSpotMarket,
+      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+
+      bids: spotMarket.bidsAddress,
+      asks: spotMarket.asksAddress,
+
+      openOrders: ulOpenOrders,
+
+      // @ts-ignore
+      dexRequestQueue: spotMarket._decoded.requestQueue,
+      // @ts-ignore
+      dexEventQueue: spotMarket._decoded.eventQueue,
+
+      // @ts-ignore
+      dexBase: spotMarket._decoded.baseVault,
+      // @ts-ignore
+      dexQuote: spotMarket._decoded.quoteVault,
+
+      baseRootBank: rootBank?.publicKey as PublicKey,
+      baseNodeBank: nodeBank?.publicKey as PublicKey,
+      baseVault: nodeBank?.vault as PublicKey,
+
+      quoteRootBank: quoteRootBank?.publicKey as PublicKey,
+      quoteNodeBank: quoteNodeBank?.publicKey as PublicKey,
+      quoteVault: quoteNodeBank?.vault as PublicKey,
+
+      signer: entropyGroup.signerKey,
+      dexSigner: dexSigner,
+
+      msrmOrSrmVault: entropyGroup.msrmVault,
+
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    return this.sdk.programs.Volt.instruction.rebalanceSpotEntropy(bid, ask, {
+      accounts: rebalanceSpotEntropyAccounts,
+    });
+  }
+
+  async initSpotOpenOrdersEntropy(): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) {
+      throw new Error("extra volt data must be loaded");
+    }
+    if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
+      throw new Error("entropy program id must be set (currently default)");
+    }
+
+    const client = new EntropyClient(this.connection, ENTROPY_PROGRAM_ID);
+    const entropyGroup = await client.getEntropyGroup(
+      this.extraVoltData.entropyGroup
+    );
+
+    const spotMarket = await Market.load(
+      this.connection,
+      this.extraVoltData.hedgingSpotMarket,
+      {},
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
+    );
+
+    const [ulOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
+      this.voltKey,
+      spotMarket.address
+    );
+
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const dexSigner = await PublicKey.createProgramAddress(
+      [
+        spotMarket.address.toBuffer(),
+        // @ts-ignore
+        spotMarket._decoded.vaultSignerNonce.toArrayLike(Buffer, "le", 8),
+      ],
+      // @ts-ignore
+      spotMarket._programId
+    );
+
+    const initSpotOpenOrdersEntropyAccounts: Parameters<
+      VoltProgram["instruction"]["initSpotOpenOrdersEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+
+      entropyMetadata: entropyMetadataKey,
+
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      entropyProgram: ENTROPY_PROGRAM_ID,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+
+      spotMarket: this.extraVoltData.hedgingSpotMarket,
+      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+
+      openOrders: ulOpenOrders,
+
+      signer: entropyGroup.signerKey,
+      dexSigner: dexSigner,
+
+      rent: SYSVAR_RENT_PUBKEY,
+      systemProgram: SystemProgram.programId,
+    };
+
+    return this.sdk.programs.Volt.instruction.initSpotOpenOrdersEntropy({
+      accounts: initSpotOpenOrdersEntropyAccounts,
+    });
+  }
+
   async cacheRelevantPrices(): Promise<TransactionInstruction> {
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be initiailzied");
@@ -2105,7 +2447,9 @@ export class ConnectedVoltSDK extends VoltSDK {
         entropyGroup.getPerpMarketIndex(this.extraVoltData.powerPerpMarket)
       ],
       entropyGroup.oracles[
-        entropyGroup.getPerpMarketIndex(this.extraVoltData.spotPerpMarket)
+        entropyGroup.getPerpMarketIndex(
+          this.extraVoltData.hedgingSpotPerpMarket
+        )
       ],
     ];
 
@@ -2131,7 +2475,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       ENTROPY_PROGRAM_ID,
       entropyGroup.publicKey,
       entropyGroup.entropyCache,
-      [this.extraVoltData?.powerPerpMarket, this.extraVoltData?.spotPerpMarket]
+      [
+        this.extraVoltData?.powerPerpMarket,
+        this.extraVoltData?.hedgingSpotPerpMarket,
+      ]
     );
   }
 
@@ -2223,7 +2570,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyAccount: this.extraVoltData.entropyAccount,
       entropyCache: this.extraVoltData.entropyCache,
 
-      spotPerpMarket: this.extraVoltData.spotPerpMarket,
+      spotPerpMarket: this.extraVoltData.hedgingSpotPerpMarket,
       powerPerpMarket: this.extraVoltData.powerPerpMarket,
 
       rootBank: rootBank?.publicKey as PublicKey,

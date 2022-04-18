@@ -16,8 +16,8 @@ default = ["mainnet"]
 mainnet = []
 
 [dependencies]
-anchor-lang = { version="0.23.0", features=[] }
-anchor-spl = { version="0.23.0", features=["dex"] }
+anchor-lang = { version="0.24.1", features=[] }
+anchor-spl = { version="0.24.1", features=["dex"] }
 volt-abi = { path = "../volt-abi", features = ["cpi"]}
 num-traits = "0.2.14"
 solana-program = "^1.8.14"

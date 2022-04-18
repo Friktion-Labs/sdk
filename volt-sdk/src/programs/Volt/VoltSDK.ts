@@ -166,6 +166,32 @@ export class VoltSDK {
     );
   }
 
+  static async findEntropyMetadataAddress(
+    voltKey: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("entropyMetadata")],
+      voltProgramId
+    );
+  }
+  static async findEntropyOpenOrdersAddress(
+    voltKey: PublicKey,
+    marketAddress: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [
+        voltKey.toBuffer(),
+        marketAddress.toBuffer(),
+        textEncoder.encode("entropySpotOpenOrders"),
+      ],
+      voltProgramId
+    );
+  }
+
   /**
    * For an admin to create a volt
    *
@@ -262,7 +288,7 @@ export class VoltSDK {
     };
 
     const serumOrderSize = new anchor.BN(1);
-    const serumOrderType = OrderType.Limit;
+    const serumOrderType = OrderType.ImmediateOrCancel;
     // const serumLimit = new anchor.BN(65535);
     const serumSelfTradeBehavior = SelfTradeBehavior.AbortTransaction;
 
@@ -450,9 +476,15 @@ export class VoltSDK {
     entropyGroupKey,
     targetPerpMarket,
     spotPerpMarket,
+    spotMarket,
     targetLeverageRatio,
     targetLeverageLenience,
     targetHedgeLenience,
+    shouldHedge,
+    hedgeWithSpot,
+    targetHedgeRatio,
+    rebalancingLenience,
+    requiredBasisFromOracle,
     exitEarlyRatio,
     capacity,
     individualCapacity,
@@ -467,9 +499,15 @@ export class VoltSDK {
     entropyGroupKey: PublicKey;
     targetPerpMarket: PublicKey;
     spotPerpMarket: PublicKey;
+    spotMarket: PublicKey;
     targetLeverageRatio: number;
     targetLeverageLenience: number;
     targetHedgeLenience: number;
+    shouldHedge: boolean;
+    hedgeWithSpot: boolean;
+    targetHedgeRatio: number;
+    rebalancingLenience: number;
+    requiredBasisFromOracle: number;
     exitEarlyRatio: number;
     capacity: anchor.BN;
     individualCapacity: anchor.BN;
@@ -477,8 +515,6 @@ export class VoltSDK {
     instruction: TransactionInstruction;
     voltKey: PublicKey;
   }> {
-    console.log("pda string: ", pdaStr);
-
     const {
       vault,
       vaultAuthorityBump,
@@ -537,7 +573,8 @@ export class VoltSDK {
       entropyCache: entropyCacheKey,
 
       powerPerpMarket: targetPerpMarket,
-      spotPerpMarket: spotPerpMarket,
+      hedgingSpotPerpMarket: spotPerpMarket,
+      hedgingSpotMarket: spotMarket,
 
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -569,7 +606,11 @@ export class VoltSDK {
         exitEarlyRatio,
         capacity,
         individualCapacity,
-        true,
+        shouldHedge,
+        hedgeWithSpot,
+        targetHedgeRatio,
+        rebalancingLenience,
+        requiredBasisFromOracle,
         {
           accounts: initializeEntropyAccounts,
         }
@@ -1742,17 +1783,6 @@ export class VoltSDK {
       entropyAccount,
       entropyCache,
     };
-  }
-
-  static async findEntropyMetadataAddress(
-    voltKey: PublicKey,
-    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
-  ): Promise<[PublicKey, number]> {
-    const textEncoder = new TextEncoder();
-    return await PublicKey.findProgramAddress(
-      [voltKey.toBuffer(), textEncoder.encode("entropyMetadata")],
-      voltProgramId
-    );
   }
 
   async getPnlForRound(roundNumber: BN, subtractFees = true): Promise<Decimal> {

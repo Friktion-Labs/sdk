@@ -45,6 +45,11 @@ export type InertiaIXAccounts = {
       InertiaProgram["instruction"]["revertOptionSettle"]["accounts"]
     >[0]]: PublicKey;
   };
+  reclaimFundsFromExerciseAdmin: {
+    [A in keyof Parameters<
+      InertiaProgram["instruction"]["reclaimFundsFromExerciseAdmin"]["accounts"]
+    >[0]]: PublicKey;
+  };
   write: {
     [A in keyof Parameters<
       InertiaProgram["instruction"]["optionWrite"]["accounts"]

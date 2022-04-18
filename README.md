@@ -136,6 +136,17 @@
       "voltType": 1,
     },
     {
+      "name": "AVAX CALL",
+      "voltVaultId": "7mzbtntRJL7QPw2rtAcFhqVM7iBvCa6McaatZ5RPPhag",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "underlyingMint": "KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE",
+      "depositTokenMint": "KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE",
+      "shareTokenMint": "HLfkEc6E2HEcABaWm3QZSfDvswzXjh1onF9xEzUAtWNS",
+      "shareTokenSymbol": "fcAVAX",
+      "shareTokenDecimals": 8,
+      "voltType": 1,
+    },
+    {
       "name": "RAY CALL",
       "voltVaultId": "4LtxyBUH8PsRea21s7CaaYWtq7KutcZ4x8r6PTmUCcvs",
       "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -223,6 +234,15 @@
       "shareTokenSymbol": "fpETH",
       "shareTokenDecimals": 6,
       "voltType": 2,
+    },
+    {
+      "name": "BTC CRAB",
+      "voltVaultId": "JPmAHJBocDi1539s2wfqiGzVTZd4quYJgx5dg6Ysq2k",
+      "depositTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "shareTokenMint": "86nx2WyrdC6VuWyfdG1gMLiiBduktBTJgToKZAYwcbct",
+      "shareTokenSymbol": "fcrabBTC",
+      "shareTokenDecimals": 6,
+      "voltType": 3,
     }
 ```
 ## Code Examples
