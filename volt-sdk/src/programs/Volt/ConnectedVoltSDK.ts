@@ -2003,12 +2003,17 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltKey
     );
 
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      this.voltKey
+    );
+
     const setStrategyAccounts: Parameters<
       VoltProgram["instruction"]["setStrategyParams"]["accounts"]
     >[0] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltDataKey,
+      entropyMetadata: entropyMetadataKey,
     };
     return this.sdk.programs.Volt.instruction.setStrategyParams(
       targetLeverageRatio.toNumber(),
