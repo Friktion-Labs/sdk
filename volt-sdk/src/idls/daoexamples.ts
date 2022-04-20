@@ -131,6 +131,7 @@ export type DaoExamplesIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     }
   ];
   errors: [
@@ -274,6 +275,7 @@ export const DaoExamplesIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
   ],
   errors: [

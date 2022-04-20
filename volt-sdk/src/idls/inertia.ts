@@ -124,6 +124,7 @@ export type InertiaIDL = {
           type: "u8";
         }
       ];
+      returns: null;
     },
     {
       name: "optionWrite";
@@ -200,6 +201,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "closePosition";
@@ -261,6 +263,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "revertOptionSettle";
@@ -322,6 +325,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionSettle";
@@ -383,6 +387,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionExercise";
@@ -434,6 +439,7 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+      returns: null;
     },
     {
       name: "optionRedeem";
@@ -961,6 +967,7 @@ export const InertiaIDLJsonRaw = {
           type: "u8",
         },
       ],
+      returns: null,
     },
     {
       name: "optionWrite",
@@ -1037,6 +1044,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "closePosition",
@@ -1098,6 +1106,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "revertOptionSettle",
@@ -1159,6 +1168,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionSettle",
@@ -1220,6 +1230,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionExercise",
@@ -1271,6 +1282,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
     },
     {
       name: "optionRedeem",
@@ -1322,67 +1334,7 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-    },
-    {
-      name: "reclaimFundsFromExerciseAdmin",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "contract",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "oracleAi",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "claimablePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "userUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "exerciseFeeAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "numToReclaim",
-          type: "u64",
-        },
-      ],
+      returns: null,
     },
     {
       name: "reclaimFundsFromExerciseAdmin",
