@@ -108,6 +108,9 @@ pub struct Deposit<'info> {
 }
 
 #[derive(Accounts)]
+#[instruction(
+    withdraw_amount: u64
+)]
 pub struct Withdraw<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,

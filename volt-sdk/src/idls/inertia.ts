@@ -492,6 +492,68 @@ export type InertiaIDL = {
         }
       ];
       returns: null;
+    },
+    {
+      name: "reclaimFundsFromExerciseAdmin";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "contract";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "oracleAi";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "quoteMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "claimablePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "exerciseFeeAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "numToReclaim";
+          type: "u64";
+        }
+      ];
+      returns: null;
     }
   ];
   accounts: [
@@ -1269,6 +1331,68 @@ export const InertiaIDLJsonRaw = {
       args: [
         {
           name: "numContracts",
+          type: "u64",
+        },
+      ],
+      returns: null,
+    },
+    {
+      name: "reclaimFundsFromExerciseAdmin",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "contract",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "oracleAi",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "quoteMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "claimablePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "exerciseFeeAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "numToReclaim",
           type: "u64",
         },
       ],

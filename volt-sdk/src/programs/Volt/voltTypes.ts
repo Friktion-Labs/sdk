@@ -13,6 +13,7 @@ export type VoltTypes = AnchorTypes<
   {
     voltVault: VoltVault;
     extraVoltData: ExtraVoltData;
+    entropyMetadata: EntropyMetadata;
     whitelist: Whitelist;
     round: Round;
     friktionEpochInfo: FriktionEpochInfo;
@@ -37,6 +38,7 @@ export type Round = VoltAccounts["Round"];
 export type FriktionEpochInfo = VoltAccounts["FriktionEpochInfo"];
 export type VoltVault = VoltAccounts["VoltVault"];
 export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
+export type EntropyMetadata = VoltAccounts["EntropyMetadata"];
 export type Whitelist = VoltAccounts["Whitelist"];
 export type EntropyRound = VoltAccounts["EntropyRound"];
 export type WithKey = {

@@ -385,4 +385,50 @@ export class InertiaSDK {
       accounts: closePositionAccounts,
     });
   }
+
+  async reclaimFundsFromExerciseAdmin(
+    user: PublicKey,
+    numToClaim: BN
+  ): Promise<TransactionInstruction> {
+    const seeds = [
+      this.optionMarket.underlyingMint,
+      this.optionMarket.quoteMint,
+      this.optionMarket.underlyingAmount,
+      this.optionMarket.quoteAmount,
+      this.optionMarket.expiryTs,
+      this.optionMarket.isCall.toNumber() > 0 ? true : false,
+    ] as const;
+    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+      this.program,
+      "ClaimablePool",
+      ...seeds
+    );
+
+    const associatedTokenAddress = await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      this.optionMarket.underlyingMint,
+      user
+    );
+
+    const reclaimFundsFromExerciseAdminAccounts: InertiaIXAccounts["reclaimFundsFromExerciseAdmin"] =
+      {
+        authority: user,
+        oracleAi: this.optionMarket.oracleAi,
+        contract: this.optionKey,
+        claimablePool,
+        underlyingMint: this.optionMarket.underlyingMint,
+        quoteMint: this.optionMarket.quoteMint,
+        // contractUnderlyingTokens: this.optionMarket.underlyingPool,
+        exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
+
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        userUnderlyingTokens: associatedTokenAddress,
+      };
+
+    return this.program.instruction.reclaimFundsFromExerciseAdmin(numToClaim, {
+      accounts: reclaimFundsFromExerciseAdminAccounts,
+    });
+  }
 }
