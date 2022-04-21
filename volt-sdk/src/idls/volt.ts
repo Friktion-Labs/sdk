@@ -1121,6 +1121,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "pendingDepositRoundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
@@ -3400,7 +3405,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "depositPool";
+          name: "targetPool";
           isMut: true;
           isSigner: false;
         },
@@ -3426,6 +3431,68 @@ export type VoltIDL = {
           type: "u64";
         }
       ];
+      returns: null;
+    },
+    {
+      name: "reinitializeMint";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "targetPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "oldMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "newMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
       returns: null;
     },
     {
@@ -5589,6 +5656,11 @@ export type VoltIDL = {
       code: 6187;
       name: "CompleteBasePositionDoesNotMatchNormal";
       msg: "complete base position does not match normal";
+    },
+    {
+      code: 6188;
+      name: "InvalidUserUnderlyingTokens";
+      msg: "invalid user underlying tokens";
     }
   ];
 };
@@ -6711,6 +6783,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "pendingDepositRoundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundUnderlyingTokens",
           isMut: true,
           isSigner: false,
         },
@@ -8994,7 +9071,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "depositPool",
+          name: "targetPool",
           isMut: true,
           isSigner: false,
         },
@@ -9020,6 +9097,68 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+      returns: null,
+    },
+    {
+      name: "reinitializeMint",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "targetPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "oldMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "newMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
       returns: null,
     },
     {
@@ -11183,6 +11322,11 @@ export const VoltIDLJsonRaw = {
       code: 6187,
       name: "CompleteBasePositionDoesNotMatchNormal",
       msg: "complete base position does not match normal",
+    },
+    {
+      code: 6188,
+      name: "InvalidUserUnderlyingTokens",
+      msg: "invalid user underlying tokens",
     },
   ],
 };

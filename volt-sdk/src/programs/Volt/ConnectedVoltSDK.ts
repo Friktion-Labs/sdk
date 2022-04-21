@@ -329,6 +329,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     const {
       roundInfoKey: pendingDepositRoundInfoKey,
       roundVoltTokensKey: pendingDepositRoundVoltTokensKey,
+      roundUnderlyingTokensKey: pendingDepositRoundUnderlyingTokensKey,
     } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       pendingDepositInfo?.roundNumber ?? new BN(0),
@@ -376,10 +377,11 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       pendingDepositRoundInfo: pendingDepositRoundInfoKey,
       pendingDepositRoundVoltTokens: pendingDepositRoundVoltTokensKey,
+      pendingDepositRoundUnderlyingTokens:
+        pendingDepositRoundUnderlyingTokensKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      // rent: SYSVAR_RENT_PUBKEY,
     };
 
     return this.sdk.programs.Volt.instruction.depositWithClaim(
@@ -2349,8 +2351,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       clientBidPrice,
       clientAskPrice
     );
+
     // @ts-ignore
     const dexSigner = await PublicKey.createProgramAddress(
+      //@ts-ignore
       [
         spotMarket.address.toBuffer(),
         // @ts-ignore
@@ -2700,6 +2704,40 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
       accounts: transferDepositAccounts,
+    });
+  }
+
+  async reinitializeMint(
+    targetPool: PublicKey,
+    newMint: PublicKey,
+    underlyingDestination: PublicKey
+  ): Promise<TransactionInstruction> {
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    console.log("target pool = ", targetPool.toString());
+    console.log("new mint = ", newMint.toString());
+    const reinitializeMintAccounts: Parameters<
+      VoltProgram["instruction"]["reinitializeMint"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+      extraVoltData: extraVoltKey,
+
+      targetPool: targetPool,
+
+      oldMint: this.voltVault.underlyingAssetMint,
+      newMint: newMint,
+
+      userTokens: underlyingDestination,
+
+      rent: SYSVAR_RENT_PUBKEY,
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    return this.sdk.programs.Volt.instruction.reinitializeMint({
+      accounts: reinitializeMintAccounts,
     });
   }
 

@@ -385,57 +385,9 @@ export type InertiaIDL = {
         {
           name: "settlePrice";
           type: "u64";
-        }
-      ];
-      returns: null;
-    },
-    {
-      name: "optionExercise";
-      accounts: [
-        {
-          name: "exerciserAuthority";
-          isMut: true;
-          isSigner: true;
         },
         {
-          name: "contract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "optionMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "claimablePool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "numContracts";
+          name: "bypassCode";
           type: "u64";
         }
       ];
@@ -494,7 +446,7 @@ export type InertiaIDL = {
       returns: null;
     },
     {
-      name: "reclaimFundsFromExerciseAdmin";
+      name: "reinitializeUnderlyingMint";
       accounts: [
         {
           name: "authority";
@@ -517,12 +469,12 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
-          name: "quoteMint";
+          name: "newUnderlyingMint";
           isMut: true;
           isSigner: false;
         },
         {
-          name: "claimablePool";
+          name: "targetPool";
           isMut: true;
           isSigner: false;
         },
@@ -532,8 +484,8 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
-          name: "exerciseFeeAccount";
-          isMut: true;
+          name: "rent";
+          isMut: false;
           isSigner: false;
         },
         {
@@ -542,17 +494,12 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
-          name: "clock";
+          name: "systemProgram";
           isMut: false;
           isSigner: false;
         }
       ];
-      args: [
-        {
-          name: "numToReclaim";
-          type: "u64";
-        }
-      ];
+      args: [];
       returns: null;
     }
   ];
@@ -1229,56 +1176,8 @@ export const InertiaIDLJsonRaw = {
           name: "settlePrice",
           type: "u64",
         },
-      ],
-      returns: null,
-    },
-    {
-      name: "optionExercise",
-      accounts: [
         {
-          name: "exerciserAuthority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "contract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "optionMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "claimablePool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "numContracts",
+          name: "bypassCode",
           type: "u64",
         },
       ],
@@ -1337,7 +1236,7 @@ export const InertiaIDLJsonRaw = {
       returns: null,
     },
     {
-      name: "reclaimFundsFromExerciseAdmin",
+      name: "reinitializeUnderlyingMint",
       accounts: [
         {
           name: "authority",
@@ -1360,12 +1259,12 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "quoteMint",
+          name: "newUnderlyingMint",
           isMut: true,
           isSigner: false,
         },
         {
-          name: "claimablePool",
+          name: "targetPool",
           isMut: true,
           isSigner: false,
         },
@@ -1375,8 +1274,8 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "exerciseFeeAccount",
-          isMut: true,
+          name: "rent",
+          isMut: false,
           isSigner: false,
         },
         {
@@ -1385,17 +1284,12 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "clock",
+          name: "systemProgram",
           isMut: false,
           isSigner: false,
         },
       ],
-      args: [
-        {
-          name: "numToReclaim",
-          type: "u64",
-        },
-      ],
+      args: [],
       returns: null,
     },
   ],

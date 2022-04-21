@@ -9,7 +9,12 @@ import {
   u64,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import { PublicKey, SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
+import {
+  PublicKey,
+  SystemProgram,
+  SYSVAR_CLOCK_PUBKEY,
+  SYSVAR_RENT_PUBKEY,
+} from "@solana/web3.js";
 
 import {
   INERTIA_EXERCISE_FEE_BPS,
@@ -199,45 +204,53 @@ export class InertiaSDK {
     );
   }
 
-  async exercise(
-    params: InertiaExerciseOptionParams
-  ): Promise<TransactionInstruction> {
-    const { amount, optionTokenSource, underlyingTokenDestination } = params;
+  // async exercise(
+  //   params: InertiaExerciseOptionParams
+  // ): Promise<TransactionInstruction> {
+  //   const { amount, optionTokenSource, underlyingTokenDestination } = params;
 
-    const seeds = [
-      this.optionMarket.underlyingMint,
-      this.optionMarket.quoteMint,
-      this.optionMarket.underlyingAmount,
-      this.optionMarket.quoteAmount,
-      this.optionMarket.expiryTs,
-      this.optionMarket.isCall.toNumber() > 0 ? true : false,
-    ] as const;
+  //   const seeds = [
+  //     this.optionMarket.underlyingMint,
+  //     this.optionMarket.quoteMint,
+  //     this.optionMarket.underlyingAmount,
+  //     this.optionMarket.quoteAmount,
+  //     this.optionMarket.expiryTs,
+  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
+  //   ] as const;
 
-    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-      this.program,
-      "ClaimablePool",
-      ...seeds
-    );
+  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+  //     this.program,
+  //     "ClaimablePool",
+  //     ...seeds
+  //   );
 
-    const exerciseAccounts: InertiaIXAccounts["exercise"] = {
-      contract: this.optionKey,
-      exerciserAuthority: params.user,
-      optionMint: this.optionMarket.optionMint,
-      optionTokenSource: optionTokenSource,
-      underlyingTokenDestination,
-      claimablePool,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
-    };
+  //   const exerciseAccounts: InertiaIXAccounts["exercise"] = {
+  //     contract: this.optionKey,
+  //     exerciserAuthority: params.user,
+  //     optionMint: this.optionMarket.optionMint,
+  //     optionTokenSource: optionTokenSource,
+  //     underlyingTokenDestination,
+  //     claimablePool,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     clock: SYSVAR_CLOCK_PUBKEY,
+  //   };
 
-    return this.program.instruction.optionExercise(amount, {
-      accounts: exerciseAccounts,
-    });
-  }
+  //   return this.program.instruction.optionExercise(amount, {
+  //     accounts: exerciseAccounts,
+  //   });
+  // }
 
   async settle(
-    params: InertiaSettleOptionParams
+    params: InertiaSettleOptionParams,
+    bypassCode?: BN
   ): Promise<TransactionInstruction> {
+    if (bypassCode === undefined) {
+      bypassCode = new BN(0);
+    }
+
+    if (bypassCode.ltn(0)) {
+      throw new Error("bypass code must be positive (u64 in rust)");
+    }
     const seeds = [
       this.optionMarket.underlyingMint,
       this.optionMarket.quoteMint,
@@ -267,9 +280,13 @@ export class InertiaSDK {
       clock: SYSVAR_CLOCK_PUBKEY,
     };
 
-    return this.program.instruction.optionSettle(new BN(params.settlePrice), {
-      accounts: settleAccounts,
-    });
+    return this.program.instruction.optionSettle(
+      new BN(params.settlePrice),
+      bypassCode,
+      {
+        accounts: settleAccounts,
+      }
+    );
   }
 
   async revertSettle(
@@ -386,9 +403,56 @@ export class InertiaSDK {
     });
   }
 
-  async reclaimFundsFromExerciseAdmin(
+  // async reclaimFundsFromExerciseAdmin(
+  //   user: PublicKey,
+  //   numToClaim: BN
+  // ): Promise<TransactionInstruction> {
+  //   const seeds = [
+  //     this.optionMarket.underlyingMint,
+  //     this.optionMarket.quoteMint,
+  //     this.optionMarket.underlyingAmount,
+  //     this.optionMarket.quoteAmount,
+  //     this.optionMarket.expiryTs,
+  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
+  //   ] as const;
+  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+  //     this.program,
+  //     "ClaimablePool",
+  //     ...seeds
+  //   );
+
+  //   const associatedTokenAddress = await Token.getAssociatedTokenAddress(
+  //     ASSOCIATED_TOKEN_PROGRAM_ID,
+  //     TOKEN_PROGRAM_ID,
+  //     this.optionMarket.underlyingMint,
+  //     user
+  //   );
+
+  //   const reclaimFundsFromExerciseAdminAccounts: InertiaIXAccounts["reclaimFundsFromExerciseAdmin"] =
+  //     {
+  //       authority: user,
+  //       oracleAi: this.optionMarket.oracleAi,
+  //       contract: this.optionKey,
+  //       claimablePool,
+  //       underlyingMint: this.optionMarket.underlyingMint,
+  //       quoteMint: this.optionMarket.quoteMint,
+  //       // contractUnderlyingTokens: this.optionMarket.underlyingPool,
+  //       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
+
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //       clock: SYSVAR_CLOCK_PUBKEY,
+  //       userUnderlyingTokens: associatedTokenAddress,
+  //     };
+
+  //   return this.program.instruction.reclaimFundsFromExerciseAdmin(numToClaim, {
+  //     accounts: reclaimFundsFromExerciseAdminAccounts,
+  //   });
+  // }
+
+  async reinitializeUnderlyingMint(
     user: PublicKey,
-    numToClaim: BN
+    targetPool: PublicKey,
+    newUnderlyingMint: PublicKey
   ): Promise<TransactionInstruction> {
     const seeds = [
       this.optionMarket.underlyingMint,
@@ -411,24 +475,24 @@ export class InertiaSDK {
       user
     );
 
-    const reclaimFundsFromExerciseAdminAccounts: InertiaIXAccounts["reclaimFundsFromExerciseAdmin"] =
+    const reinitializeUnderlyingMintAccounts: InertiaIXAccounts["reinitializeUnderlyingMint"] =
       {
         authority: user,
         oracleAi: this.optionMarket.oracleAi,
         contract: this.optionKey,
-        claimablePool,
         underlyingMint: this.optionMarket.underlyingMint,
-        quoteMint: this.optionMarket.quoteMint,
-        // contractUnderlyingTokens: this.optionMarket.underlyingPool,
-        exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
+        newUnderlyingMint: newUnderlyingMint,
+
+        targetPool: targetPool,
 
         tokenProgram: TOKEN_PROGRAM_ID,
-        clock: SYSVAR_CLOCK_PUBKEY,
+        systemProgram: SystemProgram.programId,
         userUnderlyingTokens: associatedTokenAddress,
+        rent: SYSVAR_RENT_PUBKEY,
       };
 
-    return this.program.instruction.reclaimFundsFromExerciseAdmin(numToClaim, {
-      accounts: reclaimFundsFromExerciseAdminAccounts,
+    return this.program.instruction.reinitializeUnderlyingMint({
+      accounts: reinitializeUnderlyingMintAccounts,
     });
   }
 }
