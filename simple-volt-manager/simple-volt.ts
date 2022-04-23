@@ -345,7 +345,7 @@ const run = async () => {
     console.log("succesfully claimed pending!");
     return;
   } else if (instruction == "claimPendingWithdrawal") {
-    console.log("claiming vault tokens from previous pending deposit");
+    console.log("claiming vault tokens from previous pending withdrawal");
 
     console.log(
       "underlying tokens before = ",
