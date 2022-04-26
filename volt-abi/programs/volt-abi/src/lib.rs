@@ -21,10 +21,25 @@ mod volt_abi {
         Ok(())
     }
 
+    pub(crate) fn deposit_with_claim(cx: Context<DepositWithClaim>, amount: u64) -> Result<()> {
+        Ok(())
+    }
+
+    pub(crate) fn withdraw_with_claim(cx: Context<WithdrawWithClaim>, amount: u64) -> Result<()> {
+        Ok(())
+    }
+
     pub(crate) fn claim_pending_deposit(cx: Context<ClaimPendingDeposit>) -> Result<()> {
         Ok(())
     }
     pub(crate) fn claim_pending_withdrawal(cx: Context<ClaimPendingWithdrawal>) -> Result<()> {
+        Ok(())
+    }
+
+    pub(crate) fn cancel_pending_deposit(cx: Context<CancelPendingDeposit>) -> Result<()> {
+        Ok(())
+    }
+    pub(crate) fn cancel_pending_withdrawal(cx: Context<CancelPendingWithdrawal>) -> Result<()> {
         Ok(())
     }
     // ========== TRADING ==========
@@ -567,63 +582,6 @@ pub struct VoltVault {
 
 impl VoltVault {
     pub const LEN: usize = 739;
-}
-
-#[derive(Accounts, Clone)]
-pub struct SettleFundsGeneric<'info> {
-    /// The user who signed and sent the TX from the client
-    #[account(mut)]
-    user_authority: Signer<'info>,
-
-    #[account(mut)]
-    volt_vault: Box<Account<'info, VoltVault>>,
-
-    /// The Serum DEX program ID
-    #[account(mut)]
-    /// CHECK: skip
-    dex_program: AccountInfo<'info>,
-
-    /// The vault's OpenOrders account
-    #[account(mut)]
-    /// CHECK: skip
-    open_orders: AccountInfo<'info>,
-    /// The Serum Market
-    #[account(mut)]
-    /// CHECK: skip
-    market: AccountInfo<'info>,
-
-    #[account(mut)]
-    /// CHECK: skip
-    pc_referrer_wallet: AccountInfo<'info>,
-
-    /// The vault authority that also has authority over the OpenOrders account
-    #[account(mut)]
-    /// CHECK: skip
-    vault_authority: AccountInfo<'info>,
-
-    #[account(mut)]
-    /// CHECK: skip
-    vault_signer: AccountInfo<'info>,
-
-    #[account(mut)]
-    /// CHECK: skip
-    coin_vault: AccountInfo<'info>,
-    #[account(mut)]
-    /// CHECK: skip
-    pc_vault: AccountInfo<'info>,
-
-    #[account(mut)]
-    /// CHECK: skip
-    coin_wallet: AccountInfo<'info>,
-    #[account(mut)]
-    /// CHECK: skip
-    pc_wallet: AccountInfo<'info>,
-
-    /// CHECK: skip
-    system_program: AccountInfo<'info>,
-    /// CHECK: skip
-    token_program: AccountInfo<'info>,
-    pub rent: Sysvar<'info, Rent>,
 }
 
 #[error_code]
