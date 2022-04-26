@@ -11,7 +11,6 @@ import { EntropyClient, I80F48 } from "@friktion-labs/entropy-client";
 import type { Program, ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
-import { getMintInfo } from "@project-serum/common";
 import type { MarketProxy } from "@project-serum/serum";
 import { MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
@@ -41,7 +40,6 @@ import {
   FRIKTION_PROGRAM_ID,
   VoltType,
 } from "../../constants";
-import { anchorProviderToSerumProvider } from "../../miscUtils";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
@@ -71,12 +69,15 @@ import type {
 } from "./voltTypes";
 
 export class VoltSDK {
+  extraVoltData: ExtraVoltData | undefined;
   constructor(
     readonly sdk: FriktionSDK,
     readonly voltVault: VoltVault,
     readonly voltKey: PublicKey,
-    readonly extraVoltData?: ExtraVoltData | undefined
-  ) {}
+    extraVoltData?: ExtraVoltData | undefined
+  ) {
+    this.extraVoltData = extraVoltData;
+  }
 
   voltType(): VoltType {
     // const vaultType = this.voltVault.vaultType.toNumber();
@@ -1064,7 +1065,7 @@ export class VoltSDK {
       userMintableShares =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0) ||
-        pendingDepositInfo.roundNumber.eq(this.voltVault.roundNumber)
+        pendingDepositInfo.roundNumber.gte(this.voltVault.roundNumber)
           ? new Decimal(0)
           : new Decimal(pendingDepositInfo.numUnderlyingDeposited.toString())
               .mul(voltTokensForPendingDepositRound)
@@ -1072,8 +1073,7 @@ export class VoltSDK {
                 new Decimal(
                   roundForPendingDeposit.underlyingFromPendingDeposits.toString()
                 )
-              )
-              .floor();
+              );
     }
 
     let pendingwithdrawalInfo = null;
@@ -1711,6 +1711,11 @@ export class VoltSDK {
     return this.getRoundByKey(key);
   }
 
+  async loadInExtraVoltData() {
+    const extraVoltData = await this.getExtraVoltData();
+    this.extraVoltData = extraVoltData;
+  }
+
   async getExtraVoltData(): Promise<ExtraVoltDataWithKey> {
     const [key] = await VoltSDK.findExtraVoltDataAddress(
       this.voltKey,
@@ -2003,15 +2008,7 @@ export class VoltSDK {
       if (!result) return new BN(0);
       const { mintableShares } = result;
 
-      const vaultMintInfo = await getMintInfo(
-        anchorProviderToSerumProvider(this.sdk.readonlyProvider),
-        this.voltVault.vaultMint
-      );
-      return new BN(
-        mintableShares
-          .mul(new Decimal(10).pow(vaultMintInfo.decimals))
-          .toFixed(0)
-      );
+      return new BN(mintableShares.toFixed(0));
     } catch (err) {
       console.log(err);
       return new BN(0);

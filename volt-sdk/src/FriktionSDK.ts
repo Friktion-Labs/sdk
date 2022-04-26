@@ -265,6 +265,21 @@ export class FriktionSDK {
     });
   }
 
+  async getAllVoltVaultsWithExtraVoltData(): Promise<VoltSDK[]> {
+    const accts =
+      (await this.programs.Volt?.account?.voltVault?.all()) as unknown as ProgramAccount<VoltVault>[];
+
+    return await Promise.all(
+      accts.map(async (acct) => {
+        {
+          const voltSdk = this.loadVolt(acct.account, acct.publicKey);
+          await voltSdk.loadInExtraVoltData();
+          return voltSdk;
+        }
+      })
+    );
+  }
+
   loadSoloptionsMarket(soloptionsMarket: OptionMarketWithKey): SoloptionsSDK {
     return new SoloptionsSDK(this, soloptionsMarket);
   }
