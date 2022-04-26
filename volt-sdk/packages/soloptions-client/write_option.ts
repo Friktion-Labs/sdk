@@ -6,6 +6,7 @@ import {
   SoloptionsContractWithKey,
   SoloptionsProgram,
 } from "../../src/programs/Soloptions/soloptionsTypes";
+import { AnchorProvider } from "@project-serum/anchor";
 
 export interface WriteOptionParams {
   writerAccount?: Keypair;
@@ -43,7 +44,7 @@ export const writeOption = async (
       writerTokenDestination,
       writerAuthority: writerAccount
         ? writerAccount.publicKey
-        : program.provider.wallet.publicKey,
+        : (program.provider as AnchorProvider).wallet.publicKey,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
 
       feeDestination,

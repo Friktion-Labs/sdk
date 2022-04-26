@@ -18,7 +18,13 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
-import { BN, Program, Provider, web3 } from "@project-serum/anchor";
+import {
+  BN,
+  Program,
+  Provider,
+  web3,
+  AnchorProvider,
+} from "@project-serum/anchor";
 import { getAssociatedTokenAddress } from "../../soloptions-common";
 import { getVaultOwnerAndNonce } from "../../../src";
 
@@ -90,7 +96,7 @@ export const initializeMarket = async (
   );
 
   let { eventQueue, asks, bids } = params;
-  const wallet = provider.wallet;
+  const wallet = (provider as AnchorProvider).wallet;
 
   // Create the optional accounts
   const instructions = [];

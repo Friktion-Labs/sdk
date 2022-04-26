@@ -1,6 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import { PublicKey, Keypair } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { Provider, AnchorProvider } from "@project-serum/anchor";
 import {
   SoloptionsContractWithKey,
   SoloptionsProgram,
@@ -30,7 +31,7 @@ export const redeemOption = async (
       contract: contract.key,
       redeemerAuthority: redeemerAccount
         ? redeemerAccount.publicKey
-        : program.provider.wallet.publicKey,
+        : (program.provider as AnchorProvider).wallet.publicKey,
       writerMint: contract.writerMint,
       contractUnderlyingTokens: contract.underlyingPool,
       contractQuoteTokens: contract.quotePool,

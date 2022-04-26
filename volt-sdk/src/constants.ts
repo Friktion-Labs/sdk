@@ -73,6 +73,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     LUNA: new PublicKey("F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W"),
     RAY: new PublicKey("4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"),
     TUSDCV2: new PublicKey("Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip"),
+    PAI: new PublicKey("Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
   },
   SERUM_REFERRER_IDS: {
@@ -121,6 +122,9 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip: new PublicKey(
       "BRbrPkQFjtePRAAF4KoauWmKooG56H7jwx5bUknuMCh9"
     ),
+    Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS: new PublicKey(
+      "CnmDnku17xVpVtmpek5MMmFmAddAdUcMiBTKhDx2DymP"
+    ),
     StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT: new PublicKey(
       "2nRHbu47Wt9jVJtcLxdmhn1YWbC1gzAuPKSuycyL4GGa"
     ),
@@ -157,6 +161,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     LUNA: new PublicKey("F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W"),
     RAY: new PublicKey("4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"),
     TUSDCV2: new PublicKey("Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip"),
+    PAI: new PublicKey("Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
   },
   SERUM_REFERRER_IDS: {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import type { Provider as AnchorProvider } from "@project-serum/anchor";
+import type { AnchorProvider } from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
 import type { SolanaProvider } from "@saberhq/solana-contrib";
 import {

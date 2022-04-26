@@ -197,7 +197,9 @@ export const newContract = async (
     ...seeds
   );
 
-  const admin = payer ? payer.publicKey : program.provider.wallet.publicKey;
+  const admin = payer
+    ? payer.publicKey
+    : (program.provider as anchor.AnchorProvider).wallet.publicKey;
 
   // @ts-ignore
   await program.rpc.newContract(

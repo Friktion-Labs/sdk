@@ -124,7 +124,6 @@ export type InertiaIDL = {
           type: "u8";
         }
       ];
-      returns: null;
     },
     {
       name: "optionWrite";
@@ -201,7 +200,6 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-      returns: null;
     },
     {
       name: "closePosition";
@@ -263,7 +261,6 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-      returns: null;
     },
     {
       name: "revertOptionSettle";
@@ -325,7 +322,6 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-      returns: null;
     },
     {
       name: "optionSettle";
@@ -391,7 +387,6 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-      returns: null;
     },
     {
       name: "optionRedeem";
@@ -443,49 +438,38 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
-      returns: null;
     },
     {
-      name: "reinitializeUnderlyingMint";
+      name: "optionExercise";
       accounts: [
         {
-          name: "authority";
+          name: "exerciserAuthority";
           isMut: true;
           isSigner: true;
         },
         {
           name: "contract";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "oracleAi";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "newUnderlyingMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "targetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "userUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rent";
           isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "optionMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionTokenSource";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "claimablePool";
+          isMut: true;
           isSigner: false;
         },
         {
@@ -494,13 +478,17 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
-          name: "systemProgram";
+          name: "clock";
           isMut: false;
           isSigner: false;
         }
       ];
-      args: [];
-      returns: null;
+      args: [
+        {
+          name: "numContracts";
+          type: "u64";
+        }
+      ];
     }
   ];
   accounts: [
@@ -914,7 +902,6 @@ export const InertiaIDLJsonRaw = {
           type: "u8",
         },
       ],
-      returns: null,
     },
     {
       name: "optionWrite",
@@ -991,7 +978,6 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-      returns: null,
     },
     {
       name: "closePosition",
@@ -1053,7 +1039,6 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-      returns: null,
     },
     {
       name: "revertOptionSettle",
@@ -1115,7 +1100,6 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-      returns: null,
     },
     {
       name: "optionSettle",
@@ -1181,7 +1165,6 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-      returns: null,
     },
     {
       name: "optionRedeem",
@@ -1233,49 +1216,38 @@ export const InertiaIDLJsonRaw = {
           type: "u64",
         },
       ],
-      returns: null,
     },
     {
-      name: "reinitializeUnderlyingMint",
+      name: "optionExercise",
       accounts: [
         {
-          name: "authority",
+          name: "exerciserAuthority",
           isMut: true,
           isSigner: true,
         },
         {
           name: "contract",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "oracleAi",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "newUnderlyingMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "targetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "userUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rent",
           isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionTokenSource",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "claimablePool",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -1284,13 +1256,17 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "systemProgram",
+          name: "clock",
           isMut: false,
           isSigner: false,
         },
       ],
-      args: [],
-      returns: null,
+      args: [
+        {
+          name: "numContracts",
+          type: "u64",
+        },
+      ],
     },
   ],
   accounts: [

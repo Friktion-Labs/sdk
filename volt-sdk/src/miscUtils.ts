@@ -1,7 +1,7 @@
 // Keep this to only general utils
 
-import { Provider as AnchorProvider } from "@project-serum/anchor";
-import type { Provider as SerumProvider } from "@project-serum/common";
+import { AnchorProvider } from "@project-serum/anchor";
+import { Provider as SerumProvider } from "@project-serum/common";
 import type {
   Provider as SolanaContribProvider,
   Wallet as SolanaContribWallet,
@@ -54,4 +54,10 @@ export const providerToAnchorProvider = (
   return new AnchorProvider(provider.connection, provider.wallet, {
     commitment: "confirmed",
   });
+};
+
+export const anchorProviderToSerumProvider = (
+  provider: AnchorProvider
+): SerumProvider => {
+  return new SerumProvider(provider.connection, provider.wallet, provider.opts);
 };

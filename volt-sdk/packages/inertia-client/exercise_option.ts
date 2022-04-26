@@ -46,7 +46,7 @@ export const exerciseOption = async (
       contract: contract.key,
       exerciserAuthority: exerciserAccount
         ? exerciserAccount.publicKey
-        : program.provider.wallet.publicKey,
+        : (program.provider as anchor.AnchorProvider).wallet.publicKey,
       optionMint: contract.optionMint,
       optionTokenSource: optionTokenSource,
       underlyingTokenDestination,

@@ -30,11 +30,11 @@ export type InertiaIXAccounts = {
       InertiaProgram["instruction"]["newContract"]["accounts"]
     >[0]]: PublicKey;
   };
-  // exercise: {
-  //   [A in keyof Parameters<
-  //     InertiaProgram["instruction"]["optionExercise"]["accounts"]
-  //   >[0]]: PublicKey;
-  // };
+  exercise: {
+    [A in keyof Parameters<
+      InertiaProgram["instruction"]["optionExercise"]["accounts"]
+    >[0]]: PublicKey;
+  };
   settle: {
     [A in keyof Parameters<
       InertiaProgram["instruction"]["optionSettle"]["accounts"]
@@ -50,11 +50,11 @@ export type InertiaIXAccounts = {
   //     InertiaProgram["instruction"]["reclaimFundsFromExerciseAdmin"]["accounts"]
   //   >[0]]: PublicKey;
   // };
-  reinitializeUnderlyingMint: {
-    [A in keyof Parameters<
-      InertiaProgram["instruction"]["reinitializeUnderlyingMint"]["accounts"]
-    >[0]]: PublicKey;
-  };
+  // reinitializeUnderlyingMint: {
+  //   [A in keyof Parameters<
+  //     InertiaProgram["instruction"]["reinitializeUnderlyingMint"]["accounts"]
+  //   >[0]]: PublicKey;
+  // };
   write: {
     [A in keyof Parameters<
       InertiaProgram["instruction"]["optionWrite"]["accounts"]

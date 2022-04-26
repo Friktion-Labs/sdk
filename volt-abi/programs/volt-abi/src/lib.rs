@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 declare_id!("VoLT1mJz1sbnxwq5Fv2SXjdVDgPXrb9tJyC8WpMDkSp");
 
 pub mod contexts;
-use anchor_spl::token::{Mint, TokenAccount};
+
 use contexts::*;
 
 #[program]

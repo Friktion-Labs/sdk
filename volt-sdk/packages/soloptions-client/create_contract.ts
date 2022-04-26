@@ -1,20 +1,21 @@
 import * as anchor from "@project-serum/anchor";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID
+  TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
   PublicKey,
   Signer,
   SystemProgram,
-  TransactionInstruction
+  TransactionInstruction,
 } from "@solana/web3.js";
 import {
   SoloptionsContractWithKey,
-  SoloptionsProgram
+  SoloptionsProgram,
 } from "../../src/programs/Soloptions/soloptionsTypes";
 import { getAssociatedTokenAddress } from "../soloptions-common";
 import { getProgramAddress } from "./util";
+import { AnchorProvider } from "@project-serum/anchor";
 
 export interface NewContractParams {
   payer?: Signer;
@@ -104,7 +105,9 @@ export const newContractInstruction = async (
     writerBump,
     {
       accounts: {
-        payer: payer ? payer.publicKey : program.provider.wallet.publicKey,
+        payer: payer
+          ? payer.publicKey
+          : (program.provider as AnchorProvider).wallet.publicKey,
         contract,
         writerMint,
         optionMint,
@@ -181,7 +184,9 @@ export const newContract = async (
     writerBump,
     {
       accounts: {
-        payer: payer ? payer.publicKey : program.provider.wallet.publicKey,
+        payer: payer
+          ? payer.publicKey
+          : (program.provider as AnchorProvider).wallet.publicKey,
         contract,
         writerMint,
         optionMint,

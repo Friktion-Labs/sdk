@@ -1,4 +1,4 @@
-import type { Provider } from "@project-serum/anchor";
+import type { AnchorProvider, Provider } from "@project-serum/anchor";
 import { getTokenAccount } from "@project-serum/common";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -7,6 +7,8 @@ import {
 } from "@solana/spl-token";
 import type { PublicKey, Signer } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
+
+import { anchorProviderToSerumProvider } from "../../src/miscUtils";
 
 export const getAssociatedTokenAddress = async (
   mint: PublicKey,
@@ -48,7 +50,10 @@ export const getOrCreateAssociatedTokenAccounts = async (
     const address = await getAssociatedTokenAddress(mint, owner);
     addresses.push(address);
     try {
-      await getTokenAccount(provider, address);
+      await getTokenAccount(
+        anchorProviderToSerumProvider(provider as AnchorProvider),
+        address
+      );
     } catch (e) {
       if (
         e instanceof Error &&
@@ -70,7 +75,8 @@ export const getOrCreateAssociatedTokenAccounts = async (
     }
   }
   if (tx.instructions.length) {
-    await provider.send(tx, signers);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await provider.sendAndConfirm!(tx, signers);
   }
 
   return addresses;

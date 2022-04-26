@@ -44,7 +44,7 @@ export const writeOption = async (
       writerTokenDestination,
       writerAuthority: writerAccount
         ? writerAccount.publicKey
-        : program.provider.wallet.publicKey,
+        : (program.provider as anchor.AnchorProvider).wallet.publicKey,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
 
       feeDestination,

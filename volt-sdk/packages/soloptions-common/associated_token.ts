@@ -9,8 +9,8 @@ import {
   TOKEN_PROGRAM_ID,
   Token,
 } from "@solana/spl-token";
-import { Provider } from "@project-serum/anchor";
-import { getTokenAccount } from "@project-serum/common";
+import { AnchorProvider } from "@project-serum/anchor";
+import { getTokenAccount, Provider } from "@project-serum/common";
 
 export const getAssociatedTokenAddress = async (
   mint: PublicKey,
@@ -32,7 +32,7 @@ interface AccountParams {
 }
 
 export const getOrCreateAssociatedTokenAccounts = async (
-  provider: Provider,
+  provider: AnchorProvider,
   {
     accountParams,
     signers,
@@ -52,7 +52,10 @@ export const getOrCreateAssociatedTokenAccounts = async (
     const address = await getAssociatedTokenAddress(mint, owner);
     addresses.push(address);
     try {
-      await getTokenAccount(provider, address);
+      await getTokenAccount(
+        new Provider(provider.connection, provider.wallet, provider.opts),
+        address
+      );
     } catch (e) {
       if (
         e instanceof Error &&
@@ -74,7 +77,7 @@ export const getOrCreateAssociatedTokenAccounts = async (
     }
   }
   if (tx.instructions.length) {
-    await provider.send(tx, signers);
+    await provider.sendAndConfirm(tx, signers);
   }
 
   return addresses;

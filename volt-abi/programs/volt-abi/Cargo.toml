@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "Created with Anchor"
 edition = "2018"
 
+[profile.release]
+overflow-checks = true
+
+
 [lib]
 crate-type = ["cdylib", "lib"]
 name = "volt_abi"
@@ -16,6 +20,6 @@ default = ["mainnet"]
 mainnet = []
 
 [dependencies]
-anchor-lang = { version="0.24.1", features=["init-if-needed"] }
-anchor-spl = { version="0.24.1", features=["dex"] }
+anchor-lang = { version="0.24.2", features=["init-if-needed"] }
+anchor-spl = { version="0.24.2", features=["dex"] }
 solana-program = "^1.8.14"

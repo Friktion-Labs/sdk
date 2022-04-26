@@ -7,7 +7,7 @@ import type {
   NodeBank,
   RootBank,
 } from "@friktion-labs/entropy-client";
-import { EntropyClient } from "@friktion-labs/entropy-client";
+import { EntropyClient, I80F48 } from "@friktion-labs/entropy-client";
 import type { Program, ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
@@ -41,6 +41,7 @@ import {
   FRIKTION_PROGRAM_ID,
   VoltType,
 } from "../../constants";
+import { anchorProviderToSerumProvider } from "../../miscUtils";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
@@ -62,14 +63,19 @@ import {
   getMarketAndAuthorityInfo,
   getVaultOwnerAndNonce,
 } from "./serum";
-import { getBalanceOrZero } from "./utils";
-import type { EntropyMetadata, PendingDeposit } from "./voltTypes";
+import { getAccountBalance, getAccountBalanceOrZero } from "./utils";
+import type {
+  EntropyMetadata,
+  ExtraVoltData,
+  PendingDeposit,
+} from "./voltTypes";
 
 export class VoltSDK {
   constructor(
     readonly sdk: FriktionSDK,
     readonly voltVault: VoltVault,
-    readonly voltKey: PublicKey
+    readonly voltKey: PublicKey,
+    readonly extraVoltData?: ExtraVoltData | undefined
   ) {}
 
   voltType(): VoltType {
@@ -786,6 +792,103 @@ export class VoltSDK {
     };
   }
 
+  oraclePriceForDepositToken(
+    entropyGroup: EntropyGroup,
+    entropyCache: EntropyCache
+  ): I80F48 {
+    if (!this.extraVoltData) {
+      throw new Error("extra volt data must be loaded");
+    }
+
+    const quoteInfo = entropyGroup.getQuoteTokenInfo();
+    if (
+      quoteInfo.mint.toString() === this.extraVoltData.depositMint.toString()
+    ) {
+      return I80F48.fromNumber(1);
+    } else {
+      const tokenIndex = entropyGroup.getTokenIndex(
+        this.extraVoltData.depositMint
+      );
+      console.log("token index = ", tokenIndex.toString());
+      const oraclePrice = entropyCache.priceCache[tokenIndex]?.price;
+      if (oraclePrice === undefined)
+        throw new Error("oracle price was undefined");
+      return oraclePrice;
+    }
+  }
+
+  // entropy get methods
+  async getVoltValueInDepositToken(): Promise<BN> {
+    const depositTokenMint = this.voltVault.underlyingAssetMint;
+
+    const voltType = this.voltType();
+
+    try {
+      if (voltType === VoltType.ShortOptions) {
+        const res: {
+          balance: Decimal;
+          token: Token | null;
+        } = await getAccountBalanceOrZero(
+          this.sdk.readonlyProvider.connection,
+          depositTokenMint,
+          this.voltVault.depositPool
+        );
+        if (res.token === null) throw new Error("Could not find Deposit token");
+
+        const normFactor = new Decimal(
+          10 ** (await res.token.getMintInfo()).decimals
+        );
+
+        const voltDepositTokenBalance = res.balance;
+        const { balance: voltWriterTokenBalance } = await getAccountBalance(
+          this.sdk.readonlyProvider.connection,
+          this.voltVault.writerTokenMint,
+          this.voltVault.writerTokenPool
+        );
+        const estimatedTotalWithoutPendingDepositTokenAmount =
+          voltDepositTokenBalance
+            .plus(
+              voltWriterTokenBalance.mul(
+                new Decimal(
+                  this.voltVault.underlyingAmountPerContract.toString()
+                )
+              )
+            )
+            .div(normFactor);
+
+        return new BN(
+          estimatedTotalWithoutPendingDepositTokenAmount.toFixed(0)
+        );
+      } else if (voltType === VoltType.Entropy) {
+        const { entropyGroup, entropyAccount, entropyCache } =
+          await this.getEntropyObjects();
+        // eslint-disable-next-line
+        const acctEquity: I80F48 = entropyAccount.getHealthUnweighted(
+          entropyGroup,
+          entropyCache
+        );
+        const oraclePrice = this.oraclePriceForDepositToken(
+          entropyGroup,
+          entropyCache
+        );
+        const acctValueInDepositToken = acctEquity.div(oraclePrice);
+        const depositPoolBalance = await getAccountBalance(
+          this.sdk.readonlyProvider.connection,
+          depositTokenMint,
+          this.voltVault.depositPool
+        );
+        return new BN(acctValueInDepositToken.toFixed(0)).add(
+          new BN(depositPoolBalance.balance.toFixed(0))
+        );
+      } else {
+        throw new Error("volt type not recognized");
+      }
+    } catch (err) {
+      console.error("could not load volt value: ", err);
+      throw new Error("could not load volt value");
+    }
+  }
+
   async getBalancesForUser(pubkey: PublicKey): Promise<
     | {
         totalBalance: Decimal;
@@ -825,23 +928,23 @@ export class VoltSDK {
     //   user
     // );
 
-    const writerToken = new Token(
-      provider.connection,
-      voltVault.writerTokenMint,
-      TOKEN_PROGRAM_ID,
-      user
-    );
+    // const vaultValueFromWriterTokens = (
+    //   await getBalanceOrZero(writerToken, voltVault.writerTokenPool)
+    // ).mul(new Decimal(voltVault.underlyingAmountPerContract.toString()));
 
-    const vaultValueFromWriterTokens = (
-      await getBalanceOrZero(writerToken, voltVault.writerTokenPool)
-    ).mul(new Decimal(voltVault.underlyingAmountPerContract.toString()));
+    // const totalVaultValueExcludingPendingDeposits = new Decimal(
+    //   (
+    //     await underlyingToken.getAccountInfo(voltVault.depositPool)
+    //   ).amount.toString()
+    // ).add(new Decimal(vaultValueFromWriterTokens.toString()));
 
     const totalVaultValueExcludingPendingDeposits = new Decimal(
-      (
-        await underlyingToken.getAccountInfo(voltVault.depositPool)
-      ).amount.toString()
-    ).add(new Decimal(vaultValueFromWriterTokens.toString()));
-
+      (await this.getVoltValueInDepositToken()).toString()
+    );
+    console.log(
+      "total value value = ",
+      totalVaultValueExcludingPendingDeposits.toString()
+    );
     // const totalVaultPremium = new Decimal(
     //   (await quoteToken.getAccountInfo(voltVault.premiumPool)).amount.toString()
     // );
@@ -918,6 +1021,22 @@ export class VoltSDK {
         "pending deposit round: ",
         pendingDepositInfo.roundNumber.toString()
       );
+
+      // const normFactor = await this.getNormalizationFactor();
+
+      // const normFactorDiffVaultUnderlying = (
+      //   await this.getNormalizationFactor()
+      // ).div(
+      //   new Decimal(10).pow(
+      //     (
+      //       await getMintInfo(
+      //         anchorProviderToSerumProvider(provider),
+      //         this.voltVault.vaultMint
+      //       )
+      //     ).decimals
+      //   )
+      // );
+
       userValueFromPendingDeposits =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0)
@@ -933,7 +1052,15 @@ export class VoltSDK {
               )
               .mul(totalVaultValueExcludingPendingDeposits)
               .div(voltTokenSupply);
+      // .div(voltTokenSupply);
+      // .div(normFactorDiffVaultUnderlying);
 
+      console.log(
+        "deposit info: ",
+        pendingDepositInfo.numUnderlyingDeposited.toString(),
+        voltTokensForPendingDepositRound.toString(),
+        roundForPendingDeposit.underlyingFromPendingDeposits.toString()
+      );
       userMintableShares =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0) ||
@@ -945,7 +1072,8 @@ export class VoltSDK {
                 new Decimal(
                   roundForPendingDeposit.underlyingFromPendingDeposits.toString()
                 )
-              );
+              )
+              .floor();
     }
 
     let pendingwithdrawalInfo = null;
@@ -1035,6 +1163,12 @@ export class VoltSDK {
     );
 
     return {
+      // totalBalance: totalUserValue.div(normFactor),
+      // normalBalance: userValueExcludingPendingDeposits.div(normFactor),
+      // pendingDeposits: userValueFromPendingDeposits.div(normFactor),
+      // pendingWithdrawals: userValueFromPendingWithdrawals.div(normFactor),
+      // mintableShares: userMintableShares.div(vaultNormFactor),
+      // claimableUnderlying: userClaimableUnderlying.div(normFactor),
       totalBalance: totalUserValue,
       normalBalance: userValueExcludingPendingDeposits,
       pendingDeposits: userValueFromPendingDeposits,
@@ -1870,7 +2004,7 @@ export class VoltSDK {
       const { mintableShares } = result;
 
       const vaultMintInfo = await getMintInfo(
-        this.sdk.readonlyProvider,
+        anchorProviderToSerumProvider(this.sdk.readonlyProvider),
         this.voltVault.vaultMint
       );
       return new BN(

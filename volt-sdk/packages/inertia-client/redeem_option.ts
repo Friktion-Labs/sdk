@@ -26,7 +26,7 @@ export const redeemOption = async (
       contract: contract.key,
       redeemerAuthority: redeemerAccount
         ? redeemerAccount.publicKey
-        : program.provider.wallet.publicKey,
+        : (program.provider as anchor.AnchorProvider).wallet.publicKey,
       writerMint: contract.writerMint,
       contractUnderlyingTokens: contract.underlyingPool,
       writerTokenSource: redeemerTokenSource,

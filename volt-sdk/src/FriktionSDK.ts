@@ -1,7 +1,4 @@
-import type {
-  ProgramAccount,
-  Provider as AnchorProvider,
-} from "@project-serum/anchor";
+import type { AnchorProvider, ProgramAccount } from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import type { TransactionInstruction } from "@solana/web3.js";
 import {
@@ -35,6 +32,7 @@ import type {
   VoltVault,
   Whitelist,
 } from "./programs/Volt";
+import type { ExtraVoltData } from "./programs/Volt/voltTypes";
 
 export type LegacyAnchorPrograms = {
   Volt: Program;
@@ -191,6 +189,14 @@ export class FriktionSDK {
     return new VoltSDK(this, voltVault, voltKey);
   }
 
+  loadVoltAndExtraData(
+    voltVault: VoltVault,
+    voltKey: PublicKey,
+    extraVoltData: ExtraVoltData
+  ): VoltSDK {
+    return new VoltSDK(this, voltVault, voltKey, extraVoltData);
+  }
+
   // devnetMainnet<T>(ifDevnet: T, ifMainnet: T) {
   //   if (this.network === "mainnet-beta") {
   //     return ifMainnet;
@@ -243,7 +249,11 @@ export class FriktionSDK {
     const voltVaultData: VoltVault =
       await this.programs.Volt.account.voltVault.fetch(voltKey);
 
-    return this.loadVolt(voltVaultData, voltKey);
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(voltKey);
+    const extraVoltData: ExtraVoltData =
+      await this.programs.Volt.account.extraVoltData.fetch(extraVoltKey);
+
+    return this.loadVoltAndExtraData(voltVaultData, voltKey, extraVoltData);
   }
 
   async getAllVoltVaults(): Promise<VoltSDK[]> {

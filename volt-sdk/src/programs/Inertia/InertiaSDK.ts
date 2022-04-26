@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import type { Provider as AnchorProvider } from "@project-serum/anchor";
+import type { AnchorProvider } from "@project-serum/anchor";
 import { BN, Program } from "@project-serum/anchor";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -9,12 +9,7 @@ import {
   u64,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import {
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+import { PublicKey, SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
 
 import {
   INERTIA_EXERCISE_FEE_BPS,
@@ -204,41 +199,41 @@ export class InertiaSDK {
     );
   }
 
-  // async exercise(
-  //   params: InertiaExerciseOptionParams
-  // ): Promise<TransactionInstruction> {
-  //   const { amount, optionTokenSource, underlyingTokenDestination } = params;
+  async exercise(
+    params: InertiaExerciseOptionParams
+  ): Promise<TransactionInstruction> {
+    const { amount, optionTokenSource, underlyingTokenDestination } = params;
 
-  //   const seeds = [
-  //     this.optionMarket.underlyingMint,
-  //     this.optionMarket.quoteMint,
-  //     this.optionMarket.underlyingAmount,
-  //     this.optionMarket.quoteAmount,
-  //     this.optionMarket.expiryTs,
-  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
-  //   ] as const;
+    const seeds = [
+      this.optionMarket.underlyingMint,
+      this.optionMarket.quoteMint,
+      this.optionMarket.underlyingAmount,
+      this.optionMarket.quoteAmount,
+      this.optionMarket.expiryTs,
+      this.optionMarket.isCall.toNumber() > 0 ? true : false,
+    ] as const;
 
-  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-  //     this.program,
-  //     "ClaimablePool",
-  //     ...seeds
-  //   );
+    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+      this.program,
+      "ClaimablePool",
+      ...seeds
+    );
 
-  //   const exerciseAccounts: InertiaIXAccounts["exercise"] = {
-  //     contract: this.optionKey,
-  //     exerciserAuthority: params.user,
-  //     optionMint: this.optionMarket.optionMint,
-  //     optionTokenSource: optionTokenSource,
-  //     underlyingTokenDestination,
-  //     claimablePool,
-  //     tokenProgram: TOKEN_PROGRAM_ID,
-  //     clock: SYSVAR_CLOCK_PUBKEY,
-  //   };
+    const exerciseAccounts: InertiaIXAccounts["exercise"] = {
+      contract: this.optionKey,
+      exerciserAuthority: params.user,
+      optionMint: this.optionMarket.optionMint,
+      optionTokenSource: optionTokenSource,
+      underlyingTokenDestination,
+      claimablePool,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      clock: SYSVAR_CLOCK_PUBKEY,
+    };
 
-  //   return this.program.instruction.optionExercise(amount, {
-  //     accounts: exerciseAccounts,
-  //   });
-  // }
+    return this.program.instruction.optionExercise(amount, {
+      accounts: exerciseAccounts,
+    });
+  }
 
   async settle(
     params: InertiaSettleOptionParams,
@@ -449,50 +444,50 @@ export class InertiaSDK {
   //   });
   // }
 
-  async reinitializeUnderlyingMint(
-    user: PublicKey,
-    targetPool: PublicKey,
-    newUnderlyingMint: PublicKey
-  ): Promise<TransactionInstruction> {
-    const seeds = [
-      this.optionMarket.underlyingMint,
-      this.optionMarket.quoteMint,
-      this.optionMarket.underlyingAmount,
-      this.optionMarket.quoteAmount,
-      this.optionMarket.expiryTs,
-      this.optionMarket.isCall.toNumber() > 0 ? true : false,
-    ] as const;
-    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-      this.program,
-      "ClaimablePool",
-      ...seeds
-    );
+  // async reinitializeUnderlyingMint(
+  //   user: PublicKey,
+  //   targetPool: PublicKey,
+  //   newUnderlyingMint: PublicKey
+  // ): Promise<TransactionInstruction> {
+  //   const seeds = [
+  //     this.optionMarket.underlyingMint,
+  //     this.optionMarket.quoteMint,
+  //     this.optionMarket.underlyingAmount,
+  //     this.optionMarket.quoteAmount,
+  //     this.optionMarket.expiryTs,
+  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
+  //   ] as const;
+  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
+  //     this.program,
+  //     "ClaimablePool",
+  //     ...seeds
+  //   );
 
-    const associatedTokenAddress = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      this.optionMarket.underlyingMint,
-      user
-    );
+  //   const associatedTokenAddress = await Token.getAssociatedTokenAddress(
+  //     ASSOCIATED_TOKEN_PROGRAM_ID,
+  //     TOKEN_PROGRAM_ID,
+  //     this.optionMarket.underlyingMint,
+  //     user
+  //   );
 
-    const reinitializeUnderlyingMintAccounts: InertiaIXAccounts["reinitializeUnderlyingMint"] =
-      {
-        authority: user,
-        oracleAi: this.optionMarket.oracleAi,
-        contract: this.optionKey,
-        underlyingMint: this.optionMarket.underlyingMint,
-        newUnderlyingMint: newUnderlyingMint,
+  //   const reinitializeUnderlyingMintAccounts: InertiaIXAccounts["reinitializeUnderlyingMint"] =
+  //     {
+  //       authority: user,
+  //       oracleAi: this.optionMarket.oracleAi,
+  //       contract: this.optionKey,
+  //       underlyingMint: this.optionMarket.underlyingMint,
+  //       newUnderlyingMint: newUnderlyingMint,
 
-        targetPool: targetPool,
+  //       targetPool: targetPool,
 
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-        userUnderlyingTokens: associatedTokenAddress,
-        rent: SYSVAR_RENT_PUBKEY,
-      };
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //       systemProgram: SystemProgram.programId,
+  //       userUnderlyingTokens: associatedTokenAddress,
+  //       rent: SYSVAR_RENT_PUBKEY,
+  //     };
 
-    return this.program.instruction.reinitializeUnderlyingMint({
-      accounts: reinitializeUnderlyingMintAccounts,
-    });
-  }
+  //   return this.program.instruction.reinitializeUnderlyingMint({
+  //     accounts: reinitializeUnderlyingMintAccounts,
+  //   });
+  // }
 }
