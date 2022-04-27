@@ -232,14 +232,19 @@ export class FriktionSDK {
    * load it yourself using sail, because loadVoltByKey doesn't have ANY
    * cacheing, so you could end up calling this 100 times.
    */
-  async loadVoltByKey(voltKey: PublicKey): Promise<VoltSDK> {
+  async loadVoltByKey(
+    voltKey: PublicKey,
+    extraVoltData?: ExtraVoltData | undefined
+  ): Promise<VoltSDK> {
     if (!voltKey) {
       throw new Error("falsy voltKey passed into loadVoltByKey");
     }
     const voltVaultData: VoltVault =
       await this.programs.Volt.account.voltVault.fetch(voltKey);
 
-    return this.loadVolt(voltVaultData, voltKey);
+    return extraVoltData
+      ? this.loadVoltAndExtraData(voltVaultData, voltKey, extraVoltData)
+      : this.loadVolt(voltVaultData, voltKey);
   }
 
   async loadVoltAndExtraDataByKey(voltKey: PublicKey): Promise<VoltSDK> {
@@ -254,6 +259,11 @@ export class FriktionSDK {
       await this.programs.Volt.account.extraVoltData.fetch(extraVoltKey);
 
     return this.loadVoltAndExtraData(voltVaultData, voltKey, extraVoltData);
+  }
+
+  async getExtraVoltDataKey(voltKey: PublicKey): Promise<PublicKey> {
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(voltKey);
+    return extraVoltKey;
   }
 
   async getAllVoltVaults(): Promise<VoltSDK[]> {

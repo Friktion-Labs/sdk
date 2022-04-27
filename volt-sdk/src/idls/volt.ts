@@ -3182,6 +3182,122 @@ export type VoltIDL = {
       args: [];
     },
     {
+      name: "depositDiscretionaryEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "adminDepositTokenAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositDiscretionaryTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyCache";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "powerPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rootBank";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "nodeBank";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "depositAmt";
+          type: "u64";
+        }
+      ];
+    },
+    {
       name: "setupRebalanceEntropy";
       accounts: [
         {
@@ -5990,6 +6106,11 @@ export type VoltIDL = {
       code: 6192;
       name: "InvalidPendingWithdrawalKey";
       msg: "invalid pending withdrawal key";
+    },
+    {
+      code: 6193;
+      name: "InvalidDepositDiscretionaryState";
+      msg: "invalid deposit discretionary state";
     }
   ];
 };
@@ -9177,6 +9298,122 @@ export const VoltIDLJsonRaw = {
       args: [],
     },
     {
+      name: "depositDiscretionaryEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "adminDepositTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositDiscretionaryTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyCache",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "powerPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rootBank",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "nodeBank",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "clock",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "depositAmt",
+          type: "u64",
+        },
+      ],
+    },
+    {
       name: "setupRebalanceEntropy",
       accounts: [
         {
@@ -11985,6 +12222,11 @@ export const VoltIDLJsonRaw = {
       code: 6192,
       name: "InvalidPendingWithdrawalKey",
       msg: "invalid pending withdrawal key",
+    },
+    {
+      code: 6193,
+      name: "InvalidDepositDiscretionaryState",
+      msg: "invalid deposit discretionary state",
     },
   ],
 };

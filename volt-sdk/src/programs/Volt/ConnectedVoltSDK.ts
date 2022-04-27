@@ -2872,6 +2872,84 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
+  async depositDiscretionaryEntropy(
+    adminUnderlyingTokens: PublicKey,
+    depositAmount: BN
+  ): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) {
+      throw new Error("extra volt data must be loaded");
+    }
+    if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
+      throw new Error("entropy program id must be set (currently default)");
+    }
+
+    const client = new EntropyClient(
+      this.connection,
+      this.extraVoltData.entropyProgramId
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const entropyGroup = await client.getEntropyGroup(
+      this.extraVoltData.entropyGroup
+    );
+    const banks = await entropyGroup.loadRootBanks(this.connection);
+
+    const rootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    console.log(await rootBank?.loadNodeBanks(this.connection));
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    const textEncoder = new TextEncoder();
+    const [depositDiscretionaryKey] = await PublicKey.findProgramAddress(
+      [
+        this.voltKey.toBuffer(),
+        textEncoder.encode("depositDiscretionaryAccount"),
+      ],
+      this.sdk.programs.Volt.programId
+    );
+    const depositDiscretionaryEntropyAccounts: Parameters<
+      VoltProgram["instruction"]["depositDiscretionaryEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      extraVoltData: extraVoltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      adminDepositTokenAccount: adminUnderlyingTokens,
+      depositDiscretionaryTokens: depositDiscretionaryKey,
+
+      entropyProgram: this.extraVoltData.entropyProgramId,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+      entropyCache: this.extraVoltData.entropyCache,
+
+      spotPerpMarket: this.extraVoltData.hedgingSpotPerpMarket,
+      powerPerpMarket: this.extraVoltData.powerPerpMarket,
+
+      rootBank: rootBank?.publicKey as PublicKey,
+      nodeBank: nodeBank?.publicKey as PublicKey,
+      vault: nodeBank?.vault as PublicKey,
+
+      signer: entropyGroup.signerKey,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      rent: SYSVAR_RENT_PUBKEY,
+      clock: SYSVAR_CLOCK_PUBKEY,
+      depositMint: this.extraVoltData.depositMint,
+    };
+
+    return this.sdk.programs.Volt.instruction.depositDiscretionaryEntropy(
+      depositAmount,
+      {
+        accounts: depositDiscretionaryEntropyAccounts,
+      }
+    );
+  }
+
   transferDeposit(
     targetPool: PublicKey,
     underlyingDestination: PublicKey,
