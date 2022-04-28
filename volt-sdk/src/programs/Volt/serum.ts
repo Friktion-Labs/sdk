@@ -1,4 +1,3 @@
-import type { Program } from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
 import type { Middleware } from "@project-serum/serum";
 import {
@@ -14,6 +13,8 @@ import type {
 } from "@solana/web3.js";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 
+import { VoltSDK } from "./VoltSDK";
+
 /**
  * Create a MarketProxy
  *
@@ -24,41 +25,86 @@ import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
  * @param marketKey - The Serum market address
  * @returns
  */
-export const marketLoaderFunction =
-  (
-    connection: Connection,
-    middlewareProgramId: PublicKey,
-    optionMarketKey: PublicKey,
-    whitelistKey: PublicKey,
-    marketAuthorityBump: number,
-    dexProgramId: PublicKey
-  ) =>
-  async (marketKey: PublicKey) => {
-    console.log("marketLoaderFunction");
-    console.log("market key: ", marketKey.toString());
-    console.log("option market key: ", optionMarketKey.toString());
-    console.log("whitelist key: ", whitelistKey.toString());
-    console.log("dex program key: ", dexProgramId.toString());
+
+export const marketLoaderFunction = (
+  sdk: VoltSDK,
+  whitelistTokenAccountKey: PublicKey
+) => {
+  return async (serumMarketKey: PublicKey) => {
+    const optionMarketKey = sdk.voltVault.optionMarket;
+    const [marketKey] = await VoltSDK.findSerumMarketAddress(
+      sdk.voltKey,
+      sdk.sdk.net.MM_TOKEN_MINT,
+      optionMarketKey
+    );
+
+    console.log(
+      "market key = ",
+      marketKey.toString(),
+      ", serum market key = ",
+      serumMarketKey.toString()
+    );
+
+    if (marketKey.toString() !== serumMarketKey.toString())
+      throw new Error(
+        "serum market should equal the PDA based on current option"
+      );
+
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      sdk.voltKey
+    );
+
+    const { marketAuthorityBump } = await sdk.getMarketAndAuthorityInfo(
+      optionMarketKey
+    );
+
     return new MarketProxyBuilder()
       .middleware(
         new OpenOrdersPda({
-          proxyProgramId: middlewareProgramId,
-          dexProgramId: dexProgramId,
+          proxyProgramId: sdk.sdk.programs.Volt.programId,
+          dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
         })
       )
       .middleware(new ReferralFees())
       .middleware(
-        new Validation(optionMarketKey, whitelistKey, marketAuthorityBump)
+        new Validation(
+          auctionMetadataKey,
+          optionMarketKey,
+          whitelistTokenAccountKey,
+          marketAuthorityBump
+        )
       )
       .middleware(new Logger())
       .load({
-        connection: connection,
+        connection: sdk.sdk.readonlyProvider.connection,
         market: marketKey,
-        dexProgramId: dexProgramId,
-        proxyProgramId: middlewareProgramId,
+        dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
+        proxyProgramId: sdk.sdk.programs.Volt.programId,
         options: { commitment: "recent" },
       });
   };
+};
+
+/**
+ * Create a MarketProxy
+ *
+ * @param middlewareProgram - Friktion program
+ * @param optionMarketKey - The OptionMarket address
+ * @param marketAuthorityBump - The marketAuthority bump seed
+ * @param dexProgramId - The Serum DEX program id
+ * @param marketKey - The Serum market address
+ * @returns
+ */
+export const marketLoader = async (
+  sdk: VoltSDK,
+  serumMarketKey: PublicKey,
+  whitelistTokenAccountKey: PublicKey
+) => {
+  return await marketLoaderFunction(
+    sdk,
+    whitelistTokenAccountKey
+  )(serumMarketKey);
+};
 
 export const getVaultOwnerAndNonce = async (
   marketPublicKey: PublicKey,
@@ -85,15 +131,18 @@ export const openOrdersSeed = Buffer.from([
 ]);
 
 export class Validation implements Middleware {
+  auctionMetadataKey: PublicKey;
   optionMarketKey: PublicKey;
   whitelistKey: PublicKey;
   marketAuthorityBump: number;
 
   constructor(
+    auctionMetadataKey: PublicKey,
     optionMarketKey: PublicKey,
     whitelistKey: PublicKey,
     marketAuthorityBump: number
   ) {
+    this.auctionMetadataKey = auctionMetadataKey;
     this.optionMarketKey = optionMarketKey;
     this.marketAuthorityBump = marketAuthorityBump;
     this.whitelistKey = whitelistKey;
@@ -141,77 +190,18 @@ export class Validation implements Middleware {
     ix.keys = [
       { pubkey: this.whitelistKey, isWritable: false, isSigner: false },
       { pubkey: this.optionMarketKey, isWritable: false, isSigner: false },
+      { pubkey: this.auctionMetadataKey, isWritable: false, isSigner: false },
       ...ix.keys,
     ];
     return ix;
   }
 }
 
-/**
- * Create a MarketProxy
- *
- * @param middlewareProgram - Friktion program
- * @param optionMarketKey - The OptionMarket address
- * @param marketAuthorityBump - The marketAuthority bump seed
- * @param dexProgramId - The Serum DEX program id
- * @param marketKey - The Serum market address
- * @returns
- */
-export const marketLoader = async (
-  middlewareProgram: Program,
-  optionMarketKey: PublicKey,
-  whitelistKey: PublicKey,
-  marketAuthorityBump: number,
-  dexProgramId: PublicKey,
-  marketKey: PublicKey
-) => {
-  return new MarketProxyBuilder()
-    .middleware(
-      new OpenOrdersPda({
-        proxyProgramId: middlewareProgram.programId,
-        dexProgramId: dexProgramId,
-      })
-    )
-    .middleware(new ReferralFees())
-    .middleware(
-      new Validation(optionMarketKey, whitelistKey, marketAuthorityBump)
-    )
-    .middleware(new Logger())
-    .load({
-      connection: middlewareProgram.provider.connection,
-      market: marketKey,
-      dexProgramId: dexProgramId,
-      proxyProgramId: middlewareProgram.programId,
-      options: { commitment: "recent" },
-    });
-};
-
 export const getMarketAndAuthorityInfo = async (
-  middlewareProgramId: PublicKey,
-  optionMarketKey: PublicKey,
-  whitelistKey: PublicKey,
-  dexProgramId: PublicKey
+  sdk: VoltSDK,
+  optionMarketKey: PublicKey
 ) => {
-  const textEncoder = new TextEncoder();
-  const [serumMarketKey, _serumMarketBump] = await PublicKey.findProgramAddress(
-    [
-      whitelistKey.toBuffer(),
-      optionMarketKey.toBuffer(),
-      textEncoder.encode("serumMarket"),
-    ],
-    middlewareProgramId
-  );
-  const [marketAuthority, marketAuthorityBump] =
-    await PublicKey.findProgramAddress(
-      [
-        textEncoder.encode("open-orders-init"),
-        dexProgramId.toBuffer(),
-        serumMarketKey.toBuffer(),
-      ],
-      middlewareProgramId
-    );
-
-  return { serumMarketKey, marketAuthority, marketAuthorityBump };
+  return await sdk.getMarketAndAuthorityInfo(optionMarketKey);
 };
 
 export const createFirstSetOfAccounts = async ({

@@ -11,7 +11,8 @@ import {
   makeCachePricesInstruction,
   makeCacheRootBankInstruction,
 } from "@friktion-labs/entropy-client";
-import { Market } from "@project-serum/serum";
+import type { Address } from "@project-serum/anchor";
+import { Market, MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -41,7 +42,7 @@ import {
 } from "../..";
 import { REFERRAL_AUTHORITY } from "../../constants";
 import {
-  getMarketAndAuthorityInfo,
+  createFirstSetOfAccounts,
   getVaultOwnerAndNonce,
   marketLoader,
 } from "./serum";
@@ -859,49 +860,49 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
-  async adjustPendingDeposit(
-    newPdAmount: BN,
-    targetUser: PublicKey
-  ): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+  // async adjustPendingDeposit(
+  //   newPdAmount: BN,
+  //   targetUser: PublicKey
+  // ): Promise<TransactionInstruction> {
+  //   const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const { roundInfoKey } = await VoltSDK.findRoundAddresses(
-      this.voltKey,
-      this.voltVault.roundNumber,
-      this.sdk.programs.Volt.programId
-    );
+  //   const { roundInfoKey } = await VoltSDK.findRoundAddresses(
+  //     this.voltKey,
+  //     this.voltVault.roundNumber,
+  //     this.sdk.programs.Volt.programId
+  //   );
 
-    const [pendingDepositInfoKey] = await VoltSDK.findPendingDepositInfoAddress(
-      this.voltKey,
-      targetUser,
-      this.sdk.programs.Volt.programId
-    );
+  //   const [pendingDepositInfoKey] = await VoltSDK.findPendingDepositInfoAddress(
+  //     this.voltKey,
+  //     targetUser,
+  //     this.sdk.programs.Volt.programId
+  //   );
 
-    const adjustPendingDepositAccounts: Parameters<
-      VoltProgram["instruction"]["adjustPendingDeposit"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+  //   const adjustPendingDepositAccounts: Parameters<
+  //     VoltProgram["instruction"]["adjustPendingDeposit"]["accounts"]
+  //   >[0] = {
+  //     authority: this.wallet,
+  //     voltVault: this.voltKey,
+  //     vaultAuthority: this.voltVault.vaultAuthority,
 
-      targetUser: targetUser,
+  //     targetUser: targetUser,
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      extraVoltData: extraVoltKey,
-      vaultMint: this.voltVault.vaultMint,
-      roundInfo: roundInfoKey,
-      pendingDepositInfo: pendingDepositInfoKey,
-      rent: SYSVAR_RENT_PUBKEY,
-    };
+  //     systemProgram: SystemProgram.programId,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     extraVoltData: extraVoltKey,
+  //     vaultMint: this.voltVault.vaultMint,
+  //     roundInfo: roundInfoKey,
+  //     pendingDepositInfo: pendingDepositInfoKey,
+  //     rent: SYSVAR_RENT_PUBKEY,
+  //   };
 
-    return this.sdk.programs.Volt.instruction.adjustPendingDeposit(
-      newPdAmount,
-      {
-        accounts: adjustPendingDepositAccounts,
-      }
-    );
-  }
+  //   return this.sdk.programs.Volt.instruction.adjustPendingDeposit(
+  //     newPdAmount,
+  //     {
+  //       accounts: adjustPendingDepositAccounts,
+  //     }
+  //   );
+  // }
 
   async bypassSettlement(
     userWriterTokenAccount: PublicKey
@@ -984,33 +985,33 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
-  async reduceDecimalsByFactor(factor: BN): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+  // async reduceDecimalsByFactor(factor: BN): Promise<TransactionInstruction> {
+  //   const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
-      this.voltKey,
-      this.voltVault.roundNumber,
-      this.sdk.programs.Volt.programId
-    );
+  //   const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
+  //     this.voltKey,
+  //     this.voltVault.roundNumber,
+  //     this.sdk.programs.Volt.programId
+  //   );
 
-    const reduceDecimalsByFactorAccounts: Parameters<
-      VoltProgram["instruction"]["reduceDecimalsByFactor"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+  //   const reduceDecimalsByFactorAccounts: Parameters<
+  //     VoltProgram["instruction"]["reduceDecimalsByFactor"]["accounts"]
+  //   >[0] = {
+  //     authority: this.wallet,
+  //     voltVault: this.voltKey,
+  //     vaultAuthority: this.voltVault.vaultAuthority,
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      extraVoltData: extraVoltKey,
-      roundInfo: roundInfoKey,
-      epochInfo: epochInfoKey,
-    };
+  //     systemProgram: SystemProgram.programId,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //     extraVoltData: extraVoltKey,
+  //     roundInfo: roundInfoKey,
+  //     epochInfo: epochInfoKey,
+  //   };
 
-    return this.sdk.programs.Volt.instruction.reduceDecimalsByFactor(factor, {
-      accounts: reduceDecimalsByFactorAccounts,
-    });
-  }
+  //   return this.sdk.programs.Volt.instruction.reduceDecimalsByFactor(factor, {
+  //     accounts: reduceDecimalsByFactorAccounts,
+  //   });
+  // }
 
   async changeCapacity(
     capacity: BN,
@@ -1022,7 +1023,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    const changeVarsAccounts: Parameters<
+    const changeCapacityAccounts: Parameters<
       VoltProgram["instruction"]["changeCapacity"]["accounts"]
     >[0] = {
       authority: this.wallet,
@@ -1038,9 +1039,55 @@ export class ConnectedVoltSDK extends VoltSDK {
       capacity,
       individualCapacity,
       {
-        accounts: changeVarsAccounts,
+        accounts: changeCapacityAccounts,
       }
     );
+  }
+
+  changeAdmin(newAdmin: PublicKey): TransactionInstruction {
+    const changeAdminAccounts: Parameters<
+      VoltProgram["instruction"]["changeAdmin"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    return this.sdk.programs.Volt.instruction.changeAdmin(newAdmin, {
+      accounts: changeAdminAccounts,
+    });
+  }
+
+  async changeAuctionParams(
+    permissionlessAuctions: boolean
+  ): Promise<TransactionInstruction> {
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      this.voltKey
+    );
+    const [extraVoltDataKey] = await VoltSDK.findExtraVoltDataAddress(
+      this.voltKey
+    );
+
+    const changeAuctionParamsAccounts: Parameters<
+      VoltProgram["instruction"]["changeAuctionParams"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+      extraVoltData: extraVoltDataKey,
+
+      auctionMetadata: auctionMetadataKey,
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    const param: BN = permissionlessAuctions ? new BN(1) : new BN(0);
+    return this.sdk.programs.Volt.instruction.changeAuctionParams(param, {
+      accounts: changeAuctionParamsAccounts,
+    });
   }
 
   async startRound(): Promise<TransactionInstruction> {
@@ -1306,9 +1353,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async setNextOption(
     newOptionMarketKey: PublicKey,
-    optionSerumMarketKey: PublicKey,
-    whitelistMintKey: PublicKey,
-    serumProgramId: PublicKey,
     optionsProtocol?: OptionsProtocol
   ): Promise<TransactionInstruction> {
     const optionMarket = await this.getOptionMarketByKey(
@@ -1319,30 +1363,23 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [whitelistTokenAccountKey] =
       await VoltSDK.findWhitelistTokenAccountAddress(
         this.voltKey,
-        whitelistMintKey,
+        this.sdk.net.MM_TOKEN_MINT,
         this.sdk.programs.Volt.programId
       );
 
-    const { marketAuthorityBump } = await getMarketAndAuthorityInfo(
-      this.sdk.programs.Volt.programId,
-      optionMarket.key,
-      whitelistMintKey,
-      serumProgramId
+    const { marketAuthorityBump } = await this.getMarketAndAuthorityInfo(
+      newOptionMarketKey
     );
 
-    const optionSerumMarketProxy = await marketLoader(
-      this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-      optionMarket.key,
-      whitelistTokenAccountKey,
-      marketAuthorityBump,
-      serumProgramId,
-      optionSerumMarketKey
+    const [optionSerumMarketKey] = await VoltSDK.findSerumMarketAddress(
+      this.voltKey,
+      this.sdk.net.MM_TOKEN_MINT,
+      optionMarket.key
     );
 
     const { openOrdersBump } =
       await this.findVaultAuthorityPermissionedOpenOrdersKey(
-        this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-        optionSerumMarketProxy
+        optionSerumMarketKey
       );
 
     const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
@@ -1543,11 +1580,8 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async rebalanceEnter(
-    optionSerumMarketKey: PublicKey,
-    whitelistMintKey: PublicKey,
     clientPrice: BN,
     clientSize: BN,
-    serumProgramId: PublicKey,
     referrerQuoteAcctReplacement?: PublicKey,
     referralSRMAcctReplacement?: PublicKey
   ): Promise<TransactionInstruction> {
@@ -1561,25 +1595,27 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [whitelistTokenAccountKey] =
       await VoltSDK.findWhitelistTokenAccountAddress(
         this.voltKey,
-        whitelistMintKey,
+        this.sdk.net.MM_TOKEN_MINT,
         this.sdk.programs.Volt.programId
       );
 
     const { marketAuthority, marketAuthorityBump } =
-      await getMarketAndAuthorityInfo(
-        this.sdk.programs.Volt.programId,
-        optionMarket.key,
-        whitelistMintKey,
-        serumProgramId
-      );
+      await this.getCurrentMarketAndAuthorityInfo();
+
+    const [optionSerumMarketKey] = await VoltSDK.findSerumMarketAddress(
+      this.voltKey,
+      this.sdk.net.MM_TOKEN_MINT,
+      optionMarket.key
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const extraVoltData = await this.getExtraVoltData();
 
     const optionSerumMarketProxy = await marketLoader(
-      this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-      optionMarket.key,
-      whitelistTokenAccountKey,
-      marketAuthorityBump,
-      serumProgramId,
-      optionSerumMarketKey
+      this,
+      optionSerumMarketKey,
+      whitelistTokenAccountKey
     );
 
     const optionSerumMarket = optionSerumMarketProxy.market;
@@ -1591,8 +1627,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const { openOrdersKey, openOrdersBump } =
       await this.findVaultAuthorityPermissionedOpenOrdersKey(
-        this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-        optionSerumMarketProxy
+        optionSerumMarketKey
       );
 
     const referrerQuoteAcct =
@@ -1607,6 +1642,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
     );
+
     const rebalanceEnterStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEnter"]["accounts"]
     >[0] = {
@@ -1614,6 +1650,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       middlewareProgram: this.sdk.programs.Volt.programId,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
+
+      extraVoltData: extraVoltKey,
+      auctionMetadata: extraVoltData.auctionMetadata as Address,
 
       optionPool: this.voltVault.optionPool,
 
@@ -1666,6 +1705,120 @@ export class ConnectedVoltSDK extends VoltSDK {
         accounts: rebalanceEnterStruct,
       }
     );
+  }
+
+  async initSerumMarket(pcMint: PublicKey) {
+    if (!this.extraVoltData) throw new Error("extraVoltData must be defined");
+    const middlewareProgram = this.sdk.programs.Volt;
+    const { serumMarketKey, marketAuthority, marketAuthorityBump } =
+      await this.getCurrentMarketAndAuthorityInfo();
+
+    const {
+      instructions: createFirstAccountsInstructions,
+      signers,
+      bids,
+      asks,
+      eventQueue,
+    } = await createFirstSetOfAccounts({
+      connection: middlewareProgram.provider.connection,
+      userKey: this.wallet,
+      dexProgramId: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+    });
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      this.voltKey
+    );
+    const textEncoder = new TextEncoder();
+    const [requestQueue, _requestQueueBump] =
+      await PublicKey.findProgramAddress(
+        [
+          this.sdk.net.MM_TOKEN_MINT.toBuffer(),
+          this.voltVault.optionMarket.toBuffer(),
+          auctionMetadataKey.toBuffer(),
+          textEncoder.encode("requestQueue"),
+        ],
+        middlewareProgram.programId
+      );
+    const [coinVault, _coinVaultBump] = await PublicKey.findProgramAddress(
+      [
+        this.sdk.net.MM_TOKEN_MINT.toBuffer(),
+        this.voltVault.optionMarket.toBuffer(),
+        auctionMetadataKey.toBuffer(),
+
+        textEncoder.encode("coinVault"),
+      ],
+      middlewareProgram.programId
+    );
+    const [pcVault, _pcVaultBump] = await PublicKey.findProgramAddress(
+      [
+        this.sdk.net.MM_TOKEN_MINT.toBuffer(),
+        this.voltVault.optionMarket.toBuffer(),
+        auctionMetadataKey.toBuffer(),
+
+        textEncoder.encode("pcVault"),
+      ],
+      middlewareProgram.programId
+    );
+
+    const [vaultOwner, vaultSignerNonce] = await getVaultOwnerAndNonce(
+      serumMarketKey,
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
+    );
+
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+    const initSerumAccounts: {
+      [K in keyof Parameters<
+        VoltProgram["instruction"]["initSerumMarket"]["accounts"]
+      >[0]]: PublicKey;
+    } = {
+      authority: this.wallet,
+      whitelist: this.sdk.net.MM_TOKEN_MINT,
+      serumMarket: serumMarketKey,
+      voltVault: this.voltKey,
+      auctionMetadata: this.extraVoltData.auctionMetadata,
+      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+      pcMint,
+      optionMint: this.voltVault.optionMint,
+      requestQueue,
+      eventQueue: eventQueue.publicKey,
+      bids: bids.publicKey,
+      asks: asks.publicKey,
+      coinVault,
+      pcVault,
+      vaultSigner: vaultOwner as PublicKey,
+      marketAuthority,
+      rent: SYSVAR_RENT_PUBKEY,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    };
+    Object.entries(initSerumAccounts).map(function (key, value) {
+      console.log(key.toString() + " = " + value.toString());
+    });
+
+    const coinLotSize = new BN(1);
+    const pcLotSize = new BN(1);
+    const pcDustThreshold = new BN(1);
+    const instructions = createFirstAccountsInstructions.concat([
+      middlewareProgram.instruction.initSerumMarket(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+        new BN(MARKET_STATE_LAYOUT_V3.span),
+        vaultSignerNonce as BN,
+        coinLotSize,
+        pcLotSize,
+        pcDustThreshold,
+        {
+          accounts: initSerumAccounts,
+        }
+      ),
+    ]);
+    return {
+      serumMarketKey,
+      vaultOwner,
+      marketAuthority,
+      marketAuthorityBump,
+      instructions,
+      signers,
+    };
   }
 
   async rebalanceSettle(): Promise<TransactionInstruction> {
@@ -1938,12 +2091,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  async settleEnterFunds(
-    optionSerumMarketKey: PublicKey,
-    whitelistMintKey: PublicKey,
-    serumProgramId: PublicKey,
-    referrerQuoteAcctReplacement?: PublicKey
-  ) {
+  async settleEnterFunds(referrerQuoteAcctReplacement?: PublicKey) {
     const optionMarket = await this.getOptionMarketByKey(
       this.voltVault.optionMarket
     );
@@ -1954,33 +2102,33 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [whitelistTokenAccountKey] =
       await VoltSDK.findWhitelistTokenAccountAddress(
         this.voltKey,
-        whitelistMintKey,
+        this.sdk.net.MM_TOKEN_MINT,
         this.sdk.programs.Volt.programId
       );
 
     const { marketAuthority, marketAuthorityBump } =
-      await getMarketAndAuthorityInfo(
-        this.sdk.programs.Volt.programId,
-        optionMarket.key,
-        whitelistMintKey,
-        serumProgramId
-      );
+      await this.getCurrentMarketAndAuthorityInfo();
 
+    const [optionSerumMarketKey] = await VoltSDK.findSerumMarketAddress(
+      this.voltKey,
+      this.sdk.net.MM_TOKEN_MINT,
+      optionMarket.key
+    );
+
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      this.voltKey
+    );
     const optionSerumMarketProxy = await marketLoader(
-      this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-      optionMarket.key,
-      whitelistTokenAccountKey,
-      marketAuthorityBump,
-      serumProgramId,
-      optionSerumMarketKey
+      this,
+      optionSerumMarketKey,
+      whitelistTokenAccountKey
     );
 
     const optionSerumMarket = optionSerumMarketProxy.market;
 
     const { openOrdersKey } =
       await this.findVaultAuthorityPermissionedOpenOrdersKey(
-        this.sdk.programs.Volt as unknown as Parameters<typeof marketLoader>[0],
-        optionSerumMarketProxy
+        optionSerumMarketKey
       );
 
     const [vaultOwner] = await getVaultOwnerAndNonce(
@@ -2872,63 +3020,141 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  transferDeposit(
-    targetPool: PublicKey,
-    underlyingDestination: PublicKey,
-    amount: BN
-  ): TransactionInstruction {
-    const transferDepositAccounts: Parameters<
-      VoltProgram["instruction"]["transferDeposit"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      underlyingUserAcct: underlyingDestination,
-      targetPool: targetPool,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
-
-    return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
-      accounts: transferDepositAccounts,
-    });
-  }
-
-  async reinitializeMint(
-    targetPool: PublicKey,
-    newMint: PublicKey,
-    underlyingDestination: PublicKey
+  async depositDiscretionaryEntropy(
+    adminUnderlyingTokens: PublicKey,
+    depositAmount: BN
   ): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) {
+      throw new Error("extra volt data must be loaded");
+    }
+    if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
+      throw new Error("entropy program id must be set (currently default)");
+    }
+
+    const client = new EntropyClient(
+      this.connection,
+      this.extraVoltData.entropyProgramId
+    );
+
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    console.log("target pool = ", targetPool.toString());
-    console.log("new mint = ", newMint.toString());
-    const reinitializeMintAccounts: Parameters<
-      VoltProgram["instruction"]["reinitializeMint"]["accounts"]
+    const entropyGroup = await client.getEntropyGroup(
+      this.extraVoltData.entropyGroup
+    );
+    const banks = await entropyGroup.loadRootBanks(this.connection);
+
+    const rootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    console.log(await rootBank?.loadNodeBanks(this.connection));
+    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    const textEncoder = new TextEncoder();
+    const [depositDiscretionaryKey] = await PublicKey.findProgramAddress(
+      [
+        this.voltKey.toBuffer(),
+        textEncoder.encode("depositDiscretionaryAccount"),
+      ],
+      this.sdk.programs.Volt.programId
+    );
+    const depositDiscretionaryEntropyAccounts: Parameters<
+      VoltProgram["instruction"]["depositDiscretionaryEntropy"]["accounts"]
     >[0] = {
       authority: this.wallet,
       voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
       extraVoltData: extraVoltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
 
-      targetPool: targetPool,
+      adminDepositTokenAccount: adminUnderlyingTokens,
+      depositDiscretionaryTokens: depositDiscretionaryKey,
 
-      oldMint: this.voltVault.underlyingAssetMint,
-      newMint: newMint,
+      entropyProgram: this.extraVoltData.entropyProgramId,
+      entropyGroup: this.extraVoltData.entropyGroup,
+      entropyAccount: this.extraVoltData.entropyAccount,
+      entropyCache: this.extraVoltData.entropyCache,
 
-      userTokens: underlyingDestination,
+      spotPerpMarket: this.extraVoltData.hedgingSpotPerpMarket,
+      powerPerpMarket: this.extraVoltData.powerPerpMarket,
 
-      rent: SYSVAR_RENT_PUBKEY,
+      rootBank: rootBank?.publicKey as PublicKey,
+      nodeBank: nodeBank?.publicKey as PublicKey,
+      vault: nodeBank?.vault as PublicKey,
+
+      signer: entropyGroup.signerKey,
+
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
+      rent: SYSVAR_RENT_PUBKEY,
+      clock: SYSVAR_CLOCK_PUBKEY,
+      depositMint: this.extraVoltData.depositMint,
     };
 
-    return this.sdk.programs.Volt.instruction.reinitializeMint({
-      accounts: reinitializeMintAccounts,
-    });
+    return this.sdk.programs.Volt.instruction.depositDiscretionaryEntropy(
+      depositAmount,
+      {
+        accounts: depositDiscretionaryEntropyAccounts,
+      }
+    );
   }
+
+  // transferDeposit(
+  //   targetPool: PublicKey,
+  //   underlyingDestination: PublicKey,
+  //   amount: BN
+  // ): TransactionInstruction {
+  //   const transferDepositAccounts: Parameters<
+  //     VoltProgram["instruction"]["transferDeposit"]["accounts"]
+  //   >[0] = {
+  //     authority: this.wallet,
+  //     voltVault: this.voltKey,
+  //     vaultAuthority: this.voltVault.vaultAuthority,
+
+  //     underlyingUserAcct: underlyingDestination,
+  //     targetPool: targetPool,
+
+  //     systemProgram: SystemProgram.programId,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //   };
+
+  //   return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
+  //     accounts: transferDepositAccounts,
+  //   });
+  // }
+
+  // async reinitializeMint(
+  //   targetPool: PublicKey,
+  //   newMint: PublicKey,
+  //   underlyingDestination: PublicKey
+  // ): Promise<TransactionInstruction> {
+  //   const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
+
+  //   console.log("target pool = ", targetPool.toString());
+  //   console.log("new mint = ", newMint.toString());
+  //   const reinitializeMintAccounts: Parameters<
+  //     VoltProgram["instruction"]["reinitializeMint"]["accounts"]
+  //   >[0] = {
+  //     authority: this.wallet,
+  //     voltVault: this.voltKey,
+  //     vaultAuthority: this.voltVault.vaultAuthority,
+  //     extraVoltData: extraVoltKey,
+
+  //     targetPool: targetPool,
+
+  //     oldMint: this.voltVault.underlyingAssetMint,
+  //     newMint: newMint,
+
+  //     userTokens: underlyingDestination,
+
+  //     rent: SYSVAR_RENT_PUBKEY,
+  //     systemProgram: SystemProgram.programId,
+  //     tokenProgram: TOKEN_PROGRAM_ID,
+  //   };
+
+  //   return this.sdk.programs.Volt.instruction.reinitializeMint({
+  //     accounts: reinitializeMintAccounts,
+  //   });
+  // }
 
   async endRoundEntropy(): Promise<TransactionInstruction> {
     const { roundVoltTokensKey, roundUnderlyingPendingWithdrawalsKey } =

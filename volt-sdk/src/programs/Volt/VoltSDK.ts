@@ -8,12 +8,9 @@ import type {
   RootBank,
 } from "@friktion-labs/entropy-client";
 import { EntropyClient, I80F48 } from "@friktion-labs/entropy-client";
-import type { Program, ProgramAccount } from "@project-serum/anchor";
+import type { ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
-import { getMintInfo } from "@project-serum/common";
-import type { MarketProxy } from "@project-serum/serum";
-import { MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -41,7 +38,6 @@ import {
   FRIKTION_PROGRAM_ID,
   VoltType,
 } from "../../constants";
-import { anchorProviderToSerumProvider } from "../../miscUtils";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
 import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
@@ -58,11 +54,6 @@ import type {
   VoltVault,
 } from ".";
 import { OrderType, SelfTradeBehavior } from "./helperTypes";
-import {
-  createFirstSetOfAccounts,
-  getMarketAndAuthorityInfo,
-  getVaultOwnerAndNonce,
-} from "./serum";
 import { getAccountBalance, getAccountBalanceOrZero } from "./utils";
 import type {
   EntropyMetadata,
@@ -71,12 +62,24 @@ import type {
 } from "./voltTypes";
 
 export class VoltSDK {
+  extraVoltData: ExtraVoltData | undefined;
   constructor(
     readonly sdk: FriktionSDK,
     readonly voltVault: VoltVault,
     readonly voltKey: PublicKey,
-    readonly extraVoltData?: ExtraVoltData | undefined
-  ) {}
+    extraVoltData?: ExtraVoltData | undefined
+  ) {
+    this.extraVoltData = extraVoltData;
+  }
+
+  isCall(): boolean {
+    return ![
+      this.sdk.net.mints.USDC,
+      this.sdk.net.mints.UST,
+      this.sdk.net.mints.PAI,
+      this.sdk.net.mints.UXD,
+    ].includes(this.voltVault.underlyingAssetMint);
+  }
 
   voltType(): VoltType {
     // const vaultType = this.voltVault.vaultType.toNumber();
@@ -172,6 +175,38 @@ export class VoltSDK {
     );
   }
 
+  static async findSerumMarketAddress(
+    voltKey: PublicKey,
+    whitelistMintKey: PublicKey,
+    optionMarketKey: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      voltKey
+    );
+    return await PublicKey.findProgramAddress(
+      [
+        whitelistMintKey.toBuffer(),
+        optionMarketKey.toBuffer(),
+        auctionMetadataKey.toBuffer(),
+        textEncoder.encode("serumMarket"),
+      ],
+      voltProgramId
+    );
+  }
+
+  static async findAuctionMetadataAddress(
+    voltKey: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("auctionMetadata")],
+      voltProgramId
+    );
+  }
+
   static async findEntropyMetadataAddress(
     voltKey: PublicKey,
     voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
@@ -210,13 +245,13 @@ export class VoltSDK {
     quoteAssetMint,
     permissionedMarketPremiumMint,
     underlyingAmountPerContract,
-    whitelistTokenMintKey,
     serumProgramId,
     transferTimeWindow,
     expirationInterval,
     upperBoundOtmStrikeFactor,
     capacity,
     individualCapacity,
+    permissionlessAuctions,
     seed,
   }: {
     sdk: FriktionSDK;
@@ -225,13 +260,14 @@ export class VoltSDK {
     quoteAssetMint: PublicKey;
     permissionedMarketPremiumMint: PublicKey;
     underlyingAmountPerContract: BN;
-    whitelistTokenMintKey: PublicKey;
     serumProgramId: PublicKey;
     transferTimeWindow: anchor.BN;
     expirationInterval: anchor.BN;
     upperBoundOtmStrikeFactor: anchor.BN;
     capacity: anchor.BN;
     individualCapacity: anchor.BN;
+    permissionlessAuctions: boolean;
+
     seed?: PublicKey;
   }): Promise<{
     instruction: TransactionInstruction;
@@ -250,9 +286,10 @@ export class VoltSDK {
       premiumPoolKey,
       permissionedMarketPremiumPoolKey,
       whitelistTokenAccountKey,
+      auctionMetadataKey,
     } = await VoltSDK.findInitializeAddresses(
       sdk,
-      whitelistTokenMintKey,
+      sdk.net.MM_TOKEN_MINT,
       VoltType.ShortOptions,
       {
         seed,
@@ -274,6 +311,7 @@ export class VoltSDK {
       vaultAuthority: vaultAuthority,
       vaultMint: vaultMint,
       extraVoltData: extraVoltKey,
+      auctionMetadata: auctionMetadataKey,
 
       depositPool: depositPoolKey,
       premiumPool: premiumPoolKey,
@@ -286,7 +324,7 @@ export class VoltSDK {
       dexProgram: serumProgramId,
 
       whitelistTokenAccount: whitelistTokenAccountKey,
-      whitelistTokenMint: whitelistTokenMintKey,
+      whitelistTokenMint: sdk.net.MM_TOKEN_MINT,
 
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -317,6 +355,7 @@ export class VoltSDK {
       underlyingAmountPerContract,
       capacity,
       individualCapacity,
+      permissionlessAuctions ? new BN(1) : new BN(0),
       {
         accounts: initializeAccountsStruct,
       }
@@ -347,6 +386,7 @@ export class VoltSDK {
     premiumPoolKey: PublicKey;
     permissionedMarketPremiumPoolKey: PublicKey;
     whitelistTokenAccountKey: PublicKey;
+    auctionMetadataKey: PublicKey;
     seed?: PublicKey;
   }> {
     const textEncoder = new TextEncoder();
@@ -382,6 +422,10 @@ export class VoltSDK {
     }
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(vault);
+
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      vault
+    );
 
     const [vaultMint, _vaultMintBump] = await PublicKey.findProgramAddress(
       [vault.toBuffer(), textEncoder.encode("vaultToken")],
@@ -428,6 +472,7 @@ export class VoltSDK {
       premiumPoolKey,
       permissionedMarketPremiumPoolKey,
       whitelistTokenAccountKey,
+      auctionMetadataKey,
     };
   }
 
@@ -638,26 +683,28 @@ export class VoltSDK {
     user,
     optionMarket,
     permissionedMarketPremiumMint,
-    whitelistTokenMintKey,
+    // whitelistTokenMintKey,
     serumProgramId,
     transferTimeWindow,
     expirationInterval,
     upperBoundOtmStrikeFactor,
     capacity,
     individualCapacity,
+    permissionlessAuctions,
     seed,
   }: {
     sdk: FriktionSDK;
     user: PublicKey;
     optionMarket: OptionMarketWithKey;
     permissionedMarketPremiumMint: PublicKey;
-    whitelistTokenMintKey: PublicKey;
+    // whitelistTokenMintKey: PublicKey;
     serumProgramId: PublicKey;
     transferTimeWindow: anchor.BN;
     expirationInterval: anchor.BN;
     upperBoundOtmStrikeFactor: anchor.BN;
     capacity: anchor.BN;
     individualCapacity: anchor.BN;
+    permissionlessAuctions: boolean;
     seed?: PublicKey;
   }): Promise<{
     instruction: TransactionInstruction;
@@ -670,126 +717,16 @@ export class VoltSDK {
       quoteAssetMint: optionMarket.quoteAssetMint,
       permissionedMarketPremiumMint: permissionedMarketPremiumMint,
       underlyingAmountPerContract: optionMarket.underlyingAmountPerContract,
-      whitelistTokenMintKey,
+      // whitelistTokenMintKey,
       serumProgramId,
       transferTimeWindow,
       expirationInterval,
       upperBoundOtmStrikeFactor,
       capacity,
       individualCapacity,
+      permissionlessAuctions,
       seed,
     });
-  }
-
-  static async initSerumMarket(
-    friktionSdk: FriktionSDK,
-    userKey: PublicKey,
-    optionMarket: OptionMarketWithKey,
-    whitelistMintKey: PublicKey,
-    pcMint: PublicKey,
-    dexProgramId: PublicKey
-  ) {
-    const middlewareProgram = friktionSdk.programs.Volt;
-    const { serumMarketKey, marketAuthority, marketAuthorityBump } =
-      await getMarketAndAuthorityInfo(
-        middlewareProgram.programId,
-        optionMarket.key,
-        whitelistMintKey,
-        dexProgramId
-      );
-
-    const {
-      instructions: createFirstAccountsInstructions,
-      signers,
-      bids,
-      asks,
-      eventQueue,
-    } = await createFirstSetOfAccounts({
-      connection: middlewareProgram.provider.connection,
-      userKey: userKey,
-      dexProgramId,
-    });
-
-    const textEncoder = new TextEncoder();
-    const [requestQueue, _requestQueueBump] =
-      await PublicKey.findProgramAddress(
-        [
-          whitelistMintKey.toBuffer(),
-          optionMarket.key.toBuffer(),
-          textEncoder.encode("requestQueue"),
-        ],
-        middlewareProgram.programId
-      );
-    const [coinVault, _coinVaultBump] = await PublicKey.findProgramAddress(
-      [
-        whitelistMintKey.toBuffer(),
-        optionMarket.key.toBuffer(),
-        textEncoder.encode("coinVault"),
-      ],
-      middlewareProgram.programId
-    );
-    const [pcVault, _pcVaultBump] = await PublicKey.findProgramAddress(
-      [
-        whitelistMintKey.toBuffer(),
-        optionMarket.key.toBuffer(),
-        textEncoder.encode("pcVault"),
-      ],
-      middlewareProgram.programId
-    );
-
-    const [vaultOwner, vaultSignerNonce] = await getVaultOwnerAndNonce(
-      serumMarketKey,
-      dexProgramId
-    );
-
-    const initSerumAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["initSerumMarket"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      userAuthority: userKey,
-      whitelist: whitelistMintKey,
-      optionMarket: optionMarket.key,
-      serumMarket: serumMarketKey,
-      dexProgram: dexProgramId,
-      pcMint,
-      optionMint: optionMarket.optionMint,
-      requestQueue,
-      eventQueue: eventQueue.publicKey,
-      bids: bids.publicKey,
-      asks: asks.publicKey,
-      coinVault,
-      pcVault,
-      vaultSigner: vaultOwner as PublicKey,
-      marketAuthority,
-      rent: SYSVAR_RENT_PUBKEY,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: SystemProgram.programId,
-    };
-    const coinLotSize = new BN(1);
-    const pcLotSize = new BN(1);
-    const pcDustThreshold = new BN(1);
-    const instructions = createFirstAccountsInstructions.concat([
-      middlewareProgram.instruction.initSerumMarket(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        new BN(MARKET_STATE_LAYOUT_V3.span),
-        vaultSignerNonce as BN,
-        coinLotSize,
-        pcLotSize,
-        pcDustThreshold,
-        {
-          accounts: initSerumAccounts,
-        }
-      ),
-    ]);
-    return {
-      serumMarketKey,
-      vaultOwner,
-      marketAuthority,
-      marketAuthorityBump,
-      instructions,
-      signers,
-    };
   }
 
   oraclePriceForDepositToken(
@@ -1064,7 +1001,7 @@ export class VoltSDK {
       userMintableShares =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0) ||
-        pendingDepositInfo.roundNumber.eq(this.voltVault.roundNumber)
+        pendingDepositInfo.roundNumber.gte(this.voltVault.roundNumber)
           ? new Decimal(0)
           : new Decimal(pendingDepositInfo.numUnderlyingDeposited.toString())
               .mul(voltTokensForPendingDepositRound)
@@ -1072,8 +1009,7 @@ export class VoltSDK {
                 new Decimal(
                   roundForPendingDeposit.underlyingFromPendingDeposits.toString()
                 )
-              )
-              .floor();
+              );
     }
 
     let pendingwithdrawalInfo = null;
@@ -1575,10 +1511,7 @@ export class VoltSDK {
     };
   }
 
-  async findVaultAuthorityPermissionedOpenOrdersKey(
-    middlewareProgram: Program,
-    marketProxy: MarketProxy
-  ) {
+  async findVaultAuthorityPermissionedOpenOrdersKey(serumMarketKey: PublicKey) {
     const openOrdersSeed = Buffer.from([
       111, 112, 101, 110, 45, 111, 114, 100, 101, 114, 115,
     ]);
@@ -1586,11 +1519,11 @@ export class VoltSDK {
     const [openOrdersKey, openOrdersBump] = await PublicKey.findProgramAddress(
       [
         openOrdersSeed,
-        marketProxy.dexProgramId.toBuffer(),
-        marketProxy.market.address.toBuffer(),
+        this.sdk.net.SERUM_DEX_PROGRAM_ID.toBuffer(),
+        serumMarketKey.toBuffer(),
         this.voltVault.vaultAuthority.toBuffer(),
       ],
-      middlewareProgram.programId
+      this.sdk.programs.Volt.programId
     );
 
     return { openOrdersKey, openOrdersBump };
@@ -1709,6 +1642,11 @@ export class VoltSDK {
       )
     )[0];
     return this.getRoundByKey(key);
+  }
+
+  async loadInExtraVoltData() {
+    const extraVoltData = await this.getExtraVoltData();
+    this.extraVoltData = extraVoltData;
   }
 
   async getExtraVoltData(): Promise<ExtraVoltDataWithKey> {
@@ -2003,18 +1941,36 @@ export class VoltSDK {
       if (!result) return new BN(0);
       const { mintableShares } = result;
 
-      const vaultMintInfo = await getMintInfo(
-        anchorProviderToSerumProvider(this.sdk.readonlyProvider),
-        this.voltVault.vaultMint
-      );
-      return new BN(
-        mintableShares
-          .mul(new Decimal(10).pow(vaultMintInfo.decimals))
-          .toFixed(0)
-      );
+      return new BN(mintableShares.toFixed(0));
     } catch (err) {
       console.log(err);
       return new BN(0);
     }
+  }
+  async getCurrentMarketAndAuthorityInfo() {
+    return await this.getMarketAndAuthorityInfo(this.voltVault.optionMarket);
+  }
+
+  async getMarketAndAuthorityInfo(optionMarketKey: PublicKey) {
+    const textEncoder = new TextEncoder();
+
+    const [serumMarketKey, _serumMarketBump] =
+      await VoltSDK.findSerumMarketAddress(
+        this.voltKey,
+        this.sdk.net.MM_TOKEN_MINT,
+        optionMarketKey
+      );
+
+    const [marketAuthority, marketAuthorityBump] =
+      await PublicKey.findProgramAddress(
+        [
+          textEncoder.encode("open-orders-init"),
+          this.sdk.net.SERUM_DEX_PROGRAM_ID.toBuffer(),
+          serumMarketKey.toBuffer(),
+        ],
+        this.sdk.programs.Volt.programId
+      );
+
+    return { serumMarketKey, marketAuthority, marketAuthorityBump };
   }
 }

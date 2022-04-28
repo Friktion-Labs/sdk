@@ -46,9 +46,14 @@ export type FriktionPrograms = {
   Inertia: InertiaProgram;
 };
 
+export type TestingOpts = {
+  netOpts: any;
+};
+
 export type FriktionSDKOpts = {
   provider: ProviderLike;
   network?: NetworkName;
+  testingOpts?: TestingOpts;
 };
 
 /**
@@ -109,10 +114,13 @@ export class FriktionSDK {
   readonly legacyAnchorPrograms: LegacyAnchorPrograms;
   readonly readonlyProvider: AnchorProvider;
   readonly network: NetworkName;
+  readonly testingOpts?: TestingOpts;
 
   constructor(opts: FriktionSDKOpts) {
     const defaultedOpts = Object.assign({}, opts, DefaultFriktionSDKOpts);
     this.readonlyProvider = providerToAnchorProvider(defaultedOpts.provider);
+
+    this.testingOpts = opts.testingOpts;
 
     this.network = !opts.network
       ? "mainnet-beta"
@@ -211,7 +219,10 @@ export class FriktionSDK {
    */
   get net(): NetworkSpecificConstants {
     if (this.network === "mainnet-beta") {
-      return USE_SDK_NET_TO_GET_CONSTANTS_MAINNET as NetworkSpecificConstants;
+      return {
+        ...USE_SDK_NET_TO_GET_CONSTANTS_MAINNET,
+        ...(this.testingOpts?.netOpts ?? {}),
+      } as NetworkSpecificConstants;
     } else {
       return USE_SDK_NET_TO_GET_CONSTANTS_DEVNET;
     }
@@ -232,14 +243,19 @@ export class FriktionSDK {
    * load it yourself using sail, because loadVoltByKey doesn't have ANY
    * cacheing, so you could end up calling this 100 times.
    */
-  async loadVoltByKey(voltKey: PublicKey): Promise<VoltSDK> {
+  async loadVoltByKey(
+    voltKey: PublicKey,
+    extraVoltData?: ExtraVoltData | undefined
+  ): Promise<VoltSDK> {
     if (!voltKey) {
       throw new Error("falsy voltKey passed into loadVoltByKey");
     }
     const voltVaultData: VoltVault =
       await this.programs.Volt.account.voltVault.fetch(voltKey);
 
-    return this.loadVolt(voltVaultData, voltKey);
+    return extraVoltData
+      ? this.loadVoltAndExtraData(voltVaultData, voltKey, extraVoltData)
+      : this.loadVolt(voltVaultData, voltKey);
   }
 
   async loadVoltAndExtraDataByKey(voltKey: PublicKey): Promise<VoltSDK> {
@@ -256,6 +272,11 @@ export class FriktionSDK {
     return this.loadVoltAndExtraData(voltVaultData, voltKey, extraVoltData);
   }
 
+  async getExtraVoltDataKey(voltKey: PublicKey): Promise<PublicKey> {
+    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(voltKey);
+    return extraVoltKey;
+  }
+
   async getAllVoltVaults(): Promise<VoltSDK[]> {
     const accts =
       (await this.programs.Volt?.account?.voltVault?.all()) as unknown as ProgramAccount<VoltVault>[];
@@ -263,6 +284,21 @@ export class FriktionSDK {
     return accts.map((acct) => {
       return this.loadVolt(acct.account, acct.publicKey);
     });
+  }
+
+  async getAllVoltVaultsWithExtraVoltData(): Promise<VoltSDK[]> {
+    const accts =
+      (await this.programs.Volt?.account?.voltVault?.all()) as unknown as ProgramAccount<VoltVault>[];
+
+    return await Promise.all(
+      accts.map(async (acct) => {
+        {
+          const voltSdk = this.loadVolt(acct.account, acct.publicKey);
+          await voltSdk.loadInExtraVoltData();
+          return voltSdk;
+        }
+      })
+    );
   }
 
   loadSoloptionsMarket(soloptionsMarket: OptionMarketWithKey): SoloptionsSDK {
