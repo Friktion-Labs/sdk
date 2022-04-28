@@ -6101,14 +6101,11 @@ export type VoltIDL = {
       code: 6193;
       name: "InvalidDepositDiscretionaryState";
       msg: "invalid deposit discretionary state";
-<<<<<<< HEAD
     },
     {
       code: 6194;
       name: "InvalidInitSerumMarketState";
       msg: "invalid init serum market state";
-=======
->>>>>>> 4ba81663371c0d7df198b0e6ab9548941f756f33
     }
   ];
 };
@@ -9396,122 +9393,6 @@ export const VoltIDLJsonRaw = {
       ],
     },
     {
-      name: "depositDiscretionaryEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "adminDepositTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositDiscretionaryTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmt",
-          type: "u64",
-        },
-      ],
-    },
-    {
       name: "setupRebalanceEntropy",
       accounts: [
         {
@@ -12332,13 +12213,10 @@ export const VoltIDLJsonRaw = {
       name: "InvalidDepositDiscretionaryState",
       msg: "invalid deposit discretionary state",
     },
-<<<<<<< HEAD
     {
       code: 6194,
       name: "InvalidInitSerumMarketState",
       msg: "invalid init serum market state",
     },
-=======
->>>>>>> 4ba81663371c0d7df198b0e6ab9548941f756f33
   ],
 };
