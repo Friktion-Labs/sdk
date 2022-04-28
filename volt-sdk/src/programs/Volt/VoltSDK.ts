@@ -11,6 +11,8 @@ import { EntropyClient, I80F48 } from "@friktion-labs/entropy-client";
 import type { ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
+import type { MarketProxy } from "@project-serum/serum";
+import { MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -26,7 +28,6 @@ import {
 } from "@solana/web3.js";
 import { Decimal } from "decimal.js";
 
-import { textEncoder } from "../../../utils/volt_helpers";
 import type { FriktionSDK } from "../..";
 import {
   OPTIONS_PROGRAM_IDS,
@@ -483,6 +484,8 @@ export class VoltSDK {
     backupOptionPoolKey: PublicKey;
     backupWriterTokenPoolKey: PublicKey;
   }> {
+    const textEncoder = new TextEncoder();
+
     const [backupOptionPoolKey] = await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
