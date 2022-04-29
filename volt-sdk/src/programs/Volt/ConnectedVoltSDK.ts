@@ -11,7 +11,6 @@ import {
   makeCachePricesInstruction,
   makeCacheRootBankInstruction,
 } from "@friktion-labs/entropy-client";
-import type { Address } from "@project-serum/anchor";
 import { Market, MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -82,6 +81,15 @@ export class ConnectedVoltSDK extends VoltSDK {
     // There is an obscure bug where the wallet.publicKey was a naked BN and not
     // a PublicKey. Please use this.user instead of this.providerMut.wallet.publicKey
     this.wallet = new PublicKey(this.wallet);
+  }
+
+  async refresh(): Promise<ConnectedVoltSDK> {
+    return new ConnectedVoltSDK(
+      this.connection,
+      this.wallet,
+      await this.sdk.loadVoltAndExtraDataByKey(this.voltKey),
+      this.daoAuthority
+    );
   }
 
   /**
@@ -963,7 +971,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const { epochInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
-      this.voltVault.roundNumber,
+      this.voltVault.roundNumber.subn(1),
       this.sdk.programs.Volt.programId
     );
 
@@ -1643,6 +1651,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
+      this.voltKey
+    );
+
     const rebalanceEnterStruct: Parameters<
       VoltProgram["instruction"]["rebalanceEnter"]["accounts"]
     >[0] = {
@@ -1652,7 +1664,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       vaultAuthority: this.voltVault.vaultAuthority,
 
       extraVoltData: extraVoltKey,
-      auctionMetadata: extraVoltData.auctionMetadata as Address,
+      auctionMetadata: auctionMetadataKey,
 
       optionPool: this.voltVault.optionPool,
 
@@ -1765,7 +1777,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-
+    // const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(this.voltKey);
     const initSerumAccounts: {
       [K in keyof Parameters<
         VoltProgram["instruction"]["initSerumMarket"]["accounts"]
@@ -1775,7 +1787,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       whitelist: this.sdk.net.MM_TOKEN_MINT,
       serumMarket: serumMarketKey,
       voltVault: this.voltKey,
-      auctionMetadata: this.extraVoltData.auctionMetadata,
+      auctionMetadata: auctionMetadataKey,
       dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
       pcMint,
       optionMint: this.voltVault.optionMint,
@@ -1791,9 +1803,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
     };
-    Object.entries(initSerumAccounts).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
 
     const coinLotSize = new BN(1);
     const pcLotSize = new BN(1);
@@ -1875,9 +1884,8 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async rebalanceSwapPremium(
     spotSerumMarketKey: PublicKey,
-    clientPrice: BN,
-    clientSize: BN,
-    serumProgramId: PublicKey,
+    clientPrice?: BN,
+    clientSize?: BN,
     usePermissionedMarketPremium = false,
     referrerQuoteAcctReplacement?: PublicKey,
     referralSRMAcctReplacement?: PublicKey
@@ -1906,8 +1914,20 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.connection,
       spotSerumMarketKey,
       {},
-      serumProgramId
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
     );
+
+    let ask: BN, askSize: BN;
+    try {
+      ({ ask, askSize } = await this.getBidAskLimitsForSpot(
+        spotSerumMarket,
+        undefined,
+        clientPrice
+      ));
+    } catch (err) {
+      ask = new BN(0);
+      askSize = new BN(0);
+    }
 
     const [vaultOwner] = await getVaultOwnerAndNonce(
       spotSerumMarket.address,
@@ -1979,8 +1999,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     };
 
     return this.sdk.programs.Volt.instruction.rebalanceSwapPremium(
-      clientPrice,
-      clientSize,
+      ask,
+      askSize,
       ulOpenOrdersBump,
       {
         accounts: rebalanceSwapPremiumStruct,
@@ -2184,10 +2204,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       rent: SYSVAR_RENT_PUBKEY,
     };
 
-    Object.entries(settleEnterFundsStruct).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
-
     return this.sdk.programs.Volt.instruction.settleEnterFunds({
       accounts: settleEnterFundsStruct,
     });
@@ -2195,7 +2211,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async settleSwapPremiumFunds(
     spotSerumMarketKey: PublicKey,
-    serumProgramId: PublicKey,
     referrerQuoteAcctReplacement?: PublicKey
   ): Promise<TransactionInstruction> {
     const optionMarket = await this.getOptionMarketByKey(
@@ -2215,7 +2230,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.connection,
       spotSerumMarketKey,
       {},
-      serumProgramId
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
     );
 
     const [vaultOwner] = await getVaultOwnerAndNonce(
@@ -2539,26 +2554,37 @@ export class ConnectedVoltSDK extends VoltSDK {
   ): Promise<{
     bid: BN;
     ask: BN;
+    bidSize: BN;
+    askSize: BN;
   }> {
+    let bidSize: BN = new BN(0);
+    let askSize: BN = new BN(0);
     if (!clientAskPrice) {
       const asks = await serumMarket.loadAsks(this.connection);
       console.log("asks = ", asks.getL2(10));
-      const bestAskPrice = asks.getL2(10)[0]?.[2];
-      if (bestAskPrice === undefined) {
+      const bestAsk = asks.getL2(10)[0];
+      const bestAskPrice = bestAsk?.[2];
+      const bestAskSize = bestAsk?.[3];
+
+      if (bestAskPrice === undefined || bestAskSize === undefined) {
         throw new Error("no ask exists on the orderbook");
       }
       clientAskPrice = bestAskPrice;
+      askSize = bestAskSize;
     }
 
     if (!clientBidPrice) {
       const bids = await serumMarket.loadBids(this.connection);
       console.log("asks = ", bids.getL2(10));
-      const bestBidPrice = bids.getL2(10)[0]?.[2];
-      if (bestBidPrice === undefined) {
+      const bestBid = bids.getL2(10)[0];
+      const bestBidPrice = bestBid?.[2];
+      const bestBidSize = bestBid?.[3];
+      if (bestBidPrice === undefined || bestBidSize === undefined) {
         // throw new Error("no bid exists on the orderbook");
         clientBidPrice = clientAskPrice;
       } else {
         clientBidPrice = bestBidPrice;
+        bidSize = bestBidSize;
       }
     }
 
@@ -2572,6 +2598,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     return {
       bid: clientBidPrice,
       ask: clientAskPrice,
+      bidSize: bidSize ?? new BN(0),
+      askSize: askSize ?? new BN(0),
     };
   }
 

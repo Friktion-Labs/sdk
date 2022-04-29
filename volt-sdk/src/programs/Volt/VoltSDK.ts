@@ -35,6 +35,7 @@ import {
 import {
   ENTROPY_PROGRAM_ID,
   FRIKTION_PROGRAM_ID,
+  VoltStrategy,
   VoltType,
 } from "../../constants";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
@@ -55,6 +56,7 @@ import type {
 import { OrderType, SelfTradeBehavior } from "./helperTypes";
 import { getAccountBalance, getAccountBalanceOrZero } from "./utils";
 import type {
+  AuctionMetadata,
   EntropyMetadata,
   ExtraVoltData,
   PendingDeposit,
@@ -68,23 +70,78 @@ export class VoltSDK {
     readonly voltKey: PublicKey,
     extraVoltData?: ExtraVoltData | undefined
   ) {
+    // commenting out for now bc getRoundInfo doesnt need extraVoltData
+    // if (this.voltType() === VoltType.Entropy && extraVoltData === undefined)
+    //   throw new Error(
+    //     "extra volt data must be defined if volt type is entropy"
+    //   );
     this.extraVoltData = extraVoltData;
   }
 
+  needsExtraVoltData(): boolean {
+    return this.voltType() === VoltType.Entropy;
+  }
+
   isCall(): boolean {
+    if (this.voltType() !== VoltType.ShortOptions)
+      throw new Error("wrong volt type, should be DOV");
+
     return ![
       this.sdk.net.mints.USDC,
       this.sdk.net.mints.UST,
       this.sdk.net.mints.PAI,
       this.sdk.net.mints.UXD,
-    ].includes(this.voltVault.underlyingAssetMint);
+    ]
+      .map((k) => k.toString())
+      .includes(this.voltVault.underlyingAssetMint.toString());
+  }
+
+  async voltName(): Promise<string> {
+    const voltNumber = await this.voltNumber();
+    switch (voltNumber) {
+      case 1:
+        return "Volt #01: Covered Call";
+      case 2:
+        return "Volt #02: Cash Secured Put";
+      case 3:
+        return "Volt #03: Crab Strategy";
+      case 4:
+        return "Volt #04: Basis Yield";
+    }
+
+    throw new Error("Unknown volt type");
+  }
+
+  async voltStrategy(): Promise<VoltStrategy> {
+    const voltType = this.voltType();
+    switch (voltType) {
+      case VoltType.ShortOptions: {
+        return this.isCall() ? VoltStrategy.ShortCalls : VoltStrategy.ShortPuts;
+      }
+      case VoltType.Entropy: {
+        const entropyMetadata = await this.getEntropyMetadata();
+        return entropyMetadata.hedgeWithSpot
+          ? VoltStrategy.LongBasis
+          : VoltStrategy.ShortCrab;
+      }
+    }
+  }
+
+  async voltNumber(): Promise<number> {
+    const voltStrategy = await this.voltStrategy();
+    switch (voltStrategy) {
+      case VoltStrategy.ShortCalls:
+        return 1;
+      case VoltStrategy.ShortPuts:
+        return 1;
+      case VoltStrategy.ShortCrab:
+        return 3;
+      case VoltStrategy.LongBasis:
+        return 4;
+    }
   }
 
   voltType(): VoltType {
-    // const vaultType = this.voltVault.vaultType.toNumber();
-    // const ev = await this.getExtraVoltData();
-
-    console.log("premium pool = ", this.voltVault.premiumPool.toString());
     if (
       this.voltVault.premiumPool.toString() !==
       SystemProgram.programId.toString()
@@ -129,6 +186,22 @@ export class VoltSDK {
       return new BN(0);
     }
     return numTokensGained.muln(PERFORMANCE_FEE_BPS).divn(10000);
+  }
+
+  static async extraVoltDataForVoltKey(
+    voltKey: anchor.web3.PublicKey,
+    sdk: FriktionSDK
+  ): Promise<ExtraVoltDataWithKey> {
+    const [key] = await VoltSDK.findExtraVoltDataAddress(
+      voltKey,
+      sdk.programs.Volt.programId
+    );
+    const acct = await sdk.programs.Volt.account.extraVoltData.fetch(key);
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
   }
 
   static async findUnderlyingOpenOrdersAddress(
@@ -755,7 +828,7 @@ export class VoltSDK {
   }
 
   // entropy get methods
-  async getVoltValueInDepositToken(): Promise<BN> {
+  async getVoltValueInDepositToken(): Promise<Decimal> {
     const depositTokenMint = this.voltVault.underlyingAssetMint;
 
     const voltType = this.voltType();
@@ -793,9 +866,7 @@ export class VoltSDK {
             )
             .div(normFactor);
 
-        return new BN(
-          estimatedTotalWithoutPendingDepositTokenAmount.toFixed(0)
-        );
+        return estimatedTotalWithoutPendingDepositTokenAmount;
       } else if (voltType === VoltType.Entropy) {
         const { entropyGroup, entropyAccount, entropyCache } =
           await this.getEntropyObjects();
@@ -814,9 +885,11 @@ export class VoltSDK {
           depositTokenMint,
           this.voltVault.depositPool
         );
-        return new BN(acctValueInDepositToken.toFixed(0)).add(
-          new BN(depositPoolBalance.balance.toFixed(0))
-        );
+        return new Decimal(
+          new BN(acctValueInDepositToken.toFixed(0))
+            .add(new BN(depositPoolBalance.balance.toFixed(0)))
+            .toString()
+        ).div(await this.getNormalizationFactor());
       } else {
         throw new Error("volt type not recognized");
       }
@@ -875,9 +948,9 @@ export class VoltSDK {
     //   ).amount.toString()
     // ).add(new Decimal(vaultValueFromWriterTokens.toString()));
 
-    const totalVaultValueExcludingPendingDeposits = new Decimal(
-      (await this.getVoltValueInDepositToken()).toString()
-    );
+    const totalVaultValueExcludingPendingDeposits =
+      await this.getVoltValueInDepositToken();
+
     console.log(
       "total value value = ",
       totalVaultValueExcludingPendingDeposits.toString()
@@ -1668,6 +1741,25 @@ export class VoltSDK {
       this.sdk.programs.Volt.programId
     );
     const acct = await this.sdk.programs.Volt.account.entropyMetadata.fetch(
+      key
+    );
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
+  }
+
+  async getAuctionMetadata(): Promise<AuctionMetadata> {
+    return await this.getAuctionMetadataByKey(
+      (
+        await VoltSDK.findAuctionMetadataAddress(this.voltKey)
+      )[0]
+    );
+  }
+
+  async getAuctionMetadataByKey(key: PublicKey): Promise<AuctionMetadata> {
+    const acct = await this.sdk.programs.Volt.account.auctionMetadata.fetch(
       key
     );
     const ret = {

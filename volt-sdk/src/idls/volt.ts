@@ -3818,7 +3818,7 @@ export type VoltIDL = {
         },
         {
           name: "auctionMetadata";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -9929,7 +9929,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "auctionMetadata",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

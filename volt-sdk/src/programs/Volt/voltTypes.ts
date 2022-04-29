@@ -14,6 +14,7 @@ export type VoltTypes = AnchorTypes<
     voltVault: VoltVault;
     extraVoltData: ExtraVoltData;
     entropyMetadata: EntropyMetadata;
+    auctionMetadata: AuctionMetadata;
     whitelist: Whitelist;
     round: Round;
     friktionEpochInfo: FriktionEpochInfo;
@@ -41,6 +42,7 @@ export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
 export type EntropyMetadata = VoltAccounts["EntropyMetadata"];
 export type Whitelist = VoltAccounts["Whitelist"];
 export type EntropyRound = VoltAccounts["EntropyRound"];
+export type AuctionMetadata = VoltAccounts["AuctionMetadata"];
 export type WithKey = {
   key: PublicKey;
 };
@@ -54,6 +56,7 @@ export type EntropyRoundWithKey = EntropyRound & WithKey;
 export type VoltVaultWithKey = VoltVault & WithKey;
 export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
 export type WhitelistWithKey = Whitelist & WithKey;
+export type AuctionMetadataWithKey = AuctionMetadata & WithKey;
 
 export type OptionMarket = {
   optionMint: PublicKey;

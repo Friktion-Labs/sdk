@@ -74,6 +74,7 @@ export type VoltSnapshot = {
   shareTokenDecimals: number;
   depositPool: string;
   premiumPool: string;
+  spotSerumMarketId: string;
   depositTokenSymbol: string;
   depositTokenCoingeckoId: string;
   underlyingTokenSymbol: string;
@@ -81,9 +82,9 @@ export type VoltSnapshot = {
   voltType: number;
   apy: number;
   abnormalEpochLength?: number;
-  isVoltage?: boolean;
-  isInCircuits?: boolean;
-  highVoltage?: string;
+  isVoltage: boolean;
+  isInCircuits: boolean;
+  highVoltage: string;
 };
 
 export type FriktionSnapshot = {

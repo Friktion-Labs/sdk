@@ -5,6 +5,13 @@ import { InertiaIDLJsonRaw } from "./idls/inertia";
 import { SoloptionsIDLJsonRaw } from "./idls/soloptions";
 import { VoltIDLJsonRaw } from "./idls/volt";
 
+export enum VoltStrategy {
+  ShortCalls,
+  ShortPuts,
+  ShortCrab,
+  LongBasis,
+}
+
 export enum VoltType {
   ShortOptions = 0,
   Entropy = 1,
