@@ -870,11 +870,9 @@ export class VoltSDK {
           depositTokenMint,
           this.voltVault.depositPool
         );
-        return new Decimal(
-          new BN(acctValueInDepositToken.toFixed(0))
-            .add(new BN(depositPoolBalance.balance.toFixed(0)))
-            .toString()
-        ).div(normFactor);
+        return new Decimal(acctValueInDepositToken.toString())
+          .add(depositPoolBalance.balance)
+          .div(normFactor);
       } else {
         throw new Error("volt type not recognized");
       }
