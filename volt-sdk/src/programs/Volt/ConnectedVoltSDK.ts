@@ -127,11 +127,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       humanWithdrawAmount.mul(normFactor).toString()
     );
 
-    console.log(
-      "writer token pool = ",
-      this.voltVault.writerTokenPool.toString()
-    );
-
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
     const depositAccountsStruct: Parameters<
@@ -352,7 +347,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     normFactor?: Decimal | undefined
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
-      await this.getVoltValueInDepositToken();
+      await this.getVoltValueInDepositToken(normFactor);
     const roundInfo = await this.getRoundByKey(
       (
         await VoltSDK.findRoundInfoAddress(
@@ -399,10 +394,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       }
     }
 
-    console.log(
-      "withdrawal amount vault tokens: ",
-      withdrawalAmountVaultTokens.toString()
-    );
     return await this.withdraw(
       new BN(withdrawalAmountVaultTokens),
       userVaultTokens,
@@ -1113,11 +1104,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    console.log(
-      "ul mint in start round = ",
-      this.voltVault.underlyingAssetMint.toString()
-    );
-
     const startRoundStruct: Parameters<
       VoltProgram["instruction"]["startRound"]["accounts"]
     >[0] = {
@@ -1236,10 +1222,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       ];
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
-    console.log(
-      "entropy program = ",
-      this.extraVoltData.entropyProgramId.toString()
-    );
     const takePerformanceFeesEntropyAccounts: Parameters<
       VoltProgram["instruction"]["takePerformanceFeesEntropy"]["accounts"]
     >[0] = {
@@ -2421,10 +2403,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     let perpMarket = powerPerpMarket;
 
     if (this.extraVoltData.doneRebalancingPowerPerp) {
-      console.log(
-        "hedging spot market = ",
-        this.extraVoltData.hedgingSpotPerpMarket.toString()
-      );
       const spotPerpIndex = entropyGroup.getPerpMarketIndex(
         this.extraVoltData.hedgingSpotPerpMarket
       );
@@ -2575,7 +2553,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     if (!clientBidPrice) {
       const bids = await serumMarket.loadBids(this.connection);
-      console.log("asks = ", bids.getL2(10));
+      console.log("bids = ", bids.getL2(10));
       const bestBid = bids.getL2(10)[0];
       const bestBidPrice = bestBid?.[2];
       const bestBidSize = bestBid?.[3];
@@ -2611,10 +2589,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     bid: BN;
     ask: BN;
   }> {
-    console.log(
-      "perp market quote lot size = ",
-      perpMarket.quoteLotSize.toString()
-    );
     if (!clientAskPrice) {
       const asks = await perpMarket.loadAsks(this.connection);
       const bestAsk = asks.getBest();
@@ -2973,7 +2947,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       banks[
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
-    console.log(await rootBank?.loadNodeBanks(this.connection));
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     if (!clientOraclePx)
@@ -3075,7 +3048,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       banks[
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
-    console.log(await rootBank?.loadNodeBanks(this.connection));
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     const textEncoder = new TextEncoder();
@@ -3157,8 +3129,6 @@ export class ConnectedVoltSDK extends VoltSDK {
   // ): Promise<TransactionInstruction> {
   //   const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-  //   console.log("target pool = ", targetPool.toString());
-  //   console.log("new mint = ", newMint.toString());
   //   const reinitializeMintAccounts: Parameters<
   //     VoltProgram["instruction"]["reinitializeMint"]["accounts"]
   //   >[0] = {
@@ -3219,7 +3189,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       banks[
         entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
       ];
-    console.log(await rootBank?.loadNodeBanks(this.connection));
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
     const { entropyRoundInfoKey } = await VoltSDK.findRoundAddresses(

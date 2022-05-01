@@ -38,13 +38,6 @@ export const marketLoaderFunction = (
       optionMarketKey
     );
 
-    console.log(
-      "market key = ",
-      marketKey.toString(),
-      ", serum market key = ",
-      serumMarketKey.toString()
-    );
-
     if (marketKey.toString() !== serumMarketKey.toString())
       throw new Error(
         "serum market should equal the PDA based on current option"
@@ -178,11 +171,9 @@ export class Validation implements Middleware {
   }
 
   consumeEvents(ix: TransactionInstruction) {
-    console.log(ix);
     throw new Error("Not implemented");
   }
   consumeEventsPermissioned(ix: TransactionInstruction) {
-    console.log(ix);
     throw new Error("Not implemented");
   }
 

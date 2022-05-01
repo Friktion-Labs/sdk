@@ -408,10 +408,6 @@ export class VoltSDK {
     // const serumLimit = new anchor.BN(65535);
     const serumSelfTradeBehavior = SelfTradeBehavior.AbortTransaction;
 
-    Object.entries(initializeAccountsStruct).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
-
     const instruction = sdk.programs.Volt.instruction.initialize(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       transferTimeWindow,
@@ -705,20 +701,6 @@ export class VoltSDK {
       systemProgram: SystemProgram.programId,
     };
 
-    Object.entries(initializeEntropyAccounts).map(function (key, value) {
-      console.log(key.toString() + " = " + value.toString());
-    });
-
-    console.log(
-      vaultAuthorityBump,
-      targetLeverageRatio,
-      targetLeverageLenience,
-      targetHedgeLenience,
-      exitEarlyRatio,
-      capacity,
-      individualCapacity,
-      true
-    );
     // const instruction: TransactionInstruction =
     const instruction: TransactionInstruction =
       sdk.programs.Volt.instruction.initializeEntropy(
@@ -819,7 +801,6 @@ export class VoltSDK {
       const tokenIndex = entropyGroup.getTokenIndex(
         this.extraVoltData.depositMint
       );
-      console.log("token index = ", tokenIndex.toString());
       const oraclePrice = entropyCache.priceCache[tokenIndex]?.price;
       if (oraclePrice === undefined)
         throw new Error("oracle price was undefined");
@@ -828,11 +809,19 @@ export class VoltSDK {
   }
 
   // entropy get methods
-  async getVoltValueInDepositToken(): Promise<Decimal> {
+  async getVoltValueInDepositToken(
+    normFactor?: Decimal | undefined
+  ): Promise<Decimal> {
+    return this.getVoltValueInDepositTokenWithNormFactor(
+      normFactor ?? (await this.getNormalizationFactor())
+    );
+  }
+
+  async getVoltValueInDepositTokenWithNormFactor(
+    normFactor: Decimal
+  ): Promise<Decimal> {
     const depositTokenMint = this.voltVault.underlyingAssetMint;
-
     const voltType = this.voltType();
-
     try {
       if (voltType === VoltType.ShortOptions) {
         const res: {
@@ -844,10 +833,6 @@ export class VoltSDK {
           this.voltVault.depositPool
         );
         if (res.token === null) throw new Error("Could not find Deposit token");
-
-        const normFactor = new Decimal(
-          10 ** (await res.token.getMintInfo()).decimals
-        );
 
         const voltDepositTokenBalance = res.balance;
         const { balance: voltWriterTokenBalance } = await getAccountBalance(
@@ -889,7 +874,7 @@ export class VoltSDK {
           new BN(acctValueInDepositToken.toFixed(0))
             .add(new BN(depositPoolBalance.balance.toFixed(0)))
             .toString()
-        ).div(await this.getNormalizationFactor());
+        ).div(normFactor);
       } else {
         throw new Error("volt type not recognized");
       }
@@ -931,33 +916,8 @@ export class VoltSDK {
       user
     );
 
-    // const quoteToken = new Token(
-    //   provider.connection,
-    //   voltVault.quoteAssetMint,
-    //   TOKEN_PROGRAM_ID,
-    //   user
-    // );
-
-    // const vaultValueFromWriterTokens = (
-    //   await getBalanceOrZero(writerToken, voltVault.writerTokenPool)
-    // ).mul(new Decimal(voltVault.underlyingAmountPerContract.toString()));
-
-    // const totalVaultValueExcludingPendingDeposits = new Decimal(
-    //   (
-    //     await underlyingToken.getAccountInfo(voltVault.depositPool)
-    //   ).amount.toString()
-    // ).add(new Decimal(vaultValueFromWriterTokens.toString()));
-
     const totalVaultValueExcludingPendingDeposits =
       await this.getVoltValueInDepositToken();
-
-    console.log(
-      "total value value = ",
-      totalVaultValueExcludingPendingDeposits.toString()
-    );
-    // const totalVaultPremium = new Decimal(
-    //   (await quoteToken.getAccountInfo(voltVault.premiumPool)).amount.toString()
-    // );
 
     const roundInfo = await this.getRoundByNumber(voltVault.roundNumber);
 
@@ -977,9 +937,8 @@ export class VoltSDK {
       userVoltTokens = new Decimal(
         (await vaultToken.getAccountInfo(vaultTokenAccount)).amount.toString()
       );
-    } catch (err) {
-      console.log("failed to read volt token account");
-    }
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
 
     const userValueExcludingPendingDeposits = voltTokenSupply.lte(0)
       ? new Decimal(0)
@@ -1027,26 +986,6 @@ export class VoltSDK {
         ).amount.toString()
       );
 
-      console.log(
-        "pending deposit round: ",
-        pendingDepositInfo.roundNumber.toString()
-      );
-
-      // const normFactor = await this.getNormalizationFactor();
-
-      // const normFactorDiffVaultUnderlying = (
-      //   await this.getNormalizationFactor()
-      // ).div(
-      //   new Decimal(10).pow(
-      //     (
-      //       await getMintInfo(
-      //         anchorProviderToSerumProvider(provider),
-      //         this.voltVault.vaultMint
-      //       )
-      //     ).decimals
-      //   )
-      // );
-
       userValueFromPendingDeposits =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0)
@@ -1062,15 +1001,7 @@ export class VoltSDK {
               )
               .mul(totalVaultValueExcludingPendingDeposits)
               .div(voltTokenSupply);
-      // .div(voltTokenSupply);
-      // .div(normFactorDiffVaultUnderlying);
 
-      console.log(
-        "deposit info: ",
-        pendingDepositInfo.numUnderlyingDeposited.toString(),
-        voltTokensForPendingDepositRound.toString(),
-        roundForPendingDeposit.underlyingFromPendingDeposits.toString()
-      );
       userMintableShares =
         voltTokenSupply.lte(0) ||
         roundForPendingDeposit.underlyingFromPendingDeposits.lten(0) ||
@@ -1096,10 +1027,6 @@ export class VoltSDK {
             this.sdk.programs.Volt.programId
           )
         )[0]
-      );
-      console.log(
-        "pendnig withdrawal info: ",
-        pendingwithdrawalInfo.key.toString()
       );
     } catch (err) {
       console.log("no pending withdrawal");
@@ -1172,12 +1099,6 @@ export class VoltSDK {
     );
 
     return {
-      // totalBalance: totalUserValue.div(normFactor),
-      // normalBalance: userValueExcludingPendingDeposits.div(normFactor),
-      // pendingDeposits: userValueFromPendingDeposits.div(normFactor),
-      // pendingWithdrawals: userValueFromPendingWithdrawals.div(normFactor),
-      // mintableShares: userMintableShares.div(vaultNormFactor),
-      // claimableUnderlying: userClaimableUnderlying.div(normFactor),
       totalBalance: totalUserValue,
       normalBalance: userValueExcludingPendingDeposits,
       pendingDeposits: userValueFromPendingDeposits,
@@ -1626,7 +1547,6 @@ export class VoltSDK {
   }
 
   async getEpochInfoByKey(key: PublicKey): Promise<FriktionEpochInfoWithKey> {
-    console.log("get epoch info by key, ", key.toString());
     const acct = await this.sdk.programs.Volt.account.friktionEpochInfo.fetch(
       key
     );
@@ -1640,7 +1560,6 @@ export class VoltSDK {
   async getEpochInfoByNumber(
     roundNumber: anchor.BN
   ): Promise<FriktionEpochInfoWithKey> {
-    console.log("round number = ", roundNumber.toString());
     const key = (
       await VoltSDK.findEpochInfoAddress(
         this.voltKey,
@@ -1656,7 +1575,6 @@ export class VoltSDK {
   }
 
   async getEntropyRoundByKey(key: PublicKey): Promise<EntropyRoundWithKey> {
-    console.log("get epoch info by key, ", key.toString());
     const acct = await this.sdk.programs.Volt.account.entropyRound.fetch(key);
     const ret = {
       ...acct,
@@ -1872,7 +1790,6 @@ export class VoltSDK {
         key
       );
     } else if (optionsProtocol === "Soloptions") {
-      console.log("loading soloptions market");
       optionMarket = await getSoloptionsMarketByKey(
         this.sdk.programs.Soloptions as unknown as Parameters<
           typeof getSoloptionsMarketByKey
@@ -1982,7 +1899,6 @@ export class VoltSDK {
     subtractFees = true
   ): Promise<Decimal> {
     const epochInfo = await this.getEpochInfoByNumber(roundNumber);
-    console.log(epochInfo);
     const pnlForRound = await this.getPnlForRound(roundNumber, subtractFees);
     const voltTokenSupplyForRound = epochInfo.voltTokenSupply;
     const normFactor = await this.getNormalizationFactor();

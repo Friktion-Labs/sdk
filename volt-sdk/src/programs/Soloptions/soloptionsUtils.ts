@@ -54,7 +54,6 @@ export const getSoloptionsMarketByKey = async (
 ): Promise<OptionMarketWithKey | null> => {
   let soloptionsContract: SoloptionsContract;
   try {
-    console.log("loading key as ", key.toString());
     soloptionsContract = await getSoloptionsContractByKey(
       program as unknown as SoloptionsProgram,
       key
@@ -81,11 +80,6 @@ export const createSoloptionsMarketInstruction = async (
   quoteAmountPerContract: number,
   expiry: number
 ) => {
-  // console.log(`Creating an option contract for underlying asset mint ${underlyingMint.toString()}
-  //       quote asset mint ${quoteMint.toString()} strike: ${
-  //   underlyingAmountPerContract / quoteAmountPerContract
-  // } at expiry ts ${expiry}`);
-
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const { ix: createContractIx, contract } = await newContractInstruction(

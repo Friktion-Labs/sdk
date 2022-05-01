@@ -217,15 +217,6 @@ export class SoloptionsSDK {
       true
     );
 
-    console.log(
-      params.underlyingAmount,
-      params.quoteAmount,
-      new BN(expiryTs),
-      contractBump,
-      optionBump,
-      writerBump
-    );
-
     const extraKeys = SystemProgram.programId;
     const optionMarketStruct = {
       ...params,

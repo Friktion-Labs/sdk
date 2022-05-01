@@ -260,7 +260,6 @@ export class InertiaSDK {
       ...seeds
     );
 
-    console.log("token program id = ", TOKEN_PROGRAM_ID.toString());
     const settleAccounts: InertiaIXAccounts["settle"] = {
       authority: params.user,
       oracleAi: this.optionMarket.oracleAi,

@@ -48,7 +48,6 @@ export const getInertiaMarketByKey = async (
 ): Promise<OptionMarketWithKey | null> => {
   let inertiaContract: InertiaContract;
   try {
-    console.log("loading key as ", key.toString());
     inertiaContract = await getInertiaContractByKey(
       program as unknown as InertiaProgram,
       key
@@ -73,7 +72,6 @@ export const getContractByKey = async (
 ): Promise<InertiaContractWithKey | null> => {
   let contract: InertiaContract | null = null;
   try {
-    console.log("loading key as ", key.toString());
     contract = await getInertiaContractByKey(
       program as unknown as InertiaProgram,
       key
