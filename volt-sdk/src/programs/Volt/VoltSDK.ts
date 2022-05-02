@@ -78,6 +78,90 @@ export class VoltSDK {
     this.extraVoltData = extraVoltData;
   }
 
+  async printStrategyParams(): Promise<void> {
+    if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
+    const ev = this.extraVoltData!;
+    console.log(
+      "Strategy Params",
+      "\n----------------------------",
+      "\nGENERIC: ",
+
+      "\n, deposits and withdrawals off?: ",
+      ev.turnOffDepositsAndWithdrawals,
+      "\n----------------------------",
+      "\n DOV: ",
+      "\n, isCall: ",
+      this.isCall(),
+      "\n, firstEverOptionWasSet: ",
+      this.voltVault.firstEverOptionWasSet
+    );
+  }
+
+  async getCurrentOptionMarket(): Promise<OptionMarketWithKey> {
+    if (this.voltType() !== VoltType.ShortOptions)
+      throw new Error("volt must trade options");
+
+    if (
+      this.voltVault.optionMarket.toString() ===
+      SystemProgram.programId.toString()
+    )
+      throw new Error("option market must not be systemprogram (not set)");
+
+    return await this.getOptionMarketByKey(this.voltVault.optionMarket);
+  }
+
+  async printState(): Promise<void> {
+    if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
+    const ev = this.extraVoltData!;
+    console.log(
+      "State Machine",
+      "\n----------------------------",
+      "\nGENERIC: ",
+      "\n, instantTransfersEnabled: ",
+      this.voltVault.instantTransfersEnabled,
+      "\n, deposits and withdrawals off?: ",
+      ev.turnOffDepositsAndWithdrawals,
+      "\n----------------------------"
+    );
+
+    if ((await this.voltStrategy()) === VoltStrategy.ShortCalls) {
+      console.log(
+        "\n Short Calls (",
+        "): ",
+        "\n, firstEverOptionWasSet: ",
+        this.voltVault.firstEverOptionWasSet,
+        "\n, nextOptionSet: ",
+        this.voltVault.nextOptionWasSet,
+        "\n, has started?: ",
+        this.voltVault.roundHasStarted,
+        "\n, taken withdrawal fees: ",
+        this.voltVault.haveTakenWithdrawalFees,
+        "\n, isSettled: ",
+        this.voltVault.currOptionWasSettled,
+        "\n, mustSwapPremium: ",
+        this.voltVault.mustSwapPremiumToUnderlying,
+        "\n, preparedIsFinished: ",
+        this.voltVault.prepareIsFinished,
+        "\n, enterIsFinished: ",
+        this.voltVault.enterIsFinished
+      );
+    }
+
+    //   "\n----------------------------",
+    //   "\n ENTROPY: ",
+    //   "\n, rebalance ready?: ",
+    //   ev.rebalanceIsReady,
+    //   "\n, done rebalancing?: ",
+    //   ev.doneRebalancing,
+    //   "\n, done rebalancing target perp?: ",
+    //   ev.doneRebalancingPowerPerp,
+    //   "\n, have taken perf fees?: ",
+    //   ev.haveTakenPerformanceFees,
+    //   "\n, have resolved deposits?: ",
+    //   ev.haveResolvedDeposits
+    // );
+  }
+
   needsExtraVoltData(): boolean {
     return this.voltType() === VoltType.Entropy;
   }

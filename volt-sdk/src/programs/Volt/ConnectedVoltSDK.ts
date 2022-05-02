@@ -371,10 +371,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       await getMintSupplyOrZero(this.connection, this.voltVault.vaultMint)
     ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
     const humanAmount = new Decimal(withdrawAmount.toString());
-    const withdrawalAmountNormalized = humanAmount.mul(
-      normFactor ? normFactor : await this.getNormalizationFactor()
-    );
-    let withdrawalAmountVaultTokens = withdrawalAmountNormalized
+
+    let withdrawalAmountVaultTokens = humanAmount
       .mul(vaultMintSupply)
       .div(
         new Decimal(estimatedTotalWithoutPendingDepositTokenAmount.toString())
