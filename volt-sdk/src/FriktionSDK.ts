@@ -46,8 +46,12 @@ export type FriktionPrograms = {
   Inertia: InertiaProgram;
 };
 
+export type NetOpts = {
+  MM_TOKEN_MINT: PublicKey;
+};
+
 export type TestingOpts = {
-  netOpts: any;
+  netOpts: NetOpts;
 };
 
 export type FriktionSDKOpts = {

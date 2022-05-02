@@ -80,7 +80,8 @@ export class VoltSDK {
 
   async printStrategyParams(): Promise<void> {
     if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
-    const ev = this.extraVoltData!;
+
+    const ev = this.extraVoltData as ExtraVoltData;
     console.log(
       "Strategy Params",
       "\n----------------------------",
@@ -112,7 +113,7 @@ export class VoltSDK {
 
   async printState(): Promise<void> {
     if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
-    const ev = this.extraVoltData!;
+    const ev = this.extraVoltData as ExtraVoltData;
     console.log(
       "State Machine",
       "\n----------------------------",

@@ -72,6 +72,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     mSOL: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
+    SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
@@ -105,6 +106,15 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     ),
     AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3: new PublicKey(
       "9eY4qZoMsV5AoL4dFxwA4HWneJk8EGvVB54tEtSfikN9"
+    ),
+    EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv: new PublicKey(
+      "7eiWUQ4EkE3BzKC3MFdn23ydK56Bd5rUCYQZpud9kyhZ"
+    ),
+    "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs": new PublicKey(
+      "izwhTAj2xfCgr9X6UBRme39UcNvncp7omnCCwUCmQ9J"
+    ),
+    "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU": new PublicKey(
+      "8WRpe8WfiCFmrWTjN7yv551i4YNxGpgv6qiYS7CjLpDH"
     ),
     SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt: new PublicKey(
       "FhrcvL91UwgVpbMmpmyx3GTPUsuofWpjRGBdpV34ern2"
@@ -164,6 +174,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     mSOL: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
+    SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
