@@ -1446,7 +1446,9 @@ export class VoltSDK {
           )
         )[0]
       );
-    } catch (err) {}
+    } catch (err) {
+      const i = 1;
+    }
 
     let userValueFromPendingDeposits = new Decimal(0);
     let userMintableShares = new Decimal(0);
@@ -1514,7 +1516,9 @@ export class VoltSDK {
           )
         )[0]
       );
-    } catch (err) {}
+    } catch (err) {
+      const i = 1;
+    }
 
     let userValueFromPendingWithdrawals = new Decimal(0);
     let userClaimableUnderlying = new Decimal(0);
