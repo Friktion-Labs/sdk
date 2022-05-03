@@ -170,10 +170,10 @@ export class Validation implements Middleware {
     this.addPdaKeys(ix);
   }
 
-  consumeEvents(ix: TransactionInstruction) {
+  consumeEvents(_ix: TransactionInstruction) {
     throw new Error("Not implemented");
   }
-  consumeEventsPermissioned(ix: TransactionInstruction) {
+  consumeEventsPermissioned(_ix: TransactionInstruction) {
     throw new Error("Not implemented");
   }
 

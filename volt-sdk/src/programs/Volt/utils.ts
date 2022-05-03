@@ -1,4 +1,5 @@
 import * as anchor from "@project-serum/anchor";
+import { BN } from "@project-serum/anchor";
 import type { Market } from "@project-serum/serum";
 import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { Connection, Signer } from "@solana/web3.js";
@@ -39,7 +40,7 @@ export async function getAccountBalance(
   connection: Connection,
   mintAddress: PublicKey,
   tokenAccount: PublicKey
-): Promise<{ balance: Decimal; token: Token }> {
+): Promise<{ balance: BN; token: Token }> {
   const token = new Token(
     connection,
     mintAddress,
@@ -48,7 +49,7 @@ export async function getAccountBalance(
   );
 
   const account = await token.getAccountInfo(tokenAccount);
-  const balance = new Decimal(account.amount.toString());
+  const balance = new BN(account.amount.toString());
 
   return { balance, token };
 }
@@ -57,14 +58,26 @@ export async function getAccountBalanceOrZero(
   connection: Connection,
   mintAddress: PublicKey,
   tokenAccount: PublicKey
-): Promise<{ balance: Decimal; token: Token | null }> {
+): Promise<BN> {
+  const { balance } = await getAccountBalanceOrZeroStruct(
+    connection,
+    mintAddress,
+    tokenAccount
+  );
+  return balance;
+}
+export async function getAccountBalanceOrZeroStruct(
+  connection: Connection,
+  mintAddress: PublicKey,
+  tokenAccount: PublicKey
+): Promise<{ balance: BN; token: Token | null }> {
   try {
     const res = await getAccountBalance(connection, mintAddress, tokenAccount);
 
     return res;
   } catch (err) {
     console.error(err);
-    return { balance: new Decimal(0), token: null };
+    return { balance: new BN(0), token: null };
   }
 }
 

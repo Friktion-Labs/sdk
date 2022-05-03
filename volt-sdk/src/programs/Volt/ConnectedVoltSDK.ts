@@ -1348,13 +1348,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionsProtocol
     );
 
-    const [whitelistTokenAccountKey] =
-      await VoltSDK.findWhitelistTokenAccountAddress(
-        this.voltKey,
-        this.sdk.net.MM_TOKEN_MINT,
-        this.sdk.programs.Volt.programId
-      );
-
     const { marketAuthorityBump } = await this.getMarketAndAuthorityInfo(
       newOptionMarketKey
     );
@@ -1598,8 +1591,6 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const extraVoltData = await this.getExtraVoltData();
-
     const optionSerumMarketProxy = await marketLoader(
       this,
       optionSerumMarketKey,
@@ -1756,8 +1747,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.net.SERUM_DEX_PROGRAM_ID
     );
 
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    // const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(this.voltKey);
     const initSerumAccounts: {
       [K in keyof Parameters<
         VoltProgram["instruction"]["initSerumMarket"]["accounts"]
@@ -2106,8 +2095,7 @@ export class ConnectedVoltSDK extends VoltSDK {
         this.sdk.programs.Volt.programId
       );
 
-    const { marketAuthority, marketAuthorityBump } =
-      await this.getCurrentMarketAndAuthorityInfo();
+    const { marketAuthority } = await this.getCurrentMarketAndAuthorityInfo();
 
     const [optionSerumMarketKey] = await VoltSDK.findSerumMarketAddress(
       this.voltKey,
@@ -2115,9 +2103,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionMarket.key
     );
 
-    const [auctionMetadataKey] = await VoltSDK.findAuctionMetadataAddress(
-      this.voltKey
-    );
     const optionSerumMarketProxy = await marketLoader(
       this,
       optionSerumMarketKey,

@@ -62,8 +62,34 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
   SERUM_DEX_PROGRAM_ID: new PublicKey(
     "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"
   ),
+  COINGECKO_IDS: {
+    BTC: "bitcoin",
+    SOL: "solana",
+    ETH: "ethereum",
+    mSOL: "msol",
+    FTT: "ftx-token",
+    SRM: "serum",
+    USDC: "usd-coin",
+    tsUSDC: "usd-coin",
+    PAI: "usd-coin",
+    UXD: "usd-coin",
+    MNGO: "mango-markets",
+    scnSOL: "socean-staked-sol",
+    SBR: "saber",
+    LUNA: "terra-luna",
+    UST: "terrausd",
+    RAY: "raydium",
+    STEP: "step-finance",
+    stSOL: "lido-staked-sol",
+    AVAX: "avalanche-2",
+  },
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
+  ENTROPY_PERP_MARKET_NAMES: {
+    HTrVoLyfjS3WbvTdSemAHdtHYv4MYPg3WdXuqxKDGNsu: "BTC^2-PERP",
+    "9GE4Q4RR6jTXZSGMf9GK4purKxSPVgRCVM7WLqxi8k8i": "BTC-PERP",
+    GkRz4Gpz9WSvJYZ2Qso37oHGvXubzp6PuBMAeFggbLq9: "BTC-1D-IV",
+  },
   mints: {
     USDC: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
     UST: new PublicKey("9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i"),
@@ -72,6 +98,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     mSOL: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
+    SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
@@ -105,6 +132,15 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     ),
     AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3: new PublicKey(
       "9eY4qZoMsV5AoL4dFxwA4HWneJk8EGvVB54tEtSfikN9"
+    ),
+    EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv: new PublicKey(
+      "7eiWUQ4EkE3BzKC3MFdn23ydK56Bd5rUCYQZpud9kyhZ"
+    ),
+    "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs": new PublicKey(
+      "izwhTAj2xfCgr9X6UBRme39UcNvncp7omnCCwUCmQ9J"
+    ),
+    "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU": new PublicKey(
+      "8WRpe8WfiCFmrWTjN7yv551i4YNxGpgv6qiYS7CjLpDH"
     ),
     SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt: new PublicKey(
       "FhrcvL91UwgVpbMmpmyx3GTPUsuofWpjRGBdpV34ern2"
@@ -143,10 +179,15 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
 };
 
 export type NetworkSpecificConstants = Omit<
-  typeof USE_SDK_NET_TO_GET_CONSTANTS_MAINNET,
-  "SERUM_REFERRER_IDS"
+  Omit<
+    Omit<typeof USE_SDK_NET_TO_GET_CONSTANTS_MAINNET, "SERUM_REFERRER_IDS">,
+    "ENTROPY_PERP_MARKET_NAMES"
+  >,
+  "COINGECKO_IDS"
 > & {
+  ENTROPY_PERP_MARKET_NAMES: Record<string, string>;
   SERUM_REFERRER_IDS: Record<string, PublicKey>;
+  COINGECKO_IDS: Record<string, string>;
 };
 
 export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
@@ -154,8 +195,10 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
   SERUM_DEX_PROGRAM_ID: new PublicKey(
     "DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY"
   ),
+  COINGECKO_IDS: {},
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
+  ENTROPY_PERP_MARKET_NAMES: {},
   mints: {
     USDC: new PublicKey("E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF"),
     UST: new PublicKey("9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i"),
@@ -164,6 +207,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     mSOL: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
+    SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
