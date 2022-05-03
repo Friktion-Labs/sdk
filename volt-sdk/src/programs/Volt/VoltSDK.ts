@@ -1404,8 +1404,9 @@ export class VoltSDK {
     const normFactor = new Decimal(10).pow(underlyingTokenMintInfo.decimals);
     const vaultNormFactor = new Decimal(10).pow(vaultTokenMintInfo.decimals);
 
-    const totalVaultValueExcludingPendingDeposits =
-      await this.getVoltValueInDepositToken(normFactor);
+    const totalVaultValueExcludingPendingDeposits = (
+      await this.getVoltValueInDepositToken(normFactor)
+    ).mul(normFactor);
 
     const roundInfo = await this.getRoundByNumber(voltVault.roundNumber);
 
@@ -1580,12 +1581,12 @@ export class VoltSDK {
       .add(userValueFromPendingWithdrawals);
 
     return {
-      totalBalance: totalUserValue,
-      normalBalance: userValueExcludingPendingDeposits,
-      pendingDeposits: userValueFromPendingDeposits,
-      pendingWithdrawals: userValueFromPendingWithdrawals,
-      mintableShares: userMintableShares,
-      claimableUnderlying: userClaimableUnderlying,
+      totalBalance: totalUserValue.div(normFactor),
+      normalBalance: userValueExcludingPendingDeposits.div(normFactor),
+      pendingDeposits: userValueFromPendingDeposits.div(normFactor),
+      pendingWithdrawals: userValueFromPendingWithdrawals.div(normFactor),
+      mintableShares: userMintableShares.div(normFactor),
+      claimableUnderlying: userClaimableUnderlying.div(normFactor),
       normFactor: normFactor,
       vaultNormFactor: vaultNormFactor,
     };
