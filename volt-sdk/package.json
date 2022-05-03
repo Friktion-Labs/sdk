@@ -1,6 +1,6 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "1.1.97",
+  "version": "1.1.98",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/volt",
   "scripts": {
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@blockworks-foundation/mango-client": "3.4.5",
-    "@friktion-labs/entropy-client": "^1.4.7",
+    "@friktion-labs/entropy-client": "1.4.79",
     "@oclif/command": "^1.8.16",
     "@project-serum/anchor": "^0.24.2",
     "@project-serum/common": "^0.0.1-beta.3",
