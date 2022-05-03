@@ -1417,7 +1417,8 @@ export class VoltSDK {
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       voltVault.vaultMint,
-      pubkey
+      pubkey,
+      true
     );
 
     let userVoltTokens = new Decimal(0);
@@ -1825,7 +1826,6 @@ export class VoltSDK {
   ): Promise<{
     extraVoltKey: PublicKey;
     pendingDepositInfoKey: PublicKey;
-    mostRecentVoltTokensKey: PublicKey;
     roundInfoKey: PublicKey;
     roundVoltTokensKey: PublicKey;
     roundUnderlyingTokensKey: PublicKey;
@@ -1834,8 +1834,11 @@ export class VoltSDK {
     epochInfoKey: PublicKey;
     epochInfoBump: number;
   }> {
-    const { pendingDepositInfoKey, mostRecentVoltTokensKey } =
-      await VoltSDK.findPendingDepositAddresses(voltKey, user, voltProgramId);
+    const { pendingDepositInfoKey } = await VoltSDK.findPendingDepositAddresses(
+      voltKey,
+      user,
+      voltProgramId
+    );
 
     const [pendingWithdrawalInfoKey] =
       await VoltSDK.findPendingWithdrawalInfoAddress(
@@ -1864,7 +1867,6 @@ export class VoltSDK {
     return {
       extraVoltKey,
       pendingDepositInfoKey,
-      mostRecentVoltTokensKey,
       roundInfoKey,
       roundVoltTokensKey,
       roundUnderlyingTokensKey,
@@ -1914,24 +1916,13 @@ export class VoltSDK {
   ): Promise<{
     pendingDepositInfoKey: PublicKey;
     pendingDepositInfoKeyBump: number;
-    mostRecentVoltTokensKey: PublicKey;
-    mostRecentVoltTokensKeyBump: number;
   }> {
     const [pendingDepositInfoKey, pendingDepositInfoKeyBump] =
       await VoltSDK.findPendingDepositInfoAddress(voltKey, user, voltProgramId);
 
-    const [mostRecentVoltTokensKey, mostRecentVoltTokensKeyBump] =
-      await VoltSDK.findMostRecentVoltTokensAddress(
-        voltKey,
-        user,
-        voltProgramId
-      );
-
     return {
       pendingDepositInfoKey,
       pendingDepositInfoKeyBump,
-      mostRecentVoltTokensKey,
-      mostRecentVoltTokensKeyBump,
     };
   }
 
