@@ -30,6 +30,7 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 import { Decimal } from "decimal.js";
+import fetch from "node-fetch-commonjs";
 
 import type { FriktionSDK } from "../..";
 import {
@@ -179,13 +180,31 @@ export class VoltSDK {
     ] as string;
   }
 
+  async headlineTokenPrice(): Promise<Decimal> {
+    const symbol = this.mintNameFromKey(
+      this.isCall()
+        ? this.voltVault.underlyingAssetMint
+        : this.voltVault.quoteAssetMint
+    );
+    return await this.coingeckoPrice(
+      this.sdk.net.COINGECKO_IDS[symbol] as string
+    );
+  }
+
+  async depositTokenPrice(): Promise<Decimal> {
+    const symbol = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
+    return await this.coingeckoPrice(
+      this.sdk.net.COINGECKO_IDS[symbol] as string
+    );
+  }
+
   async printState(): Promise<void> {
     if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
     const symbol = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
     const ev = this.extraVoltData as ExtraVoltData;
-    // const depositTokenPrice = await this.coingeckoPrice(
-    //   this.sdk.net.COINGECKO_IDS[symbol] as string
-    // );
+    const depositTokenPrice = await this.coingeckoPrice(
+      this.sdk.net.COINGECKO_IDS[symbol] as string
+    );
 
     console.log(
       console.log(
@@ -203,9 +222,9 @@ export class VoltSDK {
     const valueInDeposits = await this.getVoltValueInDepositToken();
     console.log(
       `Total Value (minus pending deposits) (${symbol}): `,
-      valueInDeposits
-      // ", ($): ",
-      // valueInDeposits.mul(depositTokenPrice).toString()
+      valueInDeposits,
+      ", ($): ",
+      valueInDeposits.mul(depositTokenPrice).toString()
     );
 
     console.log(
@@ -266,6 +285,19 @@ export class VoltSDK {
           .div(permissionedPremiumFactor)
           .toString()
       );
+    } else if (this.voltType() === VoltType.Entropy) {
+      const entropyMetadata = await this.getEntropyMetadata();
+
+      console.log(
+        "leverage: ",
+        ev.targetLeverage,
+        "hedge ratio: ",
+        entropyMetadata.targetHedgeRatio,
+        "leverage lenience: ",
+        ev.targetLeverageLenience,
+        "hedge lenience: ",
+        ev.targetHedgeLenience
+      );
     }
 
     const pendingDeposits = new Decimal(
@@ -281,9 +313,9 @@ export class VoltSDK {
     console.log("Round #: ", this.voltVault.roundNumber.toString());
     console.log(
       `pending deposits ${symbol}: `,
-      pendingDeposits.toString()
-      // ", ($): ",
-      // pendingDeposits.mul(depositTokenPrice).toString()
+      pendingDeposits.toString(),
+      ", ($): ",
+      pendingDeposits.mul(depositTokenPrice).toString()
     );
 
     const pendingWithdrawals = new Decimal(
@@ -292,9 +324,9 @@ export class VoltSDK {
 
     console.log(
       `pending withdrawals (${symbol}): `,
-      pendingWithdrawals.toString()
-      // ", ($): ",
-      // pendingWithdrawals.mul(depositTokenPrice).toString()
+      pendingWithdrawals.toString(),
+      ", ($): ",
+      pendingWithdrawals.mul(depositTokenPrice).toString()
     );
 
     console.log(
@@ -343,6 +375,69 @@ export class VoltSDK {
           entropyGroup,
           entropyCache
         )
+      );
+    }
+
+    console.log(
+      console.log(
+        "\n-------------------------\n AUCTION DETAILS \n-------------------------"
+      )
+    );
+
+    if (this.voltType() === VoltType.Entropy) {
+      const { entropyAccount, entropyGroup, entropyCache } =
+        await this.getEntropyObjects();
+
+      const entropyMetadata = await this.getEntropyMetadata();
+
+      const targetPerpIndex = entropyGroup.getPerpMarketIndex(
+        ev.powerPerpMarket
+      );
+      const spotPerpIndex = entropyGroup.getPerpMarketIndex(
+        ev.hedgingSpotPerpMarket
+      );
+
+      const acctEquity = entropyAccount.computeValue(
+        entropyGroup,
+        entropyCache
+      );
+
+      const targetPerpSize = acctEquity
+        .mul(I80F48.fromString(ev.targetLeverage as string))
+        .sub(
+          I80F48.fromNumber(
+            entropyAccount.getBasePositionUiWithGroup(
+              targetPerpIndex,
+              entropyGroup
+            )
+          ).mul(entropyCache.priceCache[targetPerpIndex]?.price as I80F48)
+        );
+
+      const hedgingPerpSize = acctEquity
+        .mul(I80F48.fromString(entropyMetadata.targetHedgeRatio as string))
+        .mul(I80F48.fromString(ev.targetLeverage as string))
+        .sub(
+          I80F48.fromNumber(
+            entropyAccount.getBasePositionUiWithGroup(
+              spotPerpIndex,
+              entropyGroup
+            )
+          ).mul(entropyCache.priceCache[spotPerpIndex]?.price as I80F48)
+        );
+
+      console.log(
+        `needed ${
+          this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
+            ev.powerPerpMarket.toString()
+          ]?.toString() ?? "N/A"
+        } quote size: `,
+        targetPerpSize.toFixed(4),
+        `\nneeded ${
+          this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
+            ev.hedgingSpotPerpMarket.toString()
+          ]?.toString() ?? "N/A"
+        } quote size: `,
+        hedgingPerpSize.toFixed(4)
       );
     }
 
@@ -403,11 +498,12 @@ export class VoltSDK {
   }
 
   isKeyAStableCoin(key: PublicKey): boolean {
-    return ![
+    return [
       this.sdk.net.mints.USDC,
       this.sdk.net.mints.UST,
       this.sdk.net.mints.PAI,
       this.sdk.net.mints.UXD,
+      this.sdk.net.mints.TUSDCV2,
     ]
       .map((k) => k.toString())
       .includes(key.toString());
@@ -421,6 +517,7 @@ export class VoltSDK {
     if (this.voltType() !== VoltType.ShortOptions)
       throw new Error("wrong volt type, should be DOV");
 
+    console.log(this.voltVault.underlyingAssetMint.toString());
     return !this.isKeyAStableCoin(this.voltVault.underlyingAssetMint);
   }
 
@@ -1179,41 +1276,42 @@ export class VoltSDK {
     });
   }
 
-  // async coingeckoPrice(id: string): Promise<Decimal> {
-  //   const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
-  //   const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
+  async coingeckoPrice(id: string): Promise<Decimal> {
+    const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
+    const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
 
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
-  //   const response = await fetch(coingeckoUrl);
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  //   if (response.status === 200) {
-  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  //     const data = await response.json();
-  //     if (data && typeof data === "object") {
-  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  //       for (const [key, value] of Object.entries(data)) {
-  //         if (
-  //           // eslint-disable-next-line no-prototype-builtins
-  //           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-prototype-builtins
-  //           !(value && typeof value === "object" && value.hasOwnProperty("usd"))
-  //         ) {
-  //           throw new Error("Missing usd in " + key);
-  //         }
-  //       }
-  //       return new Decimal(
-  //         (data as Record<string, { usd: number }>)[
-  //           id
-  //         ]?.usd.toString() as string
-  //       );
-  //     } else {
-  //       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  //       throw new Error("received undefined response = " + response.toString());
-  //     }
-  //   } else {
-  //     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-  //     throw new Error("status code != 200, == " + response.status.toString());
-  //   }
-  // }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
+    const response = await fetch(coingeckoUrl);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (response.status === 200) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+      const data = await response.json();
+      if (data && typeof data === "object") {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        for (const [key, value] of Object.entries(data)) {
+          if (
+            // eslint-disable-next-line no-prototype-builtins
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-prototype-builtins
+            !(value && typeof value === "object" && value.hasOwnProperty("usd"))
+          ) {
+            throw new Error("Missing usd in " + key);
+          }
+        }
+        console.log(data);
+        return new Decimal(
+          (data as Record<string, { usd: number }>)[
+            id
+          ]?.usd.toString() as string
+        );
+      } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+        throw new Error("received undefined response = " + response.toString());
+      }
+    } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+      throw new Error("status code != 200, == " + response.status.toString());
+    }
+  }
 
   oraclePriceForDepositToken(
     entropyGroup: EntropyGroup,
@@ -1439,24 +1537,16 @@ export class VoltSDK {
     let pendingDepositInfo = null;
 
     try {
-      pendingDepositInfo = await this.getPendingDepositByKey(
-        (
-          await VoltSDK.findPendingDepositInfoAddress(
-            this.voltKey,
-            pubkey,
-            this.sdk.programs.Volt.programId
-          )
-        )[0]
-      );
+      pendingDepositInfo = await this.getPendingDepositForGivenUser(pubkey);
     } catch (err) {
-      const i = 1;
+      pendingDepositInfo = null;
     }
 
     let userValueFromPendingDeposits = new Decimal(0);
     let userMintableShares = new Decimal(0);
 
     if (
-      pendingDepositInfo &&
+      pendingDepositInfo !== null &&
       pendingDepositInfo.numUnderlyingDeposited.gtn(0)
     ) {
       const roundForPendingDeposit = await this.getRoundByNumber(
@@ -1509,23 +1599,20 @@ export class VoltSDK {
     let pendingwithdrawalInfo = null;
 
     try {
-      pendingwithdrawalInfo = await this.getPendingWithdrawalByKey(
-        (
-          await VoltSDK.findPendingWithdrawalInfoAddress(
-            this.voltKey,
-            pubkey,
-            this.sdk.programs.Volt.programId
-          )
-        )[0]
+      pendingwithdrawalInfo = await this.getPendingWithdrawalForGivenUser(
+        pubkey
       );
     } catch (err) {
-      const i = 1;
+      pendingwithdrawalInfo = null;
     }
 
     let userValueFromPendingWithdrawals = new Decimal(0);
     let userClaimableUnderlying = new Decimal(0);
 
-    if (pendingwithdrawalInfo && pendingwithdrawalInfo.numVoltRedeemed.gtn(0)) {
+    if (
+      pendingwithdrawalInfo !== null &&
+      pendingwithdrawalInfo.numVoltRedeemed.gtn(0)
+    ) {
       const roundForPendingWithdrawal = await this.getRoundByNumber(
         pendingwithdrawalInfo.roundNumber
       );
@@ -2224,6 +2311,19 @@ export class VoltSDK {
     return await this.getPendingDepositByKey(key);
   }
 
+  async getPendingWithdrawalForGivenUser(
+    user: PublicKey
+  ): Promise<PendingWithdrawalWithKey> {
+    const key = (
+      await VoltSDK.findPendingWithdrawalInfoAddress(
+        this.voltKey,
+        user,
+        this.sdk.programs.Volt.programId
+      )
+    )[0];
+    return await this.getPendingWithdrawalByKey(key);
+  }
+
   async getAllPendingWithdrawals(): Promise<PendingWithdrawalWithKey[]> {
     const accts =
       (await this.sdk.programs.Volt.account.pendingWithdrawal.all()) as unknown as ProgramAccount<PendingWithdrawal>[];
@@ -2354,15 +2454,26 @@ export class VoltSDK {
   }
 
   async getPnlForRound(roundNumber: BN, subtractFees = true): Promise<Decimal> {
-    const epochInfo = await this.getEpochInfoByNumber(roundNumber);
-    let pnlForRound = epochInfo.underlyingPostSettle.sub(
-      epochInfo.underlyingPreEnter
-    );
-    if (subtractFees && pnlForRound.gtn(0))
-      pnlForRound = pnlForRound.sub(VoltSDK.performanceFeeAmount(pnlForRound));
-    return new Decimal(pnlForRound.toString()).div(
-      await this.getNormalizationFactor()
-    );
+    if (this.voltType() === VoltType.ShortOptions) {
+      const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+      let pnlForRound = epochInfo.underlyingPostSettle.sub(
+        epochInfo.underlyingPreEnter
+      );
+      if (subtractFees && pnlForRound.gtn(0))
+        pnlForRound = pnlForRound.sub(
+          VoltSDK.performanceFeeAmount(pnlForRound)
+        );
+      return new Decimal(pnlForRound.toString()).div(
+        await this.getNormalizationFactor()
+      );
+    } else if (this.voltType() === VoltType.Entropy) {
+      const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+      return new Decimal(epochInfo.pnl.toString())
+        .sub(new Decimal(epochInfo.performanceFees.toString()))
+        .div(await this.getNormalizationFactor());
+    } else {
+      throw new Error("invalid volt type");
+    }
   }
   // only works beginning with epoch on april 7
   async getPnlForUserAndRound(

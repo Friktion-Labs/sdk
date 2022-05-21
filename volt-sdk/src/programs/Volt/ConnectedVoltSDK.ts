@@ -1,10 +1,10 @@
+import type NodeBank from "@friktion-labs/entropy-client";
 import type {
   EntropyGroup,
   I80F48,
   PerpMarket,
   RootBank,
 } from "@friktion-labs/entropy-client";
-import type NodeBank from "@friktion-labs/entropy-client";
 import {
   EntropyClient,
   makeCachePerpMarketsInstruction,
@@ -93,13 +93,13 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   /**
-   * trueDepositAmount: human readable amount of underlying token to deposit (e.g 1.1 USDC, 0.0004 BTC). this is normalized by the 10^(num decimals)
+   * humanDepositAmount: human readable amount of underlying token to deposit (e.g 1.1 USDC, 0.0004 BTC). this is normalized by the 10^(num decimals)
    * underlyingTokenSource: address of token account used to deposit tokens
    * vaultTokenDestination: if instant transfers are enabled, the token acccount that should receive the new vault tokens (shares of volt)
    * daoAuthority: special field designated for use cases that require a different tx fee & rent payer vs. underlyingTokenSource authority. If this is used
    **/
   async deposit(
-    humanWithdrawAmount: Decimal,
+    humanDepositAmount: Decimal,
     underlyingTokenSource: PublicKey,
     vaultTokenDestination: PublicKey,
     daoAuthority?: PublicKey,
@@ -124,7 +124,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       : await this.getNormalizationFactor();
 
     const normalizedDepositAmount = new BN(
-      humanWithdrawAmount.mul(normFactor).toString()
+      humanDepositAmount.mul(normFactor).toString()
     );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
@@ -1262,7 +1262,9 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
-  async endRound(): Promise<TransactionInstruction> {
+  async endRound(bypassCode?: BN): Promise<TransactionInstruction> {
+    if (bypassCode === undefined) bypassCode = new BN(0);
+
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -1300,9 +1302,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,
+      premiumPool: this.voltVault.premiumPool,
+      permissionedMarketPremiumPool:
+        this.voltVault.permissionedMarketPremiumPool,
     };
 
-    return this.sdk.programs.Volt.instruction.endRound({
+    return this.sdk.programs.Volt.instruction.endRound(bypassCode, {
       accounts: endRoundStruct,
     });
   }
@@ -1841,6 +1846,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       epochInfo: epochInfoKey,
 
       feeOwner: INERTIA_FEE_OWNER,
+
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
@@ -2353,13 +2359,19 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async rebalanceEntropy(
     clientBidPrice?: BN,
-    clientAskPrice?: BN
+    clientAskPrice?: BN,
+    maxQuotePosChange?: BN,
+    forceHedgeFirst = false
   ): Promise<TransactionInstruction> {
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be loaded");
     }
     if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
       throw new Error("entropy program id must be set (currently default)");
+    }
+
+    if (maxQuotePosChange === undefined) {
+      maxQuotePosChange = new BN("18446744073709551615");
     }
     const client = new EntropyClient(
       this.connection,
@@ -2404,7 +2416,11 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
     ({ bid: clientBidPrice, ask: clientAskPrice } =
-      await this.getBidAskLimitsForEntropy(perpMarket));
+      await this.getBidAskLimitsForEntropy(
+        perpMarket,
+        clientBidPrice,
+        clientAskPrice
+      ));
 
     const [entropyRoundInfoKey] = await VoltSDK.findEntropyRoundInfoAddress(
       this.voltKey,
@@ -2416,6 +2432,11 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltKey,
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
+    );
+
+    const [ulOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
+      this.voltKey,
+      this.extraVoltData.hedgingSpotMarket
     );
 
     const rebalanceEntropyStruct: Parameters<
@@ -2446,6 +2467,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       bids: perpMarket.bids,
       asks: perpMarket.asks,
+      openOrders: ulOpenOrders,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -2457,6 +2479,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     return this.sdk.programs.Volt.instruction.rebalanceEntropy(
       clientBidPrice,
       clientAskPrice,
+      maxQuotePosChange,
+      forceHedgeFirst,
       {
         accounts: rebalanceEntropyStruct,
       }
@@ -2572,7 +2596,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     bid: BN;
     ask: BN;
   }> {
-    if (!clientAskPrice) {
+    if (clientAskPrice === undefined) {
       const asks = await perpMarket.loadAsks(this.connection);
       const bestAsk = asks.getBest();
 
@@ -2586,7 +2610,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       )[0];
     }
 
-    if (!clientBidPrice) {
+    if (clientBidPrice === undefined) {
       const bids = await perpMarket.loadBids(this.connection);
       const bestBid = bids.getBest();
       if (bestBid === undefined) {
@@ -2617,13 +2641,18 @@ export class ConnectedVoltSDK extends VoltSDK {
 
   async rebalanceSpotEntropy(
     clientBidPrice?: BN,
-    clientAskPrice?: BN
+    clientAskPrice?: BN,
+    maxQuotePosChange?: BN
   ): Promise<TransactionInstruction> {
     if (!this.extraVoltData) {
       throw new Error("extra volt data must be loaded");
     }
     if (this.extraVoltData?.entropyProgramId === PublicKey.default) {
       throw new Error("entropy program id must be set (currently default)");
+    }
+
+    if (maxQuotePosChange === undefined) {
+      maxQuotePosChange = new BN("18446744073709551615");
     }
 
     const client = new EntropyClient(
@@ -2729,9 +2758,14 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    return this.sdk.programs.Volt.instruction.rebalanceSpotEntropy(bid, ask, {
-      accounts: rebalanceSpotEntropyAccounts,
-    });
+    return this.sdk.programs.Volt.instruction.rebalanceSpotEntropy(
+      bid,
+      ask,
+      maxQuotePosChange,
+      {
+        accounts: rebalanceSpotEntropyAccounts,
+      }
+    );
   }
 
   async initSpotOpenOrdersEntropy(): Promise<TransactionInstruction> {
@@ -3081,29 +3115,29 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  // transferDeposit(
-  //   targetPool: PublicKey,
-  //   underlyingDestination: PublicKey,
-  //   amount: BN
-  // ): TransactionInstruction {
-  //   const transferDepositAccounts: Parameters<
-  //     VoltProgram["instruction"]["transferDeposit"]["accounts"]
-  //   >[0] = {
-  //     authority: this.wallet,
-  //     voltVault: this.voltKey,
-  //     vaultAuthority: this.voltVault.vaultAuthority,
+  transferDeposit(
+    targetPool: PublicKey,
+    underlyingDestination: PublicKey,
+    amount: BN
+  ): TransactionInstruction {
+    const transferDepositAccounts: Parameters<
+      VoltProgram["instruction"]["transferDeposit"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
 
-  //     underlyingUserAcct: underlyingDestination,
-  //     targetPool: targetPool,
+      underlyingUserAcct: underlyingDestination,
+      targetPool: targetPool,
 
-  //     systemProgram: SystemProgram.programId,
-  //     tokenProgram: TOKEN_PROGRAM_ID,
-  //   };
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
 
-  //   return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
-  //     accounts: transferDepositAccounts,
-  //   });
-  // }
+    return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
+      accounts: transferDepositAccounts,
+    });
+  }
 
   // async reinitializeMint(
   //   targetPool: PublicKey,
@@ -3137,7 +3171,8 @@ export class ConnectedVoltSDK extends VoltSDK {
   //   });
   // }
 
-  async endRoundEntropy(): Promise<TransactionInstruction> {
+  async endRoundEntropy(bypassCode?: BN): Promise<TransactionInstruction> {
+    if (bypassCode === undefined) bypassCode = new BN(0);
     const { roundVoltTokensKey, roundUnderlyingPendingWithdrawalsKey } =
       await VoltSDK.findRoundAddresses(
         this.voltKey,
@@ -3212,7 +3247,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       rent: SYSVAR_RENT_PUBKEY,
     };
 
-    return this.sdk.programs.Volt.instruction.endRoundEntropy({
+    return this.sdk.programs.Volt.instruction.endRoundEntropy(bypassCode, {
       accounts: endRoundEntropyStruct,
     });
   }

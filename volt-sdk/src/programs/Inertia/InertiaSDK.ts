@@ -9,8 +9,14 @@ import {
   u64,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import { PublicKey, SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
+import {
+  PublicKey,
+  SystemProgram,
+  SYSVAR_CLOCK_PUBKEY,
+  SYSVAR_RENT_PUBKEY,
+} from "@solana/web3.js";
 
+import type { FriktionSDK } from "../..";
 import {
   INERTIA_EXERCISE_FEE_BPS,
   INERTIA_FEE_OWNER,
@@ -23,7 +29,11 @@ import type { ProviderLike } from "../../miscUtils";
 import { providerToAnchorProvider } from "../../miscUtils";
 import type { OptionMarketWithKey } from "../Volt";
 import type { InertiaIXAccounts } from ".";
-import type { InertiaContractWithKey, InertiaProgram } from "./inertiaTypes";
+import type {
+  InertiaContractWithKey,
+  InertiaProgram,
+  StubOracleWithKey,
+} from "./inertiaTypes";
 import { getInertiaMarketByKey } from "./inertiaUtils";
 
 export interface InertiaNewMarketParams {
@@ -44,7 +54,7 @@ export interface InertiaRevertSettleOptionParams {
 
 export interface InertiaSettleOptionParams {
   user: PublicKey;
-  settlePrice: number;
+  settlePrice?: BN;
 }
 
 export interface InertiaExerciseOptionParams {
@@ -121,6 +131,80 @@ export class InertiaSDK {
 
     this.optionMarket = optionMarket;
     this.optionKey = optionMarket.key;
+  }
+
+  static async getStubOracleByKey(
+    sdk: FriktionSDK,
+    key: PublicKey
+  ): Promise<StubOracleWithKey> {
+    const acct = await sdk.programs.Inertia.account.stubOracle.fetch(key);
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
+  }
+
+  static async findStubOracleAddress(
+    user: PublicKey,
+    pdaString: string,
+    programId: PublicKey = OPTIONS_PROGRAM_IDS.Inertia
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [
+        textEncoder.encode("stubOracle"),
+        user.toBuffer(),
+        textEncoder.encode(pdaString),
+      ],
+      programId
+    );
+  }
+  static async createStubOracle(
+    sdk: FriktionSDK,
+    user: PublicKey,
+    price: number,
+    pdaString: string
+  ): Promise<{
+    oracleKey: PublicKey;
+    instruction: TransactionInstruction;
+  }> {
+    const [oracleKey] = await InertiaSDK.findStubOracleAddress(user, pdaString);
+
+    const accounts: InertiaIXAccounts["createStubOracle"] = {
+      authority: user,
+      stubOracle: oracleKey,
+      systemProgram: SystemProgram.programId,
+      rent: SYSVAR_RENT_PUBKEY,
+    };
+
+    return {
+      oracleKey,
+      instruction: sdk.programs.Inertia.instruction.createStubOracle(
+        price,
+        pdaString,
+        {
+          accounts: accounts,
+        }
+      ),
+    };
+  }
+
+  static setStubOracle(
+    sdk: FriktionSDK,
+    user: PublicKey,
+    stubOracleKey: PublicKey,
+    price: number
+  ): TransactionInstruction {
+    const accounts: InertiaIXAccounts["setStubOracle"] = {
+      authority: user,
+      stubOracle: stubOracleKey,
+      systemProgram: SystemProgram.programId,
+    };
+
+    return sdk.programs.Inertia.instruction.setStubOracle(price, {
+      accounts: accounts,
+    });
   }
 
   async getInertiaExerciseFeeAccount(): Promise<PublicKey> {
@@ -239,13 +323,17 @@ export class InertiaSDK {
     params: InertiaSettleOptionParams,
     bypassCode?: BN
   ): Promise<TransactionInstruction> {
-    if (bypassCode === undefined) {
+    const settlePrice = params.settlePrice ?? new BN(0);
+    if (params.settlePrice !== undefined && params.settlePrice !== new BN(0))
+      bypassCode = new BN(11111111);
+    else if (bypassCode === undefined) {
       bypassCode = new BN(0);
     }
 
     if (bypassCode.ltn(0)) {
       throw new Error("bypass code must be positive (u64 in rust)");
     }
+
     const seeds = [
       this.optionMarket.underlyingMint,
       this.optionMarket.quoteMint,
@@ -274,13 +362,9 @@ export class InertiaSDK {
       clock: SYSVAR_CLOCK_PUBKEY,
     };
 
-    return this.program.instruction.optionSettle(
-      new BN(params.settlePrice),
-      bypassCode,
-      {
-        accounts: settleAccounts,
-      }
-    );
+    return this.program.instruction.optionSettle(settlePrice, bypassCode, {
+      accounts: settleAccounts,
+    });
   }
 
   async revertSettle(

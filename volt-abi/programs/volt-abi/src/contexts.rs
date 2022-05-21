@@ -14,10 +14,10 @@ pub struct Deposit<'info> {
     pub authority: Signer<'info>,
 
     #[account()]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub dao_authority: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub authority_check: AccountInfo<'info>,
 
     #[account(mut, address=volt_vault.vault_mint)]
@@ -25,7 +25,7 @@ pub struct Deposit<'info> {
 
     #[account(mut)]
     pub volt_vault: Box<Account<'info, VoltVault>>,
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
 
@@ -40,13 +40,13 @@ pub struct Deposit<'info> {
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
     #[account(address=extra_volt_data.whitelist)]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub whitelist: AccountInfo<'info>,
 
     #[account(mut, address=volt_vault.deposit_pool)]
     pub deposit_pool: Box<Account<'info, TokenAccount>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.writer_token_pool)]
     pub writer_token_pool: AccountInfo<'info>,
 
@@ -88,18 +88,18 @@ pub struct Deposit<'info> {
     )]
     pub epoch_info: Box<Account<'info, FriktionEpochInfo>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=extra_volt_data.entropy_program_id)]
     pub entropy_program: AccountInfo<'info>,
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=extra_volt_data.entropy_group)]
     pub entropy_group: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=extra_volt_data.entropy_account)]
     pub entropy_account: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=extra_volt_data.entropy_cache)]
     pub entropy_cache: AccountInfo<'info>,
 
@@ -116,10 +116,10 @@ pub struct Withdraw<'info> {
     pub authority: Signer<'info>,
 
     #[account()]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub dao_authority: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub authority_check: AccountInfo<'info>,
 
     #[account(mut)]
@@ -128,7 +128,7 @@ pub struct Withdraw<'info> {
     #[account(mut)]
     pub volt_vault: Box<Account<'info, VoltVault>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
 
@@ -143,7 +143,7 @@ pub struct Withdraw<'info> {
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
     #[account(address=extra_volt_data.whitelist)]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub whitelist: AccountInfo<'info>,
 
     #[account(mut,address=volt_vault.deposit_pool)]
@@ -198,14 +198,14 @@ pub struct DepositWithClaim<'info> {
     pub authority: Signer<'info>,
 
     #[account()]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub dao_authority: AccountInfo<'info>,
 
     #[account()]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub sol_transfer_authority: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut)]
     pub authority_check: AccountInfo<'info>,
 
@@ -214,7 +214,7 @@ pub struct DepositWithClaim<'info> {
 
     #[account(mut)]
     pub volt_vault: Box<Account<'info, VoltVault>>,
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
 
@@ -231,7 +231,7 @@ pub struct DepositWithClaim<'info> {
     #[account(mut, address=volt_vault.deposit_pool)]
     pub deposit_pool: Box<Account<'info, TokenAccount>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.writer_token_pool)]
     pub writer_token_pool: AccountInfo<'info>,
 
@@ -260,19 +260,19 @@ pub struct DepositWithClaim<'info> {
         payer = authority)]
     pub pending_deposit_info: Box<Account<'info, PendingDeposit>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut,
         seeds = [volt_vault.key().as_ref(), pending_deposit_info.round_number.to_le_bytes().as_ref() , b"roundInfo"],
         bump)]
     pub pending_deposit_round_info: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut,
         seeds = [volt_vault.key().as_ref(), pending_deposit_info.round_number.to_le_bytes().as_ref() , b"roundVoltTokens"],
         bump)]
     pub pending_deposit_round_volt_tokens: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut,
             seeds = [volt_vault.key().as_ref(), pending_deposit_info.round_number.to_le_bytes().as_ref() , b"roundUnderlyingTokens"],
             bump)]
@@ -296,10 +296,10 @@ pub struct WithdrawWithClaim<'info> {
     pub authority: Signer<'info>,
 
     #[account()]
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub dao_authority: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub authority_check: AccountInfo<'info>,
 
     #[account(mut)]
@@ -308,7 +308,7 @@ pub struct WithdrawWithClaim<'info> {
     #[account(mut)]
     pub volt_vault: Box<Account<'info, VoltVault>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
 
@@ -350,13 +350,13 @@ pub struct WithdrawWithClaim<'info> {
         payer = authority)]
     pub pending_withdrawal_info: Box<Account<'info, PendingWithdrawal>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut,
       seeds = [volt_vault.key().as_ref(), pending_withdrawal_info.round_number.to_le_bytes().as_ref() , b"roundInfo"],
       bump)]
     pub pending_withdrawal_round_info: AccountInfo<'info>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(mut,
         seeds = [volt_vault.key().as_ref(), pending_withdrawal_info.round_number.to_le_bytes().as_ref() , b"roundUlPending"],
     bump)]
@@ -393,7 +393,7 @@ pub struct ClaimPendingDeposit<'info> {
       )]
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
 
@@ -436,7 +436,7 @@ pub struct ClaimPendingWithdrawal<'info> {
       )]
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     #[account(address=volt_vault.vault_authority)]
     pub vault_authority: AccountInfo<'info>,
     #[account(address=volt_vault.vault_mint)]
@@ -487,8 +487,7 @@ pub struct CancelPendingDeposit<'info> {
       )]
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
-    /// CHECK: vault authority pubkey, doesn't have special property
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub vault_authority: AccountInfo<'info>,
 
     // user token accounts
@@ -545,7 +544,7 @@ pub struct CancelPendingWithdrawal<'info> {
       )]
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
-    /// CHECK: skip
+    /// CHECK: skip, checked by the volt program
     pub vault_authority: AccountInfo<'info>,
 
     // user token accounts

@@ -628,6 +628,16 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "depositPool";
           isMut: true;
           isSigner: false;
@@ -683,7 +693,12 @@ export type VoltIDL = {
           isSigner: false;
         }
       ];
-      args: [];
+      args: [
+        {
+          name: "bypassCode";
+          type: "u64";
+        }
+      ];
     },
     {
       name: "takePendingWithdrawalFees";
@@ -1568,12 +1583,12 @@ export type VoltIDL = {
           isSigner: true;
         },
         {
-          name: "soloptionsProgram";
+          name: "inertiaProgram";
           isMut: false;
           isSigner: false;
         },
         {
-          name: "inertiaProgram";
+          name: "soloptionsProgram";
           isMut: false;
           isSigner: false;
         },
@@ -1589,7 +1604,7 @@ export type VoltIDL = {
         },
         {
           name: "vaultMint";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2605,7 +2620,7 @@ export type VoltIDL = {
         },
         {
           name: "extraVoltData";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -3163,7 +3178,12 @@ export type VoltIDL = {
           isSigner: false;
         }
       ];
-      args: [];
+      args: [
+        {
+          name: "bypassCode";
+          type: "u64";
+        }
+      ];
     },
     {
       name: "depositDiscretionaryEntropy";
@@ -3516,6 +3536,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "bids";
           isMut: true;
           isSigner: false;
@@ -3559,6 +3584,14 @@ export type VoltIDL = {
         {
           name: "clientAskPrice";
           type: "u64";
+        },
+        {
+          name: "maxQuotePosChange";
+          type: "u64";
+        },
+        {
+          name: "forceHedgeFirst";
+          type: "bool";
         }
       ];
     },
@@ -3714,6 +3747,10 @@ export type VoltIDL = {
         {
           name: "clientAskPrice";
           type: "u64";
+        },
+        {
+          name: "maxQuotePosChange";
+          type: "u64";
         }
       ];
     },
@@ -3797,6 +3834,52 @@ export type VoltIDL = {
         }
       ];
       args: [];
+    },
+    {
+      name: "transferDeposit";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "targetPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingUserAcct";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "amount";
+          type: "u64";
+        }
+      ];
     },
     {
       name: "initSerumMarket";
@@ -4322,7 +4405,7 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "unusedUint11";
+            name: "totalWithdrawalsFromRealms";
             type: "u64";
           },
           {
@@ -6106,6 +6189,31 @@ export type VoltIDL = {
       code: 6194;
       name: "InvalidInitSerumMarketState";
       msg: "invalid init serum market state";
+    },
+    {
+      code: 6195;
+      name: "QuotePositionMustMoveCloserToDesired";
+      msg: "quote position must move closer to desired";
+    },
+    {
+      code: 6196;
+      name: "PermissionedMarketPremiumPoolAmountMustBeZero";
+      msg: "permissioned market premium pool amount must be zero";
+    },
+    {
+      code: 6197;
+      name: "PremiumPoolAmountMustBeZero";
+      msg: "premium pool amount must be zero";
+    },
+    {
+      code: 6198;
+      name: "WriterTokenMintDoesNotMatchVoltVault";
+      msg: "writer token mint doesn't match vv";
+    },
+    {
+      code: 6199;
+      name: "InvalidOracleType";
+      msg: "invalid oracle type";
     }
   ];
 };
@@ -6739,6 +6847,16 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "depositPool",
           isMut: true,
           isSigner: false,
@@ -6794,7 +6912,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
       ],
-      args: [],
+      args: [
+        {
+          name: "bypassCode",
+          type: "u64",
+        },
+      ],
     },
     {
       name: "takePendingWithdrawalFees",
@@ -7679,12 +7802,12 @@ export const VoltIDLJsonRaw = {
           isSigner: true,
         },
         {
-          name: "soloptionsProgram",
+          name: "inertiaProgram",
           isMut: false,
           isSigner: false,
         },
         {
-          name: "inertiaProgram",
+          name: "soloptionsProgram",
           isMut: false,
           isSigner: false,
         },
@@ -7700,7 +7823,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "vaultMint",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -8716,7 +8839,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "extraVoltData",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -9274,7 +9397,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
       ],
-      args: [],
+      args: [
+        {
+          name: "bypassCode",
+          type: "u64",
+        },
+      ],
     },
     {
       name: "depositDiscretionaryEntropy",
@@ -9627,6 +9755,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "bids",
           isMut: true,
           isSigner: false,
@@ -9670,6 +9803,14 @@ export const VoltIDLJsonRaw = {
         {
           name: "clientAskPrice",
           type: "u64",
+        },
+        {
+          name: "maxQuotePosChange",
+          type: "u64",
+        },
+        {
+          name: "forceHedgeFirst",
+          type: "bool",
         },
       ],
     },
@@ -9826,6 +9967,10 @@ export const VoltIDLJsonRaw = {
           name: "clientAskPrice",
           type: "u64",
         },
+        {
+          name: "maxQuotePosChange",
+          type: "u64",
+        },
       ],
     },
     {
@@ -9908,6 +10053,52 @@ export const VoltIDLJsonRaw = {
         },
       ],
       args: [],
+    },
+    {
+      name: "transferDeposit",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "targetPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingUserAcct",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "amount",
+          type: "u64",
+        },
+      ],
     },
     {
       name: "initSerumMarket",
@@ -10433,7 +10624,7 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "unusedUint11",
+            name: "totalWithdrawalsFromRealms",
             type: "u64",
           },
           {
@@ -12217,6 +12408,31 @@ export const VoltIDLJsonRaw = {
       code: 6194,
       name: "InvalidInitSerumMarketState",
       msg: "invalid init serum market state",
+    },
+    {
+      code: 6195,
+      name: "QuotePositionMustMoveCloserToDesired",
+      msg: "quote position must move closer to desired",
+    },
+    {
+      code: 6196,
+      name: "PermissionedMarketPremiumPoolAmountMustBeZero",
+      msg: "permissioned market premium pool amount must be zero",
+    },
+    {
+      code: 6197,
+      name: "PremiumPoolAmountMustBeZero",
+      msg: "premium pool amount must be zero",
+    },
+    {
+      code: 6198,
+      name: "WriterTokenMintDoesNotMatchVoltVault",
+      msg: "writer token mint doesn't match vv",
+    },
+    {
+      code: 6199,
+      name: "InvalidOracleType",
+      msg: "invalid oracle type",
     },
   ],
 };

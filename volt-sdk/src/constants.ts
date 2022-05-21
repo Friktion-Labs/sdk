@@ -12,6 +12,9 @@ export enum VoltStrategy {
   LongBasis,
 }
 
+export const FRIKTION_SNAPSHOT_URL =
+  "https://raw.githubusercontent.com/Friktion-Labs/mainnet-tvl-snapshots/main/friktionSnapshot.json";
+
 export enum VoltType {
   ShortOptions = 0,
   Entropy = 1,
@@ -29,6 +32,10 @@ export const DAO_EXAMPLES_PROGRAM_ID = new PublicKey(
   "DAo2pDtpiBFDu4TTiv2WggP6PfQ6FnKqwSRYxpMjyuV2"
 );
 
+export const MM_TOKEN_MINT_AUTHORITY = new PublicKey(
+  "EMbCLCqkv4qXxhLtbCcByNZhW4YTgH33hS2Y5zqHqcRr"
+);
+
 export const REFERRAL_AUTHORITY = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
 );
@@ -40,6 +47,8 @@ export const SOLOPTIONS_FEE_OWNER = new PublicKey(
 export const INERTIA_FEE_OWNER = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
 );
+
+export const INERTIA_PX_NORM_FACTOR = 10000;
 
 export const WITHDRAWAL_FEE_BPS = 10;
 export const PERFORMANCE_FEE_BPS = 1000;
@@ -110,6 +119,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     PAI: new PublicKey("Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS"),
     UXD: new PublicKey("7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
+    AVAX: new PublicKey("KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE"),
   },
   SERUM_REFERRER_IDS: {
     EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: new PublicKey(
@@ -219,6 +229,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     PAI: new PublicKey("Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS"),
     UXD: new PublicKey("7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
+    AVAX: new PublicKey("KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE"),
   },
   SERUM_REFERRER_IDS: {
     E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF: new PublicKey(

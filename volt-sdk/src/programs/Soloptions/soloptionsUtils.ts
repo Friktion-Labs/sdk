@@ -72,7 +72,7 @@ export const getSoloptionsMarketByKey = async (
   return optionMarket;
 };
 
-export const createSoloptionsMarketInstruction = async (
+export const createSoloptionsContractInstruction = async (
   program: SoloptionsProgram,
   underlyingMint: PublicKey,
   quoteMint: PublicKey,

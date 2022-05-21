@@ -489,9 +489,94 @@ export type InertiaIDL = {
           type: "u64";
         }
       ];
+    },
+    {
+      name: "createStubOracle";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "stubOracle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "price";
+          type: "f64";
+        },
+        {
+          name: "pdaStr";
+          type: "string";
+        }
+      ];
+    },
+    {
+      name: "setStubOracle";
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "stubOracle";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "price";
+          type: "f64";
+        }
+      ];
     }
   ];
   accounts: [
+    {
+      name: "StubOracle";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "magic";
+            type: "u32";
+          },
+          {
+            name: "price";
+            type: "f64";
+          },
+          {
+            name: "lastUpdate";
+            type: "i64";
+          },
+          {
+            name: "pdaStr";
+            type: "string";
+          }
+        ];
+      };
+    },
     {
       name: "OptionsContract";
       type: {
@@ -588,6 +673,28 @@ export type InertiaIDL = {
           {
             name: "totalAmount";
             type: "u64";
+          }
+        ];
+      };
+    }
+  ];
+  types: [
+    {
+      name: "OracleType";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "Stub";
+          },
+          {
+            name: "Pyth";
+          },
+          {
+            name: "SwitchboardV1";
+          },
+          {
+            name: "SwitchboardV2";
           }
         ];
       };
@@ -773,6 +880,26 @@ export type InertiaIDL = {
       code: 6035;
       name: "OptionHasAlreadyBeenCranked";
       msg: "option has already been cranked";
+    },
+    {
+      code: 6036;
+      name: "InvalidOracleType";
+      msg: "invalid oracle type";
+    },
+    {
+      code: 6037;
+      name: "InvalidOraclePrice";
+      msg: "invalid oracle price";
+    },
+    {
+      code: 6038;
+      name: "InvalidPythProgramId";
+      msg: "invalid pyth program id";
+    },
+    {
+      code: 6039;
+      name: "PythExpoMustBeNegative";
+      msg: "pyth expo must be negative";
     }
   ];
 };
@@ -1268,8 +1395,93 @@ export const InertiaIDLJsonRaw = {
         },
       ],
     },
+    {
+      name: "createStubOracle",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "stubOracle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "price",
+          type: "f64",
+        },
+        {
+          name: "pdaStr",
+          type: "string",
+        },
+      ],
+    },
+    {
+      name: "setStubOracle",
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "stubOracle",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "price",
+          type: "f64",
+        },
+      ],
+    },
   ],
   accounts: [
+    {
+      name: "StubOracle",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "magic",
+            type: "u32",
+          },
+          {
+            name: "price",
+            type: "f64",
+          },
+          {
+            name: "lastUpdate",
+            type: "i64",
+          },
+          {
+            name: "pdaStr",
+            type: "string",
+          },
+        ],
+      },
+    },
     {
       name: "OptionsContract",
       type: {
@@ -1366,6 +1578,28 @@ export const InertiaIDLJsonRaw = {
           {
             name: "totalAmount",
             type: "u64",
+          },
+        ],
+      },
+    },
+  ],
+  types: [
+    {
+      name: "OracleType",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "Stub",
+          },
+          {
+            name: "Pyth",
+          },
+          {
+            name: "SwitchboardV1",
+          },
+          {
+            name: "SwitchboardV2",
           },
         ],
       },
@@ -1551,6 +1785,26 @@ export const InertiaIDLJsonRaw = {
       code: 6035,
       name: "OptionHasAlreadyBeenCranked",
       msg: "option has already been cranked",
+    },
+    {
+      code: 6036,
+      name: "InvalidOracleType",
+      msg: "invalid oracle type",
+    },
+    {
+      code: 6037,
+      name: "InvalidOraclePrice",
+      msg: "invalid oracle price",
+    },
+    {
+      code: 6038,
+      name: "InvalidPythProgramId",
+      msg: "invalid pyth program id",
+    },
+    {
+      code: 6039,
+      name: "PythExpoMustBeNegative",
+      msg: "pyth expo must be negative",
     },
   ],
 };
