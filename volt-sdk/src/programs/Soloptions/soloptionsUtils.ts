@@ -48,7 +48,7 @@ export const convertSoloptionsContractToOptionMarket = (
   };
 };
 
-export const getSoloptionsMarketByKey = async (
+export const getSoloptionsConractByKey = async (
   program: SoloptionsProgram,
   key: PublicKey
 ): Promise<OptionMarketWithKey | null> => {

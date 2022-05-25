@@ -23,15 +23,11 @@ import { providerToAnchorProvider } from "./miscUtils";
 import type { InertiaProgram } from "./programs/Inertia/inertiaTypes";
 import type {
   SoloptionsContract,
+  SoloptionsContractWithKey,
   SoloptionsProgram,
 } from "./programs/Soloptions/soloptionsTypes";
-import { convertSoloptionsContractToOptionMarket } from "./programs/Soloptions/soloptionsUtils";
-import type {
-  OptionMarketWithKey,
-  VoltProgram,
-  VoltVault,
-  Whitelist,
-} from "./programs/Volt";
+import { getSoloptionsContractByKey } from "./programs/Soloptions/soloptionsUtils";
+import type { VoltProgram, VoltVault, Whitelist } from "./programs/Volt";
 import type { ExtraVoltData } from "./programs/Volt/voltTypes";
 
 export type LegacyAnchorPrograms = {
@@ -306,31 +302,33 @@ export class FriktionSDK {
     );
   }
 
-  loadSoloptionsMarket(soloptionsMarket: OptionMarketWithKey): SoloptionsSDK {
-    return new SoloptionsSDK(this, soloptionsMarket);
+  loadSoloptionsMarket(
+    soloptionsContract: SoloptionsContractWithKey
+  ): SoloptionsSDK {
+    return new SoloptionsSDK(this, soloptionsContract);
   }
 
   async loadSoloptionsMarketByKey(
     optionMarketKey: PublicKey
   ): Promise<SoloptionsSDK> {
-    const soloptionsMarket: OptionMarketWithKey =
-      await SoloptionsSDK.getOptionMarketByKey(
+    const soloptionsContract: SoloptionsContractWithKey = {
+      ...(await getSoloptionsContractByKey(
         this.programs.Soloptions,
         optionMarketKey
-      );
-    return this.loadSoloptionsMarket(soloptionsMarket);
+      )),
+      key: optionMarketKey,
+    };
+    return this.loadSoloptionsMarket(soloptionsContract);
   }
 
   async getAllSoloptionsMarkets(): Promise<SoloptionsSDK[]> {
     const accts =
       (await this.programs.Soloptions?.account?.optionsContract?.all()) as unknown as ProgramAccount<SoloptionsContract>[];
     return accts.map((acct) =>
-      this.loadSoloptionsMarket(
-        convertSoloptionsContractToOptionMarket({
-          ...acct.account,
-          key: acct.publicKey,
-        })
-      )
+      this.loadSoloptionsMarket({
+        ...acct.account,
+        key: acct.publicKey,
+      })
     );
   }
 

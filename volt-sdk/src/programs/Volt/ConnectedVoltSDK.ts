@@ -1,16 +1,11 @@
-import type NodeBank from "@friktion-labs/entropy-client";
-import type {
-  EntropyGroup,
-  I80F48,
-  PerpMarket,
-  RootBank,
-} from "@friktion-labs/entropy-client";
+import type { I80F48, PerpMarket } from "@friktion-labs/entropy-client";
 import {
   EntropyClient,
   makeCachePerpMarketsInstruction,
   makeCachePricesInstruction,
   makeCacheRootBankInstruction,
 } from "@friktion-labs/entropy-client";
+import { getTokenAccount } from "@project-serum/common";
 import { Market, MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -39,7 +34,9 @@ import {
   SOLOPTIONS_FEE_OWNER,
   SoloptionsSDK,
 } from "../..";
-import { REFERRAL_AUTHORITY } from "../../constants";
+import type { OptionsProtocol } from "../../constants";
+import { REFERRAL_AUTHORITY, VoltType } from "../../constants";
+import { anchorProviderToSerumProvider } from "../../miscUtils";
 import {
   createFirstSetOfAccounts,
   getVaultOwnerAndNonce,
@@ -48,7 +45,6 @@ import {
 import { getBalanceOrZero, getMintSupplyOrZero } from "./utils";
 import { VoltSDK } from "./VoltSDK";
 import type {
-  OptionsProtocol,
   PendingDepositWithKey,
   PendingWithdrawalWithKey,
   VoltProgram,
@@ -300,7 +296,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
-      this.voltVault.underlyingAssetMint,
+      this.voltType() !== VoltType.ShortOptions ||
+        this.extraVoltData?.dovPerformanceFeesInUnderlying
+        ? this.voltVault.underlyingAssetMint
+        : this.voltVault.permissionedMarketPremiumMint,
       REFERRAL_AUTHORITY
     );
   }
@@ -1041,6 +1040,40 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
+  async changeFees(
+    performanceFeeBps: BN,
+    withdrawalFeeBps: BN,
+    dovTakeFeesInUnderlying: boolean
+  ): Promise<TransactionInstruction> {
+    const { extraVoltKey } = await VoltSDK.findUsefulAddresses(
+      this.voltKey,
+      this.voltVault,
+      this.wallet,
+      this.sdk.programs.Volt.programId
+    );
+
+    const changeFeesAccounts: Parameters<
+      VoltProgram["instruction"]["changeFees"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+      extraVoltData: extraVoltKey,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+
+    return this.sdk.programs.Volt.instruction.changeFees(
+      performanceFeeBps,
+      withdrawalFeeBps,
+      dovTakeFeesInUnderlying,
+      {
+        accounts: changeFeesAccounts,
+      }
+    );
+  }
+
   changeAdmin(newAdmin: PublicKey): TransactionInstruction {
     const changeAdminAccounts: Parameters<
       VoltProgram["instruction"]["changeAdmin"]["accounts"]
@@ -1271,6 +1304,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundVoltTokensKey,
       roundUnderlyingPendingWithdrawalsKey,
       epochInfoKey,
+      extraVoltKey,
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -1278,12 +1312,29 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    let entropyLendingProgramKey = SystemProgram.programId;
+    let entropyGroupKey = SystemProgram.programId;
+
+    try {
+      const {
+        entropyClient: entropyLendingClient,
+        entropyAccount: entropyLendingAccount,
+      } = await this.getEntropyLendingObjects();
+      entropyLendingProgramKey = entropyLendingClient.programId;
+      entropyGroupKey = entropyLendingAccount.entropyGroup;
+    } catch (err) {
+      console.log("no entropy lending account, skipping...");
+    }
+
+    const [entropyLendingAccountKey] =
+      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
     const endRoundStruct: Parameters<
       VoltProgram["instruction"]["endRound"]["accounts"]
     >[0] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
+      extraVoltData: extraVoltKey,
 
       vaultMint: this.voltVault.vaultMint,
 
@@ -1297,6 +1348,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       epochInfo: epochInfoKey,
 
       feeAcct: await this.getFeeTokenAccount(),
+
+      entropyLendingProgram: entropyLendingProgramKey,
+      entropyLendingGroup: entropyGroupKey,
+      entropyLendingAccount: entropyLendingAccountKey,
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -1845,8 +1900,6 @@ export class ConnectedVoltSDK extends VoltSDK {
       roundInfo: roundInfoKey,
       epochInfo: epochInfoKey,
 
-      feeOwner: INERTIA_FEE_OWNER,
-
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
@@ -2127,7 +2180,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionSerumMarketProxy.dexProgramId
     );
 
-    const [roundInfoKey] = await VoltSDK.findRoundInfoAddress(
+    const { roundInfoKey, epochInfoKey } = await VoltSDK.findRoundAddresses(
       this.voltKey,
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
@@ -2136,6 +2189,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     const referrerQuoteAcct =
       referrerQuoteAcctReplacement ||
       this.getPermissionedMarketReferrerPremiumAcct();
+
+    const [extraVoltDataKey] = await VoltSDK.findExtraVoltDataAddress(
+      this.voltKey
+    );
 
     const settleEnterFundsStruct: Parameters<
       VoltProgram["instruction"]["settleEnterFunds"]["accounts"]
@@ -2160,6 +2217,10 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       market: optionSerumMarketProxy.market.address,
       serumMarketAuthority: marketAuthority,
+
+      extraVoltData: extraVoltDataKey,
+      epochInfo: epochInfoKey,
+      feeAcct: await this.getFeeTokenAccount(),
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -2379,7 +2440,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const { entropyGroup, rootBank, nodeBank, depositIndex } =
-      await this.getGroupAndBanks(client, this.extraVoltData.depositMint);
+      await this.getGroupAndBanksForEvData(
+        client,
+        this.extraVoltData.depositMint
+      );
 
     const powerPerpBaseDecimals = entropyGroup.tokens[depositIndex]?.decimals;
     if (powerPerpBaseDecimals === undefined)
@@ -2485,51 +2549,6 @@ export class ConnectedVoltSDK extends VoltSDK {
         accounts: rebalanceEntropyStruct,
       }
     );
-  }
-
-  async getGroupAndBanks(
-    client: EntropyClient,
-    mint: PublicKey
-  ): Promise<{
-    entropyGroup: EntropyGroup;
-    rootBank: RootBank | undefined;
-    nodeBank: NodeBank.NodeBank | undefined;
-    quoteRootBank: RootBank | undefined;
-    quoteNodeBank: NodeBank.NodeBank | undefined;
-    depositIndex: number;
-  }> {
-    if (!this.extraVoltData) throw new Error("extra volt data must be defined");
-    const entropyGroup = await client.getEntropyGroup(
-      this.extraVoltData.entropyGroup
-    );
-    const banks = await entropyGroup.loadRootBanks(this.connection);
-
-    const bankIndex = entropyGroup.tokens.findIndex(
-      (ti) => ti.mint.toString() === mint.toString()
-    );
-
-    if (bankIndex === undefined)
-      throw new Error("bank index not found for mint = " + mint.toString());
-
-    const rootBank = banks[bankIndex];
-    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
-
-    const quoteRootBank =
-      banks[
-        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
-      ];
-    const quoteNodeBank = (
-      await quoteRootBank?.loadNodeBanks(this.connection)
-    )?.[0];
-
-    return {
-      entropyGroup,
-      rootBank,
-      nodeBank,
-      quoteRootBank,
-      quoteNodeBank,
-      depositIndex: bankIndex,
-    };
   }
 
   async getBidAskLimitsForSpot(
@@ -2673,7 +2692,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const { entropyGroup, rootBank, nodeBank, quoteRootBank, quoteNodeBank } =
-      await this.getGroupAndBanks(client, spotMarket.baseMintAddress);
+      await this.getGroupAndBanksForEvData(client, spotMarket.baseMintAddress);
 
     const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
       this.voltKey
@@ -2958,13 +2977,18 @@ export class ConnectedVoltSDK extends VoltSDK {
     const entropyCache = await entropyGroup.loadCache(
       this.sdk.readonlyProvider.connection
     );
-    const banks = await entropyGroup.loadRootBanks(this.connection);
+    // const banks = await entropyGroup.loadRootBanks(this.connection);
 
-    const rootBank =
-      banks[
-        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
-      ];
-    const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+    // const rootBank =
+    //   banks[
+    //     entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+    //   ];
+    // const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
+
+    const { rootBank, nodeBank } = await this.getGroupAndBanksForEvData(
+      client,
+      this.extraVoltData.depositMint
+    );
 
     if (!clientOraclePx)
       clientOraclePx = this.oraclePriceForDepositToken(
@@ -3139,6 +3163,136 @@ export class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
+  async moveAssetsToLendingAccount(
+    targetPool: PublicKey,
+    amount: BN,
+    entropyGroupGivenKey?: PublicKey,
+    entropyProgramGivenKey?: PublicKey
+  ): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) throw new Error("requires ev data");
+
+    const [entropyLendingAccountKey] =
+      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
+    try {
+      await this.connection.getAccountInfo(entropyLendingAccountKey);
+    } catch (err) {
+      if (
+        entropyGroupGivenKey === undefined ||
+        entropyProgramGivenKey === undefined
+      )
+        throw new Error(
+          "entropy account doesn't exist, must provide program id + group"
+        );
+    }
+    let entropyGroupKey: PublicKey, entropyProgramKey: PublicKey;
+    if (
+      entropyGroupGivenKey === undefined ||
+      entropyProgramGivenKey === undefined
+    ) {
+      const { entropyClient, entropyGroup } =
+        await this.getEntropyLendingObjects();
+      entropyGroupKey = entropyGroup.publicKey;
+      entropyProgramKey = entropyClient.programId;
+    } else {
+      entropyGroupKey = entropyGroupGivenKey;
+      entropyProgramKey = entropyProgramGivenKey;
+    }
+
+    const { entropyClient, entropyGroup } = await this.getEntropyGroup(
+      entropyProgramKey,
+      entropyGroupKey
+    );
+
+    const { rootBank, nodeBank } = await VoltSDK.getGroupAndBanks(
+      entropyClient,
+      entropyGroup.publicKey,
+      (
+        await getTokenAccount(
+          anchorProviderToSerumProvider(this.sdk.readonlyProvider),
+          targetPool
+        )
+      ).mint
+    );
+
+    console.log(
+      "root bank = ",
+      rootBank?.publicKey.toString(),
+      "node bank = ",
+      nodeBank?.publicKey.toString()
+    );
+
+    const moveAssetsToLendingAccounts: Parameters<
+      VoltProgram["instruction"]["moveAssetsToLendingAccount"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      targetPool: targetPool,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      entropyProgram: entropyClient.programId,
+      entropyGroup: entropyGroup.publicKey,
+      entropyAccount: entropyLendingAccountKey,
+      entropyCache: entropyGroup.entropyCache,
+      rootBank: rootBank?.publicKey as PublicKey,
+      nodeBank: nodeBank?.publicKey as PublicKey,
+      vault: nodeBank?.vault as PublicKey,
+    };
+
+    return this.sdk.programs.Volt.instruction.moveAssetsToLendingAccount(
+      amount,
+      {
+        accounts: moveAssetsToLendingAccounts,
+      }
+    );
+  }
+
+  async withdrawAssetsFromLendingAccount(
+    targetPool: PublicKey,
+    amount: BN
+  ): Promise<TransactionInstruction> {
+    if (!this.extraVoltData) throw new Error("requires ev data");
+
+    const { entropyClient, entropyGroup, entropyAccount } =
+      await this.getEntropyLendingObjects();
+
+    const { rootBank, nodeBank } = await VoltSDK.getGroupAndBanks(
+      entropyClient,
+      entropyGroup.publicKey,
+      this.extraVoltData?.depositMint
+    );
+
+    const withdrawAssetsFromLendingAccounts: Parameters<
+      VoltProgram["instruction"]["withdrawAssetsFromLendingAccount"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      targetPool: targetPool,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      entropyProgram: entropyClient.programId,
+      entropyGroup: entropyGroup.publicKey,
+      entropyAccount: entropyAccount.publicKey,
+      entropyCache: entropyGroup.entropyCache,
+      rootBank: rootBank?.publicKey as PublicKey,
+      nodeBank: nodeBank?.publicKey as PublicKey,
+      vault: nodeBank?.vault as PublicKey,
+      signer: entropyGroup.signerKey,
+    };
+
+    return this.sdk.programs.Volt.instruction.withdrawAssetsFromLendingAccount(
+      amount,
+      {
+        accounts: withdrawAssetsFromLendingAccounts,
+      }
+    );
+  }
+
   // async reinitializeMint(
   //   targetPool: PublicKey,
   //   newMint: PublicKey,
@@ -3215,6 +3369,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
+    const {
+      entropyClient: entropyLendingClient,
+      entropyGroup: entropyLendingGroup,
+      entropyAccount: entropyLendingAccount,
+    } = await this.getEntropyLendingObjects();
+
     const endRoundEntropyStruct: Parameters<
       VoltProgram["instruction"]["endRoundEntropy"]["accounts"]
     >[0] = {
@@ -3245,6 +3405,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
+      entropyLendingProgram: entropyLendingClient.programId,
+      entropyLendingGroup: entropyLendingGroup.publicKey,
+      entropyLendingAccount: entropyLendingAccount.publicKey,
     };
 
     return this.sdk.programs.Volt.instruction.endRoundEntropy(bypassCode, {

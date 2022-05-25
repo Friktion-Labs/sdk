@@ -29,8 +29,11 @@ import type { ProviderLike } from "../../miscUtils";
 import type { OptionMarketWithKey } from "../Volt";
 import type { SoloptionsIXAccounts } from ".";
 import { convertSoloptionsContractToOptionMarket } from ".";
-import type { SoloptionsProgram } from "./soloptionsTypes";
-import { getSoloptionsMarketByKey } from "./soloptionsUtils";
+import type {
+  SoloptionsContractWithKey,
+  SoloptionsProgram,
+} from "./soloptionsTypes";
+import { getSoloptionsContractByKey } from "./soloptionsUtils";
 
 export interface NewMarketParams {
   user: PublicKey;
@@ -76,13 +79,16 @@ export type SoloptionsSDKOpts = {
   network?: NetworkName;
 };
 export class SoloptionsSDK {
-  readonly optionMarket: OptionMarketWithKey;
+  readonly optionMarket: SoloptionsContractWithKey;
   readonly optionKey: PublicKey;
   readonly program: SoloptionsProgram;
   readonly readonlyProvider: AnchorProvider;
   readonly network: NetworkName;
 
-  constructor(friktionSdk: FriktionSDK, optionMarket: OptionMarketWithKey) {
+  constructor(
+    friktionSdk: FriktionSDK,
+    optionMarket: SoloptionsContractWithKey
+  ) {
     this.readonlyProvider = friktionSdk.readonlyProvider;
     this.network = friktionSdk.network;
     this.program = friktionSdk.programs.Soloptions;
@@ -93,7 +99,7 @@ export class SoloptionsSDK {
 
   async getSoloptionsExerciseFeeAccount(): Promise<PublicKey> {
     return await SoloptionsSDK.getGenericSoloptionsExerciseFeeAccount(
-      this.optionMarket.quoteAssetMint
+      this.optionMarket.quoteMint
     );
   }
 
@@ -113,7 +119,7 @@ export class SoloptionsSDK {
       return new BN(0);
     }
     return numOptionTokensMinted
-      .mul(this.optionMarket.underlyingAmountPerContract)
+      .mul(this.optionMarket.underlyingAmount)
       .muln(SOLOPTIONS_MINT_FEE_BPS)
       .divn(10000);
   }
@@ -123,7 +129,7 @@ export class SoloptionsSDK {
       return new BN(0);
     }
     return numOptionTokensToExercise
-      .mul(this.optionMarket.underlyingAmountPerContract)
+      .mul(this.optionMarket.underlyingAmount)
       .muln(SOLOPTIONS_EXERCISE_FEE_BPS)
       .divn(10000);
   }
@@ -132,7 +138,10 @@ export class SoloptionsSDK {
     program: SoloptionsProgram,
     key: PublicKey
   ): Promise<OptionMarketWithKey> {
-    const optionMarket = await getSoloptionsMarketByKey(program, key);
+    const optionMarket = convertSoloptionsContractToOptionMarket({
+      ...(await getSoloptionsContractByKey(program, key)),
+      key: key,
+    });
     if (!optionMarket) {
       throw new Error("could not find Soloptions market for key");
     }
@@ -291,13 +300,13 @@ export class SoloptionsSDK {
       contract: this.optionKey,
       exerciserAuthority: params.user,
       quoteTokenSource,
-      contractQuoteTokens: this.optionMarket.quoteAssetPool,
+      contractQuoteTokens: this.optionMarket.quotePool,
       optionMint: this.optionMarket.optionMint,
       optionTokenSource: optionTokenSource,
-      contractUnderlyingTokens: this.optionMarket.underlyingAssetPool,
+      contractUnderlyingTokens: this.optionMarket.underlyingPool,
       underlyingTokenDestination,
-      underlyingMint: this.optionMarket.underlyingAssetMint,
-      quoteMint: this.optionMarket.quoteAssetMint,
+      underlyingMint: this.optionMarket.underlyingMint,
+      quoteMint: this.optionMarket.quoteMint,
       feeDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
@@ -322,11 +331,11 @@ export class SoloptionsSDK {
     const writeAccounts: SoloptionsIXAccounts["write"] = {
       contract: this.optionMarket.key,
       optionMint: this.optionMarket.optionMint,
-      quoteMint: this.optionMarket.quoteAssetMint,
+      quoteMint: this.optionMarket.quoteMint,
       optionTokenDestination,
-      underlyingMint: this.optionMarket.underlyingAssetMint,
-      underlyingPool: this.optionMarket.underlyingAssetPool,
-      writerMint: this.optionMarket.writerTokenMint,
+      underlyingMint: this.optionMarket.underlyingMint,
+      underlyingPool: this.optionMarket.underlyingPool,
+      writerMint: this.optionMarket.writerMint,
       writerTokenDestination,
       writerAuthority: user,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
@@ -353,14 +362,14 @@ export class SoloptionsSDK {
     const redeemAccounts: SoloptionsIXAccounts["redeem"] = {
       contract: this.optionKey,
       redeemerAuthority: user,
-      writerMint: this.optionMarket.writerTokenMint,
-      contractUnderlyingTokens: this.optionMarket.underlyingAssetPool,
-      contractQuoteTokens: this.optionMarket.quoteAssetPool,
+      writerMint: this.optionMarket.writerMint,
+      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      contractQuoteTokens: this.optionMarket.quotePool,
       writerTokenSource: redeemerTokenSource,
       underlyingTokenDestination,
       quoteTokenDestination,
-      underlyingMint: this.optionMarket.underlyingAssetMint,
-      quoteMint: this.optionMarket.quoteAssetMint,
+      underlyingMint: this.optionMarket.underlyingMint,
+      quoteMint: this.optionMarket.quoteMint,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };

@@ -7,6 +7,14 @@ import { PublicKey } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
 import { SERUM_PROGRAM_IDS } from "../../";
+import type { PerpProtocol } from "../../constants";
+import { ENTROPY_PROGRAM_ID, MANGO_PROGRAM_ID } from "../../constants";
+
+export const getProgramIdForPerpProtocol = (
+  perpProtocol: PerpProtocol
+): PublicKey => {
+  return perpProtocol === "Entropy" ? ENTROPY_PROGRAM_ID : MANGO_PROGRAM_ID;
+};
 
 export const getVaultOwnerAndNonceForSpot = async (market: Market) => {
   const nonce = new anchor.BN(0);

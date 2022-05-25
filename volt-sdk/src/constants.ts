@@ -12,6 +12,10 @@ export enum VoltStrategy {
   LongBasis,
 }
 
+export type OptionsProtocol = "Inertia" | "Soloptions";
+
+export type PerpProtocol = "Entropy" | "Mango";
+
 export const FRIKTION_SNAPSHOT_URL =
   "https://raw.githubusercontent.com/Friktion-Labs/mainnet-tvl-snapshots/main/friktionSnapshot.json";
 
@@ -19,6 +23,8 @@ export enum VoltType {
   ShortOptions = 0,
   Entropy = 1,
 }
+
+// program ids
 
 export const FRIKTION_PROGRAM_ID = new PublicKey(
   "VoLT1mJz1sbnxwq5Fv2SXjdVDgPXrb9tJyC8WpMDkSp"
@@ -28,13 +34,21 @@ export const ENTROPY_PROGRAM_ID = new PublicKey(
   "FcfzrnurPFXwxbx332wScnD5P86DwhpLpBbQsnr6LcH5"
 );
 
+export const MANGO_PROGRAM_ID = new PublicKey(
+  "mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68"
+);
+
 export const DAO_EXAMPLES_PROGRAM_ID = new PublicKey(
   "DAo2pDtpiBFDu4TTiv2WggP6PfQ6FnKqwSRYxpMjyuV2"
 );
 
+// mint authorities
+
 export const MM_TOKEN_MINT_AUTHORITY = new PublicKey(
   "EMbCLCqkv4qXxhLtbCcByNZhW4YTgH33hS2Y5zqHqcRr"
 );
+
+// fee wallets
 
 export const REFERRAL_AUTHORITY = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"

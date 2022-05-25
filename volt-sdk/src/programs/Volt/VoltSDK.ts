@@ -1,10 +1,10 @@
 import { Config as MangoConfig } from "@blockworks-foundation/mango-client";
+import type NodeBank from "@friktion-labs/entropy-client";
 import type {
   EntropyAccount,
   EntropyCache,
   EntropyGroup,
   GroupConfig,
-  NodeBank,
   RootBank,
 } from "@friktion-labs/entropy-client";
 import {
@@ -36,23 +36,24 @@ import type { FriktionSDK } from "../..";
 import {
   OPTIONS_PROGRAM_IDS,
   PERFORMANCE_FEE_BPS,
+  SoloptionsSDK,
   WITHDRAWAL_FEE_BPS,
 } from "../..";
+import type { OptionsProtocol, PerpProtocol } from "../../constants";
 import {
   ENTROPY_PROGRAM_ID,
   FRIKTION_PROGRAM_ID,
+  MANGO_PROGRAM_ID,
   VoltStrategy,
   VoltType,
 } from "../../constants";
 import { anchorProviderToSerumProvider } from "../../miscUtils";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
-import { getSoloptionsMarketByKey } from "../Soloptions/soloptionsUtils";
 import type {
   EntropyRoundWithKey,
   ExtraVoltDataWithKey,
   FriktionEpochInfoWithKey,
   OptionMarketWithKey,
-  OptionsProtocol,
   PendingDepositWithKey,
   PendingWithdrawal,
   PendingWithdrawalWithKey,
@@ -66,6 +67,7 @@ import {
   getAccountBalance,
   getAccountBalanceOrZero,
   getAccountBalanceOrZeroStruct,
+  getProgramIdForPerpProtocol,
 } from "./utils";
 import type {
   AuctionMetadata,
@@ -207,17 +209,13 @@ export class VoltSDK {
     );
 
     console.log(
-      console.log(
-        `\n-------------------------\n ID: ${this.voltKey.toString()}\n-------------------------`
-      )
+      `\n-------------------------\n ID: ${this.voltKey.toString()}\n-------------------------`
     );
     console.log(await this.voltName());
     console.log(await this.specificVoltName());
 
     console.log(
-      console.log(
-        "\n-------------------------\n HIGH LEVEL STATS\n-------------------------"
-      )
+      "\n-------------------------\n HIGH LEVEL STATS\n-------------------------"
     );
     const valueInDeposits = await this.getVoltValueInDepositToken();
     console.log(
@@ -305,9 +303,7 @@ export class VoltSDK {
     ).div(await this.getNormalizationFactor());
 
     console.log(
-      console.log(
-        "\n-------------------------\n EPOCH INFO\n-------------------------"
-      )
+      "\n-------------------------\n EPOCH INFO\n-------------------------"
     );
 
     console.log("Round #: ", this.voltVault.roundNumber.toString());
@@ -330,9 +326,7 @@ export class VoltSDK {
     );
 
     console.log(
-      console.log(
-        "\n-------------------------\n POSITION STATS\n-------------------------"
-      )
+      "\n-------------------------\n POSITION STATS\n-------------------------"
     );
     if (this.voltType() === VoltType.ShortOptions) {
       const optionMarket = await this.getCurrentOptionMarket();
@@ -359,7 +353,7 @@ export class VoltSDK {
       );
     } else if (this.voltType() === VoltType.Entropy) {
       const { entropyAccount, entropyGroup, entropyCache } =
-        await this.getEntropyObjects();
+        await this.getEntropyObjectsForEvData();
       const entropyGroupConfig =
         ev.entropyProgramId.toString() === ENTROPY_PROGRAM_ID.toString()
           ? Object.values(EntropyConfig.ids().groups).find(
@@ -379,14 +373,12 @@ export class VoltSDK {
     }
 
     console.log(
-      console.log(
-        "\n-------------------------\n AUCTION DETAILS \n-------------------------"
-      )
+      "\n-------------------------\n AUCTION DETAILS \n-------------------------"
     );
 
     if (this.voltType() === VoltType.Entropy) {
       const { entropyAccount, entropyGroup, entropyCache } =
-        await this.getEntropyObjects();
+        await this.getEntropyObjectsForEvData();
 
       const entropyMetadata = await this.getEntropyMetadata();
 
@@ -442,9 +434,7 @@ export class VoltSDK {
     }
 
     console.log(
-      console.log(
-        "\n-------------------------\n STATE MACHINE\n-------------------------"
-      )
+      "\n-------------------------\n STATE MACHINE\n-------------------------"
     );
 
     console.log(
@@ -781,6 +771,7 @@ export class VoltSDK {
       voltProgramId
     );
   }
+
   static async findEntropyOpenOrdersAddress(
     voltKey: PublicKey,
     marketAddress: PublicKey,
@@ -1073,6 +1064,16 @@ export class VoltSDK {
     const textEncoder = new TextEncoder();
     return PublicKey.findProgramAddress(
       [voltKey.toBuffer(), textEncoder.encode("entropyAccount")],
+      FRIKTION_PROGRAM_ID
+    );
+  }
+
+  static async findEntropyLendingAccountAddress(
+    voltKey: PublicKey
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("entropyLendingAccount")],
       FRIKTION_PROGRAM_ID
     );
   }
@@ -1383,7 +1384,7 @@ export class VoltSDK {
         return estimatedTotalWithoutPendingDepositTokenAmount;
       } else if (voltType === VoltType.Entropy) {
         const { entropyGroup, entropyAccount, entropyCache } =
-          await this.getEntropyObjects();
+          await this.getEntropyObjectsForEvData();
         // eslint-disable-next-line
         const acctEquity: I80F48 = entropyAccount.getHealthUnweighted(
           entropyGroup,
@@ -2346,6 +2347,41 @@ export class VoltSDK {
     return ret;
   }
 
+  async getEntropyAccountByKey(
+    key: PublicKey,
+    perpProtocol?: PerpProtocol
+  ): Promise<{
+    account: EntropyAccount;
+    perpProtocol: PerpProtocol;
+  }> {
+    if (!perpProtocol) {
+      perpProtocol = await this.getPerpProtocolForKey(key);
+    }
+    let programId: PublicKey;
+
+    if (perpProtocol === "Entropy") {
+      programId = ENTROPY_PROGRAM_ID;
+    } else if (perpProtocol === "Mango") {
+      programId = MANGO_PROGRAM_ID;
+    } else {
+      throw new Error("options protocol not supported");
+    }
+
+    const connection = this.sdk.readonlyProvider.connection;
+
+    const client = new EntropyClient(connection, programId);
+
+    const entropyAccount = await client.getEntropyAccount(
+      key,
+      this.sdk.net.SERUM_DEX_PROGRAM_ID
+    );
+
+    return {
+      account: entropyAccount,
+      perpProtocol,
+    };
+  }
+
   async getOptionMarketByKey(
     key: PublicKey,
     optionsProtocol?: OptionsProtocol
@@ -2362,10 +2398,8 @@ export class VoltSDK {
         key
       );
     } else if (optionsProtocol === "Soloptions") {
-      optionMarket = await getSoloptionsMarketByKey(
-        this.sdk.programs.Soloptions as unknown as Parameters<
-          typeof getSoloptionsMarketByKey
-        >[0],
+      optionMarket = await SoloptionsSDK.getOptionMarketByKey(
+        this.sdk.programs.Soloptions,
         key
       );
     } else {
@@ -2381,7 +2415,7 @@ export class VoltSDK {
 
   async getRootAndNodeBank(entropyGroup: EntropyGroup): Promise<{
     rootBank: RootBank;
-    nodeBank: NodeBank;
+    nodeBank: NodeBank.NodeBank;
   }> {
     const connection = this.sdk.readonlyProvider.connection;
     const banks = await entropyGroup.loadRootBanks(connection);
@@ -2424,22 +2458,71 @@ export class VoltSDK {
     }
   }
 
-  async getEntropyObjects(): Promise<{
+  async getPerpProtocolForKey(key: PublicKey): Promise<PerpProtocol> {
+    const accountInfo =
+      await this.sdk.readonlyProvider.connection.getAccountInfo(key);
+    if (!accountInfo) {
+      throw new Error(
+        "account does not exist, can't determine perp protocol owner"
+      );
+    }
+
+    if (accountInfo.owner.toString() === ENTROPY_PROGRAM_ID.toString()) {
+      return "Entropy";
+    } else if (accountInfo.owner.toString() === MANGO_PROGRAM_ID.toString()) {
+      return "Mango";
+    } else {
+      throw new Error("owner is not a supported perp protocol");
+    }
+  }
+
+  async getEntropyGroup(
+    entropyProgramId: PublicKey,
+    entropyGroupKey: PublicKey
+  ): Promise<{
+    entropyClient: EntropyClient;
+    entropyGroup: EntropyGroup;
+  }> {
+    if (
+      entropyProgramId.toString() !== ENTROPY_PROGRAM_ID.toString() &&
+      entropyProgramId.toString() !== MANGO_PROGRAM_ID.toString()
+    )
+      throw new Error("given program id must match entropy or mango");
+
+    const connection = this.sdk.readonlyProvider.connection;
+
+    const client = new EntropyClient(connection, entropyProgramId);
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
+
+    return {
+      entropyClient: client,
+      entropyGroup,
+    };
+  }
+
+  async getEntropyObjects(
+    entropyProgramId: PublicKey,
+    entropyGroupKey: PublicKey,
+    entropyAccountKey: PublicKey
+  ): Promise<{
     entropyClient: EntropyClient;
     entropyGroup: EntropyGroup;
     entropyAccount: EntropyAccount;
     entropyCache: EntropyCache;
   }> {
-    const connection = this.sdk.readonlyProvider.connection;
-    const extraVoltData = await this.getExtraVoltData();
+    if (
+      entropyProgramId.toString() !== ENTROPY_PROGRAM_ID.toString() &&
+      entropyProgramId.toString() !== MANGO_PROGRAM_ID.toString()
+    )
+      throw new Error("given program id must match entropy or mango");
 
-    const client = new EntropyClient(connection, ENTROPY_PROGRAM_ID);
-    const entropyGroup = await client.getEntropyGroup(
-      extraVoltData.entropyGroup
-    );
+    const connection = this.sdk.readonlyProvider.connection;
+
+    const client = new EntropyClient(connection, entropyProgramId);
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
 
     const entropyAccount = await client.getEntropyAccount(
-      extraVoltData.entropyAccount,
+      entropyAccountKey,
       this.sdk.net.SERUM_DEX_PROGRAM_ID
     );
 
@@ -2451,6 +2534,116 @@ export class VoltSDK {
       entropyAccount,
       entropyCache,
     };
+  }
+
+  async getEntropyLendingObjects(): Promise<{
+    entropyClient: EntropyClient;
+    entropyGroup: EntropyGroup;
+    entropyAccount: EntropyAccount;
+    entropyCache: EntropyCache;
+  }> {
+    const [entropyLendingAccountKey] =
+      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
+
+    const perpProtocol = await this.getPerpProtocolForKey(
+      entropyLendingAccountKey
+    );
+
+    const entropyProgramId = getProgramIdForPerpProtocol(perpProtocol);
+
+    const { account: tempAccount } = await this.getEntropyAccountByKey(
+      entropyLendingAccountKey,
+      perpProtocol
+    );
+
+    return await this.getEntropyObjects(
+      entropyProgramId,
+      tempAccount.entropyGroup,
+      entropyLendingAccountKey
+    );
+  }
+
+  async getEntropyObjectsForEvData(): Promise<{
+    entropyClient: EntropyClient;
+    entropyGroup: EntropyGroup;
+    entropyAccount: EntropyAccount;
+    entropyCache: EntropyCache;
+  }> {
+    const extraVoltData = await this.getExtraVoltData();
+    return await this.getEntropyObjects(
+      extraVoltData.entropyProgramId,
+      extraVoltData.entropyGroup,
+      extraVoltData.entropyAccount
+    );
+  }
+
+  static async getGroupAndBanks(
+    client: EntropyClient,
+    entropyGroupKey: PublicKey,
+    mint: PublicKey
+  ): Promise<{
+    entropyGroup: EntropyGroup;
+    rootBank: RootBank | undefined;
+    nodeBank: NodeBank.NodeBank | undefined;
+    quoteRootBank: RootBank | undefined;
+    quoteNodeBank: NodeBank.NodeBank | undefined;
+    depositIndex: number;
+  }> {
+    const connection = client.connection;
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
+    const banks = await entropyGroup.loadRootBanks(connection);
+
+    const bankIndex = entropyGroup.tokens.findIndex(
+      (ti) => ti.mint.toString() === mint.toString()
+    );
+
+    let rootBank = banks[bankIndex];
+    let nodeBank = (await rootBank?.loadNodeBanks(connection))?.[0];
+
+    const quoteRootBank =
+      banks[
+        entropyGroup.getRootBankIndex(entropyGroup.getQuoteTokenInfo().rootBank)
+      ];
+    const quoteNodeBank = (await quoteRootBank?.loadNodeBanks(connection))?.[0];
+
+    if (bankIndex === undefined) {
+      if (
+        mint.toString() === entropyGroup.getQuoteTokenInfo().mint.toString()
+      ) {
+        rootBank = quoteRootBank;
+        nodeBank = quoteNodeBank;
+      } else {
+        throw new Error("bank index not found for mint = " + mint.toString());
+      }
+    }
+
+    return {
+      entropyGroup,
+      rootBank,
+      nodeBank,
+      quoteRootBank,
+      quoteNodeBank,
+      depositIndex: bankIndex,
+    };
+  }
+
+  async getGroupAndBanksForEvData(
+    client: EntropyClient,
+    mint: PublicKey
+  ): Promise<{
+    entropyGroup: EntropyGroup;
+    rootBank: RootBank | undefined;
+    nodeBank: NodeBank.NodeBank | undefined;
+    quoteRootBank: RootBank | undefined;
+    quoteNodeBank: NodeBank.NodeBank | undefined;
+    depositIndex: number;
+  }> {
+    if (!this.extraVoltData) throw new Error("extra volt data must be defined");
+    return await VoltSDK.getGroupAndBanks(
+      client,
+      this.extraVoltData.entropyGroup,
+      mint
+    );
   }
 
   async getPnlForRound(roundNumber: BN, subtractFees = true): Promise<Decimal> {

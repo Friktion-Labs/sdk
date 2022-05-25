@@ -80,8 +80,6 @@ export type OptionMarketWithKey = OptionMarket & {
   key: PublicKey;
 };
 
-export type OptionsProtocol = "Inertia" | "Soloptions";
-
 export type VoltIXAccounts = {
   initialize: {
     [A in keyof Parameters<
