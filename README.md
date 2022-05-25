@@ -1,4 +1,4 @@
-# External Volt Information & Helpers
+# Volt Information & Helpers
 
 ## Overview
 
