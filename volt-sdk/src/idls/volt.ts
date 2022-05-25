@@ -6485,6 +6485,11 @@ export type VoltIDL = {
       code: 6203;
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount";
       msg: "premium farmed must match permissioned market premium pool";
+    },
+    {
+      code: 6204;
+      name: "InvalidWithdrawAmount";
+      msg: "invalid withdraw amount";
     }
   ];
 };
@@ -12975,6 +12980,11 @@ export const VoltIDLJsonRaw = {
       code: 6203,
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount",
       msg: "premium farmed must match permissioned market premium pool",
+    },
+    {
+      code: 6204,
+      name: "InvalidWithdrawAmount",
+      msg: "invalid withdraw amount",
     },
   ],
 };
