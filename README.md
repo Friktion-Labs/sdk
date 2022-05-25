@@ -1,4 +1,4 @@
-# External Volt Information & Helpers
+# Friktion Volt Information & Helpers
 
 ## Overview
 
