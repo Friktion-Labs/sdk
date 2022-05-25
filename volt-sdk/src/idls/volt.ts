@@ -3005,6 +3005,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "rootBank";
           isMut: true;
           isSigner: false;
@@ -3233,6 +3238,11 @@ export type VoltIDL = {
         },
         {
           name: "entropyCache";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
           isMut: true;
           isSigner: false;
         },
@@ -9500,6 +9510,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
           name: "rootBank",
           isMut: true,
           isSigner: false,
@@ -9728,6 +9743,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "entropyCache",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
           isMut: true,
           isSigner: false,
         },

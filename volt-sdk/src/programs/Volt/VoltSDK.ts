@@ -30,7 +30,7 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 import { Decimal } from "decimal.js";
-import fetch from "node-fetch-commonjs";
+import superagent from "superagent";
 
 import type { FriktionSDK } from "../..";
 import {
@@ -1281,12 +1281,12 @@ export class VoltSDK {
     const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
     const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
-    const response = await fetch(coingeckoUrl);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+    const response = await superagent.get(coingeckoUrl);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (response.status === 200) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-      const data = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+      const data = response.body;
       if (data && typeof data === "object") {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         for (const [key, value] of Object.entries(data)) {

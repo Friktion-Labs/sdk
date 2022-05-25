@@ -1253,6 +1253,10 @@ export class ConnectedVoltSDK extends VoltSDK {
       ];
     const nodeBank = (await rootBank?.loadNodeBanks(this.connection))?.[0];
 
+    const [entropySpotOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
+      this.voltKey,
+      this.extraVoltData.hedgingSpotMarket
+    );
     const takePerformanceFeesEntropyAccounts: Parameters<
       VoltProgram["instruction"]["takePerformanceFeesEntropy"]["accounts"]
     >[0] = {
@@ -1276,6 +1280,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyMetadata: entropyMetadataKey,
 
       systemProgram: SystemProgram.programId,
+
+      openOrders: entropySpotOpenOrders,
 
       rootBank: rootBank?.publicKey as PublicKey,
       nodeBank: nodeBank?.publicKey as PublicKey,
@@ -3375,6 +3381,11 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyAccount: entropyLendingAccount,
     } = await this.getEntropyLendingObjects();
 
+    const [entropySpotOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
+      this.voltKey,
+      this.extraVoltData.hedgingSpotMarket
+    );
+
     const endRoundEntropyStruct: Parameters<
       VoltProgram["instruction"]["endRoundEntropy"]["accounts"]
     >[0] = {
@@ -3392,6 +3403,8 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyRound: entropyRoundInfoKey,
 
       dexProgram: this.extraVoltData.serumProgramId,
+
+      openOrders: entropySpotOpenOrders,
 
       entropyProgram: this.extraVoltData.entropyProgramId,
       entropyGroup: this.extraVoltData.entropyGroup,
