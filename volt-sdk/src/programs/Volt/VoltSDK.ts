@@ -2536,6 +2536,20 @@ export class VoltSDK {
     };
   }
 
+  async getEntropyLendingTokens(): Promise<BN> {
+    const { entropyGroup, entropyAccount } =
+      await this.getEntropyLendingObjects();
+    const depositIndex = entropyGroup.getTokenIndex(
+      this.voltVault.underlyingAssetMint
+    );
+    const rootBank = entropyGroup.rootBankAccounts[depositIndex];
+    return new BN(
+      entropyAccount
+        .getNativeDeposit(rootBank as RootBank, depositIndex)
+        .toFixed(0)
+    );
+  }
+
   async getEntropyLendingObjects(): Promise<{
     entropyClient: EntropyClient;
     entropyGroup: EntropyGroup;
