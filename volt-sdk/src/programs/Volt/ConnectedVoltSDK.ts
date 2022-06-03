@@ -35,7 +35,11 @@ import {
   SoloptionsSDK,
 } from "../..";
 import type { OptionsProtocol } from "../../constants";
-import { REFERRAL_AUTHORITY, VoltType } from "../../constants";
+import {
+  REFERRAL_AUTHORITY,
+  SPREADS_FEE_OWNER,
+  VoltType,
+} from "../../constants";
 import { anchorProviderToSerumProvider } from "../../miscUtils";
 import {
   createFirstSetOfAccounts,
@@ -292,12 +296,15 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  async getFeeTokenAccount() {
+  async getFeeTokenAccount(forPerformanceFees = false) {
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
-      this.voltType() !== VoltType.ShortOptions ||
-        this.extraVoltData?.dovPerformanceFeesInUnderlying
+      !(
+        this.voltType() === VoltType.ShortOptions &&
+        forPerformanceFees &&
+        !this.extraVoltData?.dovPerformanceFeesInUnderlying
+      )
         ? this.voltVault.underlyingAssetMint
         : this.voltVault.permissionedMarketPremiumMint,
       REFERRAL_AUTHORITY
@@ -931,7 +938,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       permissionedMarketPremiumPool:
         this.voltVault.permissionedMarketPremiumPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
 
       writerTokenMint: this.voltVault.writerTokenMint,
 
@@ -1318,22 +1325,12 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    let entropyLendingProgramKey = SystemProgram.programId;
-    let entropyGroupKey = SystemProgram.programId;
+    const {
+      entropyLendingProgramKey,
+      entropyLendingGroupKey,
+      entropyLendingAccountKey,
+    } = await this.getEntropyLendingKeys();
 
-    try {
-      const {
-        entropyClient: entropyLendingClient,
-        entropyAccount: entropyLendingAccount,
-      } = await this.getEntropyLendingObjects();
-      entropyLendingProgramKey = entropyLendingClient.programId;
-      entropyGroupKey = entropyLendingAccount.entropyGroup;
-    } catch (err) {
-      console.log("no entropy lending account, skipping...");
-    }
-
-    const [entropyLendingAccountKey] =
-      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
     const endRoundStruct: Parameters<
       VoltProgram["instruction"]["endRound"]["accounts"]
     >[0] = {
@@ -1356,7 +1353,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       feeAcct: await this.getFeeTokenAccount(),
 
       entropyLendingProgram: entropyLendingProgramKey,
-      entropyLendingGroup: entropyGroupKey,
+      entropyLendingGroup: entropyLendingGroupKey,
       entropyLendingAccount: entropyLendingAccountKey,
 
       systemProgram: SystemProgram.programId,
@@ -1455,7 +1452,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionPool: optionPoolKey,
       writerTokenPool: writerTokenPoolKey,
 
-      rawOptionMarket: newOptionMarketKey,
+      rawDerivsContract: newOptionMarketKey,
       underlyingAssetMint: this.voltVault.underlyingAssetMint,
       optionMint: optionMarket.optionMint,
       writerTokenMint: optionMarket.writerTokenMint,
@@ -1499,7 +1496,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionPool: this.voltVault.optionPool,
       writerTokenPool: this.voltVault.writerTokenPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
       optionMint: optionMarket.optionMint,
       writerTokenMint: optionMarket.writerTokenMint,
 
@@ -1550,8 +1547,15 @@ export class ConnectedVoltSDK extends VoltSDK {
         underlyingToken.publicKey,
         SOLOPTIONS_FEE_OWNER
       );
+    } else if (optionsProtocol === "Spreads") {
+      feeDestinationKey = await Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        underlyingToken.publicKey,
+        SPREADS_FEE_OWNER
+      );
     } else {
-      throw new Error("weird options protocol");
+      throw new Error("Unsupported options protocol");
     }
 
     const [epochInfoKey] = await VoltSDK.findEpochInfoAddress(
@@ -1565,6 +1569,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       authority: this.wallet,
       inertiaProgram: OPTIONS_PROGRAM_IDS.Inertia,
       soloptionsProgram: OPTIONS_PROGRAM_IDS.Soloptions,
+      spreadsProgram: OPTIONS_PROGRAM_IDS.Spreads,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
 
@@ -1572,7 +1577,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       optionPool: this.voltVault.optionPool,
       writerTokenPool: this.voltVault.writerTokenPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
       underlyingAssetMint: this.voltVault.underlyingAssetMint,
       quoteAssetMint: this.voltVault.quoteAssetMint,
       optionMint: this.voltVault.optionMint,
@@ -1705,7 +1710,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       optionPool: this.voltVault.optionPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
 
       srmReferralAcct: srmReferralAcct,
 
@@ -1884,6 +1889,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       authority: this.wallet,
       soloptionsProgram: OPTIONS_PROGRAM_IDS.Soloptions,
       inertiaProgram: OPTIONS_PROGRAM_IDS.Inertia,
+      spreadsProgram: OPTIONS_PROGRAM_IDS.Spreads,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
       vaultMint: this.voltVault.vaultMint,
@@ -1894,7 +1900,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       permissionedMarketPremiumPool:
         this.voltVault.permissionedMarketPremiumPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
 
       writerTokenMint: this.voltVault.writerTokenMint,
       underlyingAssetMint: this.voltVault.underlyingAssetMint,
@@ -2130,7 +2136,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       permissionedMarketPremiumPool:
         this.voltVault.permissionedMarketPremiumPool,
 
-      rawOptionMarket: this.voltVault.optionMarket,
+      rawDerivsContract: this.voltVault.optionMarket,
 
       writerTokenMint: this.voltVault.writerTokenMint,
 
@@ -2226,7 +2232,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
       extraVoltData: extraVoltDataKey,
       epochInfo: epochInfoKey,
-      feeAcct: await this.getFeeTokenAccount(),
+      feeAcct: await this.getFeeTokenAccount(true),
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -3376,10 +3382,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     );
 
     const {
-      entropyClient: entropyLendingClient,
-      entropyGroup: entropyLendingGroup,
-      entropyAccount: entropyLendingAccount,
-    } = await this.getEntropyLendingObjects();
+      entropyLendingProgramKey,
+      entropyLendingGroupKey,
+      entropyLendingAccountKey,
+    } = await this.getEntropyLendingKeys();
 
     const [entropySpotOpenOrders] = await VoltSDK.findEntropyOpenOrdersAddress(
       this.voltKey,
@@ -3418,9 +3424,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
-      entropyLendingProgram: entropyLendingClient.programId,
-      entropyLendingGroup: entropyLendingGroup.publicKey,
-      entropyLendingAccount: entropyLendingAccount.publicKey,
+      entropyLendingProgram: entropyLendingProgramKey,
+      entropyLendingGroup: entropyLendingGroupKey,
+      entropyLendingAccount: entropyLendingAccountKey,
     };
 
     return this.sdk.programs.Volt.instruction.endRoundEntropy(bypassCode, {

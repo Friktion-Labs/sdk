@@ -2,7 +2,9 @@ import type { Idl } from "@project-serum/anchor";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { InertiaIDLJsonRaw } from "./idls/inertia";
+import { SimpleSwapIDLJsonRaw } from "./idls/simpleSwap";
 import { SoloptionsIDLJsonRaw } from "./idls/soloptions";
+import { SpreadsIDLJsonRaw } from "./idls/spreads";
 import { VoltIDLJsonRaw } from "./idls/volt";
 
 export enum VoltStrategy {
@@ -12,7 +14,7 @@ export enum VoltStrategy {
   LongBasis,
 }
 
-export type OptionsProtocol = "Inertia" | "Soloptions";
+export type OptionsProtocol = "Inertia" | "Soloptions" | "Spreads";
 
 export type PerpProtocol = "Entropy" | "Mango";
 
@@ -28,6 +30,10 @@ export enum VoltType {
 
 export const FRIKTION_PROGRAM_ID = new PublicKey(
   "VoLT1mJz1sbnxwq5Fv2SXjdVDgPXrb9tJyC8WpMDkSp"
+);
+
+export const SIMPLE_SWAP_PROGRAM_ID = new PublicKey(
+  "SwpWEbAhitpix22gbX28zah7g8JiA1FRwVdPe4XohQb"
 );
 
 export const ENTROPY_PROGRAM_ID = new PublicKey(
@@ -62,7 +68,9 @@ export const INERTIA_FEE_OWNER = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
 );
 
-export const INERTIA_PX_NORM_FACTOR = 10000;
+export const SPREADS_FEE_OWNER = new PublicKey(
+  "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
+);
 
 export const WITHDRAWAL_FEE_BPS = 10;
 export const PERFORMANCE_FEE_BPS = 1000;
@@ -72,6 +80,11 @@ export const SOLOPTIONS_EXERCISE_FEE_BPS = 0;
 
 export const INERTIA_MINT_FEE_BPS = 0;
 export const INERTIA_EXERCISE_FEE_BPS = 0;
+export const INERTIA_PX_NORM_FACTOR = 10000;
+
+export const SPREADS_MINT_FEE_BPS = 0;
+export const SPREADS_EXERCISE_FEE_BPS = 0;
+export const SPREADS_PX_NORM_FACTOR = 10000;
 
 export const GLOBAL_MM_TOKEN_MINT = new PublicKey(
   "mmmFXxpwDfkPFVKt1Js8fU6DvjEMXU8tprvaTpmn8sM"
@@ -112,7 +125,12 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     HTrVoLyfjS3WbvTdSemAHdtHYv4MYPg3WdXuqxKDGNsu: "BTC^2-PERP",
     "9GE4Q4RR6jTXZSGMf9GK4purKxSPVgRCVM7WLqxi8k8i": "BTC-PERP",
     GkRz4Gpz9WSvJYZ2Qso37oHGvXubzp6PuBMAeFggbLq9: "BTC-1D-IV",
+
+    // mango
+    "2TgaaVoHgnSeEtXvWTx13zQeTf4hYWAMEiMQdcG6EwHi": "SOL-PERP",
+    DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8: "BTC-PERP",
   },
+  MANGO_GROUP: new PublicKey("98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"),
   mints: {
     USDC: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
     UST: new PublicKey("9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i"),
@@ -223,6 +241,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
   ENTROPY_PERP_MARKET_NAMES: {},
+  MANGO_GROUP: new PublicKey("98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"),
   mints: {
     USDC: new PublicKey("E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF"),
     UST: new PublicKey("9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i"),
@@ -269,6 +288,7 @@ export const DEVNET_WHITELIST_TOKEN = new PublicKey(
 export const OPTIONS_PROGRAM_IDS = {
   Soloptions: new PublicKey("in9BCveNxQX9rAGaZdrzDD5HGpVczfEoxzXLv3hzjgA"),
   Inertia: new PublicKey("iNeq88RkcvbwfnWAsqw5rQvJTbuKEA15PaMe7YAcTx3"),
+  Spreads: new PublicKey("SpRdUab7oXPf1oYRM6YXRGfAEMKASFfFtxafDiAgrRR"),
 };
 
 export const SERUM_PROGRAM_IDS = {
@@ -290,4 +310,8 @@ export const OTHER_IDLS: Record<string, Idl> = {
     SoloptionsIDLJsonRaw as unknown as Idl,
   Inertia: InertiaIDLJsonRaw as unknown as Idl,
   [OPTIONS_PROGRAM_IDS.Inertia.toString()]: InertiaIDLJsonRaw as unknown as Idl,
+  [SIMPLE_SWAP_PROGRAM_ID.toString()]: SimpleSwapIDLJsonRaw as unknown as Idl,
+  SimpleSwap: SimpleSwapIDLJsonRaw as unknown as Idl,
+  Spreads: SpreadsIDLJsonRaw as unknown as Idl,
+  [OPTIONS_PROGRAM_IDS.Spreads.toString()]: SpreadsIDLJsonRaw as unknown as Idl,
 };

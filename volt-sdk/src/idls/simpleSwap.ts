@@ -8,11 +8,11 @@ export type SimpleSwapIDL = {
         {
           name: "payer";
           isMut: true;
-          isSigner: true;
+          isSigner: false;
         },
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -47,7 +47,7 @@ export type SimpleSwapIDL = {
         },
         {
           name: "creatorGivePool";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -125,12 +125,12 @@ export type SimpleSwapIDL = {
         },
         {
           name: "counterpartyReceivePool";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
           name: "counterpartyGivePool";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -455,11 +455,11 @@ export const SimpleSwapIDLJsonRaw = {
         {
           name: "payer",
           isMut: true,
-          isSigner: true,
+          isSigner: false,
         },
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -494,7 +494,7 @@ export const SimpleSwapIDLJsonRaw = {
         },
         {
           name: "creatorGivePool",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -572,12 +572,12 @@ export const SimpleSwapIDLJsonRaw = {
         },
         {
           name: "counterpartyReceivePool",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
           name: "counterpartyGivePool",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

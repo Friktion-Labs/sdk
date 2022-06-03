@@ -9,7 +9,7 @@ export const getStrikeFromOptionMarket = async (
   provider: AnchorProvider,
   optionMarket: OptionMarketWithKey,
   isCall: boolean
-) => {
+): Promise<Decimal> => {
   const underlyingFactor = new Decimal(10).pow(
     (
       await getMintInfo(
@@ -22,7 +22,7 @@ export const getStrikeFromOptionMarket = async (
     (
       await getMintInfo(
         anchorProviderToSerumProvider(provider),
-        optionMarket.underlyingAssetMint
+        optionMarket.quoteAssetMint
       )
     ).decimals
   );

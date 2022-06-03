@@ -8,7 +8,7 @@ export type InertiaTypes = AnchorTypes<
   InertiaIDL,
   {
     optionsContract: InertiaContract;
-    stubOracle: StubOracle;
+    stubOracle: InertiaStubOracle;
   }
 >;
 
@@ -21,8 +21,8 @@ export type InertiaInstructions = InertiaTypes["Instructions"];
 export type InertiaMethods = InertiaTypes["Methods"];
 export type InertiaEvents = InertiaTypes["Events"];
 
-export type StubOracle = InertiaAccounts["StubOracle"];
-export type StubOracleWithKey = StubOracle & WithKey;
+export type InertiaStubOracle = InertiaAccounts["StubOracle"];
+export type InertiaStubOracleWithKey = InertiaStubOracle & WithKey;
 export type InertiaContract = InertiaAccounts["OptionsContract"];
 export type InertiaContractWithKey = InertiaContract & WithKey;
 

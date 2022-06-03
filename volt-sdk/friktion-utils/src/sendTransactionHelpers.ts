@@ -49,7 +49,7 @@ export const makeAndSendTx = async (
   tx: Transaction,
   signers: Signer[],
   timeout?: number
-) => {
+): Promise<TransactionSignature> => {
   await signTransaction({
     transaction: tx,
     payer: user,
@@ -57,11 +57,13 @@ export const makeAndSendTx = async (
     connection,
   });
 
-  await sendSignedTransaction({
+  const txSig = await sendSignedTransaction({
     signedTransaction: tx,
     connection,
     timeout: timeout ?? 60000,
   });
+
+  return txSig;
 };
 
 export async function signTransaction({
@@ -211,11 +213,8 @@ export async function simulateTransaction(
   transaction: Transaction,
   commitment: Commitment
 ): Promise<RpcResponseAndContext<SimulatedTransactionResponse>> {
-  // @ts-ignore
-  transaction.recentBlockhash = await connection._recentBlockhash(
-    // @ts-ignore
-    connection._disableBlockhashCaching
-  );
+  const { blockhash } = await connection.getLatestBlockhash();
+  transaction.recentBlockhash = blockhash;
 
   const signData = transaction.serializeMessage();
   // @ts-ignore
@@ -294,7 +293,7 @@ export async function sendSignedTransaction({
         await simulateTransaction(connection, signedTransaction, "confirmed")
       ).value;
     } catch (e) {
-      console.log(new Date().toUTCString(), "Simulate tx failed");
+      console.log(new Date().toUTCString(), "Simulate tx failed", e);
     }
     if (simulateResult && simulateResult.err) {
       if (simulateResult.logs) {
@@ -302,8 +301,7 @@ export async function sendSignedTransaction({
           const line = simulateResult.logs[i];
           if (line?.startsWith("Program log: ")) {
             throw new FriktionTransactionError({
-              message:
-                "Transaction failed: " + line?.slice("Program log: ".length),
+              message: "Transaction failed: " + simulateResult.logs.join("\n"),
               txid,
             });
           }

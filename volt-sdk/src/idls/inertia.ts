@@ -76,11 +76,6 @@ export type InertiaIDL = {
           isSigner: false;
         },
         {
-          name: "associatedTokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
           name: "rent";
           isMut: false;
           isSigner: false;
@@ -171,16 +166,6 @@ export type InertiaIDL = {
         {
           name: "feeDestination";
           isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteMint";
-          isMut: false;
           isSigner: false;
         },
         {
@@ -277,17 +262,17 @@ export type InertiaIDL = {
         },
         {
           name: "oracleAi";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
           name: "underlyingMint";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
           name: "quoteMint";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -316,12 +301,7 @@ export type InertiaIDL = {
           isSigner: false;
         }
       ];
-      args: [
-        {
-          name: "settlePrice";
-          type: "u64";
-        }
-      ];
+      args: [];
     },
     {
       name: "optionSettle";
@@ -338,17 +318,17 @@ export type InertiaIDL = {
         },
         {
           name: "oracleAi";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
           name: "underlyingMint";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
           name: "quoteMint";
-          isMut: true;
+          isMut: false;
           isSigner: false;
         },
         {
@@ -554,30 +534,6 @@ export type InertiaIDL = {
   ];
   accounts: [
     {
-      name: "StubOracle";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "magic";
-            type: "u32";
-          },
-          {
-            name: "price";
-            type: "f64";
-          },
-          {
-            name: "lastUpdate";
-            type: "i64";
-          },
-          {
-            name: "pdaStr";
-            type: "string";
-          }
-        ];
-      };
-    },
-    {
       name: "OptionsContract";
       type: {
         kind: "struct";
@@ -676,25 +632,27 @@ export type InertiaIDL = {
           }
         ];
       };
-    }
-  ];
-  types: [
+    },
     {
-      name: "OracleType";
+      name: "StubOracle";
       type: {
-        kind: "enum";
-        variants: [
+        kind: "struct";
+        fields: [
           {
-            name: "Stub";
+            name: "magic";
+            type: "u32";
           },
           {
-            name: "Pyth";
+            name: "price";
+            type: "f64";
           },
           {
-            name: "SwitchboardV1";
+            name: "lastUpdate";
+            type: "i64";
           },
           {
-            name: "SwitchboardV2";
+            name: "pdaStr";
+            type: "string";
           }
         ];
       };
@@ -900,6 +858,21 @@ export type InertiaIDL = {
       code: 6039;
       name: "PythExpoMustBeNegative";
       msg: "pyth expo must be negative";
+    },
+    {
+      code: 6040;
+      name: "UlMintDoesntMatch";
+      msg: "ul mint doesn't match";
+    },
+    {
+      code: 6041;
+      name: "QuoteMintDoesntMatch";
+      msg: "quote mint doesn't match";
+    },
+    {
+      code: 6042;
+      name: "TooEarlyForNewContract";
+      msg: "too early for new contract";
     }
   ];
 };
@@ -977,11 +950,6 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "associatedTokenProgram",
           isMut: false,
           isSigner: false,
         },
@@ -1079,16 +1047,6 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "underlyingMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
@@ -1182,17 +1140,17 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "oracleAi",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
           name: "underlyingMint",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
           name: "quoteMint",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -1221,12 +1179,7 @@ export const InertiaIDLJsonRaw = {
           isSigner: false,
         },
       ],
-      args: [
-        {
-          name: "settlePrice",
-          type: "u64",
-        },
-      ],
+      args: [],
     },
     {
       name: "optionSettle",
@@ -1243,17 +1196,17 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "oracleAi",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
           name: "underlyingMint",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
           name: "quoteMint",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
@@ -1459,30 +1412,6 @@ export const InertiaIDLJsonRaw = {
   ],
   accounts: [
     {
-      name: "StubOracle",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "magic",
-            type: "u32",
-          },
-          {
-            name: "price",
-            type: "f64",
-          },
-          {
-            name: "lastUpdate",
-            type: "i64",
-          },
-          {
-            name: "pdaStr",
-            type: "string",
-          },
-        ],
-      },
-    },
-    {
       name: "OptionsContract",
       type: {
         kind: "struct",
@@ -1582,24 +1511,26 @@ export const InertiaIDLJsonRaw = {
         ],
       },
     },
-  ],
-  types: [
     {
-      name: "OracleType",
+      name: "StubOracle",
       type: {
-        kind: "enum",
-        variants: [
+        kind: "struct",
+        fields: [
           {
-            name: "Stub",
+            name: "magic",
+            type: "u32",
           },
           {
-            name: "Pyth",
+            name: "price",
+            type: "f64",
           },
           {
-            name: "SwitchboardV1",
+            name: "lastUpdate",
+            type: "i64",
           },
           {
-            name: "SwitchboardV2",
+            name: "pdaStr",
+            type: "string",
           },
         ],
       },
@@ -1805,6 +1736,21 @@ export const InertiaIDLJsonRaw = {
       code: 6039,
       name: "PythExpoMustBeNegative",
       msg: "pyth expo must be negative",
+    },
+    {
+      code: 6040,
+      name: "UlMintDoesntMatch",
+      msg: "ul mint doesn't match",
+    },
+    {
+      code: 6041,
+      name: "QuoteMintDoesntMatch",
+      msg: "quote mint doesn't match",
+    },
+    {
+      code: 6042,
+      name: "TooEarlyForNewContract",
+      msg: "too early for new contract",
     },
   ],
 };

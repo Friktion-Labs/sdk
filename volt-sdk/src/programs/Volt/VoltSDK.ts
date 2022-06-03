@@ -14,7 +14,7 @@ import {
 } from "@friktion-labs/entropy-client";
 import type { ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
-import { getMintInfo } from "@project-serum/common";
+import { getMintInfo, sleep } from "@project-serum/common";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -30,8 +30,8 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 import { Decimal } from "decimal.js";
-import superagent from "superagent";
 
+// import superagent from "superagent";
 import type { FriktionSDK } from "../..";
 import {
   OPTIONS_PROGRAM_IDS,
@@ -49,6 +49,8 @@ import {
 } from "../../constants";
 import { anchorProviderToSerumProvider } from "../../miscUtils";
 import { getInertiaMarketByKey } from "../Inertia/inertiaUtils";
+import { SpreadsSDK } from "../Spreads/SpreadsSDK";
+import { convertSpreadsContractToOptionMarket } from "../Spreads/spreadsUtils";
 import type {
   EntropyRoundWithKey,
   ExtraVoltDataWithKey,
@@ -76,6 +78,8 @@ import type {
   PendingDeposit,
 } from "./voltTypes";
 
+class NoOptionMarketError extends Error {}
+
 export class VoltSDK {
   extraVoltData: ExtraVoltData | undefined;
   constructor(
@@ -84,11 +88,6 @@ export class VoltSDK {
     readonly voltKey: PublicKey,
     extraVoltData?: ExtraVoltData | undefined
   ) {
-    // commenting out for now bc getRoundInfo doesnt need extraVoltData
-    // if (this.voltType() === VoltType.Entropy && extraVoltData === undefined)
-    //   throw new Error(
-    //     "extra volt data must be defined if volt type is entropy"
-    //   );
     this.extraVoltData = extraVoltData;
   }
 
@@ -134,6 +133,17 @@ export class VoltSDK {
     }
   }
 
+  async getCurrentOptionMarketOrNull(): Promise<OptionMarketWithKey | null> {
+    try {
+      return await this.getCurrentOptionMarket();
+    } catch (err) {
+      if (err instanceof NoOptionMarketError) {
+        return null;
+      }
+      throw err;
+    }
+  }
+
   async getCurrentOptionMarket(): Promise<OptionMarketWithKey> {
     if (this.voltType() !== VoltType.ShortOptions)
       throw new Error("volt must trade options");
@@ -142,7 +152,9 @@ export class VoltSDK {
       this.voltVault.optionMarket.toString() ===
       SystemProgram.programId.toString()
     )
-      throw new Error("option market must not be systemprogram (not set)");
+      throw new NoOptionMarketError(
+        "option market must not be systemprogram (not set)"
+      );
 
     return await this.getOptionMarketByKey(this.voltVault.optionMarket);
   }
@@ -197,6 +209,14 @@ export class VoltSDK {
     const symbol = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
     return await this.coingeckoPrice(
       this.sdk.net.COINGECKO_IDS[symbol] as string
+    );
+  }
+
+  requiresSwapPremium(): boolean {
+    return (
+      this.voltType() === VoltType.ShortOptions &&
+      this.voltVault.permissionedMarketPremiumMint.toString() !==
+        this.voltVault.underlyingAssetMint.toString()
     );
   }
 
@@ -329,28 +349,34 @@ export class VoltSDK {
       "\n-------------------------\n POSITION STATS\n-------------------------"
     );
     if (this.voltType() === VoltType.ShortOptions) {
-      const optionMarket = await this.getCurrentOptionMarket();
-      console.log(
-        "\n " + "Short" + " (",
-        await this.optionMarketToDetailsString(optionMarket),
-        "): "
-      );
-      const writerTokenBalance = (
-        await getAccountBalance(
-          this.sdk.readonlyProvider.connection,
-          this.voltVault.writerTokenMint,
-          this.voltVault.writerTokenPool
-        )
-      ).balance;
-      console.log(
-        "minted options: (#)",
-        writerTokenBalance.toString(),
-        ` (${symbol}) `,
-        new Decimal(writerTokenBalance.toString())
-          .mul(new Decimal(optionMarket.underlyingAmountPerContract.toString()))
-          .div(await this.getNormalizationFactor())
-          .toString()
-      );
+      try {
+        const optionMarket = await this.getCurrentOptionMarket();
+        console.log(
+          "\n " + "Short" + " (",
+          await this.optionMarketToDetailsString(optionMarket),
+          "): "
+        );
+        const writerTokenBalance = (
+          await getAccountBalance(
+            this.sdk.readonlyProvider.connection,
+            this.voltVault.writerTokenMint,
+            this.voltVault.writerTokenPool
+          )
+        ).balance;
+        console.log(
+          "minted options: (#)",
+          writerTokenBalance.toString(),
+          ` (${symbol}) `,
+          new Decimal(writerTokenBalance.toString())
+            .mul(
+              new Decimal(optionMarket.underlyingAmountPerContract.toString())
+            )
+            .div(await this.getNormalizationFactor())
+            .toString()
+        );
+      } catch (err) {
+        console.log("no option currently selected");
+      }
     } else if (this.voltType() === VoltType.Entropy) {
       const { entropyAccount, entropyGroup, entropyCache } =
         await this.getEntropyObjectsForEvData();
@@ -443,6 +469,8 @@ export class VoltSDK {
       this.voltVault.instantTransfersEnabled,
       "\n, deposits and withdrawals off?: ",
       ev.turnOffDepositsAndWithdrawals,
+      "\n, performance fees in underlying?: ",
+      ev.dovPerformanceFeesInUnderlying,
       "\n----------------------------"
     );
 
@@ -507,7 +535,6 @@ export class VoltSDK {
     if (this.voltType() !== VoltType.ShortOptions)
       throw new Error("wrong volt type, should be DOV");
 
-    console.log(this.voltVault.underlyingAssetMint.toString());
     return !this.isKeyAStableCoin(this.voltVault.underlyingAssetMint);
   }
 
@@ -524,23 +551,17 @@ export class VoltSDK {
     const voltNumber = await this.voltNumber();
     switch (voltNumber) {
       case 1:
+      case 2: {
+        const optionMarket = await this.getCurrentOptionMarketOrNull();
         return (
           "Short" +
           " (" +
-          (await this.optionMarketToDetailsString(
-            await this.getCurrentOptionMarket()
-          )) +
+          (optionMarket
+            ? await this.optionMarketToDetailsString(optionMarket)
+            : "No Option Market") +
           ")"
         );
-      case 2:
-        return (
-          "Short" +
-          " (" +
-          (await this.optionMarketToDetailsString(
-            await this.getCurrentOptionMarket()
-          )) +
-          ")"
-        );
+      }
       case 3: {
         const ev = await this.getExtraVoltData();
         return (
@@ -641,15 +662,6 @@ export class VoltSDK {
           " is not recognized"
       );
     }
-    // if (vaultType === 0) {
-    //   return VoltType.ShortOptions;
-    // } else if (vaultType === 1) {
-    //   return VoltType.Entropy;
-    // } else {
-    //   throw new Error(
-    //     "volt type = " + vaultType.toString() + " is not recognized"
-    //   );
-    // }
   }
 
   isPremiumBased(): boolean {
@@ -1278,40 +1290,42 @@ export class VoltSDK {
   }
 
   async coingeckoPrice(id: string): Promise<Decimal> {
-    const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
-    const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
-
+    // const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
+    // const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
+    console.log(id);
+    await sleep(1);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-    const response = await superagent.get(coingeckoUrl);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (response.status === 200) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-      const data = response.body;
-      if (data && typeof data === "object") {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        for (const [key, value] of Object.entries(data)) {
-          if (
-            // eslint-disable-next-line no-prototype-builtins
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-prototype-builtins
-            !(value && typeof value === "object" && value.hasOwnProperty("usd"))
-          ) {
-            throw new Error("Missing usd in " + key);
-          }
-        }
-        console.log(data);
-        return new Decimal(
-          (data as Record<string, { usd: number }>)[
-            id
-          ]?.usd.toString() as string
-        );
-      } else {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-        throw new Error("received undefined response = " + response.toString());
-      }
-    } else {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-      throw new Error("status code != 200, == " + response.status.toString());
-    }
+    // const response = await superagent.get(coingeckoUrl);
+    // // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // if (response.status === 200) {
+    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+    //   const data = response.body;
+    //   if (data && typeof data === "object") {
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    //     for (const [key, value] of Object.entries(data)) {
+    //       if (
+    //         // eslint-disable-next-line no-prototype-builtins
+    //         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, no-prototype-builtins
+    //         !(value && typeof value === "object" && value.hasOwnProperty("usd"))
+    //       ) {
+    //         throw new Error("Missing usd in " + key);
+    //       }
+    //     }
+    //     console.log(data);
+    //     return new Decimal(
+    //       (data as Record<string, { usd: number }>)[
+    //         id
+    //       ]?.usd.toString() as string
+    //     );
+    //   } else {
+    //     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+    //     throw new Error("received undefined response = " + response.toString());
+    //   }
+    // } else {
+    //   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
+    //   throw new Error("status code != 200, == " + response.status.toString());
+    // }
+    return new Decimal(1.0);
   }
 
   oraclePriceForDepositToken(
@@ -1365,7 +1379,7 @@ export class VoltSDK {
         if (res.token === null) throw new Error("Could not find Deposit token");
 
         const voltDepositTokenBalance = new Decimal(res.balance.toString());
-        const { balance: voltWriterTokenBalance } = await getAccountBalance(
+        const voltWriterTokenBalance = await getAccountBalanceOrZero(
           this.sdk.readonlyProvider.connection,
           this.voltVault.writerTokenMint,
           this.voltVault.writerTokenPool
@@ -2402,6 +2416,10 @@ export class VoltSDK {
         this.sdk.programs.Soloptions,
         key
       );
+    } else if (optionsProtocol === "Spreads") {
+      optionMarket = convertSpreadsContractToOptionMarket(
+        await SpreadsSDK.getSpreadsContractByKey(this.sdk.programs.Spreads, key)
+      );
     } else {
       throw new Error("options protocol not supported");
     }
@@ -2453,6 +2471,10 @@ export class VoltSDK {
       accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Soloptions.toString()
     ) {
       return "Soloptions";
+    } else if (
+      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Spreads.toString()
+    ) {
+      return "Spreads";
     } else {
       throw new Error("owner is not a supported options protocol");
     }
@@ -2549,6 +2571,43 @@ export class VoltSDK {
     return new Decimal(acctValueInDepositToken.toString());
   }
 
+  async getEntropyLendingKeys(
+    entropyGroupGivenKey?: PublicKey,
+    entropyProgramGivenKey?: PublicKey
+  ): Promise<{
+    entropyLendingProgramKey: PublicKey;
+    entropyLendingGroupKey: PublicKey;
+    entropyLendingAccountKey: PublicKey;
+  }> {
+    let entropyLendingProgramKey = entropyProgramGivenKey;
+    let entropyLendingGroupKey = entropyGroupGivenKey;
+
+    if (
+      entropyLendingGroupKey === undefined ||
+      entropyLendingProgramKey === undefined
+    ) {
+      try {
+        const {
+          entropyClient: entropyLendingClient,
+          entropyAccount: entropyLendingAccount,
+        } = await this.getEntropyLendingObjects();
+        entropyLendingProgramKey = entropyLendingClient.programId;
+        entropyLendingGroupKey = entropyLendingAccount.entropyGroup;
+      } catch (err) {
+        entropyLendingProgramKey = MANGO_PROGRAM_ID;
+        entropyLendingGroupKey = this.sdk.net.MANGO_GROUP;
+      }
+    }
+
+    const [entropyLendingAccountKey] =
+      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
+
+    return {
+      entropyLendingProgramKey,
+      entropyLendingGroupKey,
+      entropyLendingAccountKey,
+    };
+  }
   async getEntropyLendingObjects(): Promise<{
     entropyClient: EntropyClient;
     entropyGroup: EntropyGroup;

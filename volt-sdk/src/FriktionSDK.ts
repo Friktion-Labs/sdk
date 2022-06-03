@@ -8,11 +8,19 @@ import {
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
 
-import { OPTIONS_PROGRAM_IDS, OTHER_IDLS, SoloptionsSDK, VoltSDK } from ".";
+import {
+  InertiaSDK,
+  OPTIONS_PROGRAM_IDS,
+  OTHER_IDLS,
+  SoloptionsSDK,
+  SpreadsSDK,
+  VoltSDK,
+} from ".";
 import type { NetworkSpecificConstants } from "./constants";
 import {
   FRIKTION_IDLS,
   FRIKTION_PROGRAM_ID,
+  SIMPLE_SWAP_PROGRAM_ID,
   USE_SDK_NET_TO_GET_CONSTANTS_DEVNET,
   USE_SDK_NET_TO_GET_CONSTANTS_MAINNET,
 } from "./constants";
@@ -20,13 +28,28 @@ import { checkAnchorErrorCode } from "./errorCodes";
 import type { NetworkName } from "./helperTypes";
 import type { ProviderLike } from "./miscUtils";
 import { providerToAnchorProvider } from "./miscUtils";
-import type { InertiaProgram } from "./programs/Inertia/inertiaTypes";
+import type {
+  InertiaContractWithKey,
+  InertiaProgram,
+} from "./programs/Inertia/inertiaTypes";
+import { getInertiaContractByKey } from "./programs/Inertia/inertiaUtils";
 import type {
   SoloptionsContract,
   SoloptionsContractWithKey,
   SoloptionsProgram,
 } from "./programs/Soloptions/soloptionsTypes";
 import { getSoloptionsContractByKey } from "./programs/Soloptions/soloptionsUtils";
+import type {
+  SpreadsContractWithKey,
+  SpreadsProgram,
+} from "./programs/Spreads/spreadsTypes";
+import { getSpreadsContractByKey } from "./programs/Spreads/spreadsUtils";
+import { SwapSDK } from "./programs/Swap/SwapSDK";
+import type {
+  SimpleSwapOrder,
+  SimpleSwapProgram,
+  SimpleSwapUserOrdersWithKey,
+} from "./programs/Swap/swapTypes";
 import type { VoltProgram, VoltVault, Whitelist } from "./programs/Volt";
 import type { ExtraVoltData } from "./programs/Volt/voltTypes";
 
@@ -40,6 +63,8 @@ export type FriktionPrograms = {
   Volt: VoltProgram;
   Soloptions: SoloptionsProgram;
   Inertia: InertiaProgram;
+  Spreads: SpreadsProgram;
+  SimpleSwap: SimpleSwapProgram;
 };
 
 export type NetOpts = {
@@ -145,8 +170,18 @@ export class FriktionSDK {
     }
     const inertiaIdl = OTHER_IDLS.Inertia;
     if (!inertiaIdl) {
-      console.error("OTHER_IDLS", OTHER_IDLS);
-      // this used to be a big bug
+      throw new Error(
+        "Unable to load FriktionSDK because Inertia idl is missing"
+      );
+    }
+    const swapIdl = OTHER_IDLS.SimpleSwap;
+    if (!swapIdl)
+      throw new Error(
+        "Unable to load FriktionSDK because SimpleSwap idl is missing"
+      );
+
+    const spreadsIdl = OTHER_IDLS.Spreads;
+    if (!spreadsIdl) {
       throw new Error(
         "Unable to load FriktionSDK because Inertia idl is missing"
       );
@@ -180,11 +215,24 @@ export class FriktionSDK {
       OPTIONS_PROGRAM_IDS.Inertia.toString(),
       this.readonlyProvider
     );
+    const SimpleSwap = new Program(
+      swapIdl,
+      SIMPLE_SWAP_PROGRAM_ID.toString(),
+      this.readonlyProvider
+    );
+
+    const Spreads = new Program(
+      spreadsIdl,
+      OPTIONS_PROGRAM_IDS.Spreads.toString(),
+      this.readonlyProvider
+    );
 
     this.programs = {
       Volt: Volt as unknown as VoltProgram,
       Soloptions: Soloptions as unknown as SoloptionsProgram,
       Inertia: Inertia as unknown as InertiaProgram,
+      SimpleSwap: SimpleSwap as unknown as SimpleSwapProgram,
+      Spreads: Spreads as unknown as SpreadsProgram,
     };
 
     this.legacyAnchorPrograms = {
@@ -205,14 +253,6 @@ export class FriktionSDK {
   ): VoltSDK {
     return new VoltSDK(this, voltVault, voltKey, extraVoltData);
   }
-
-  // devnetMainnet<T>(ifDevnet: T, ifMainnet: T) {
-  //   if (this.network === "mainnet-beta") {
-  //     return ifMainnet;
-  //   } else {
-  //     return ifDevnet;
-  //   }
-  // }
 
   // Keep all network specific items in here
   /**
@@ -235,6 +275,27 @@ export class FriktionSDK {
 
   get mainnet() {
     throw new Error("Don't do this. Use sdk.net");
+  }
+
+  async loadUserOrdersByKey(
+    key: PublicKey
+  ): Promise<SimpleSwapUserOrdersWithKey> {
+    const acct = await this.programs.SimpleSwap.account.userOrders.fetch(key);
+    const ret = {
+      ...acct,
+      key: key,
+    };
+    return ret;
+  }
+
+  async loadSwapByKey(swapOrderKey: PublicKey): Promise<SwapSDK> {
+    const swapData: SimpleSwapOrder =
+      await this.programs.SimpleSwap.account.swapOrder.fetch(swapOrderKey);
+
+    return new SwapSDK(swapData, swapOrderKey, {
+      provider: this.readonlyProvider,
+      network: this.network,
+    });
   }
 
   /**
@@ -302,13 +363,51 @@ export class FriktionSDK {
     );
   }
 
-  loadSoloptionsMarket(
+  loadSpreadsSDK(spreadsContract: SpreadsContractWithKey): SpreadsSDK {
+    return new SpreadsSDK(spreadsContract, {
+      provider: this.readonlyProvider,
+      network: this.network,
+    });
+  }
+
+  async loadSpreadsSDKBykey(
+    spreadsContractKey: PublicKey
+  ): Promise<SpreadsSDK> {
+    const spreadsContract: SpreadsContractWithKey = {
+      ...(await getSpreadsContractByKey(
+        this.programs.Spreads,
+        spreadsContractKey
+      )),
+      key: spreadsContractKey,
+    };
+    return this.loadSpreadsSDK(spreadsContract);
+  }
+
+  loadInertiaSDK(inertiaContract: InertiaContractWithKey): InertiaSDK {
+    return new InertiaSDK(inertiaContract, {
+      provider: this.readonlyProvider,
+      network: this.network,
+    });
+  }
+
+  async loadInertiaSDKByKey(optionContractKey: PublicKey): Promise<InertiaSDK> {
+    const inertiaContract: InertiaContractWithKey = {
+      ...(await getInertiaContractByKey(
+        this.programs.Inertia,
+        optionContractKey
+      )),
+      key: optionContractKey,
+    };
+    return this.loadInertiaSDK(inertiaContract);
+  }
+
+  loadSoloptionsSDK(
     soloptionsContract: SoloptionsContractWithKey
   ): SoloptionsSDK {
     return new SoloptionsSDK(this, soloptionsContract);
   }
 
-  async loadSoloptionsMarketByKey(
+  async loadSoloptionsSDKByKey(
     optionMarketKey: PublicKey
   ): Promise<SoloptionsSDK> {
     const soloptionsContract: SoloptionsContractWithKey = {
@@ -318,14 +417,14 @@ export class FriktionSDK {
       )),
       key: optionMarketKey,
     };
-    return this.loadSoloptionsMarket(soloptionsContract);
+    return this.loadSoloptionsSDK(soloptionsContract);
   }
 
-  async getAllSoloptionsMarkets(): Promise<SoloptionsSDK[]> {
+  async getAllSoloptionsSDKs(): Promise<SoloptionsSDK[]> {
     const accts =
       (await this.programs.Soloptions?.account?.optionsContract?.all()) as unknown as ProgramAccount<SoloptionsContract>[];
     return accts.map((acct) =>
-      this.loadSoloptionsMarket({
+      this.loadSoloptionsSDK({
         ...acct.account,
         key: acct.publicKey,
       })

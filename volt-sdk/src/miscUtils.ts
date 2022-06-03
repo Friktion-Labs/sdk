@@ -1,12 +1,6 @@
 // Keep this to only general utils
-
 import { AnchorProvider } from "@project-serum/anchor";
 import { Provider as SerumProvider } from "@project-serum/common";
-import type {
-  Provider as SolanaContribProvider,
-  Wallet as SolanaContribWallet,
-} from "@saberhq/solana-contrib";
-import { SolanaProvider } from "@saberhq/solana-contrib";
 import type { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
 export interface AnchorWallet {
@@ -17,11 +11,10 @@ export interface AnchorWallet {
 
 export type ProviderLike =
   | SerumProvider
-  | SolanaContribProvider
   | AnchorProvider
   | {
       connection: Connection;
-      wallet: AnchorWallet | SolanaContribWallet;
+      wallet: AnchorWallet;
     };
 
 export type SimpleProvider = {
@@ -35,18 +28,6 @@ export type SimpleProvider = {
  * However, we use Anchor's Provider as ReadonlyProvider because it is
  * incompatible with TransactionEnvelope.
  */
-export const providerToContribProvider = (
-  provider: ProviderLike
-): SolanaProvider => {
-  return SolanaProvider.load({
-    connection: provider.connection,
-    sendConnection: provider.connection,
-    wallet: provider.wallet,
-    opts: {
-      commitment: "confirmed",
-    },
-  });
-};
 
 export const providerToAnchorProvider = (
   provider: ProviderLike

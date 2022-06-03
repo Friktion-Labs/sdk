@@ -203,6 +203,194 @@ export type VoltIDL = {
       ];
     },
     {
+      name: "createSwapOrder";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapOrder";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltGivePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "givePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "giveMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receivePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receiveMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "counterparty";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "whitelistTokenMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "giveSize";
+          type: "u64";
+        },
+        {
+          name: "receiveSize";
+          type: "u64";
+        },
+        {
+          name: "expiry";
+          type: "u64";
+        },
+        {
+          name: "isCounterpartyProvided";
+          type: "bool";
+        },
+        {
+          name: "isWhitelisted";
+          type: "bool";
+        }
+      ];
+    },
+    {
+      name: "claimSwapOrder";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapOrder";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltGivePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "voltReceivePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "givePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receivePool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "counterparty";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "whitelistTokenMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: "changeCapacity";
       accounts: [
         {
@@ -1581,7 +1769,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -1662,6 +1850,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "spreadsProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "voltVault";
           isMut: true;
           isSigner: false;
@@ -1692,7 +1885,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -1808,7 +2001,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -1878,7 +2071,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -1964,6 +2157,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "spreadsProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "voltVault";
           isMut: true;
           isSigner: false;
@@ -1989,7 +2187,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -2234,7 +2432,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -2368,7 +2566,7 @@ export type VoltIDL = {
         },
         {
           name: "extraVoltData";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2498,7 +2696,7 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "rawOptionMarket";
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
@@ -5399,7 +5597,7 @@ export type VoltIDL = {
   ];
   types: [
     {
-      name: "OptionsProtocol";
+      name: "TwoTokenDerivativesProtocol";
       type: {
         kind: "enum";
         variants: [
@@ -5408,6 +5606,9 @@ export type VoltIDL = {
           },
           {
             name: "Inertia";
+          },
+          {
+            name: "Spreads";
           }
         ];
       };
@@ -6024,7 +6225,7 @@ export type VoltIDL = {
     {
       code: 6109;
       name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium";
-      msg: "fee account mint does not match deposit pool";
+      msg: "fee account mint does not match deposit pool or permissioned market premium";
     },
     {
       code: 6110;
@@ -6473,31 +6674,46 @@ export type VoltIDL = {
     },
     {
       code: 6199;
+      name: "InvalidTargetPoolForSwapOrder";
+      msg: "invalid target pool for swap order";
+    },
+    {
+      code: 6200;
+      name: "GivePoolMustBeEmpty";
+      msg: "give pool must be empty";
+    },
+    {
+      code: 6201;
+      name: "ReceivePoolMustBeEmpty";
+      msg: "receive pool must be empty";
+    },
+    {
+      code: 6202;
       name: "InvalidOracleType";
       msg: "invalid oracle type";
     },
     {
-      code: 6200;
+      code: 6203;
       name: "MustNotBeLendingUnderlyingAssetMint";
       msg: "must not be lending underlying asset mint";
     },
     {
-      code: 6201;
+      code: 6204;
       name: "MustNotBeLendingQuoteAssetMint";
       msg: "must not be lending quote asset mint";
     },
     {
-      code: 6202;
+      code: 6205;
       name: "InvalidSettleEnterFundsState";
       msg: "invalid settle enter funds state";
     },
     {
-      code: 6203;
+      code: 6206;
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount";
       msg: "premium farmed must match permissioned market premium pool";
     },
     {
-      code: 6204;
+      code: 6207;
       name: "InvalidWithdrawAmount";
       msg: "invalid withdraw amount";
     }
@@ -6706,6 +6922,194 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
       ],
+    },
+    {
+      name: "createSwapOrder",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapOrder",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltGivePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "givePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "giveMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receivePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receiveMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "counterparty",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "whitelistTokenMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "giveSize",
+          type: "u64",
+        },
+        {
+          name: "receiveSize",
+          type: "u64",
+        },
+        {
+          name: "expiry",
+          type: "u64",
+        },
+        {
+          name: "isCounterpartyProvided",
+          type: "bool",
+        },
+        {
+          name: "isWhitelisted",
+          type: "bool",
+        },
+      ],
+    },
+    {
+      name: "claimSwapOrder",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapOrder",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltGivePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "voltReceivePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "givePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receivePool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "counterparty",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "whitelistTokenMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
     },
     {
       name: "changeCapacity",
@@ -8086,7 +8490,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8167,6 +8571,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "spreadsProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "voltVault",
           isMut: true,
           isSigner: false,
@@ -8197,7 +8606,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8313,7 +8722,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8383,7 +8792,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8469,6 +8878,11 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "spreadsProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "voltVault",
           isMut: true,
           isSigner: false,
@@ -8494,7 +8908,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8739,7 +9153,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -8873,7 +9287,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "extraVoltData",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -9003,7 +9417,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "rawOptionMarket",
+          name: "rawDerivsContract",
           isMut: false,
           isSigner: false,
         },
@@ -11904,7 +12318,7 @@ export const VoltIDLJsonRaw = {
   ],
   types: [
     {
-      name: "OptionsProtocol",
+      name: "TwoTokenDerivativesProtocol",
       type: {
         kind: "enum",
         variants: [
@@ -11913,6 +12327,9 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "Inertia",
+          },
+          {
+            name: "Spreads",
           },
         ],
       },
@@ -12529,7 +12946,7 @@ export const VoltIDLJsonRaw = {
     {
       code: 6109,
       name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium",
-      msg: "fee account mint does not match deposit pool",
+      msg: "fee account mint does not match deposit pool or permissioned market premium",
     },
     {
       code: 6110,
@@ -12978,31 +13395,46 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6199,
+      name: "InvalidTargetPoolForSwapOrder",
+      msg: "invalid target pool for swap order",
+    },
+    {
+      code: 6200,
+      name: "GivePoolMustBeEmpty",
+      msg: "give pool must be empty",
+    },
+    {
+      code: 6201,
+      name: "ReceivePoolMustBeEmpty",
+      msg: "receive pool must be empty",
+    },
+    {
+      code: 6202,
       name: "InvalidOracleType",
       msg: "invalid oracle type",
     },
     {
-      code: 6200,
+      code: 6203,
       name: "MustNotBeLendingUnderlyingAssetMint",
       msg: "must not be lending underlying asset mint",
     },
     {
-      code: 6201,
+      code: 6204,
       name: "MustNotBeLendingQuoteAssetMint",
       msg: "must not be lending quote asset mint",
     },
     {
-      code: 6202,
+      code: 6205,
       name: "InvalidSettleEnterFundsState",
       msg: "invalid settle enter funds state",
     },
     {
-      code: 6203,
+      code: 6206,
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount",
       msg: "premium farmed must match permissioned market premium pool",
     },
     {
-      code: 6204,
+      code: 6207,
       name: "InvalidWithdrawAmount",
       msg: "invalid withdraw amount",
     },

@@ -105,26 +105,6 @@ export type SpreadsIDL = {
         {
           name: "isCall";
           type: "u64";
-        },
-        {
-          name: "contractBump";
-          type: "u8";
-        },
-        {
-          name: "optionBump";
-          type: "u8";
-        },
-        {
-          name: "writerBump";
-          type: "u8";
-        },
-        {
-          name: "underlyingPoolBump";
-          type: "u8";
-        },
-        {
-          name: "claimablePoolBump";
-          type: "u8";
         }
       ];
     },
@@ -198,7 +178,7 @@ export type SpreadsIDL = {
       name: "closePosition";
       accounts: [
         {
-          name: "closeAuthority";
+          name: "authority";
           isMut: true;
           isSigner: true;
         },
@@ -380,7 +360,7 @@ export type SpreadsIDL = {
       name: "redeem";
       accounts: [
         {
-          name: "redeemerAuthority";
+          name: "authority";
           isMut: false;
           isSigner: true;
         },
@@ -1007,26 +987,6 @@ export const SpreadsIDLJsonRaw = {
           name: "isCall",
           type: "u64",
         },
-        {
-          name: "contractBump",
-          type: "u8",
-        },
-        {
-          name: "optionBump",
-          type: "u8",
-        },
-        {
-          name: "writerBump",
-          type: "u8",
-        },
-        {
-          name: "underlyingPoolBump",
-          type: "u8",
-        },
-        {
-          name: "claimablePoolBump",
-          type: "u8",
-        },
       ],
     },
     {
@@ -1099,7 +1059,7 @@ export const SpreadsIDLJsonRaw = {
       name: "closePosition",
       accounts: [
         {
-          name: "closeAuthority",
+          name: "authority",
           isMut: true,
           isSigner: true,
         },
@@ -1281,7 +1241,7 @@ export const SpreadsIDLJsonRaw = {
       name: "redeem",
       accounts: [
         {
-          name: "redeemerAuthority",
+          name: "authority",
           isMut: false,
           isSigner: true,
         },

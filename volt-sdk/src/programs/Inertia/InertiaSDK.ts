@@ -15,10 +15,10 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
+import type Decimal from "decimal.js";
 
 import type { FriktionSDK } from "../..";
 import {
-  INERTIA_EXERCISE_FEE_BPS,
   INERTIA_FEE_OWNER,
   INERTIA_MINT_FEE_BPS,
   OPTIONS_PROGRAM_IDS,
@@ -28,13 +28,17 @@ import type { NetworkName } from "../../helperTypes";
 import type { ProviderLike } from "../../miscUtils";
 import { providerToAnchorProvider } from "../../miscUtils";
 import type { OptionMarketWithKey } from "../Volt";
+import { getStrikeFromOptionMarket } from "../Volt/optionMarketUtils";
 import type { InertiaIXAccounts } from ".";
 import type {
   InertiaContractWithKey,
   InertiaProgram,
-  StubOracleWithKey,
+  InertiaStubOracleWithKey,
 } from "./inertiaTypes";
-import { getInertiaMarketByKey } from "./inertiaUtils";
+import {
+  convertInertiaContractToOptionMarket,
+  getInertiaMarketByKey,
+} from "./inertiaUtils";
 
 export interface InertiaNewMarketParams {
   user: PublicKey;
@@ -98,7 +102,7 @@ export type InertiaSDKOpts = {
 };
 
 export class InertiaSDK {
-  readonly optionMarket: InertiaContractWithKey;
+  readonly optionsContract: InertiaContractWithKey;
   readonly optionKey: PublicKey;
   readonly program: InertiaProgram;
   readonly readonlyProvider: AnchorProvider;
@@ -129,14 +133,26 @@ export class InertiaSDK {
 
     this.program = Inertia as unknown as InertiaProgram;
 
-    this.optionMarket = optionMarket;
+    this.optionsContract = optionMarket;
     this.optionKey = optionMarket.key;
+  }
+
+  asOptionMarket(): OptionMarketWithKey {
+    return convertInertiaContractToOptionMarket(this.optionsContract);
+  }
+
+  async getStrike(): Promise<Decimal> {
+    return getStrikeFromOptionMarket(
+      this.readonlyProvider,
+      this.asOptionMarket(),
+      this.optionsContract.isCall.gtn(0)
+    );
   }
 
   static async getStubOracleByKey(
     sdk: FriktionSDK,
     key: PublicKey
-  ): Promise<StubOracleWithKey> {
+  ): Promise<InertiaStubOracleWithKey> {
     const acct = await sdk.programs.Inertia.account.stubOracle.fetch(key);
     const ret = {
       ...acct,
@@ -209,7 +225,7 @@ export class InertiaSDK {
 
   async getInertiaExerciseFeeAccount(): Promise<PublicKey> {
     return await InertiaSDK.getGenericInertiaExerciseFeeAccount(
-      this.optionMarket.quoteMint
+      this.optionsContract.quoteMint
     );
   }
 
@@ -222,23 +238,17 @@ export class InertiaSDK {
     );
   }
 
+  isCall(): boolean {
+    return this.optionsContract.isCall.gtn(0);
+  }
+
   mintFeeAmount(numOptionTokensMinted: BN): BN {
     if (numOptionTokensMinted.lten(0)) {
       return new BN(0);
     }
     return numOptionTokensMinted
-      .mul(this.optionMarket.underlyingAmount)
+      .mul(this.optionsContract.underlyingAmount)
       .muln(INERTIA_MINT_FEE_BPS)
-      .divn(10000);
-  }
-
-  exerciseFeeAmount(numOptionTokensToExercise: BN): BN {
-    if (numOptionTokensToExercise.lten(0)) {
-      return new BN(0);
-    }
-    return numOptionTokensToExercise
-      .mul(this.optionMarket.underlyingAmount)
-      .muln(INERTIA_EXERCISE_FEE_BPS)
       .divn(10000);
   }
 
@@ -283,33 +293,16 @@ export class InertiaSDK {
     );
   }
 
-  async exercise(
-    params: InertiaExerciseOptionParams
-  ): Promise<TransactionInstruction> {
+  exercise(params: InertiaExerciseOptionParams): TransactionInstruction {
     const { amount, optionTokenSource, underlyingTokenDestination } = params;
-
-    const seeds = [
-      this.optionMarket.underlyingMint,
-      this.optionMarket.quoteMint,
-      this.optionMarket.underlyingAmount,
-      this.optionMarket.quoteAmount,
-      this.optionMarket.expiryTs,
-      this.optionMarket.isCall.toNumber() > 0 ? true : false,
-    ] as const;
-
-    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-      this.program,
-      "ClaimablePool",
-      ...seeds
-    );
 
     const exerciseAccounts: InertiaIXAccounts["exercise"] = {
       contract: this.optionKey,
       exerciserAuthority: params.user,
-      optionMint: this.optionMarket.optionMint,
+      optionMint: this.optionsContract.optionMint,
       optionTokenSource: optionTokenSource,
       underlyingTokenDestination,
-      claimablePool,
+      claimablePool: this.optionsContract.claimablePool,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };
@@ -323,8 +316,16 @@ export class InertiaSDK {
     params: InertiaSettleOptionParams,
     bypassCode?: BN
   ): Promise<TransactionInstruction> {
+    // TODO: get rid of requiring a defined settle price. long term need to use oracles every time
+    if (params.settlePrice === undefined)
+      throw new Error("stop using oracles for a bit, pls pass in settle price");
+
     const settlePrice = params.settlePrice ?? new BN(0);
-    if (params.settlePrice !== undefined && params.settlePrice !== new BN(0))
+    if (
+      params.settlePrice !== undefined &&
+      params.settlePrice !== new BN(0) &&
+      bypassCode?.toString() !== "123456789"
+    )
       bypassCode = new BN(11111111);
     else if (bypassCode === undefined) {
       bypassCode = new BN(0);
@@ -334,34 +335,26 @@ export class InertiaSDK {
       throw new Error("bypass code must be positive (u64 in rust)");
     }
 
-    const seeds = [
-      this.optionMarket.underlyingMint,
-      this.optionMarket.quoteMint,
-      this.optionMarket.underlyingAmount,
-      this.optionMarket.quoteAmount,
-      this.optionMarket.expiryTs,
-      this.optionMarket.isCall.toNumber() > 0 ? true : false,
-    ] as const;
-    const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-      this.program,
-      "ClaimablePool",
-      ...seeds
-    );
-
     const settleAccounts: InertiaIXAccounts["settle"] = {
       authority: params.user,
-      oracleAi: this.optionMarket.oracleAi,
+      oracleAi: this.optionsContract.oracleAi,
       contract: this.optionKey,
-      claimablePool,
-      underlyingMint: this.optionMarket.underlyingMint,
-      quoteMint: this.optionMarket.quoteMint,
-      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      claimablePool: this.optionsContract.claimablePool,
+      underlyingMint: this.optionsContract.underlyingMint,
+      quoteMint: this.optionsContract.quoteMint,
+      contractUnderlyingTokens: this.optionsContract.underlyingPool,
       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };
 
+    console.log(
+      "settle px = ",
+      settlePrice.toString(),
+      ", bypass code = ",
+      bypassCode.toString()
+    );
     return this.program.instruction.optionSettle(settlePrice, bypassCode, {
       accounts: settleAccounts,
     });
@@ -371,12 +364,12 @@ export class InertiaSDK {
     params: InertiaRevertSettleOptionParams
   ): Promise<TransactionInstruction> {
     const seeds = [
-      this.optionMarket.underlyingMint,
-      this.optionMarket.quoteMint,
-      this.optionMarket.underlyingAmount,
-      this.optionMarket.quoteAmount,
-      this.optionMarket.expiryTs,
-      this.optionMarket.isCall.toNumber() > 0 ? true : false,
+      this.optionsContract.underlyingMint,
+      this.optionsContract.quoteMint,
+      this.optionsContract.underlyingAmount,
+      this.optionsContract.quoteAmount,
+      this.optionsContract.expiryTs,
+      this.optionsContract.isCall.toNumber() > 0 ? true : false,
     ] as const;
     const [claimablePool, _] = await InertiaSDK.getProgramAddress(
       this.program,
@@ -386,19 +379,19 @@ export class InertiaSDK {
 
     const revertSettleAccounts: InertiaIXAccounts["revertSettle"] = {
       authority: params.user,
-      oracleAi: this.optionMarket.oracleAi,
+      oracleAi: this.optionsContract.oracleAi,
       contract: this.optionKey,
       claimablePool,
-      underlyingMint: this.optionMarket.underlyingMint,
-      quoteMint: this.optionMarket.quoteMint,
-      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      underlyingMint: this.optionsContract.underlyingMint,
+      quoteMint: this.optionsContract.quoteMint,
+      contractUnderlyingTokens: this.optionsContract.underlyingPool,
       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };
 
-    return this.program.instruction.revertOptionSettle(new BN(0), {
+    return this.program.instruction.revertOptionSettle({
       accounts: revertSettleAccounts,
     });
   }
@@ -414,13 +407,11 @@ export class InertiaSDK {
     } = params;
 
     const writeAccounts: InertiaIXAccounts["write"] = {
-      contract: this.optionMarket.key,
-      optionMint: this.optionMarket.optionMint,
-      quoteMint: this.optionMarket.quoteMint,
+      contract: this.optionsContract.key,
+      optionMint: this.optionsContract.optionMint,
       optionTokenDestination,
-      underlyingMint: this.optionMarket.underlyingMint,
-      underlyingPool: this.optionMarket.underlyingPool,
-      writerMint: this.optionMarket.writerMint,
+      underlyingPool: this.optionsContract.underlyingPool,
+      writerMint: this.optionsContract.writerMint,
       writerTokenDestination,
       writerAuthority: user,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
@@ -441,8 +432,8 @@ export class InertiaSDK {
     const redeemAccounts: InertiaIXAccounts["redeem"] = {
       contract: this.optionKey,
       redeemerAuthority: user,
-      writerMint: this.optionMarket.writerMint,
-      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      writerMint: this.optionsContract.writerMint,
+      contractUnderlyingTokens: this.optionsContract.underlyingPool,
       writerTokenSource: redeemerTokenSource,
       underlyingTokenDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
@@ -466,12 +457,12 @@ export class InertiaSDK {
     const closePositionAccounts: InertiaIXAccounts["close"] = {
       contract: this.optionKey,
       closeAuthority: user,
-      writerMint: this.optionMarket.writerMint,
-      optionMint: this.optionMarket.optionMint,
+      writerMint: this.optionsContract.writerMint,
+      optionMint: this.optionsContract.optionMint,
       writerTokenSource: writerTokenSource,
       optionTokenSource: optionTokenSource,
       underlyingTokenDestination,
-      underlyingPool: this.optionMarket.underlyingPool,
+      underlyingPool: this.optionsContract.underlyingPool,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };
@@ -480,97 +471,4 @@ export class InertiaSDK {
       accounts: closePositionAccounts,
     });
   }
-
-  // async reclaimFundsFromExerciseAdmin(
-  //   user: PublicKey,
-  //   numToClaim: BN
-  // ): Promise<TransactionInstruction> {
-  //   const seeds = [
-  //     this.optionMarket.underlyingMint,
-  //     this.optionMarket.quoteMint,
-  //     this.optionMarket.underlyingAmount,
-  //     this.optionMarket.quoteAmount,
-  //     this.optionMarket.expiryTs,
-  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
-  //   ] as const;
-  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-  //     this.program,
-  //     "ClaimablePool",
-  //     ...seeds
-  //   );
-
-  //   const associatedTokenAddress = await Token.getAssociatedTokenAddress(
-  //     ASSOCIATED_TOKEN_PROGRAM_ID,
-  //     TOKEN_PROGRAM_ID,
-  //     this.optionMarket.underlyingMint,
-  //     user
-  //   );
-
-  //   const reclaimFundsFromExerciseAdminAccounts: InertiaIXAccounts["reclaimFundsFromExerciseAdmin"] =
-  //     {
-  //       authority: user,
-  //       oracleAi: this.optionMarket.oracleAi,
-  //       contract: this.optionKey,
-  //       claimablePool,
-  //       underlyingMint: this.optionMarket.underlyingMint,
-  //       quoteMint: this.optionMarket.quoteMint,
-  //       // contractUnderlyingTokens: this.optionMarket.underlyingPool,
-  //       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
-
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //       clock: SYSVAR_CLOCK_PUBKEY,
-  //       userUnderlyingTokens: associatedTokenAddress,
-  //     };
-
-  //   return this.program.instruction.reclaimFundsFromExerciseAdmin(numToClaim, {
-  //     accounts: reclaimFundsFromExerciseAdminAccounts,
-  //   });
-  // }
-
-  // async reinitializeUnderlyingMint(
-  //   user: PublicKey,
-  //   targetPool: PublicKey,
-  //   newUnderlyingMint: PublicKey
-  // ): Promise<TransactionInstruction> {
-  //   const seeds = [
-  //     this.optionMarket.underlyingMint,
-  //     this.optionMarket.quoteMint,
-  //     this.optionMarket.underlyingAmount,
-  //     this.optionMarket.quoteAmount,
-  //     this.optionMarket.expiryTs,
-  //     this.optionMarket.isCall.toNumber() > 0 ? true : false,
-  //   ] as const;
-  //   const [claimablePool, _] = await InertiaSDK.getProgramAddress(
-  //     this.program,
-  //     "ClaimablePool",
-  //     ...seeds
-  //   );
-
-  //   const associatedTokenAddress = await Token.getAssociatedTokenAddress(
-  //     ASSOCIATED_TOKEN_PROGRAM_ID,
-  //     TOKEN_PROGRAM_ID,
-  //     this.optionMarket.underlyingMint,
-  //     user
-  //   );
-
-  //   const reinitializeUnderlyingMintAccounts: InertiaIXAccounts["reinitializeUnderlyingMint"] =
-  //     {
-  //       authority: user,
-  //       oracleAi: this.optionMarket.oracleAi,
-  //       contract: this.optionKey,
-  //       underlyingMint: this.optionMarket.underlyingMint,
-  //       newUnderlyingMint: newUnderlyingMint,
-
-  //       targetPool: targetPool,
-
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //       systemProgram: SystemProgram.programId,
-  //       userUnderlyingTokens: associatedTokenAddress,
-  //       rent: SYSVAR_RENT_PUBKEY,
-  //     };
-
-  //   return this.program.instruction.reinitializeUnderlyingMint({
-  //     accounts: reinitializeUnderlyingMintAccounts,
-  //   });
-  // }
 }

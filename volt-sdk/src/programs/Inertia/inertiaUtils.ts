@@ -66,7 +66,7 @@ export const getInertiaMarketByKey = async (
   return optionMarket;
 };
 
-export const getContractByKey = async (
+export const getInertiaContractByKeyOrNull = async (
   program: InertiaProgram,
   key: PublicKey
 ): Promise<InertiaContractWithKey | null> => {

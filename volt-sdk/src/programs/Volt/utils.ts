@@ -84,7 +84,6 @@ export async function getAccountBalanceOrZeroStruct(
 
     return res;
   } catch (err) {
-    console.error(err);
     return { balance: new BN(0), token: null };
   }
 }
