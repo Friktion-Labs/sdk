@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Note:** The minor version will be incremented upon a breaking change and the patch version will be incremented for features.
 
+## [0.0.2] - 2022-06-05
+
+### Fixes
+
+- ts: correct depositMint to underlyingAssetMint when calcing tvl being lent into mango. important to recall v0 volts don't store depositMint on extra volt data correctly.
+- ts: added ANCHOR_WALLET export to volt manager CI, preventing error when running volt-manager/volt.ts
+- program: switch setup rebalance entropy to use 400k CUs in rust tests, passes CI now
+
+### Breaking
+
+- ts: change repo of @friktion-labs/friktion-sdk package to point to Friktion-Labs/sdk
+
 ## [0.0.1] - 2022-06-05
 
 ### Features
