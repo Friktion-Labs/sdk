@@ -7,7 +7,7 @@
 - simple-manager: basic CLI tool for interacting with volts
 
 ## (Other) Development Resources
-- https://app.friktion.fi/mainnet-registry.json - JSON registry up-to-date with latest information. Useful for on-chain data. Feel free to hotlink it. This registry will be maintained through to at least December 2022
+- https://friktion-labs.github.io/mainnet-tvl-snapshots/friktionSnapshot.json - JSON registry up-to-date with latest information. Useful for on-chain data. Feel free to hotlink it. This registry will be maintained through to at least December 2022
 - https://github.com/Friktion-Labs/mainnet-tvl-snapshots - Historical TVL snapshots per asset, coingecko price, and deposit breakdowns. Useful for creating time-series data without needing to query the chain
 - https://github.com/Friktion-Labs/sdk - Public Friktion SDK and other tooling, published to https://www.npmjs.com/package/@friktion-labs/friktion-sdk
 
