@@ -1,4 +1,4 @@
-import type { I80F48, PerpMarket } from "@friktion-labs/entropy-client";
+import type { PerpMarket } from "@friktion-labs/entropy-client";
 import {
   EntropyClient,
   makeCachePerpMarketsInstruction,
@@ -360,7 +360,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     underlyingTokenDestination: PublicKey,
     daoAuthority?: PublicKey,
     normFactor?: Decimal | undefined,
-    withClaim = false,
+    withClaim = false
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
       await this.getVoltValueInDepositToken(normFactor);
@@ -2975,7 +2975,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async setupRebalanceEntropy(
-    clientOraclePx?: I80F48
+    clientOraclePx?: Decimal
   ): Promise<TransactionInstruction> {
     const {
       roundVoltTokensKey,
@@ -3292,7 +3292,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     const { rootBank, nodeBank } = await VoltSDK.getGroupAndBanks(
       entropyClient,
       entropyGroup.publicKey,
-      this.extraVoltData?.depositMint
+      this.voltVault.underlyingAssetMint
     );
 
     const withdrawAssetsFromLendingAccounts: Parameters<
