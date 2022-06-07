@@ -54,6 +54,15 @@ import type {
   VoltProgram,
 } from "./voltTypes";
 
+/// NOTE: the following instructions currently consume > 200k CUs (forced to compile with opt-level Z in order to fit in program account size)
+/// easy fix is to add a compute budget program request for 400k units (more than enough for any of these)
+// 1. rebalanceEntropy
+// 2. rebalanceSpotEntropy
+// 3. setupRebalanceEntropy
+// MAYBE:
+// 1. depositWithClaim (when it claims or cancels and does instant deposit)
+// 2. withdrawWithClaim (same as above)
+
 export class ConnectedVoltSDK extends VoltSDK {
   readonly connection: Connection;
   readonly wallet: PublicKey;
@@ -350,7 +359,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     userVaultTokens: PublicKey,
     underlyingTokenDestination: PublicKey,
     daoAuthority?: PublicKey,
-    normFactor?: Decimal | undefined
+    normFactor?: Decimal | undefined,
+    withClaim = false,
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
       await this.getVoltValueInDepositToken(normFactor);
@@ -398,12 +408,21 @@ export class ConnectedVoltSDK extends VoltSDK {
       }
     }
 
-    return await this.withdraw(
-      new BN(withdrawalAmountVaultTokens),
-      userVaultTokens,
-      underlyingTokenDestination,
-      daoAuthority
-    );
+    if (withClaim) {
+      return await this.withdrawWithClaim(
+        new BN(withdrawalAmountVaultTokens),
+        userVaultTokens,
+        underlyingTokenDestination,
+        daoAuthority
+      );
+    } else {
+      return await this.withdraw(
+        new BN(withdrawalAmountVaultTokens),
+        userVaultTokens,
+        underlyingTokenDestination,
+        daoAuthority
+      );
+    }
   }
 
   /**
