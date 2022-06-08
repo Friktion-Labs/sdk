@@ -342,7 +342,7 @@ const run = async () => {
       (await vaultToken.getAccountInfo(vaultTokenAccount)).amount.toString()
     );
 
-    console.log("succesfully claimed pending!");
+    console.log("successfully claimed pending!");
     return;
   } else if (instruction == "claimPendingWithdrawal") {
     console.log("claiming vault tokens from previous pending withdrawal");
@@ -367,7 +367,7 @@ const run = async () => {
       ).amount.toString()
     );
 
-    console.log("succesfully claimed pending withdrawal!");
+    console.log("successfully claimed pending withdrawal!");
     return;
   }
 };
