@@ -26,7 +26,7 @@
     "test:inertia-ci": "ANCHOR_WALLET=~/.config/solana/id.json bin/test-inertia-catch-error.sh",
     "test:swap": "ANCHOR_WALLET=~/.config/solana/id.json cd tests/integration/swap-suite && anchor test --skip-build",
     "test:unit": "ANCHOR_WALLET=~/.config/solana/volt-testing.json yarn run ts-mocha -p ./tests/tsconfig.json -t 100000 tests/unit/**/*test*.ts",
-    "test:serum": "ANCHOR_WALLET=~/.config/solana/id.jsocn anchor test --skip-build tests/serum/proxy.ts",
+    "test:serum": "ANCHOR_WALLET=~/.config/solana/id.json anchor test --skip-build tests/serum/proxy.ts",
     "postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
