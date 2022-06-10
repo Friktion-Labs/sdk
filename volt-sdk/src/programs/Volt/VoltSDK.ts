@@ -2700,8 +2700,17 @@ export class VoltSDK {
     tokens: Decimal;
     dollars: Decimal;
   }> {
-    const { entropyGroup, entropyAccount, entropyCache } =
-      await this.getEntropyLendingObjects();
+    let entropyGroup, entropyAccount, entropyCache;
+    try {
+      ({ entropyGroup, entropyAccount, entropyCache } =
+        await this.getEntropyLendingObjects());
+    } catch (err) {
+      return {
+        tokens: new Decimal(0),
+        dollars: new Decimal(0),
+      };
+    }
+
     const acctEquity = new Decimal(
       entropyAccount.computeValue(entropyGroup, entropyCache).toString()
     );

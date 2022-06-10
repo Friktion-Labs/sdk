@@ -138,6 +138,8 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
+    // TODO: delete this for efficiencies sake
+
     const depositAccountsStruct: Parameters<
       VoltProgram["instruction"]["deposit"]["accounts"]
     >[0] = {
@@ -162,7 +164,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       extraVoltData: extraVoltKey,
 
       vaultAuthority: this.voltVault.vaultAuthority,
-      whitelist: this?.extraVoltData?.whitelist ?? SystemProgram.programId,
+      whitelist: this.extraVoltData?.whitelist ?? SystemProgram.programId,
 
       vaultMint: this.voltVault.vaultMint,
 
@@ -1069,8 +1071,18 @@ export class ConnectedVoltSDK extends VoltSDK {
   async changeFees(
     performanceFeeBps: BN,
     withdrawalFeeBps: BN,
-    dovTakeFeesInUnderlying: boolean
+    dovTakeFeesInUnderlying?: boolean,
+    useCustomFees?: boolean
   ): Promise<TransactionInstruction> {
+    if (dovTakeFeesInUnderlying === undefined || useCustomFees === undefined) {
+      await this.loadInExtraVoltData();
+      if (dovTakeFeesInUnderlying === undefined)
+        dovTakeFeesInUnderlying =
+          this.extraVoltData?.dovPerformanceFeesInUnderlying;
+      if (useCustomFees === undefined)
+        useCustomFees =
+          (this.extraVoltData?.useCustomFees?.toNumber() ?? 0) > 0;
+    }
     const { extraVoltKey } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
@@ -1093,7 +1105,8 @@ export class ConnectedVoltSDK extends VoltSDK {
     return this.sdk.programs.Volt.instruction.changeFees(
       performanceFeeBps,
       withdrawalFeeBps,
-      dovTakeFeesInUnderlying,
+      dovTakeFeesInUnderlying as boolean,
+      useCustomFees,
       {
         accounts: changeFeesAccounts,
       }

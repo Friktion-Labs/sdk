@@ -2,10 +2,13 @@ import type { BN } from "@project-serum/anchor";
 import type { AnchorTypes } from "@saberhq/anchor-contrib";
 import type { PublicKey } from "@solana/web3.js";
 
+import type { OptionsProtocol } from "../../constants";
 import type { VoltIDL } from "../../idls/volt";
-
 // DO NOT DO THIS. DUE TO SOME OBSCURE EDGECASES, THIS DOESNT WORK ... SOMETIMES
 // import { VoltIDLJsonRaw } from "../../idls/volt";
+import type { InertiaContract } from "../Inertia/inertiaTypes";
+import type { SoloptionsContract } from "../Soloptions/soloptionsTypes";
+import type { SpreadsContract } from "../Spreads/spreadsTypes";
 // export const VoltIDLJson = VoltIDLJsonRaw;
 
 export type VoltTypes = AnchorTypes<
@@ -74,6 +77,8 @@ export type OptionMarket = {
   claimablePool: PublicKey;
   underlyingPool: PublicKey;
   bumpSeed: number;
+  protocol: OptionsProtocol;
+  rawContract: InertiaContract | SoloptionsContract | SpreadsContract;
 };
 
 export type OptionMarketWithKey = OptionMarket & {

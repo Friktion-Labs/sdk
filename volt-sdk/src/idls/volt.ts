@@ -481,6 +481,10 @@ export type VoltIDL = {
         {
           name: "takeFeesInUnderlying";
           type: "bool";
+        },
+        {
+          name: "useCustomFees";
+          type: "bool";
         }
       ];
     },
@@ -5228,7 +5232,7 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "unusedUint10";
+            name: "useCustomFees";
             type: "u64";
           },
           {
@@ -7201,6 +7205,10 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "takeFeesInUnderlying",
+          type: "bool",
+        },
+        {
+          name: "useCustomFees",
           type: "bool",
         },
       ],
@@ -11949,7 +11957,7 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "unusedUint10",
+            name: "useCustomFees",
             type: "u64",
           },
           {

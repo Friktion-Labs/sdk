@@ -39,6 +39,8 @@ export const convertInertiaContractToOptionMarket = (
     claimablePool: inertiaContract.claimablePool,
     underlyingPool: inertiaContract.underlyingPool,
     bumpSeed: inertiaContract.contractBump,
+    protocol: "Inertia",
+    rawContract: inertiaContract,
   };
 };
 

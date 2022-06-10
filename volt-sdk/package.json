@@ -1,6 +1,6 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "1.1.115",
+  "version": "1.1.118",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "scripts": {
@@ -38,9 +38,9 @@
     "@project-serum/anchor": "^0.25.0-beta.1",
     "@project-serum/common": "^0.0.1-beta.3",
     "@project-serum/serum": "^0.13.61",
-    "@saberhq/anchor-contrib": "1.13.0",
-    "@saberhq/solana-contrib": "1.13.0",
-    "@saberhq/token-utils": "1.13.0",
+    "@saberhq/anchor-contrib": "1.12.53",
+    "@saberhq/solana-contrib": "1.12.53",
+    "@saberhq/token-utils": "1.12.53",
     "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.42.0",
     "@switchboard-xyz/switchboard-v2": "^0.0.34",

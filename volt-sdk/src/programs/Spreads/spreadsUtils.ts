@@ -30,6 +30,8 @@ export const convertSpreadsContractToOptionMarket = (
     claimablePool: spreadsContract.claimablePool,
     underlyingPool: spreadsContract.underlyingPool,
     bumpSeed: spreadsContract.contractBump,
+    protocol: "Spreads",
+    rawContract: spreadsContract,
   };
 };
 
