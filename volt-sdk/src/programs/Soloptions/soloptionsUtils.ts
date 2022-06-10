@@ -45,6 +45,8 @@ export const convertSoloptionsContractToOptionMarket = (
     underlyingPool: soloptionsContract.underlyingPool,
     key: soloptionsContract.key,
     bumpSeed: soloptionsContract.contractBump,
+    rawContract: soloptionsContract,
+    protocol: "Soloptions",
   };
 };
 
