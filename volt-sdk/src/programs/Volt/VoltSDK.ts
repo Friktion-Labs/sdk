@@ -34,12 +34,7 @@ import { Decimal } from "decimal.js";
 import { sleep } from "../../../friktion-utils";
 // import superagent from "superagent";
 import type { FriktionSDK } from "../..";
-import {
-  OPTIONS_PROGRAM_IDS,
-  PERFORMANCE_FEE_BPS,
-  SoloptionsSDK,
-  WITHDRAWAL_FEE_BPS,
-} from "../..";
+import { PERFORMANCE_FEE_BPS, WITHDRAWAL_FEE_BPS } from "../..";
 import type { OptionsProtocol, PerpProtocol } from "../../constants";
 import {
   ENTROPY_PROGRAM_ID,
@@ -49,12 +44,7 @@ import {
   VoltType,
 } from "../../constants";
 import { anchorProviderToSerumProvider } from "../../miscUtils";
-import {
-  getInertiaContractByKeyOrNull,
-  getInertiaMarketByKey,
-} from "../Inertia/inertiaUtils";
-import { SpreadsSDK } from "../Spreads/SpreadsSDK";
-import { convertSpreadsContractToOptionMarket } from "../Spreads/spreadsUtils";
+import { getInertiaContractByKeyOrNull } from "../Inertia/inertiaUtils";
 import type {
   EntropyRoundWithKey,
   ExtraVoltDataWithKey,
@@ -2538,35 +2528,7 @@ export class VoltSDK {
     key: PublicKey,
     optionsProtocol?: OptionsProtocol
   ): Promise<OptionMarketWithKey> {
-    if (!optionsProtocol) {
-      optionsProtocol = await this.getOptionsProtocolForKey(key);
-    }
-    let optionMarket: OptionMarketWithKey | null;
-    if (optionsProtocol === "Inertia") {
-      optionMarket = await getInertiaMarketByKey(
-        this.sdk.programs.Inertia as unknown as Parameters<
-          typeof getInertiaMarketByKey
-        >[0],
-        key
-      );
-    } else if (optionsProtocol === "Soloptions") {
-      optionMarket = await SoloptionsSDK.getOptionMarketByKey(
-        this.sdk.programs.Soloptions,
-        key
-      );
-    } else if (optionsProtocol === "Spreads") {
-      optionMarket = convertSpreadsContractToOptionMarket(
-        await SpreadsSDK.getSpreadsContractByKey(this.sdk.programs.Spreads, key)
-      );
-    } else {
-      throw new Error("options protocol not supported");
-    }
-
-    if (!optionMarket) {
-      throw new Error("option market does not exist");
-    }
-
-    return optionMarket;
+    return await this.sdk.getOptionMarketByKey(key, optionsProtocol);
   }
 
   async getRootAndNodeBank(entropyGroup: EntropyGroup): Promise<{
@@ -2593,29 +2555,7 @@ export class VoltSDK {
   }
 
   async getOptionsProtocolForKey(key: PublicKey): Promise<OptionsProtocol> {
-    const accountInfo =
-      await this.sdk.readonlyProvider.connection.getAccountInfo(key);
-    if (!accountInfo) {
-      throw new Error(
-        "account does not exist, can't determine options protocol owner"
-      );
-    }
-
-    if (
-      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Inertia.toString()
-    ) {
-      return "Inertia";
-    } else if (
-      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Soloptions.toString()
-    ) {
-      return "Soloptions";
-    } else if (
-      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Spreads.toString()
-    ) {
-      return "Spreads";
-    } else {
-      throw new Error("owner is not a supported options protocol");
-    }
+    return await this.sdk.getOptionsProtocolForKey(key);
   }
 
   async getPerpProtocolForKey(key: PublicKey): Promise<PerpProtocol> {

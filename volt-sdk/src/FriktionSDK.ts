@@ -16,7 +16,7 @@ import {
   SpreadsSDK,
   VoltSDK,
 } from ".";
-import type { NetworkSpecificConstants } from "./constants";
+import type { NetworkSpecificConstants, OptionsProtocol } from "./constants";
 import {
   FRIKTION_IDLS,
   FRIKTION_PROGRAM_ID,
@@ -32,7 +32,10 @@ import type {
   InertiaContractWithKey,
   InertiaProgram,
 } from "./programs/Inertia/inertiaTypes";
-import { getInertiaContractByKey } from "./programs/Inertia/inertiaUtils";
+import {
+  getInertiaContractByKey,
+  getInertiaMarketByKey,
+} from "./programs/Inertia/inertiaUtils";
 import type {
   SoloptionsContract,
   SoloptionsContractWithKey,
@@ -43,7 +46,10 @@ import type {
   SpreadsContractWithKey,
   SpreadsProgram,
 } from "./programs/Spreads/spreadsTypes";
-import { getSpreadsContractByKey } from "./programs/Spreads/spreadsUtils";
+import {
+  convertSpreadsContractToOptionMarket,
+  getSpreadsContractByKey,
+} from "./programs/Spreads/spreadsUtils";
 import { SwapSDK } from "./programs/Swap/SwapSDK";
 import type {
   SimpleSwapOrder,
@@ -51,7 +57,10 @@ import type {
   SimpleSwapUserOrdersWithKey,
 } from "./programs/Swap/swapTypes";
 import type { VoltProgram, VoltVault, Whitelist } from "./programs/Volt";
-import type { ExtraVoltData } from "./programs/Volt/voltTypes";
+import type {
+  ExtraVoltData,
+  OptionMarketWithKey,
+} from "./programs/Volt/voltTypes";
 
 export type LegacyAnchorPrograms = {
   Volt: Program;
@@ -361,6 +370,63 @@ export class FriktionSDK {
         }
       })
     );
+  }
+
+  async getOptionsProtocolForKey(key: PublicKey): Promise<OptionsProtocol> {
+    const accountInfo = await this.readonlyProvider.connection.getAccountInfo(
+      key
+    );
+    if (!accountInfo) {
+      throw new Error(
+        "account does not exist, can't determine options protocol owner"
+      );
+    }
+
+    if (
+      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Inertia.toString()
+    ) {
+      return "Inertia";
+    } else if (
+      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Soloptions.toString()
+    ) {
+      return "Soloptions";
+    } else if (
+      accountInfo.owner.toString() === OPTIONS_PROGRAM_IDS.Spreads.toString()
+    ) {
+      return "Spreads";
+    } else {
+      throw new Error("owner is not a supported options protocol");
+    }
+  }
+
+  async getOptionMarketByKey(
+    key: PublicKey,
+    optionsProtocol?: OptionsProtocol
+  ): Promise<OptionMarketWithKey> {
+    if (!optionsProtocol) {
+      optionsProtocol = await this.getOptionsProtocolForKey(key);
+    }
+    let optionMarket: OptionMarketWithKey | null;
+    if (optionsProtocol === "Inertia") {
+      optionMarket = await getInertiaMarketByKey(this.programs.Inertia, key);
+    } else if (optionsProtocol === "Soloptions") {
+      optionMarket = await SoloptionsSDK.getOptionMarketByKey(
+        this.programs.Soloptions,
+        key
+      );
+    } else if (optionsProtocol === "Spreads") {
+      optionMarket = convertSpreadsContractToOptionMarket(
+        await SpreadsSDK.getSpreadsContractByKey(this.programs.Spreads, key)
+      );
+    } else {
+      throw new Error("options protocol not supported");
+    }
+
+    if (!optionMarket) {
+      throw new Error("option market does not exist");
+    }
+
+    return optionMarket;
   }
 
   loadSpreadsSDK(spreadsContract: SpreadsContractWithKey): SpreadsSDK {
