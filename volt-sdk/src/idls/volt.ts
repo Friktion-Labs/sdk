@@ -3697,7 +3697,7 @@ export type VoltIDL = {
         },
         {
           name: "entropyCache";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -4176,7 +4176,7 @@ export type VoltIDL = {
         },
         {
           name: "entropyCache";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -10422,7 +10422,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "entropyCache",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -10901,7 +10901,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "entropyCache",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

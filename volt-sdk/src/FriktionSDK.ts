@@ -429,6 +429,33 @@ export class FriktionSDK {
     return optionMarket;
   }
 
+  async loadOptionsSDKByKey(
+    key: PublicKey
+  ): Promise<SoloptionsSDK | InertiaSDK | SpreadsSDK> {
+    const optionMarket = await this.getOptionMarketByKey(key);
+    const rawContractWithKey = {
+      key: optionMarket.key,
+      ...optionMarket.rawContract,
+    };
+    const protocol = optionMarket.protocol;
+
+    if (protocol === "Inertia") {
+      return new InertiaSDK(rawContractWithKey as InertiaContractWithKey, {
+        provider: this.readonlyProvider,
+      });
+    } else if (protocol === "Soloptions") {
+      return this.loadSoloptionsSDK(
+        rawContractWithKey as SoloptionsContractWithKey
+      );
+    } else if (protocol === "Spreads") {
+      return new SpreadsSDK(rawContractWithKey as SpreadsContractWithKey, {
+        provider: this.readonlyProvider,
+      });
+    } else {
+      throw new Error("option markets protocol not supported");
+    }
+  }
+
   loadSpreadsSDK(spreadsContract: SpreadsContractWithKey): SpreadsSDK {
     return new SpreadsSDK(spreadsContract, {
       provider: this.readonlyProvider,

@@ -5,6 +5,31 @@ import Decimal from "decimal.js";
 import { anchorProviderToSerumProvider } from "../../miscUtils";
 import type { OptionMarketWithKey } from "./voltTypes";
 
+// export const getExerciseIxForOptionMarket = (
+//   optionMarket: OptionMarketWithKey,
+//   sdk: FriktionSDK
+// ): TransactionInstruction => {
+//   const protocol = optionMarket.protocol;
+//   const rawContractWithKey = {
+//     key: optionMarket.key,
+//     ...optionMarket.rawContract,
+//   };
+
+//   if (protocol === "Inertia") {
+//     return new InertiaSDK(rawContractWithKey as InertiaContractWithKey, {
+//       provider: sdk.readonlyProvider,
+//     });
+//   } else if (protocol === "Soloptions") {
+//     return sdk.loadSoloptionsSDK(
+//       rawContractWithKey as SoloptionsContractWithKey
+//     );
+//   } else if (protocol === "Spreads") {
+//     return new SpreadsSDK(rawContractWithKey as SpreadsContractWithKey, {
+//       provider: sdk.readonlyProvider,
+//     }).exercise();
+//   }
+// };
+
 export const getStrikeFromOptionMarket = async (
   provider: AnchorProvider,
   optionMarket: OptionMarketWithKey,

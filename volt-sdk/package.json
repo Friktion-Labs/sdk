@@ -1,6 +1,6 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "1.1.119",
+  "version": "1.1.120",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "scripts": {
@@ -19,7 +19,8 @@
     "release": "git add package.json && node ./scripts/generate-release-commit-message.js && git commit --allow-empty -F ./scripts/release-message && rm ./scripts/release-message && echo '\n\n🙏 Please run git push with this latest commit at HEAD, or include the commit message in the pull request title'",
     "bump": "yarn version patch && yarn release",
     "format:fix": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css|md)\"",
-    "test:all": "anchor build && yarn test:legacy && yarn test:modern",
+    "test:rust": "cargo test-bpf",
+    "test:all": "anchor build && yarn test:legacy && yarn test:modern && yarn test:unit && yarn test:rust",
     "test:volt": "ANCHOR_WALLET=~/.config/solana/id.json anchor test --skip-build",
     "test:volt-ci": "ANCHOR_WALLET=~/.config/solana/id.json bin/test-volt-catch-error.sh",
     "test:inertia": "ANCHOR_WALLET=~/.config/solana/id.json cd tests/integration/inertia-suite && anchor test --skip-build",
@@ -69,7 +70,8 @@
     "pinst": "^3.0.0",
     "prettier": "^2.5.1",
     "ts-mocha": "10.0.0",
-    "ts-node": "10.8.0"
+    "ts-node": "10.8.0",
+    "typescript": "4.6.3"
   },
   "main": "dist/cjs/src/index.js",
   "files": [

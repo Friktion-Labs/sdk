@@ -301,6 +301,15 @@ export class VoltSDK {
     );
   }
 
+  definitelyDoesntRequirePermissionedSettle(): boolean {
+    return (
+      this.voltType() === VoltType.ShortOptions &&
+      this.voltVault.permissionedMarketPremiumMint.toString() !==
+        this.voltVault.underlyingAssetMint.toString() &&
+      this.voltVault.permissionedMarketPremiumMint.toString() !==
+        this.voltVault.quoteAssetMint.toString()
+    );
+  }
   async printState(): Promise<void> {
     if (this.extraVoltData === undefined) await this.loadInExtraVoltData();
     const symbol = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
@@ -503,6 +512,8 @@ export class VoltSDK {
     );
 
     if (this.voltType() === VoltType.Entropy) {
+      const entropyRound = await this.getCurrentEntropyRound();
+
       const { entropyAccount, entropyGroup, entropyCache } =
         await this.getEntropyObjectsForEvData();
 
@@ -515,12 +526,19 @@ export class VoltSDK {
         ev.hedgingSpotPerpMarket
       );
 
-      const acctEquity = entropyAccount.computeValue(
-        entropyGroup,
-        entropyCache
-      );
+      const acctEquityPostDeposits = entropyAccount
+        .computeValue(entropyGroup, entropyCache)
+        .add(
+          I80F48.fromString(entropyRound.netDeposits as string)
+            .div(
+              I80F48.fromString(
+                (await this.getNormalizationFactor()).toString()
+              )
+            )
+            .min(new I80F48(new BN(0)))
+        );
 
-      const targetPerpSize = acctEquity
+      const targetPerpSize = acctEquityPostDeposits
         .mul(I80F48.fromString(ev.targetLeverage as string))
         .sub(
           I80F48.fromNumber(
@@ -531,7 +549,7 @@ export class VoltSDK {
           ).mul(entropyCache.priceCache[targetPerpIndex]?.price as I80F48)
         );
 
-      const hedgingPerpSize = acctEquity
+      const hedgingPerpSize = acctEquityPostDeposits
         .mul(I80F48.fromString(entropyMetadata.targetHedgeRatio as string))
         .mul(I80F48.fromString(ev.targetLeverage as string))
         .sub(
@@ -544,7 +562,8 @@ export class VoltSDK {
         );
 
       console.log(
-        `needed ${
+        `equity post deposits = ${acctEquityPostDeposits.toString()}`,
+        `\nneeded ${
           this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
             ev.powerPerpMarket.toString()
           ]?.toString() ?? "N/A"

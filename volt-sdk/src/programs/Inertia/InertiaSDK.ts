@@ -105,7 +105,7 @@ export class InertiaSDK {
   readonly optionsContract: InertiaContractWithKey;
   readonly optionKey: PublicKey;
   readonly program: InertiaProgram;
-  readonly readonlyProvider: AnchorProvider;
+  readonly readonlyProvider?: AnchorProvider;
   readonly network: NetworkName;
 
   constructor(optionMarket: InertiaContractWithKey, opts: InertiaSDKOpts) {
@@ -142,6 +142,8 @@ export class InertiaSDK {
   }
 
   async getStrike(): Promise<Decimal> {
+    if (this.readonlyProvider === undefined)
+      throw new Error("read only provider must be generated");
     return getStrikeFromOptionMarket(
       this.readonlyProvider,
       this.asOptionMarket(),
