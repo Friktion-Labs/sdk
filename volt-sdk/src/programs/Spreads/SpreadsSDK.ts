@@ -225,6 +225,10 @@ export class SpreadsSDK {
     };
   }
 
+  canExercise(): boolean {
+    return this.spreadsContract.wasSettleCranked;
+  }
+
   static async getStubOracleByKey(
     sdk: FriktionSDK,
     key: PublicKey

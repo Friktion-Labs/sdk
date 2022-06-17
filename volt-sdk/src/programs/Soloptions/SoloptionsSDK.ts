@@ -79,7 +79,7 @@ export type SoloptionsSDKOpts = {
   network?: NetworkName;
 };
 export class SoloptionsSDK {
-  readonly optionMarket: SoloptionsContractWithKey;
+  readonly optionsContract: SoloptionsContractWithKey;
   readonly optionKey: PublicKey;
   readonly program: SoloptionsProgram;
   readonly readonlyProvider: AnchorProvider;
@@ -93,13 +93,13 @@ export class SoloptionsSDK {
     this.network = friktionSdk.network;
     this.program = friktionSdk.programs.Soloptions;
 
-    this.optionMarket = optionMarket;
+    this.optionsContract = optionMarket;
     this.optionKey = optionMarket.key;
   }
 
   async getSoloptionsExerciseFeeAccount(): Promise<PublicKey> {
     return await SoloptionsSDK.getGenericSoloptionsExerciseFeeAccount(
-      this.optionMarket.quoteMint
+      this.optionsContract.quoteMint
     );
   }
 
@@ -119,7 +119,7 @@ export class SoloptionsSDK {
       return new BN(0);
     }
     return numOptionTokensMinted
-      .mul(this.optionMarket.underlyingAmount)
+      .mul(this.optionsContract.underlyingAmount)
       .muln(SOLOPTIONS_MINT_FEE_BPS)
       .divn(10000);
   }
@@ -129,7 +129,7 @@ export class SoloptionsSDK {
       return new BN(0);
     }
     return numOptionTokensToExercise
-      .mul(this.optionMarket.underlyingAmount)
+      .mul(this.optionsContract.underlyingAmount)
       .muln(SOLOPTIONS_EXERCISE_FEE_BPS)
       .divn(10000);
   }
@@ -284,6 +284,10 @@ export class SoloptionsSDK {
     };
   }
 
+  canExercise(): boolean {
+    return this.optionsContract.expiryTs.lt(new BN(Date.now()).divn(1000));
+  }
+
   async exercise(
     params: ExerciseOptionParams
   ): Promise<TransactionInstruction> {
@@ -300,13 +304,13 @@ export class SoloptionsSDK {
       contract: this.optionKey,
       exerciserAuthority: params.user,
       quoteTokenSource,
-      contractQuoteTokens: this.optionMarket.quotePool,
-      optionMint: this.optionMarket.optionMint,
+      contractQuoteTokens: this.optionsContract.quotePool,
+      optionMint: this.optionsContract.optionMint,
       optionTokenSource: optionTokenSource,
-      contractUnderlyingTokens: this.optionMarket.underlyingPool,
+      contractUnderlyingTokens: this.optionsContract.underlyingPool,
       underlyingTokenDestination,
-      underlyingMint: this.optionMarket.underlyingMint,
-      quoteMint: this.optionMarket.quoteMint,
+      underlyingMint: this.optionsContract.underlyingMint,
+      quoteMint: this.optionsContract.quoteMint,
       feeDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
@@ -329,13 +333,13 @@ export class SoloptionsSDK {
     const feeDestination = await this.getSoloptionsExerciseFeeAccount();
 
     const writeAccounts: SoloptionsIXAccounts["write"] = {
-      contract: this.optionMarket.key,
-      optionMint: this.optionMarket.optionMint,
-      quoteMint: this.optionMarket.quoteMint,
+      contract: this.optionsContract.key,
+      optionMint: this.optionsContract.optionMint,
+      quoteMint: this.optionsContract.quoteMint,
       optionTokenDestination,
-      underlyingMint: this.optionMarket.underlyingMint,
-      underlyingPool: this.optionMarket.underlyingPool,
-      writerMint: this.optionMarket.writerMint,
+      underlyingMint: this.optionsContract.underlyingMint,
+      underlyingPool: this.optionsContract.underlyingPool,
+      writerMint: this.optionsContract.writerMint,
       writerTokenDestination,
       writerAuthority: user,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
@@ -362,14 +366,14 @@ export class SoloptionsSDK {
     const redeemAccounts: SoloptionsIXAccounts["redeem"] = {
       contract: this.optionKey,
       redeemerAuthority: user,
-      writerMint: this.optionMarket.writerMint,
-      contractUnderlyingTokens: this.optionMarket.underlyingPool,
-      contractQuoteTokens: this.optionMarket.quotePool,
+      writerMint: this.optionsContract.writerMint,
+      contractUnderlyingTokens: this.optionsContract.underlyingPool,
+      contractQuoteTokens: this.optionsContract.quotePool,
       writerTokenSource: redeemerTokenSource,
       underlyingTokenDestination,
       quoteTokenDestination,
-      underlyingMint: this.optionMarket.underlyingMint,
-      quoteMint: this.optionMarket.quoteMint,
+      underlyingMint: this.optionsContract.underlyingMint,
+      quoteMint: this.optionsContract.quoteMint,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
     };

@@ -141,6 +141,10 @@ export class InertiaSDK {
     return convertInertiaContractToOptionMarket(this.optionsContract);
   }
 
+  canExercise(): boolean {
+    return this.optionsContract.wasSettleCranked;
+  }
+
   async getStrike(): Promise<Decimal> {
     if (this.readonlyProvider === undefined)
       throw new Error("read only provider must be generated");
