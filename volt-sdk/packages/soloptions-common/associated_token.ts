@@ -6,24 +6,19 @@ import {
 } from "@solana/web3.js";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
-  Token,
+  getAssociatedTokenAddress as getAssociatedTokenAddressSpl,
 } from "@solana/spl-token";
 import { AnchorProvider } from "@project-serum/anchor";
 import { getTokenAccount, Provider } from "@project-serum/common";
+import { getAccount } from "@solana/spl-token";
 
 export const getAssociatedTokenAddress = async (
   mint: PublicKey,
   owner: PublicKey,
   allowOffCurve?: boolean
-) =>
-  await Token.getAssociatedTokenAddress(
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    mint,
-    owner,
-    allowOffCurve
-  );
+) => await getAssociatedTokenAddressSpl(mint, owner, allowOffCurve);
 
 interface AccountParams {
   mint: PublicKey;
@@ -52,23 +47,18 @@ export const getOrCreateAssociatedTokenAccounts = async (
     const address = await getAssociatedTokenAddress(mint, owner);
     addresses.push(address);
     try {
-      await getTokenAccount(
-        new Provider(provider.connection, provider.wallet, provider.opts),
-        address
-      );
+      await getAccount(provider.connection, address);
     } catch (e) {
       if (
         e instanceof Error &&
         e.message.match(/Failed to find token account/)
       ) {
         tx.add(
-          Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            mint,
+          createAssociatedTokenAccountInstruction(
+            payer || owner,
             address,
             owner,
-            payer || owner
+            mint
           )
         );
       } else {

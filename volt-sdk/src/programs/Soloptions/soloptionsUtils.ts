@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BN } from "@project-serum/anchor";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 
 import { newContractInstruction } from "../../../packages/soloptions-client";
 import { SOLOPTIONS_FEE_OWNER } from "../..";
-import type { OptionMarketWithKey } from "../Volt/voltTypes";
+import type { GenericOptionsContractWithKey } from "../Volt/voltTypes";
 import type {
   SoloptionsContract,
   SoloptionsContractWithKey,
@@ -27,7 +23,7 @@ export const getSoloptionsContractByKey = async (
 
 export const convertSoloptionsContractToOptionMarket = (
   soloptionsContract: SoloptionsContractWithKey
-): OptionMarketWithKey => {
+): GenericOptionsContractWithKey => {
   return {
     optionMint: soloptionsContract.optionMint,
     writerTokenMint: soloptionsContract.writerMint,
@@ -53,7 +49,7 @@ export const convertSoloptionsContractToOptionMarket = (
 export const getSoloptionsConractByKey = async (
   program: SoloptionsProgram,
   key: PublicKey
-): Promise<OptionMarketWithKey | null> => {
+): Promise<GenericOptionsContractWithKey | null> => {
   let soloptionsContract: SoloptionsContract;
   try {
     soloptionsContract = await getSoloptionsContractByKey(
@@ -65,7 +61,7 @@ export const getSoloptionsConractByKey = async (
     return null;
   }
 
-  const optionMarket: OptionMarketWithKey =
+  const optionMarket: GenericOptionsContractWithKey =
     convertSoloptionsContractToOptionMarket({
       ...soloptionsContract,
       key: key,
@@ -92,15 +88,11 @@ export const createSoloptionsContractInstruction = async (
       expiryTs: expiry,
       underlyingAmount: new BN(underlyingAmountPerContract),
       quoteAmount: new BN(quoteAmountPerContract),
-      mintFeeAccount: await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
+      mintFeeAccount: await getAssociatedTokenAddress(
         underlyingMint,
         SOLOPTIONS_FEE_OWNER
       ),
-      exerciseFeeAccount: await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
+      exerciseFeeAccount: await getAssociatedTokenAddress(
         quoteMint,
         SOLOPTIONS_FEE_OWNER
       ),

@@ -3,7 +3,7 @@
 import type { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 
-import type { OptionMarketWithKey } from "../..";
+import type { GenericOptionsContractWithKey } from "../..";
 import type {
   SpreadsContract,
   SpreadsContractWithKey,
@@ -12,7 +12,7 @@ import type {
 
 export const convertSpreadsContractToOptionMarket = (
   spreadsContract: SpreadsContractWithKey
-): OptionMarketWithKey => {
+): GenericOptionsContractWithKey => {
   return {
     optionMint: spreadsContract.optionMint,
     writerTokenMint: spreadsContract.writerMint,

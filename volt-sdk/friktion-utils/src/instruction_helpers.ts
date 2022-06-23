@@ -9,7 +9,7 @@ import type {
 } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
 
-import type { FriktionSDK, OptionMarketWithKey } from "../../src";
+import type { FriktionSDK, GenericOptionsContractWithKey } from "../../src";
 import { VoltSDK } from "../../src";
 import { makeAndSendTx, sleep } from "./sendTransactionHelpers";
 
@@ -212,11 +212,7 @@ export const initializeVoltWithoutOptionMarketSeed = async (
   underlyingAssetMint: PublicKey,
   permissionedMarketPremiumMint: PublicKey,
   underlyingAmountPerContract: anchor.BN,
-  // whitelistMintKey: PublicKey,
-  vaultType: anchor.BN,
-  transferTimeWindow: anchor.BN,
   expirationInterval: anchor.BN,
-  upperBoundOtmStrikeFactor: anchor.BN,
   seed: PublicKey,
   capacity: anchor.BN,
   individualCapacity: anchor.BN,
@@ -225,15 +221,13 @@ export const initializeVoltWithoutOptionMarketSeed = async (
   const { instruction, voltKey } =
     await VoltSDK.initializeVoltWithoutOptionMarketSeed({
       sdk: friktionSdk,
-      user: provider.wallet.publicKey,
+      adminKey: provider.wallet.publicKey,
       quoteAssetMint: quoteAssetMint,
       underlyingAssetMint: underlyingAssetMint,
       permissionedMarketPremiumMint: permissionedMarketPremiumMint,
       underlyingAmountPerContract: underlyingAmountPerContract,
       serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
-      transferTimeWindow: transferTimeWindow,
       expirationInterval: expirationInterval,
-      upperBoundOtmStrikeFactor: upperBoundOtmStrikeFactor,
       seed: seed,
       capacity: capacity,
       individualCapacity: individualCapacity,
@@ -248,12 +242,9 @@ export const initializeVoltWithoutOptionMarketSeed = async (
 export const initializeVolt = async (
   provider: anchor.AnchorProvider,
   friktionSdk: FriktionSDK,
-  optionMarket: OptionMarketWithKey,
+  optionMarket: GenericOptionsContractWithKey,
   permissionedMarketPremiumMint: PublicKey,
-  vaultType: anchor.BN,
-  transferTimeWindow: anchor.BN,
   expirationInterval: anchor.BN,
-  upperBoundOtmStrikeFactor: anchor.BN,
   seed: PublicKey,
   capacity: anchor.BN,
   individualCapacity: anchor.BN,
@@ -261,13 +252,11 @@ export const initializeVolt = async (
 ) => {
   const { instruction, voltKey } = await VoltSDK.initializeVolt({
     sdk: friktionSdk,
-    user: provider.wallet.publicKey,
+    adminKey: provider.wallet.publicKey,
     optionMarket: optionMarket,
     permissionedMarketPremiumMint: permissionedMarketPremiumMint,
     serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
-    transferTimeWindow: transferTimeWindow,
     expirationInterval: expirationInterval,
-    upperBoundOtmStrikeFactor: upperBoundOtmStrikeFactor,
     seed: seed,
     capacity: capacity,
     individualCapacity: individualCapacity,

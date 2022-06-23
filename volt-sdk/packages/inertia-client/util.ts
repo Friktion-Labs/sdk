@@ -1,5 +1,5 @@
 import * as anchor from "@project-serum/anchor";
-import { Token, TOKEN_PROGRAM_ID, u64 } from "@solana/spl-token";
+import { Token, TOKEN_PROGRAM_ID, BN } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 

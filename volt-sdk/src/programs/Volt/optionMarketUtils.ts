@@ -1,12 +1,11 @@
 import type { AnchorProvider } from "@project-serum/anchor";
-import { getMintInfo } from "@project-serum/common";
+import { getMint } from "@solana/spl-token";
 import Decimal from "decimal.js";
 
-import { anchorProviderToSerumProvider } from "../../miscUtils";
-import type { OptionMarketWithKey } from "./voltTypes";
+import type { GenericOptionsContractWithKey } from "./voltTypes";
 
 // export const getExerciseIxForOptionMarket = (
-//   optionMarket: OptionMarketWithKey,
+//   optionMarket: GenericOptionsContractWithKey,
 //   sdk: FriktionSDK
 // ): TransactionInstruction => {
 //   const protocol = optionMarket.protocol;
@@ -30,26 +29,17 @@ import type { OptionMarketWithKey } from "./voltTypes";
 //   }
 // };
 
-export const getStrikeFromOptionMarket = async (
+export const getStrikeFromOptionsContract = async (
   provider: AnchorProvider,
-  optionMarket: OptionMarketWithKey,
+  optionMarket: GenericOptionsContractWithKey,
   isCall: boolean
 ): Promise<Decimal> => {
   const underlyingFactor = new Decimal(10).pow(
-    (
-      await getMintInfo(
-        anchorProviderToSerumProvider(provider),
-        optionMarket.underlyingAssetMint
-      )
-    ).decimals
+    (await getMint(provider.connection, optionMarket.underlyingAssetMint))
+      .decimals
   );
   const quoteFactor = new Decimal(10).pow(
-    (
-      await getMintInfo(
-        anchorProviderToSerumProvider(provider),
-        optionMarket.quoteAssetMint
-      )
-    ).decimals
+    (await getMint(provider.connection, optionMarket.quoteAssetMint)).decimals
   );
   return isCall
     ? new Decimal(optionMarket.quoteAmountPerContract.toString())

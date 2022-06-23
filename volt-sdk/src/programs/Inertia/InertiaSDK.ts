@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { AnchorProvider } from "@project-serum/anchor";
 import { BN, Program } from "@project-serum/anchor";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-  u64,
-} from "@solana/spl-token";
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import {
   PublicKey,
@@ -27,8 +20,8 @@ import {
 import type { NetworkName } from "../../helperTypes";
 import type { ProviderLike } from "../../miscUtils";
 import { providerToAnchorProvider } from "../../miscUtils";
-import type { OptionMarketWithKey } from "../Volt";
-import { getStrikeFromOptionMarket } from "../Volt/optionMarketUtils";
+import type { GenericOptionsContractWithKey } from "../Volt";
+import { getStrikeFromOptionsContract } from "../Volt/optionMarketUtils";
 import type { InertiaIXAccounts } from ".";
 import type {
   InertiaContractWithKey,
@@ -137,7 +130,7 @@ export class InertiaSDK {
     this.optionKey = optionMarket.key;
   }
 
-  asOptionMarket(): OptionMarketWithKey {
+  asOptionMarket(): GenericOptionsContractWithKey {
     return convertInertiaContractToOptionMarket(this.optionsContract);
   }
 
@@ -148,7 +141,7 @@ export class InertiaSDK {
   async getStrike(): Promise<Decimal> {
     if (this.readonlyProvider === undefined)
       throw new Error("read only provider must be generated");
-    return getStrikeFromOptionMarket(
+    return getStrikeFromOptionsContract(
       this.readonlyProvider,
       this.asOptionMarket(),
       this.optionsContract.isCall.gtn(0)
@@ -236,12 +229,7 @@ export class InertiaSDK {
   }
 
   static async getGenericInertiaExerciseFeeAccount(quoteAssetMint: PublicKey) {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      quoteAssetMint,
-      INERTIA_FEE_OWNER
-    );
+    return await getAssociatedTokenAddress(quoteAssetMint, INERTIA_FEE_OWNER);
   }
 
   isCall(): boolean {
@@ -261,7 +249,7 @@ export class InertiaSDK {
   static async getOptionMarketByKey(
     program: InertiaProgram,
     key: PublicKey
-  ): Promise<OptionMarketWithKey> {
+  ): Promise<GenericOptionsContractWithKey> {
     const optionMarket = await getInertiaMarketByKey(program, key);
     if (!optionMarket) {
       throw new Error("could not find Inertia market for key");
@@ -290,10 +278,10 @@ export class InertiaSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new u64(underlyingAmount.toString()).toBuffer(),
-        new u64(quoteAmount.toString()).toBuffer(),
-        new u64(expiry.toString()).toBuffer(),
-        isCall ? new u64(1).toBuffer() : new u64(0).toBuffer(),
+        new BN(underlyingAmount.toString()).toBuffer("le", 8),
+        new BN(quoteAmount.toString()).toBuffer("le", 8),
+        new BN(expiry.toString()).toBuffer("le", 8),
+        isCall ? new BN(1).toBuffer("le", 8) : new BN(0).toBuffer("le", 8),
       ],
       program.programId
     );
@@ -338,7 +326,7 @@ export class InertiaSDK {
     }
 
     if (bypassCode.ltn(0)) {
-      throw new Error("bypass code must be positive (u64 in rust)");
+      throw new Error("bypass code must be positive (BN in rust)");
     }
 
     const settleAccounts: InertiaIXAccounts["settle"] = {

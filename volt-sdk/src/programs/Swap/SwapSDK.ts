@@ -1,6 +1,6 @@
 import type { AnchorProvider, Idl } from "@project-serum/anchor";
 import { BN, Program } from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID, u64 } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 
@@ -72,7 +72,7 @@ export class SwapSDK {
 
   static async findSwapOrderAddress(
     user: PublicKey,
-    orderId: u64,
+    orderId: BN,
     swapProgramId: PublicKey = SIMPLE_SWAP_PROGRAM_ID
   ): Promise<[PublicKey, number]> {
     const textEncoder = new TextEncoder();
@@ -130,15 +130,15 @@ export class SwapSDK {
     instruction: TransactionInstruction;
     swapOrderKey: PublicKey;
   }> {
-    let orderId: u64;
+    let orderId: BN;
     const [userOrdersKey] = await SwapSDK.findUserOrdersAddress(user);
     try {
       const userOrders: SimpleSwapUserOrdersWithKey =
         await sdk.loadUserOrdersByKey(userOrdersKey);
-      orderId = new u64(userOrders.currOrderId);
+      orderId = new BN(userOrders.currOrderId);
     } catch (err) {
       console.log(err);
-      orderId = new u64(0);
+      orderId = new BN(0);
     }
 
     console.log("order id = ", orderId.toString());

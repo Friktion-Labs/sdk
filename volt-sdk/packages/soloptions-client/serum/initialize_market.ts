@@ -1,32 +1,17 @@
 import {
-  Token,
-  TOKEN_PROGRAM_ID,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
-import {
-  DexInstructions,
-  TokenInstructions,
-  Market,
-  OpenOrders,
-} from "@project-serum/serum";
-import {
-  SystemProgram,
-  Transaction,
-  PublicKey,
-  Keypair,
-  sendAndConfirmRawTransaction,
-  Connection,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
-import {
+  AnchorProvider,
   BN,
   Program,
   Provider,
   web3,
-  AnchorProvider,
 } from "@project-serum/anchor";
-import { getAssociatedTokenAddress } from "../../soloptions-common";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
+import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { getVaultOwnerAndNonce } from "../../../src";
+import { getAssociatedTokenAddress } from "../../soloptions-common";
 
 const getProgramAddresses = async (
   program: Program,

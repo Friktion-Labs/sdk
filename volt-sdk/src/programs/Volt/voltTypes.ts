@@ -61,7 +61,7 @@ export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
 export type WhitelistWithKey = Whitelist & WithKey;
 export type AuctionMetadataWithKey = AuctionMetadata & WithKey;
 
-export type OptionMarket = {
+export type GenericOptionsContract = {
   optionMint: PublicKey;
   writerTokenMint: PublicKey;
   underlyingAssetMint: PublicKey;
@@ -81,7 +81,7 @@ export type OptionMarket = {
   rawContract: InertiaContract | SoloptionsContract | SpreadsContract;
 };
 
-export type OptionMarketWithKey = OptionMarket & {
+export type GenericOptionsContractWithKey = GenericOptionsContract & {
   key: PublicKey;
 };
 

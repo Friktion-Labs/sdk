@@ -59,7 +59,7 @@ import type {
 import type { VoltProgram, VoltVault, Whitelist } from "./programs/Volt";
 import type {
   ExtraVoltData,
-  OptionMarketWithKey,
+  GenericOptionsContractWithKey,
 } from "./programs/Volt/voltTypes";
 
 export type LegacyAnchorPrograms = {
@@ -402,11 +402,11 @@ export class FriktionSDK {
   async getOptionMarketByKey(
     key: PublicKey,
     optionsProtocol?: OptionsProtocol
-  ): Promise<OptionMarketWithKey> {
+  ): Promise<GenericOptionsContractWithKey> {
     if (!optionsProtocol) {
       optionsProtocol = await this.getOptionsProtocolForKey(key);
     }
-    let optionMarket: OptionMarketWithKey | null;
+    let optionMarket: GenericOptionsContractWithKey | null;
     if (optionsProtocol === "Inertia") {
       optionMarket = await getInertiaMarketByKey(this.programs.Inertia, key);
     } else if (optionsProtocol === "Soloptions") {

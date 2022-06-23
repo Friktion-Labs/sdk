@@ -1,0 +1,11 @@
+{
+  "symbol": "SOL",
+  "refreshAccountStateInterval": 2000,
+  "removeInterval": 700,
+  "maxPosImbalanceNotl": 20000,
+  "baseRemovalSizeNotl": 3000,
+  "basePerpEdge": 2.5,
+  "baseSpotEdge": 0.25,
+  "maxStaleness": 20000,
+  "direction": "enter"
+}

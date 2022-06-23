@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { AnchorProvider } from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
 import type { SolanaProvider } from "@saberhq/solana-contrib";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
+  getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
-  u64,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import {
@@ -17,7 +14,6 @@ import {
   SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
 
-import { getAssociatedTokenAddress } from "../../../friktion-utils";
 import type { FriktionSDK } from "../..";
 import {
   SOLOPTIONS_EXERCISE_FEE_BPS,
@@ -26,7 +22,7 @@ import {
 } from "../..";
 import type { NetworkName } from "../../helperTypes";
 import type { ProviderLike } from "../../miscUtils";
-import type { OptionMarketWithKey } from "../Volt";
+import type { GenericOptionsContractWithKey } from "../Volt";
 import type { SoloptionsIXAccounts } from ".";
 import { convertSoloptionsContractToOptionMarket } from ".";
 import type {
@@ -106,9 +102,7 @@ export class SoloptionsSDK {
   static async getGenericSoloptionsExerciseFeeAccount(
     quoteAssetMint: PublicKey
   ) {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+    return await getAssociatedTokenAddress(
       quoteAssetMint,
       SOLOPTIONS_FEE_OWNER
     );
@@ -137,7 +131,7 @@ export class SoloptionsSDK {
   static async getOptionMarketByKey(
     program: SoloptionsProgram,
     key: PublicKey
-  ): Promise<OptionMarketWithKey> {
+  ): Promise<GenericOptionsContractWithKey> {
     const optionMarket = convertSoloptionsContractToOptionMarket({
       ...(await getSoloptionsContractByKey(program, key)),
       key: key,
@@ -163,9 +157,9 @@ export class SoloptionsSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new u64(underlyingAmount.toString()).toBuffer(),
-        new u64(quoteAmount.toString()).toBuffer(),
-        new u64(expiry.toString()).toBuffer(),
+        new BN(underlyingAmount.toString()).toBuffer("le", 8),
+        new BN(quoteAmount.toString()).toBuffer("le", 8),
+        new BN(expiry.toString()).toBuffer("le", 8),
       ],
       program.programId
     );
@@ -179,7 +173,7 @@ export class SoloptionsSDK {
     user: PublicKey
   ): Promise<{
     ix: TransactionInstruction;
-    optionMarket: OptionMarketWithKey;
+    optionMarket: GenericOptionsContractWithKey;
     optionKey: PublicKey;
   }> {
     const {

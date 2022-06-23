@@ -1,27 +1,11 @@
-import type { AnchorProvider, Provider } from "@project-serum/anchor";
-import { getTokenAccount } from "@project-serum/common";
+import type { Provider } from "@project-serum/anchor";
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getAccount,
+  getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import type { PublicKey, Signer } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
-
-import { anchorProviderToSerumProvider } from "../../src/miscUtils";
-
-export const getAssociatedTokenAddress = async (
-  mint: PublicKey,
-  owner: PublicKey,
-  allowOffCurve?: boolean
-): Promise<PublicKey> =>
-  await Token.getAssociatedTokenAddress(
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    mint,
-    owner,
-    allowOffCurve
-  );
 
 interface AccountParams {
   mint: PublicKey;
@@ -50,19 +34,14 @@ export const getOrCreateAssociatedTokenAccounts = async (
     const address = await getAssociatedTokenAddress(mint, owner);
     addresses.push(address);
     try {
-      await getTokenAccount(
-        anchorProviderToSerumProvider(provider as AnchorProvider),
-        address
-      );
+      await getAccount(provider.connection, address);
     } catch (e) {
       if (
         e instanceof Error &&
         e.message.match(/Failed to find token account/)
       ) {
         tx.add(
-          Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
+          createAssociatedTokenAccountInstruction(
             mint,
             address,
             owner,

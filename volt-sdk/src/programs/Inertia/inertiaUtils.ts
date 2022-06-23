@@ -2,7 +2,7 @@
 
 import type { PublicKey } from "@solana/web3.js";
 
-import type { OptionMarketWithKey } from "../Volt/voltTypes";
+import type { GenericOptionsContractWithKey } from "../Volt/voltTypes";
 import type {
   InertiaContract,
   InertiaContractWithKey,
@@ -20,7 +20,7 @@ export const getInertiaContractByKey = async (
 
 export const convertInertiaContractToOptionMarket = (
   inertiaContract: InertiaContractWithKey
-): OptionMarketWithKey => {
+): GenericOptionsContractWithKey => {
   return {
     optionMint: inertiaContract.optionMint,
     writerTokenMint: inertiaContract.writerMint,
@@ -47,7 +47,7 @@ export const convertInertiaContractToOptionMarket = (
 export const getInertiaMarketByKey = async (
   program: InertiaProgram,
   key: PublicKey
-): Promise<OptionMarketWithKey | null> => {
+): Promise<GenericOptionsContractWithKey | null> => {
   let inertiaContract: InertiaContract;
   try {
     inertiaContract = await getInertiaContractByKey(
@@ -59,7 +59,7 @@ export const getInertiaMarketByKey = async (
     return null;
   }
 
-  const optionMarket: OptionMarketWithKey =
+  const optionMarket: GenericOptionsContractWithKey =
     convertInertiaContractToOptionMarket({
       ...inertiaContract,
       key: key,

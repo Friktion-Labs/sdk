@@ -5,17 +5,18 @@ import {
   makeCachePricesInstruction,
   makeCacheRootBankInstruction,
 } from "@friktion-labs/entropy-client";
-import { getTokenAccount } from "@project-serum/common";
 import { Market, MARKET_STATE_LAYOUT_V3 } from "@project-serum/serum";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
+  createAssociatedTokenAccountInstruction,
+  createSyncNativeInstruction,
+  getAccount,
+  getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import type {
   AccountMeta,
   Connection,
-  Signer,
   TransactionInstruction,
 } from "@solana/web3.js";
 import {
@@ -27,6 +28,7 @@ import {
 import BN from "bn.js";
 import Decimal from "decimal.js";
 
+import { sendInsList } from "../../../friktion-utils";
 import {
   INERTIA_FEE_OWNER,
   InertiaSDK,
@@ -37,10 +39,11 @@ import {
 import type { OptionsProtocol } from "../../constants";
 import {
   REFERRAL_AUTHORITY,
+  SOL_NORM_FACTOR,
   SPREADS_FEE_OWNER,
   VoltType,
+  WRAPPED_SOL_ADDRESS,
 } from "../../constants";
-import { anchorProviderToSerumProvider } from "../../miscUtils";
 import {
   createFirstSetOfAccounts,
   getVaultOwnerAndNonce,
@@ -49,7 +52,9 @@ import {
 import { getBalanceOrZero, getMintSupplyOrZero } from "./utils";
 import { VoltSDK } from "./VoltSDK";
 import type {
+  PendingDeposit,
   PendingDepositWithKey,
+  PendingWithdrawal,
   PendingWithdrawalWithKey,
   VoltProgram,
 } from "./voltTypes";
@@ -59,6 +64,7 @@ import type {
 // 1. rebalanceEntropy
 // 2. rebalanceSpotEntropy
 // 3. setupRebalanceEntropy
+// 4. takePerformanceFeesEntropy
 // MAYBE:
 // 1. depositWithClaim (when it claims or cancels and does instant deposit)
 // 2. withdrawWithClaim (same as above)
@@ -130,7 +136,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const normFactor = decimals
       ? new Decimal(10 ** decimals)
-      : await this.getNormalizationFactor();
+      : await this.getDepositTokenNormalizationFactor();
 
     const normalizedDepositAmount = new BN(
       humanDepositAmount.mul(normFactor).toString()
@@ -223,7 +229,7 @@ export class ConnectedVoltSDK extends VoltSDK {
 
     const normFactor = decimals
       ? new Decimal(10 ** decimals)
-      : await this.getNormalizationFactor();
+      : await this.getDepositTokenNormalizationFactor();
 
     const normalizedDepositAmount = new BN(
       trueDepositAmount.mul(normFactor).toString()
@@ -308,9 +314,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async getFeeTokenAccount(forPerformanceFees = false) {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+    return await getAssociatedTokenAddress(
       !(
         this.voltType() === VoltType.ShortOptions &&
         forPerformanceFees &&
@@ -323,18 +327,14 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async getSoloptionsMintFeeAccount() {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+    return await getAssociatedTokenAddress(
       this.voltVault.underlyingAssetMint,
       SOLOPTIONS_FEE_OWNER
     );
   }
 
   async getInertiaMintFeeAccount() {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+    return await getAssociatedTokenAddress(
       this.voltVault.underlyingAssetMint,
       INERTIA_FEE_OWNER
     );
@@ -365,7 +365,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     withClaim = false
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
-      await this.getVoltValueInDepositToken(normFactor);
+      await this.getTvlWithoutPendingInDepositToken(normFactor);
     const roundInfo = await this.getRoundByKey(
       (
         await VoltSDK.findRoundInfoAddress(
@@ -375,14 +375,8 @@ export class ConnectedVoltSDK extends VoltSDK {
         )
       )[0]
     );
-    const userVoltTokenBalance = await getBalanceOrZero(
-      new Token(
-        this.connection,
-        this.voltVault.vaultMint,
-        TOKEN_PROGRAM_ID,
-        null as unknown as Signer
-      ),
-      userVaultTokens
+    const userVoltTokenBalance = new Decimal(
+      (await getBalanceOrZero(this.connection, userVaultTokens)).toString()
     );
 
     const vaultMintSupply = (
@@ -931,7 +925,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   async bypassSettlement(
     userWriterTokenAccount: PublicKey
   ): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -1438,7 +1432,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     newOptionMarketKey: PublicKey,
     optionsProtocol?: OptionsProtocol
   ): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       newOptionMarketKey,
       optionsProtocol
     );
@@ -1509,7 +1503,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async resetOptionMarket(): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -1548,7 +1542,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async rebalancePrepare(): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -1556,34 +1550,21 @@ export class ConnectedVoltSDK extends VoltSDK {
       this.voltVault.optionMarket
     );
 
-    const underlyingToken = new Token(
-      this.connection,
-      optionMarket.underlyingAssetMint,
-      TOKEN_PROGRAM_ID,
-      undefined as unknown as Signer
-    );
-
     let feeDestinationKey: PublicKey;
     const remainingAccounts: AccountMeta[] = [];
     if (optionsProtocol === "Inertia") {
-      feeDestinationKey = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        underlyingToken.publicKey,
+      feeDestinationKey = await getAssociatedTokenAddress(
+        this.voltVault.underlyingAssetMint,
         INERTIA_FEE_OWNER
       );
     } else if (optionsProtocol === "Soloptions") {
-      feeDestinationKey = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        underlyingToken.publicKey,
+      feeDestinationKey = await getAssociatedTokenAddress(
+        this.voltVault.underlyingAssetMint,
         SOLOPTIONS_FEE_OWNER
       );
     } else if (optionsProtocol === "Spreads") {
-      feeDestinationKey = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        underlyingToken.publicKey,
+      feeDestinationKey = await getAssociatedTokenAddress(
+        this.voltVault.underlyingAssetMint,
         SPREADS_FEE_OWNER
       );
     } else {
@@ -1669,7 +1650,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     referrerQuoteAcctReplacement?: PublicKey,
     referralSRMAcctReplacement?: PublicKey
   ): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -1903,7 +1884,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async rebalanceSettle(): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -1962,7 +1943,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     referrerQuoteAcctReplacement?: PublicKey,
     referralSRMAcctReplacement?: PublicKey
   ): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -2184,7 +2165,7 @@ export class ConnectedVoltSDK extends VoltSDK {
   }
 
   async settleEnterFunds(referrerQuoteAcctReplacement?: PublicKey) {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -2289,7 +2270,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     spotSerumMarketKey: PublicKey,
     referrerQuoteAcctReplacement?: PublicKey
   ): Promise<TransactionInstruction> {
-    const optionMarket = await this.getOptionMarketByKey(
+    const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionMarket
     );
 
@@ -3218,7 +3199,10 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [entropyLendingAccountKey] =
       await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
     try {
-      await this.connection.getAccountInfo(entropyLendingAccountKey);
+      await getAccount(
+        this.sdk.readonlyProvider.connection,
+        entropyLendingAccountKey
+      );
     } catch (err) {
       if (
         entropyGroupGivenKey === undefined ||
@@ -3251,10 +3235,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       entropyClient,
       entropyGroup.publicKey,
       (
-        await getTokenAccount(
-          anchorProviderToSerumProvider(this.sdk.readonlyProvider),
-          targetPool
-        )
+        await getAccount(this.sdk.readonlyProvider.connection, targetPool)
       ).mint
     );
 
@@ -3464,5 +3445,266 @@ export class ConnectedVoltSDK extends VoltSDK {
     return this.sdk.programs.Volt.instruction.endRoundEntropy(bypassCode, {
       accounts: endRoundEntropyStruct,
     });
+  }
+
+  async doFullDeposit(
+    depositAmount: Decimal,
+    solTransferAuthorityReplacement?: PublicKey
+  ) {
+    await sendInsList(
+      this.sdk.readonlyProvider,
+      await this.fullDepositInstructions(
+        depositAmount,
+        solTransferAuthorityReplacement
+      )
+    );
+  }
+
+  async doFullWithdraw(withdrawAmount: Decimal) {
+    await sendInsList(
+      this.sdk.readonlyProvider,
+      await this.fullWithdrawInstructions(withdrawAmount)
+    );
+  }
+
+  async fullDepositInstructions(
+    depositAmount: Decimal,
+    solTransferAuthorityReplacement?: PublicKey
+  ): Promise<TransactionInstruction[]> {
+    const payer = this.wallet;
+    const authority = this.daoAuthority ? this.daoAuthority : this.wallet;
+    const solTransferAuthority = solTransferAuthorityReplacement ?? this.wallet;
+    const voltVault = this.voltVault;
+    const depositMint = voltVault.underlyingAssetMint;
+    const vaultMint = voltVault.vaultMint;
+
+    const isWrappedSol =
+      depositMint.toString() === WRAPPED_SOL_ADDRESS.toString();
+    const depositInstructions: TransactionInstruction[] = [];
+
+    const depositTokenAccountKey: PublicKey = await getAssociatedTokenAddress(
+      depositMint,
+      authority,
+      true
+    );
+    const vaultTokenAccountKey: PublicKey = await getAssociatedTokenAddress(
+      vaultMint,
+      authority,
+      true
+    );
+
+    if (isWrappedSol) {
+      try {
+        // try to get account info
+        await getAccount(this.connection, depositTokenAccountKey);
+        const numLamports =
+          (
+            await this.sdk.readonlyProvider.connection.getAccountInfo(
+              depositTokenAccountKey
+            )
+          )?.lamports ?? 0;
+        const additionalLamportsRequired = Math.max(
+          depositAmount.toNumber() * SOL_NORM_FACTOR - numLamports,
+          0
+        );
+
+        if (additionalLamportsRequired > 0) {
+          depositInstructions.push(
+            SystemProgram.transfer({
+              fromPubkey: solTransferAuthority,
+              toPubkey: depositTokenAccountKey,
+              lamports: additionalLamportsRequired,
+            })
+          );
+          depositInstructions.push(
+            createSyncNativeInstruction(
+              depositTokenAccountKey,
+              ASSOCIATED_TOKEN_PROGRAM_ID
+            )
+          );
+        }
+      } catch (err) {
+        depositInstructions.push(
+          SystemProgram.transfer({
+            fromPubkey: solTransferAuthority,
+            toPubkey: depositTokenAccountKey,
+            lamports: depositAmount.toNumber() * SOL_NORM_FACTOR,
+          })
+        );
+        depositInstructions.push(
+          createAssociatedTokenAccountInstruction(
+            payer,
+            depositTokenAccountKey,
+            authority,
+            depositMint
+          )
+        );
+      }
+    }
+
+    try {
+      await getAccount(this.connection, vaultTokenAccountKey);
+    } catch (err) {
+      depositInstructions.push(
+        createAssociatedTokenAccountInstruction(
+          payer,
+          vaultTokenAccountKey,
+          authority,
+          vaultMint
+        )
+      );
+    }
+
+    // if instant transfers aren't currently possible, need to handle already existing pending deposits
+    if (!voltVault.instantTransfersEnabled) {
+      let pendingDepositInfo: PendingDeposit | undefined;
+      try {
+        pendingDepositInfo = await this.getPendingDepositForGivenUser(
+          authority
+        );
+      } catch (err) {
+        pendingDepositInfo = undefined;
+      }
+
+      // if a pending deposit exists, need to handle it
+      if (
+        pendingDepositInfo &&
+        pendingDepositInfo?.numUnderlyingDeposited?.gtn(0) &&
+        pendingDepositInfo.roundNumber.gtn(0)
+      ) {
+        // if is claimable, then claim it first
+        if (pendingDepositInfo.roundNumber.lt(voltVault.roundNumber)) {
+          depositInstructions.push(
+            await this.claimPending(vaultTokenAccountKey)
+          );
+        }
+        // else, cancel the deposit or throw an error
+        else {
+          depositInstructions.push(
+            await this.cancelPendingDeposit(depositTokenAccountKey)
+          );
+          // if don't want to override existing deposit, can throw error instead
+          // throw new Error("pending deposit already exists")
+        }
+      }
+    }
+
+    depositInstructions.push(
+      await this.deposit(
+        depositAmount,
+        depositTokenAccountKey,
+        vaultTokenAccountKey,
+        authority
+      )
+    );
+
+    if (isWrappedSol) {
+      // OPTIONAL: close account once done with it. Don't do this by default since ATA will be useful in future
+      // const closeWSolIx = createCloseAccountInstruction(
+      //   depositTokenAccountKey,
+      //   this.wallet, // Send any remaining SOL to the owner
+      //   this.wallet,
+      //   []
+      // );
+      // depositInstructions.push(closeWSolIx);
+    }
+
+    return depositInstructions;
+  }
+
+  async fullWithdrawInstructions(
+    // in deposit token
+    withdrawAmount: Decimal
+  ): Promise<TransactionInstruction[]> {
+    const payer = this.wallet;
+    const authority = this.daoAuthority ? this.daoAuthority : this.wallet;
+
+    const voltVault = this.voltVault;
+    const depositMint = voltVault.underlyingAssetMint;
+    const vaultMint = voltVault.vaultMint;
+
+    const withdrawalInstructions: TransactionInstruction[] = [];
+
+    const depositTokenAccountKey: PublicKey = await getAssociatedTokenAddress(
+      depositMint,
+      authority
+    );
+    const vaultTokenAccountKey: PublicKey = await getAssociatedTokenAddress(
+      vaultMint,
+      authority
+    );
+
+    try {
+      // try to get account info
+      await getAccount(this.connection, depositTokenAccountKey);
+    } catch (err) {
+      withdrawalInstructions.push(
+        createAssociatedTokenAccountInstruction(
+          payer,
+          depositTokenAccountKey,
+          authority,
+          depositMint
+        )
+      );
+    }
+
+    // NOTE: Shouldn't be necessary since user must have created to receive volt tokens if now withdrawing
+    try {
+      await getAccount(this.connection, vaultTokenAccountKey);
+    } catch (err) {
+      withdrawalInstructions.push(
+        createAssociatedTokenAccountInstruction(
+          payer,
+          vaultTokenAccountKey,
+          authority,
+          vaultMint
+        )
+      );
+    }
+
+    // if instant transfers aren't currently possible, need to handle already existing pending withdrawals
+    if (!voltVault.instantTransfersEnabled) {
+      let pendingWithdrawalInfo: PendingWithdrawal | undefined;
+      try {
+        pendingWithdrawalInfo = await this.getPendingWithdrawalForGivenUser(
+          authority
+        );
+      } catch (err) {
+        pendingWithdrawalInfo = undefined;
+      }
+
+      // if a pending withdrawal exists, need to handle it
+      if (
+        pendingWithdrawalInfo &&
+        pendingWithdrawalInfo?.numVoltRedeemed?.gtn(0) &&
+        pendingWithdrawalInfo.roundNumber?.gtn(0)
+      ) {
+        // if is claimable, then claim it first
+        if (pendingWithdrawalInfo.roundNumber.lt(voltVault.roundNumber)) {
+          withdrawalInstructions.push(
+            await this.claimPendingWithdrawal(depositTokenAccountKey)
+          );
+        }
+        // else, cancel the withdrawal or throw an error
+        else {
+          withdrawalInstructions.push(
+            await this.cancelPendingWithdrawal(vaultTokenAccountKey)
+          );
+          // if don't want to override existing withdrawal, can throw error instead
+          // throw new Error("pending withdrawal already exists")
+        }
+      }
+    }
+
+    withdrawalInstructions.push(
+      await this.withdrawHumanAmount(
+        withdrawAmount,
+        vaultTokenAccountKey,
+        depositTokenAccountKey,
+        authority
+      )
+    );
+
+    return withdrawalInstructions;
   }
 }

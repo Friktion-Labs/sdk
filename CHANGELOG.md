@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Note:** The minor version will be incremented upon a breaking change and the patch version will be incremented for features.
 
+## [0.0.4] - 2022-06-22
+
+### Features
+
+- operations: jun10 auction files (#222)
+- program: add option for custom withdrawal & performance pee per volt. refactor fee logic to use fee-utils crate
+- docs: new README with docs for env setup, testing, architecture.
+- docs + sdk: examples for deposit/withdraw in examples/instruction directory
+- docs: new integration docs @ https://docs.friktion.fi/integration/overview
+### Fixes
+
+- sdk: refactor of sdk, upgrading @solana/spl-token to 0.2.0. adding option market helpers.
+- program: box cpi content in certain instructions to save space
+- program: make entropy cache field mutable in move assetes to lending, working again
+- program: compiling on opt-level=z now, to minimize binary. 2.4KB vs 2.7KB space allocated
+- program: upgrade solana version to 1.9.28
+
 ## [0.0.3] - 2022-06-09
 
 ### Features

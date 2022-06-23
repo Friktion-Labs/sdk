@@ -26,6 +26,12 @@ export enum VoltType {
   Entropy = 1,
 }
 
+export const WRAPPED_SOL_ADDRESS = new PublicKey(
+  "So11111111111111111111111111111111111111112"
+);
+
+export const SOL_NORM_FACTOR = Math.pow(10, 9);
+
 // program ids
 
 export const FRIKTION_PROGRAM_ID = new PublicKey(
@@ -118,6 +124,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     STEP: "step-finance",
     stSOL: "lido-staked-sol",
     AVAX: "avalanche-2",
+    SAMO: "samoyedcoin",
   },
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
@@ -130,6 +137,8 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     "2TgaaVoHgnSeEtXvWTx13zQeTf4hYWAMEiMQdcG6EwHi": "SOL-PERP",
     DtEcjPLyD4YtTBB4q8xwFZ9q49W89xZCZtJyrGebi5t8: "BTC-PERP",
   },
+  // from https://github.com/Friktion-Labs/entropy-client/blob/main/src/ids.json
+  ENTROPY_GROUP: new PublicKey("EAhqxJge6VCXH5KaPEmDzz4DoKGfHgCotmpC8xGvBju2"),
   MANGO_GROUP: new PublicKey("98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"),
   mints: {
     USDC: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
@@ -241,6 +250,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
   ENTROPY_PERP_MARKET_NAMES: {},
+  ENTROPY_GROUP: new PublicKey("EAhqxJge6VCXH5KaPEmDzz4DoKGfHgCotmpC8xGvBju2"),
   MANGO_GROUP: new PublicKey("98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"),
   mints: {
     USDC: new PublicKey("E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF"),

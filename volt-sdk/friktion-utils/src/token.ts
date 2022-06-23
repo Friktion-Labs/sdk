@@ -1,9 +1,32 @@
 import type { AnchorProvider } from "@project-serum/anchor";
-import { MintLayout, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { getMintInfo } from "@project-serum/common";
+import {
+  createInitializeAccountInstruction,
+  createInitializeMintInstruction,
+  createMintToInstruction,
+  MintLayout,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 import type { PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
-import type BN from "bn.js";
+import BN from "bn.js";
+import Decimal from "decimal.js";
 
+import { anchorProviderToSerumProvider } from "../../src/miscUtils";
+
+export async function getNormFactorForMint(
+  provider: AnchorProvider,
+  mint: PublicKey
+): Promise<BN> {
+  return new BN(
+    new Decimal(10)
+      .pow(
+        (await getMintInfo(anchorProviderToSerumProvider(provider), mint))
+          .decimals
+      )
+      .toString()
+  );
+}
 export async function createMintInstructions(
   provider: AnchorProvider,
   authority: PublicKey,
@@ -22,13 +45,7 @@ export async function createMintInstructions(
       ),
       programId: TOKEN_PROGRAM_ID,
     }),
-    Token.createInitMintInstruction(
-      TOKEN_PROGRAM_ID,
-      mint,
-      decimals,
-      authority,
-      null
-    ),
+    createInitializeMintInstruction(mint, decimals, authority, authority),
   ];
   return instructions;
 }
@@ -61,19 +78,13 @@ export async function createMintAndVault(
       ),
       programId: TOKEN_PROGRAM_ID,
     }),
-    Token.createInitAccountInstruction(
-      TOKEN_PROGRAM_ID,
-      mint.publicKey,
-      vault.publicKey,
-      owner
-    ),
-    Token.createMintToInstruction(
-      TOKEN_PROGRAM_ID,
+    createInitializeAccountInstruction(vault.publicKey, mint.publicKey, owner),
+    createMintToInstruction(
       mint.publicKey,
       vault.publicKey,
       provider.wallet.publicKey,
-      [],
-      amount
+      amount.toNumber(),
+      []
     )
   );
   await provider.sendAndConfirm(tx, [mint, vault]);

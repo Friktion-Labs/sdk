@@ -14,10 +14,10 @@ pub struct Deposit<'info> {
     pub authority: Signer<'info>,
 
     #[account()]
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, attributes may change depending on use case. validation happens in handler
     pub dao_authority: AccountInfo<'info>,
 
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, attributes may change depending on use case. validation happens in handler
     pub authority_check: AccountInfo<'info>,
 
     #[account(mut, address=volt_vault.vault_mint)]
@@ -25,14 +25,15 @@ pub struct Deposit<'info> {
 
     #[account(mut)]
     pub volt_vault: Box<Account<'info, VoltVault>>,
-    /// CHECK: skip, checked by the volt program
+
     #[account(address=volt_vault.vault_authority)]
+    /// CHECK: skip, checked by macro
     pub vault_authority: AccountInfo<'info>,
 
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -40,13 +41,13 @@ pub struct Deposit<'info> {
     pub extra_volt_data: Box<Account<'info, ExtraVoltData>>,
 
     #[account(address=extra_volt_data.whitelist)]
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     pub whitelist: AccountInfo<'info>,
 
     #[account(mut, address=volt_vault.deposit_pool)]
     pub deposit_pool: Box<Account<'info, TokenAccount>>,
 
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     #[account(address=volt_vault.writer_token_pool)]
     pub writer_token_pool: AccountInfo<'info>,
 
@@ -88,18 +89,18 @@ pub struct Deposit<'info> {
     )]
     pub epoch_info: Box<Account<'info, FriktionEpochInfo>>,
 
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     #[account(address=extra_volt_data.entropy_program_id)]
     pub entropy_program: AccountInfo<'info>,
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     #[account(address=extra_volt_data.entropy_group)]
     pub entropy_group: AccountInfo<'info>,
 
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     #[account(address=extra_volt_data.entropy_account)]
     pub entropy_account: AccountInfo<'info>,
 
-    /// CHECK: skip, checked by the volt program
+    /// CHECK: skip, checked by macro
     #[account(address=extra_volt_data.entropy_cache)]
     pub entropy_cache: AccountInfo<'info>,
 
@@ -135,7 +136,7 @@ pub struct Withdraw<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -221,7 +222,7 @@ pub struct DepositWithClaim<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -315,7 +316,7 @@ pub struct WithdrawWithClaim<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -387,7 +388,7 @@ pub struct ClaimPendingDeposit<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -430,7 +431,7 @@ pub struct ClaimPendingWithdrawal<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -481,7 +482,7 @@ pub struct CancelPendingDeposit<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]
@@ -538,7 +539,7 @@ pub struct CancelPendingWithdrawal<'info> {
     #[account(
         seeds = [
             &volt_vault.key().to_bytes()[..],
-            b"extraVoltData" as &[u8]
+            b"extraVoltData"
         ],
         bump,
       )]

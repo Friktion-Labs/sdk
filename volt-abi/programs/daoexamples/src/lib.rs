@@ -26,8 +26,8 @@ pub mod daoexamples {
             ctx.accounts.volt_program_id.key() == volt_abi::id(),
             InvalidDepositProgramId
         );
-        let seeds = &[&b"daoProgramAuthority"[..], &[bump]];
-        let unknown = &[seeds.as_ref()];
+        let base_seeds = &[&b"daoProgramAuthority"[..], &[bump]];
+        let seeds = &[base_seeds.as_ref()];
         // let seeds = &[b"daoProgramAuthority", &[bump]];
         let mut cpi_ctx = CpiContext::new_with_signer(
             ctx.accounts.volt_program_id.clone(),
@@ -58,11 +58,10 @@ pub mod daoexamples {
                 system_program: ctx.accounts.system_program.to_account_info(),
                 token_program: ctx.accounts.token_program.to_account_info(),
             },
-            unknown,
+            seeds,
         );
 
         cpi_ctx.accounts.dao_authority.is_signer = true;
-        msg!("is signer?: {:?}", cpi_ctx.accounts.dao_authority.is_signer);
         volt_abi::cpi::deposit(cpi_ctx, deposit_amount).unwrap();
         Ok(())
     }

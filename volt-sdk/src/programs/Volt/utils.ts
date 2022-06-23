@@ -1,8 +1,8 @@
 import * as anchor from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
 import type { Market } from "@project-serum/serum";
-import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import type { Connection, Signer } from "@solana/web3.js";
+import { getAccount, getMint } from "@solana/spl-token";
+import type { Connection } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
@@ -32,59 +32,54 @@ export const getVaultOwnerAndNonceForSpot = async (market: Market) => {
   }
 };
 
-export const getBalanceOrZero = async (
-  token: Token,
+export const getBalance = async (
+  connection: Connection,
   account: PublicKey
-): Promise<Decimal> => {
+): Promise<BN> => {
+  return await getBalanceOrZero(connection, account);
+};
+
+export const getBalanceOrZero = async (
+  connection: Connection,
+  account: PublicKey
+): Promise<BN> => {
   try {
-    return new Decimal((await token.getAccountInfo(account)).amount.toString());
+    return new BN((await getAccount(connection, account)).amount.toString());
   } catch (err) {
-    console.log(err);
-    return new Decimal(0);
+    return new BN(0);
   }
 };
 
 export async function getAccountBalance(
   connection: Connection,
-  mintAddress: PublicKey,
   tokenAccount: PublicKey
-): Promise<{ balance: BN; token: Token }> {
-  const token = new Token(
-    connection,
-    mintAddress,
-    TOKEN_PROGRAM_ID,
-    null as unknown as Signer
-  );
-
-  const account = await token.getAccountInfo(tokenAccount);
+): Promise<{ balance: BN }> {
+  const account = await getAccount(connection, tokenAccount);
   const balance = new BN(account.amount.toString());
 
-  return { balance, token };
+  return { balance };
 }
 
 export async function getAccountBalanceOrZero(
   connection: Connection,
-  mintAddress: PublicKey,
   tokenAccount: PublicKey
 ): Promise<BN> {
   const { balance } = await getAccountBalanceOrZeroStruct(
     connection,
-    mintAddress,
     tokenAccount
   );
   return balance;
 }
 export async function getAccountBalanceOrZeroStruct(
   connection: Connection,
-  mintAddress: PublicKey,
   tokenAccount: PublicKey
-): Promise<{ balance: BN; token: Token | null }> {
+): Promise<{ balance: BN }> {
   try {
-    const res = await getAccountBalance(connection, mintAddress, tokenAccount);
+    const res = await getAccountBalance(connection, tokenAccount);
 
     return res;
   } catch (err) {
-    return { balance: new BN(0), token: null };
+    return { balance: new BN(0) };
   }
 }
 
@@ -92,14 +87,8 @@ export async function getMintSupply(
   connection: Connection,
   vaultMint: PublicKey
 ): Promise<Decimal> {
-  const token = new Token(
-    connection,
-    vaultMint,
-    TOKEN_PROGRAM_ID,
-    null as unknown as Signer
-  );
   try {
-    const mintInfo = await token.getMintInfo();
+    const mintInfo = await getMint(connection, vaultMint);
     return new Decimal(mintInfo.supply.toString());
   } catch (e) {
     console.error(e);

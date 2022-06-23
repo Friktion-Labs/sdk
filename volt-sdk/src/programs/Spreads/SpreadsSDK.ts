@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { AnchorProvider } from "@project-serum/anchor";
 import { BN, Program } from "@project-serum/anchor";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-  u64,
-} from "@solana/spl-token";
+import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import {
   PublicKey,
@@ -213,7 +206,7 @@ export class SpreadsSDK {
       underlyingAmountSell,
       quoteAmountSell,
       expiryTs,
-      isCall ? new u64(1) : new u64(0),
+      isCall ? new BN(1) : new BN(0),
       {
         accounts: initializeAccounts,
       }
@@ -310,12 +303,7 @@ export class SpreadsSDK {
   }
 
   static async getGenericSpreadsExerciseFeeAccount(quoteAssetMint: PublicKey) {
-    return await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      quoteAssetMint,
-      SPREADS_FEE_OWNER
-    );
+    return await getAssociatedTokenAddress(quoteAssetMint, SPREADS_FEE_OWNER);
   }
 
   isCall(): boolean {
@@ -395,10 +383,10 @@ export class SpreadsSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new u64(underlyingAmount.toString()).toBuffer(),
-        new u64(quoteAmount.toString()).toBuffer(),
-        new u64(expiry.toString()).toBuffer(),
-        isCall ? new u64(1).toBuffer() : new u64(0).toBuffer(),
+        new BN(underlyingAmount.toString()).toBuffer("le", 8),
+        new BN(quoteAmount.toString()).toBuffer("le", 8),
+        new BN(expiry.toString()).toBuffer("le", 8),
+        isCall ? new BN(1).toBuffer() : new BN(0).toBuffer("le", 8),
       ],
       program.programId
     );
@@ -482,12 +470,12 @@ export class SpreadsSDK {
         textEncoder.encode("SpreadsContract"),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new u64(underlyingAmountBuy.toString()).toBuffer(),
-        new u64(quoteAmountBuy.toString()).toBuffer(),
-        new u64(underlyingAmountSell.toString()).toBuffer(),
-        new u64(quoteAmountSell.toString()).toBuffer(),
-        new u64(expiryTs.toString()).toBuffer(),
-        new u64(isCall.toString()).toBuffer(),
+        new BN(underlyingAmountBuy.toString()).toBuffer("le", 8),
+        new BN(quoteAmountBuy.toString()).toBuffer("le", 8),
+        new BN(underlyingAmountSell.toString()).toBuffer("le", 8),
+        new BN(quoteAmountSell.toString()).toBuffer("le", 8),
+        new BN(expiryTs.toString()).toBuffer("le", 8),
+        new BN(isCall.toString()).toBuffer("le", 8),
       ],
       spreadsProgramId
     );
@@ -524,7 +512,7 @@ export class SpreadsSDK {
     }
 
     if (bypassCode.ltn(0)) {
-      throw new Error("bypass code must be positive (u64 in rust)");
+      throw new Error("bypass code must be positive (BN in rust)");
     }
 
     const settleAccounts: SpreadsIXAccounts["settle"] = {
