@@ -231,12 +231,6 @@ Claim Pending Withdrawal
 
 ## License
 
-The code in this repository is original. Some parts may have been derived from other codebases, but they have only been derived from permissively open-sourced software:
-
-- https://github.com/solana-labs/dapp-scaffold (Apache-2.0)
-
-- https://github.com/saber-hq/saber-common (Apache-2.0)
-
-- https://github.com/blockworks-foundation/mango-v3 (MIT)
+The code in this repository is original. Some parts may have been derived from other codebases, but they have only been derived from permissively open-sourced software.
 
 Code in this repository only contains code derived from permissively licensed open source software (such as those licensed under MIT or Apache-2.0).
