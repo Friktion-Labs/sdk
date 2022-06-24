@@ -11,7 +11,7 @@ import {
   marketLoader,
   VoltSDK,
 } from "../../src";
-import { getBalanceOrZero } from "../../src/programs/Volt/utils";
+import { getBalanceOrZero } from "@friktion-labs/friktion-utils";
 import { getPayer } from "../utils/helpers";
 import fetch from "node-fetch";
 import colors from "colors";

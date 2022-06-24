@@ -14,9 +14,9 @@ import {
   OrderBook,
   streamNormalized,
 } from "tardis-dev";
-import { sendInsList } from "../../friktion-utils";
+import { sendInsList } from "@friktion-labs/friktion-utils";
 import { ConnectedVoltSDK, ExtraVoltData, FriktionSDK } from "../../src";
-import { NetworkName } from "../../src/helperTypes";
+import { NetworkName } from "@friktion-labs/friktion-sdk";
 import { sleep } from "../utils/send";
 
 const cli = new Command();

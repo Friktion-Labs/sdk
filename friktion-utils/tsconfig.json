@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "noEmit": false,
+    "outDir": "dist/cjs/",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": false,
+    "inlineSources": false,
+    "importHelpers": true,
+    "paths": {
+      "@solana/spl-token": ["./node_modules/@solana/spl-token"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"],
+  "exclude": [    "**/node_modules/"  ]
+}

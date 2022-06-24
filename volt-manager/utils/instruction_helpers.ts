@@ -1,76 +1,16 @@
+import { GenericOptionsContractWithKey } from "@friktion-labs/friktion-sdk";
+import {
+  sendIns,
+  sendInsList, sendInsListCatching
+} from "@friktion-labs/friktion-utils";
 import * as anchor from "@project-serum/anchor";
 import { Market } from "@project-serum/serum";
 import {
-  PublicKey,
-  Signer,
-  Transaction,
-  TransactionInstruction,
+  PublicKey
 } from "@solana/web3.js";
-import { makeAndSendTx } from "../../friktion-utils";
+import BN from "bn.js";
 import { ConnectedVoltSDK, FriktionSDK, VoltSDK } from "../../src";
 import { initSerumMarket } from "./serum";
-import { GenericOptionsContractWithKey } from "../../src/programs/Volt/voltTypes";
-import BN from "bn.js";
-
-export const sendInsCatching = async (
-  provider: anchor.AnchorProvider,
-  ins: TransactionInstruction
-) => {
-  try {
-    await sendIns(provider, ins);
-  } catch (err) {
-    console.log("error but fuck it");
-  }
-};
-
-export const sendIns = async (
-  provider: anchor.AnchorProvider,
-  ins: TransactionInstruction
-) => {
-  const tx = new Transaction();
-
-  tx.add(ins as any);
-
-  await makeAndSendTx(
-    provider.connection,
-    (provider.wallet as anchor.Wallet).payer,
-    tx,
-    []
-  );
-};
-export const sendInsListCatching = async (
-  provider: anchor.AnchorProvider,
-  insList: TransactionInstruction[],
-  signers?: Signer[]
-): Promise<boolean> => {
-  try {
-    await sendInsList(provider, insList, signers);
-    return true;
-  } catch (err) {
-    console.log("error but fuck it");
-    return false;
-  }
-};
-
-export const sendInsList = async (
-  provider: anchor.AnchorProvider,
-  insList: TransactionInstruction[],
-  signers?: Signer[]
-) => {
-  console.log("sending ix batch...");
-  const tx = new Transaction();
-
-  for (var ix of insList) {
-    tx.add(ix);
-  }
-
-  await makeAndSendTx(
-    provider.connection,
-    (provider.wallet as anchor.Wallet).payer,
-    tx,
-    signers ?? []
-  );
-};
 
 export const initSerumMarketForVolt = async (
   voltSdk: ConnectedVoltSDK
@@ -166,7 +106,7 @@ export const initializeVolt = async (
     permissionlessAuctions: permissionlessAuctions,
   });
 
-  await sendIns(provider, instruction);
+  await sendInsList(provider, [instruction], undefined, undefined, 400000);
 
   return voltKey;
 };

@@ -7,9 +7,9 @@ import fetch from "node-fetch";
 import invariant from "tiny-invariant";
 
 import { FriktionSDK, OptionsProtocol } from "../../src";
-import { NetworkName } from "../../src/helperTypes";
-import { anchorProviderToSerumProvider } from "../../src/miscUtils";
-import { VoltSDK } from "../../src/programs/Volt/VoltSDK";
+import { NetworkName } from "@friktion-labs/friktion-sdk";
+import { anchorProviderToSerumProvider } from "@friktion-labs/friktion-utils";
+import { VoltSDK } from "@friktion-labs/friktion-sdk";
 import { getAccountBalance } from "../utils/tokenHelpers";
 
 export const checkSwapPremium = async () => {

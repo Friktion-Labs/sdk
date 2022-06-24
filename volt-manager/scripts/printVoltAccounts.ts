@@ -5,10 +5,10 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Command } from "commander";
 import Decimal from "decimal.js";
 import { ConnectedVoltSDK, FriktionSDK, VoltSDK, VoltType } from "../../src";
-import { getBalanceOrZero } from "../../src/programs/Volt/utils";
+import { getBalanceOrZero } from "@friktion-labs/friktion-utils";
 import { getPayer } from "../utils/helpers";
 import { getMintInfo } from "@project-serum/common";
-import { anchorProviderToSerumProvider } from "../../src/miscUtils";
+import { anchorProviderToSerumProvider } from "@friktion-labs/friktion-utils";
 import { BN } from "bn.js";
 
 const cli = new Command();

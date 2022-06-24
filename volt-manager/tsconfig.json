@@ -15,18 +15,9 @@
     "noEmit": true,
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./",
     "paths": {
       "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
-  "include": ["./"],
-  "exclude": [  
-    "dist/",
-    "tests/",
-    "scripts/",
-    "packages/",
-    "volt-manager/",
-    "simple-volt-manager/",
-    "examples/"]
+  "exclude": ["**/node_modules"]
 }

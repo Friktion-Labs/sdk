@@ -1,3 +1,20 @@
+import {
+  NetworkName,
+  PERFORMANCE_FEE_BPS,
+  VoltSDK,
+  VoltType,
+  WITHDRAWAL_FEE_BPS,
+} from "@friktion-labs/friktion-sdk";
+import {
+  anchorProviderToSerumProvider,
+  getBalanceOrZero,
+  getNormFactorForMint,
+  getOrCreateAssociatedTokenAccounts,
+  sendIns,
+  sendInsCatching,
+  sendInsList,
+  sendInsListCatching,
+} from "@friktion-labs/friktion-utils";
 import * as anchor from "@project-serum/anchor";
 import { AnchorProvider } from "@project-serum/anchor";
 import { getMintInfo } from "@project-serum/common";
@@ -21,10 +38,7 @@ import BN from "bn.js";
 import { Command } from "commander";
 import Decimal from "decimal.js";
 import * as readline from "readline";
-import { getNormFactorForMint } from "../friktion-utils";
-import { sendInsListCatching } from "../friktion-utils/src/instruction_helpers";
 import { newContractInstruction as inertiaNewContract } from "../packages/inertia-client/create_contract";
-import { getOrCreateAssociatedTokenAccounts } from "../packages/soloptions-common";
 import {
   ConnectedVoltSDK,
   createSoloptionsContractInstruction,
@@ -36,27 +50,14 @@ import {
   marketLoader,
   VoltVaultWithKey,
 } from "../src";
-import {
-  PERFORMANCE_FEE_BPS,
-  VoltType,
-  WITHDRAWAL_FEE_BPS,
-} from "../src/constants";
-import { NetworkName } from "../src/helperTypes";
-import { anchorProviderToSerumProvider } from "../src/miscUtils";
-import { getBalanceOrZero } from "../src/programs/Volt/utils";
-import { VoltSDK } from "../src/programs/Volt/VoltSDK";
-import { crankEventQueue } from "../utils/serum";
 import { createAccountsAndAirdrop } from "./utils/faucet_helpers";
 import { wait } from "./utils/helpers";
 import {
   initializeVolt,
   initializeVoltWithoutOptionMarketSeed,
-  sendIns,
-  sendInsCatching,
-  sendInsList,
 } from "./utils/instruction_helpers";
 import { sleep } from "./utils/send";
-import { initSerumMarket } from "./utils/serum";
+import { crankEventQueue, initSerumMarket } from "./utils/serum";
 import { getAccountBalance } from "./utils/tokenHelpers";
 
 export const MMs = {
@@ -1860,7 +1861,11 @@ const run = async () => {
         provider,
         await voltSdk.rebalanceSwapPremium(
           spotMarket.address,
-          spotMarket.priceNumberToLots(swapPremiumOrder?.price ?? 0),
+          new BN(
+            spotMarket
+              .priceNumberToLots(swapPremiumOrder?.price ?? 0)
+              .toString()
+          ),
           new anchor.BN(1),
           options.swapPermissioned ? true : false
         )
@@ -2088,7 +2093,9 @@ const run = async () => {
     await sendIns(
       provider,
       await voltSdk.rebalanceEnter(
-        marketProxy.market.priceNumberToLots(enterOrder.price),
+        new BN(
+          marketProxy.market.priceNumberToLots(enterOrder.price).toString()
+        ),
         new anchor.BN(order_size)
       )
     );

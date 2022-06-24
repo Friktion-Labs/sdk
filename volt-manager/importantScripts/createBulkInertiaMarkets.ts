@@ -14,18 +14,18 @@ import { parse } from "csv-parse/sync";
 import Decimal from "decimal.js";
 import * as fs from "fs";
 import invariant from "tiny-invariant";
-import { sleep } from "../../friktion-utils";
-import { sendInsListCatching } from "../../friktion-utils/src/instruction_helpers";
+import { sleep } from "@friktion-labs/friktion-utils";
+import { sendInsListCatching } from "@friktion-labs/friktion-utils";
 import { newContractInstruction as inertiaNewContract } from "../../packages/inertia-client/create_contract";
-import { getOrCreateAssociatedTokenAccounts } from "../../packages/soloptions-common";
+import { getOrCreateAssociatedTokenAccounts } from "@friktion-labs/friktion-utils";
 import {
   InertiaSDK,
   INERTIA_FEE_OWNER,
   OPTIONS_PROGRAM_IDS,
   OTHER_IDLS,
 } from "../../src";
-import { anchorProviderToSerumProvider } from "../../src/miscUtils";
-import { getInertiaContractByKey } from "../../src/programs/Inertia/inertiaUtils";
+import { anchorProviderToSerumProvider } from "@friktion-labs/friktion-utils";
+import { getInertiaContractByKey } from "@friktion-labs/friktion-sdk";
 
 const cli = new Command();
 

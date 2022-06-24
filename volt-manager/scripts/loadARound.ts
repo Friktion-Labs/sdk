@@ -2,7 +2,7 @@ import * as anchor from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { Command } from "commander";
 import { ConnectedVoltSDK, FriktionSDK } from "../../src";
-import { RoundWithKey } from "../../src/programs/Volt/voltTypes";
+import { RoundWithKey } from "@friktion-labs/friktion-sdk";
 import { parse } from "csv-parse/sync";
 
 const cli = new Command();

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "module": "commonjs",
+    "strictFunctionTypes": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "inlineSources": true,
+    "sourceMap": true,
+    "noErrorTruncation": true,
+    "paths": {
+      "@solana/spl-token": ["./src/node_modules/@solana/spl-token"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"],
+  "exclude": [
+    "dist/",
+    "**/node_modules/"
+  ]
+}

@@ -4,7 +4,7 @@
 
 dev tooling for [Friktion](https://app.friktion.fi)
 
-- volt-sdk: typescript api wrapping Friktion instructions
+- src: The typescript Friktion SDK! API wrapping Friktion instruction and providing access to calculations/statistics about volts.
 - volt-abi: rust crate providing contexts and instruction hooks for CPI calls (anchor)
 - volt-manager: CLI tool for interacting with volts
 

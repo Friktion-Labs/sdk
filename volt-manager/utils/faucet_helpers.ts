@@ -9,7 +9,10 @@ import {
   getAccount,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { makeAndSendTx, sendSignedTransaction } from "../../friktion-utils";
+import {
+  makeAndSendTx,
+  sendSignedTransaction,
+} from "@friktion-labs/friktion-utils";
 import * as anchor from "@project-serum/anchor";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 

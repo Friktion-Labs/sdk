@@ -1,14 +1,6 @@
-import {
-  SystemProgram,
-  Transaction,
-  Account,
-  Connection,
-  PublicKey,
-  Signer,
-} from "@solana/web3.js";
+import * as anchor from "@project-serum/anchor";
 import {
   AccountLayout,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   createInitializeAccountInstruction,
   getAccount,
@@ -16,7 +8,13 @@ import {
   getMint,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import * as anchor from "@project-serum/anchor";
+import {
+  Account,
+  Connection,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
 import BN from "bn.js";
 
 export const WRAPPED_SOL_ADDRESS = new PublicKey(

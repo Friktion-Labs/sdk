@@ -8,7 +8,7 @@ const cli = new Command();
 
 cli
   .version("1.0.0")
-  .description("CLI tool for interacting w/ Friktion volts")
+  .description("opts tool for interacting w/ Friktion volts")
   .usage("[options]")
   .option(
     "-m, --match <string>",
@@ -23,6 +23,8 @@ cli
   .option("--serum-markets", "print out serum markets")
   .parse(process.argv);
 
+const opts = cli.opts();
+
 (async () => {
   const user = getPayer();
   const PROVIDER_URL =
@@ -32,7 +34,7 @@ cli
   // const PROVIDER_URL = "https://api.devnet.solana.com";
   // const PROVIDER_URL = "https://solana-api.projectserum.com";
   // const PROVIDER_URL = "https://api.mainnet-beta.solana.com";
-  const provider = new anchor.Provider(
+  const provider = new anchor.AnchorProvider(
     new Connection(PROVIDER_URL),
     anchor.Wallet.local(),
     {}
@@ -43,7 +45,7 @@ cli
     network: "mainnet-beta",
   });
   const vv = await friktionSdk.loadVoltByKey(
-    new PublicKey(cli.match as string)
+    new PublicKey(opts.match as string)
   );
   const rounds = (await vv.getAllRounds()).sort((a, b) =>
     a.number.sub(b.number).toNumber()

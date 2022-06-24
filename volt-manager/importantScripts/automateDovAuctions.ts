@@ -10,7 +10,7 @@ import Decimal from "decimal.js";
 import * as fs from "fs";
 import fetch from "node-fetch";
 import invariant from "tiny-invariant";
-import { sendInsCatching } from "../../friktion-utils";
+import { sendInsCatching } from "@friktion-labs/friktion-utils";
 import {
   ConnectedVoltSDK,
   FriktionSDK,
@@ -20,16 +20,16 @@ import {
   PERFORMANCE_FEE_BPS,
   WITHDRAWAL_FEE_BPS,
 } from "../../src";
-import { INERTIA_PX_NORM_FACTOR } from "../../src/constants";
-import { NetworkName } from "../../src/helperTypes";
-import { getInertiaContractByKey } from "../../src/programs/Inertia/inertiaUtils";
-import { getBalanceOrZero } from "../../src/programs/Volt/utils";
-import { VoltSDK } from "../../src/programs/Volt/VoltSDK";
-import { crankEventQueue } from "../../utils/serum";
+import { INERTIA_PX_NORM_FACTOR } from "@friktion-labs/friktion-sdk";
+import { NetworkName } from "@friktion-labs/friktion-sdk";
+import { getInertiaContractByKey } from "@friktion-labs/friktion-sdk";
 import {
-  initSerumMarketForVolt,
+  getBalanceOrZero,
   sendInsListCatching,
-} from "../utils/instruction_helpers";
+} from "@friktion-labs/friktion-utils";
+import { VoltSDK } from "@friktion-labs/friktion-sdk";
+import { crankEventQueue } from "../../tests/utils/serum";
+import { initSerumMarketForVolt } from "../utils/instruction_helpers";
 
 const cli = new Command();
 

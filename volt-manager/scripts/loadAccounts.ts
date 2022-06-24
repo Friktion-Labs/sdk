@@ -7,10 +7,12 @@ const cli = new Command();
 
 cli
   .version("1.0.0")
-  .description("CLI tool for interacting w/ Friktion volts")
+  .description("opts tool for interacting w/ Friktion volts")
   .usage("[options]")
   .option("-v, --volt <string>", "volt address to load accounts for")
   .parse(process.argv);
+
+const opts = cli.opts();
 
 (async () => {
   const provider = anchor.AnchorProvider.env();
@@ -21,7 +23,7 @@ cli
   (voltSdk = new ConnectedVoltSDK(
     provider.connection,
     provider.wallet.publicKey,
-    await friktionSdk.loadVoltByKey(new PublicKey(cli.volt as string))
+    await friktionSdk.loadVoltByKey(new PublicKey(opts.volt as string))
   )),
     console.log(await voltSdk.getRoundByNumber(voltSdk.voltVault.roundNumber));
   console.log(
