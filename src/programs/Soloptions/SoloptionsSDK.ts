@@ -1,7 +1,6 @@
 import type { ProviderLike } from "@friktion-labs/friktion-utils";
 import type { AnchorProvider } from "@project-serum/anchor";
 import { BN } from "@project-serum/anchor";
-import type { SolanaProvider } from "@saberhq/solana-contrib";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddress,
@@ -30,15 +29,12 @@ import type {
 } from "./soloptionsTypes";
 import { getSoloptionsContractByKey } from "./soloptionsUtils";
 
-export interface NewMarketParams {
-  user: PublicKey;
+export interface NewContractParams {
   quoteMint: PublicKey;
   underlyingMint: PublicKey;
   underlyingAmount: BN;
   quoteAmount: BN;
   expiryTs: number;
-  mintFeeAccount: PublicKey;
-  exerciseFeeAccount: PublicKey;
 }
 
 export interface ExerciseOptionParams {
@@ -164,15 +160,13 @@ export class SoloptionsSDK {
     );
   }
 
-  static async initializeOptionMarketAndGetSdk(
+  static async initializeOptionsContract(
     sdk: FriktionSDK,
-    opts: SoloptionsSDKOpts,
-    providerMut: SolanaProvider,
-    params: NewMarketParams,
+    params: NewContractParams,
     user: PublicKey
   ): Promise<{
     ix: TransactionInstruction;
-    optionMarket: GenericOptionsContractWithKey;
+    optionsContract: GenericOptionsContractWithKey;
     optionKey: PublicKey;
   }> {
     const {
@@ -180,8 +174,6 @@ export class SoloptionsSDK {
       quoteMint,
       underlyingAmount,
       quoteAmount,
-      mintFeeAccount,
-      exerciseFeeAccount,
       expiryTs,
     } = params;
     const seeds = [
@@ -219,8 +211,17 @@ export class SoloptionsSDK {
       true
     );
 
+    const mintFeeAccount = await getAssociatedTokenAddress(
+      underlyingMint,
+      SOLOPTIONS_FEE_OWNER
+    );
+    const exerciseFeeAccount = await getAssociatedTokenAddress(
+      quoteMint,
+      SOLOPTIONS_FEE_OWNER
+    );
+
     const extraKeys = SystemProgram.programId;
-    const optionMarketStruct = {
+    const genericOptionsContractStruct: SoloptionsContractWithKey = {
       ...params,
       expiryTs: new BN(expiryTs),
       underlyingAmount: new BN(params.underlyingAmount),
@@ -230,6 +231,8 @@ export class SoloptionsSDK {
       quotePool,
       writerMint,
       optionMint,
+      mintFeeAccount,
+      exerciseFeeAccount,
       contractBump,
       optionBump,
       writerBump,
@@ -267,13 +270,14 @@ export class SoloptionsSDK {
       }
     );
 
-    const optionMarket =
-      convertSoloptionsContractToOptionMarket(optionMarketStruct);
+    const optionsContract = convertSoloptionsContractToOptionMarket(
+      genericOptionsContractStruct
+    );
 
     return {
       ix: newContractIx,
-      optionMarket: optionMarket,
-      optionKey: optionMarketStruct.key,
+      optionsContract,
+      optionKey: genericOptionsContractStruct.key,
     };
   }
 

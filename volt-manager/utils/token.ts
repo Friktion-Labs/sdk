@@ -1,9 +1,3 @@
-/**
- * This file is for pure functions only. They are to extract some of the
- * complexities out of the application code, while still allowing the application to
- * fetch and update data in their own manner.
- */
-
 import {
   AccountLayout,
   createInitializeAccountInstruction,
@@ -26,11 +20,6 @@ const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
 
-/**
- * Create and initialize a Associated SPL Token account for the provided owner.
- *
- * TODO: refactor to use the SPL Token JS library (https://github.com/solana-labs/solana-program-library/blob/master/token/js/client/token.js#L2306)
- */
 export const createAssociatedTokenAccountInstruction = async ({
   payer,
   owner,

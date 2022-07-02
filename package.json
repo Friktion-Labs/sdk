@@ -5,10 +5,8 @@
       "src",
       "friktion-utils",
       "volt-manager",
-      "examples",
-      "packages/*"
-    ],
-    "nohoist": ["**/@solana/spl-token", "**/@solana/spl-token/**"]
+      "examples"
+    ]
   },
   "engines": {
     "node": ">=16.0.0"
@@ -27,7 +25,7 @@
     "lint:fix": "eslint src/ --cache --fix",
     "lint:ci": "eslint src/ --max-warnings=0",
     "release": "git add package.json && node ./scripts/generate-release-commit-message.js && git commit --allow-empty -F ./scripts/release-message && rm ./scripts/release-message && echo '\n\n🙏 Please run git push with this latest commit at HEAD, or include the commit message in the pull request title'",
-    "bump": "yarn version patch && yarn release",
+    "bump": "cd src && yarn version patch && yarn release & cd ..",
     "format:fix": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css|md)\"",
     "test:rust": "cargo test-bpf",
     "test:all": "anchor build && yarn test:legacy && yarn test:modern && yarn test:unit && yarn test:rust",
@@ -38,7 +36,7 @@
     "test:swap": "ANCHOR_WALLET=~/.config/solana/id.json cd tests/integration/swap-suite && anchor test --skip-build",
     "test:unit": "ANCHOR_WALLET=~/.config/solana/volt-testing.json yarn run ts-mocha -p ./tests/tsconfig.json -t 100000 tests/unit/**/*test*.ts",
     "test:serum": "ANCHOR_WALLET=~/.config/solana/id.jsocn anchor test --skip-build tests/serum/proxy.ts",
-    "postinstall": "husky install",
+    "_postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },

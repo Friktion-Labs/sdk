@@ -34,7 +34,7 @@ import {
   getInertiaMarketByKey,
 } from "./inertiaUtils";
 
-export interface InertiaNewMarketParams {
+export interface InertiaNewContractParams {
   user: PublicKey;
   quoteMint: PublicKey;
   underlyingMint: PublicKey;
@@ -42,8 +42,7 @@ export interface InertiaNewMarketParams {
   quoteAmount: BN;
   expiryTs: BN;
   isCall: boolean;
-  mintFeeAccount: PublicKey;
-  exerciseFeeAccount: PublicKey;
+  oracleAi: PublicKey;
 }
 
 export interface InertiaRevertSettleOptionParams {
@@ -331,7 +330,7 @@ export class InertiaSDK {
     }
 
     if (bypassCode.ltn(0)) {
-      throw new Error("bypass code must be positive (BN in rust)");
+      throw new Error("bypass code must be positive");
     }
 
     const settleAccounts: InertiaIXAccounts["settle"] = {
@@ -469,5 +468,131 @@ export class InertiaSDK {
     return this.program.instruction.closePosition(new BN(amount), {
       accounts: closePositionAccounts,
     });
+  }
+
+  static async initializeOptionsContract(
+    sdk: FriktionSDK,
+    params: InertiaNewContractParams,
+    user: PublicKey
+  ): Promise<{
+    ix: TransactionInstruction;
+    optionsContract: GenericOptionsContractWithKey;
+    optionKey: PublicKey;
+  }> {
+    const {
+      underlyingMint,
+      quoteMint,
+      underlyingAmount,
+      quoteAmount,
+      expiryTs,
+      isCall,
+      oracleAi,
+    } = params;
+    const seeds = [
+      underlyingMint,
+      quoteMint,
+      underlyingAmount,
+      quoteAmount,
+      expiryTs,
+      isCall,
+    ] as const;
+    const program = sdk.programs.Inertia;
+    const [contract, contractBump] = await InertiaSDK.getProgramAddress(
+      program,
+      "OptionsContract",
+      ...seeds
+    );
+    const [optionMint, optionBump] = await InertiaSDK.getProgramAddress(
+      program,
+      "OptionMint",
+      ...seeds
+    );
+    const [writerMint, writerBump] = await InertiaSDK.getProgramAddress(
+      program,
+      "WriterMint",
+      ...seeds
+    );
+
+    const [underlyingPool, underlyingPoolBump] =
+      await InertiaSDK.getProgramAddress(program, "UnderlyingPool", ...seeds);
+    const [claimablePool, claimablePoolBump] =
+      await InertiaSDK.getProgramAddress(program, "ClaimablePool", ...seeds);
+
+    const mintFeeAccount = await getAssociatedTokenAddress(
+      underlyingMint,
+      INERTIA_FEE_OWNER
+    );
+    const exerciseFeeAccount = await getAssociatedTokenAddress(
+      quoteMint,
+      INERTIA_FEE_OWNER
+    );
+
+    const genericOptionsContractStruct: InertiaContractWithKey = {
+      ...{
+        ...params,
+        isCall: isCall ? new BN(1) : new BN(0),
+      },
+      adminKey: user,
+      expiryTs: new BN(expiryTs),
+      underlyingAmount: new BN(params.underlyingAmount),
+      quoteAmount: new BN(params.quoteAmount),
+      key: contract,
+      underlyingPool,
+      claimablePool,
+      writerMint,
+      optionMint,
+      mintFeeAccount,
+      exerciseFeeAccount,
+      contractBump,
+      optionBump,
+      writerBump,
+      underlyingPoolBump,
+      wasSettleCranked: false,
+      claimablePoolBump,
+      extraKey1: SystemProgram.programId,
+      exerciseAmount: new BN(0),
+      totalAmount: new BN(0),
+    };
+
+    const newContractIx = sdk.programs.Inertia.instruction.newContract(
+      params.underlyingAmount,
+      params.quoteAmount,
+      new BN(expiryTs),
+      isCall ? new BN(1) : new BN(0),
+      contractBump,
+      optionBump,
+      writerBump,
+      underlyingPoolBump,
+      claimablePoolBump,
+      {
+        accounts: {
+          payer: user,
+          adminKey: user,
+          contract,
+          writerMint,
+          optionMint,
+          quoteMint: quoteMint,
+          underlyingMint: underlyingMint,
+          underlyingPool,
+          claimablePool,
+          oracleAi,
+          mintFeeAccount: mintFeeAccount,
+          exerciseFeeAccount: exerciseFeeAccount,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        },
+      }
+    );
+
+    const optionsContract = convertInertiaContractToOptionMarket(
+      genericOptionsContractStruct
+    );
+
+    return {
+      ix: newContractIx,
+      optionsContract,
+      optionKey: genericOptionsContractStruct.key,
+    };
   }
 }

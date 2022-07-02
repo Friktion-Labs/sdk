@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { BN } from "@project-serum/anchor";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
 import type { PublicKey } from "@solana/web3.js";
 
-import { newContractInstruction } from "../../../packages/soloptions-client";
-import { SOLOPTIONS_FEE_OWNER } from "../..";
 import type { GenericOptionsContractWithKey } from "../Volt/voltTypes";
 import type {
   SoloptionsContract,
@@ -61,45 +56,11 @@ export const getSoloptionsConractByKey = async (
     return null;
   }
 
-  const optionMarket: GenericOptionsContractWithKey =
+  const optionsContract: GenericOptionsContractWithKey =
     convertSoloptionsContractToOptionMarket({
       ...soloptionsContract,
       key: key,
     });
 
-  return optionMarket;
-};
-
-export const createSoloptionsContractInstruction = async (
-  program: SoloptionsProgram,
-  underlyingMint: PublicKey,
-  quoteMint: PublicKey,
-  underlyingAmountPerContract: number,
-  quoteAmountPerContract: number,
-  expiry: number
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const { ix: createContractIx, contract } = await newContractInstruction(
-    program,
-    {
-      underlyingMint: underlyingMint,
-      quoteMint: quoteMint,
-      expiryTs: expiry,
-      underlyingAmount: new BN(underlyingAmountPerContract),
-      quoteAmount: new BN(quoteAmountPerContract),
-      mintFeeAccount: await getAssociatedTokenAddress(
-        underlyingMint,
-        SOLOPTIONS_FEE_OWNER
-      ),
-      exerciseFeeAccount: await getAssociatedTokenAddress(
-        quoteMint,
-        SOLOPTIONS_FEE_OWNER
-      ),
-    }
-  );
-  return {
-    contract,
-    createContractIx,
-  };
+  return optionsContract;
 };

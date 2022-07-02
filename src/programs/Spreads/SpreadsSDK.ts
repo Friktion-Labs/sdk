@@ -512,7 +512,7 @@ export class SpreadsSDK {
     }
 
     if (bypassCode.ltn(0)) {
-      throw new Error("bypass code must be positive (BN in rust)");
+      throw new Error("bypass code must be positive");
     }
 
     const settleAccounts: SpreadsIXAccounts["settle"] = {

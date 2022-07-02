@@ -16,7 +16,7 @@
     "sourceMap": true,
     "noErrorTruncation": true,
     "paths": {
-      "@solana/spl-token": ["./src/node_modules/@solana/spl-token"]
+      "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.json"],

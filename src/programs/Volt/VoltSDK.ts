@@ -1900,12 +1900,6 @@ export class VoltSDK {
    * normalization factor based on # of decimals of underlying token
    */
   async getDepositTokenNormalizationFactor() {
-    if (typeof window !== "undefined") {
-      throw new Error(
-        "You are NOT allowed to use getNormalizationFactor() from the browser"
-      );
-    }
-
     if (this.normFactor !== undefined) return this.normFactor;
 
     try {

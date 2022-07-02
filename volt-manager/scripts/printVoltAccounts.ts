@@ -323,17 +323,6 @@ const options = cli.opts();
       }
 
       if (!options.short) {
-        // const { serumMarketKey } = await getMarketAndAuthorityInfo(
-        //   vv.sdk.programs.Volt.programId,
-        //   vv.voltVault.optionMarket,
-        //   await Token.getAssociatedTokenAddress(
-        //     ASSOCIATED_TOKEN_PROGRAM_ID,
-        //     TOKEN_PROGRAM_ID,
-        //     DEVNET_WHITELIST_TOKEN,
-        //     vv.sdk.programs.Volt.programId
-        //   ),
-        //   new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin")
-        // );
         console.log("deposit pool = ", vv.voltVault.depositPool.toString());
         console.log(
           "General Info\n --------------",

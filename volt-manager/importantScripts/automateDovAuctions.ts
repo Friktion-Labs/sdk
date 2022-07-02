@@ -159,6 +159,7 @@ export const runDOVAuction = async (
   ) {
     console.log("resetting option market...");
     await sendInsListCatching(provider, [await voltSdk.resetOptionMarket()]);
+    voltSdk = await voltSdk.refresh();
   }
 
   if (

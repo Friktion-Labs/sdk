@@ -1,6 +1,5 @@
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { getMintInfo, connection } from "@project-serum/common";
 import { getMint } from "@solana/spl-token";
 import {
   Connection,
@@ -16,16 +15,18 @@ import * as fs from "fs";
 import invariant from "tiny-invariant";
 import { sleep } from "@friktion-labs/friktion-utils";
 import { sendInsListCatching } from "@friktion-labs/friktion-utils";
-import { newContractInstruction as inertiaNewContract } from "../../packages/inertia-client/create_contract";
 import { getOrCreateAssociatedTokenAccounts } from "@friktion-labs/friktion-utils";
 import {
+  FriktionSDK,
   InertiaSDK,
   INERTIA_FEE_OWNER,
+  NetworkName,
   OPTIONS_PROGRAM_IDS,
   OTHER_IDLS,
-} from "../../src";
+} from "@friktion-labs/friktion-sdk";
 import { anchorProviderToSerumProvider } from "@friktion-labs/friktion-utils";
 import { getInertiaContractByKey } from "@friktion-labs/friktion-sdk";
+import { Inertia } from "../../target/types/inertia";
 
 const cli = new Command();
 
@@ -54,6 +55,15 @@ const inertiaProgram = new Program(
   OPTIONS_PROGRAM_IDS.Inertia,
   provider
 );
+
+const connection = provider.connection;
+const CLUSTER: NetworkName = "mainnet-beta";
+const friktionSdk = new FriktionSDK({
+  provider: provider,
+  network: CLUSTER,
+});
+
+const user = provider.wallet.publicKey;
 
 const file = fs.readFileSync(options.file);
 
@@ -227,26 +237,25 @@ const run = async () => {
           ],
         });
 
-      const [contract, createContractIx] = await inertiaNewContract(
-        inertiaProgram as any,
-        {
-          payer: (inertiaProgram.provider as anchor.AnchorProvider).wallet
-            .publicKey,
-          oracleAi,
-          quoteMint,
-          underlyingMint,
-          underlyingAmount: ulApc,
-          quoteAmount: quoteApc,
-          expiryTs: new anchor.BN(expiry),
-          isCall,
-          mintFeeAccount: inertiaMintFeeAccount,
-          exerciseFeeAccount: inertiaExerciseFeeAccount,
-        }
-      );
+      const { optionsContract, ix } =
+        await InertiaSDK.initializeOptionsContract(
+          friktionSdk,
+          {
+            user,
+            oracleAi,
+            quoteMint,
+            underlyingMint,
+            underlyingAmount: ulApc,
+            quoteAmount: quoteApc,
+            expiryTs: new anchor.BN(expiry),
+            isCall,
+          },
+          user
+        );
 
       console.log(
         "\n, contract key = ",
-        contract.key.toString(),
+        optionsContract.key.toString(),
         "volt = ",
         voltKey.toString(),
         "\nstrike = ",
@@ -258,7 +267,7 @@ const run = async () => {
         "\n-------------------------------------------------"
       );
 
-      ixsList.push(createContractIx);
+      ixsList.push(ix);
 
       // try {
       //   await sendIns(provider, createContractIx);

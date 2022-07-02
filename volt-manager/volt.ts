@@ -1,6 +1,7 @@
 import {
   NetworkName,
   PERFORMANCE_FEE_BPS,
+  SoloptionsSDK,
   VoltSDK,
   VoltType,
   WITHDRAWAL_FEE_BPS,
@@ -38,10 +39,8 @@ import BN from "bn.js";
 import { Command } from "commander";
 import Decimal from "decimal.js";
 import * as readline from "readline";
-import { newContractInstruction as inertiaNewContract } from "../packages/inertia-client/create_contract";
 import {
   ConnectedVoltSDK,
-  createSoloptionsContractInstruction,
   // createSoloptionsMarketInstruction as createSoloptionsContractInstruction,
   FriktionSDK,
   getInertiaContractByKeyOrNull,
@@ -400,11 +399,10 @@ const run = async () => {
         ],
       });
 
-    const [contract, createContractIx] = await inertiaNewContract(
-      inertiaProgram,
+    const { ix, optionsContract } = await InertiaSDK.initializeOptionsContract(
+      friktionSdk,
       {
-        payer: (inertiaProgram.provider as anchor.AnchorProvider).wallet
-          .publicKey,
+        user: provider.wallet.publicKey,
         oracleAi: new PublicKey(
           options.oracleAi ?? SystemProgram.programId.toString()
         ),
@@ -414,13 +412,12 @@ const run = async () => {
         quoteAmount: new anchor.BN(options.quoteAmountPerContract),
         expiryTs: new anchor.BN(expiry),
         isCall: Number(options.isCall) === 0 ? false : true,
-        mintFeeAccount: inertiaMintFeeAccount,
-        exerciseFeeAccount: inertiaExerciseFeeAccount,
-      }
+      },
+      provider.wallet.publicKey
     );
 
-    console.log("creating contract id = ", contract.key.toString());
-    await sendIns(provider, createContractIx);
+    console.log("creating contract id = ", optionsContract.key.toString());
+    await sendIns(provider, ix);
     return;
   } else if (instruction === "createSoloptionsContract") {
     const expiry = options.expiry || 0;
@@ -432,73 +429,21 @@ const run = async () => {
     const quoteMint = new PublicKey(options.quoteAssetMint);
     const underlyingMint = new PublicKey(options.underlyingAssetMint);
 
-    const { contract, createContractIx } =
-      await createSoloptionsContractInstruction(
-        soloptionsProgram as any,
-        new PublicKey(options.underlyingAssetMint),
-        new PublicKey(options.quoteAssetMint),
-        options.underlyingAmountPerContract,
-        options.quoteAmountPerContract,
-        expiry
+    const { optionsContract, ix } =
+      await SoloptionsSDK.initializeOptionsContract(
+        friktionSdk,
+        {
+          quoteMint: new PublicKey(options.quoteAssetMint),
+          underlyingMint: new PublicKey(options.underlyingAssetMint),
+          underlyingAmount: new BN(options.underlyingAmountPerContract),
+          quoteAmount: new BN(options.quoteAmountPerContract),
+          expiryTs: expiry,
+        },
+        provider.wallet.publicKey
       );
 
-    console.log("contract = ", contract.key.toString());
-    await sendIns(provider, createContractIx);
-  } else if (instruction === "createBulkInertiaMarkets") {
-    const expiry = options.expiry || 0;
-
-    if (expiry === 0) {
-      throw new Error("please set expiry value for expiry");
-    }
-
-    // const { contract, createContractIx } =
-    //   await createSoloptionsMarketInstruction(
-    //     inertiaProgram as any,
-    //     new PublicKey(options.underlyingAssetMint),
-    //     new PublicKey(options.quoteAssetMint),
-    //     options.underlyingAmountPerContract,
-    //     options.quoteAmountPerContract,
-    //     expiry
-    //   );
-
-    const quoteMint = new PublicKey(options.quoteAssetMint);
-    const underlyingMint = new PublicKey(options.underlyingAssetMint);
-
-    const [inertiaMintFeeAccount, inertiaExerciseFeeAccount] =
-      await getOrCreateAssociatedTokenAccounts(provider, {
-        accountParams: [
-          {
-            mint: underlyingMint,
-            owner: INERTIA_FEE_OWNER,
-            payer: provider.wallet.publicKey,
-          },
-          {
-            mint: quoteMint,
-            owner: INERTIA_FEE_OWNER,
-            payer: provider.wallet.publicKey,
-          },
-        ],
-      });
-
-    const [contract, createContractIx] = await inertiaNewContract(
-      inertiaProgram,
-      {
-        payer: (inertiaProgram.provider as anchor.AnchorProvider).wallet
-          .publicKey,
-        oracleAi: new PublicKey(options.oracleAi),
-        quoteMint,
-        underlyingMint,
-        underlyingAmount: new anchor.BN(options.underlyingAmountPerContract),
-        quoteAmount: new anchor.BN(options.quoteAmountPerContract),
-        expiryTs: new anchor.BN(expiry),
-        isCall: Number(options.isCall) === 0 ? false : true,
-        mintFeeAccount: inertiaMintFeeAccount,
-        exerciseFeeAccount: inertiaExerciseFeeAccount,
-      }
-    );
-
-    console.log("creating contract id = ", contract.key.toString());
-    await sendIns(provider, createContractIx);
+    console.log("contract = ", optionsContract.key.toString());
+    await sendIns(provider, ix);
   }
 
   //// INITIALIZE VOLT ////
@@ -719,7 +664,7 @@ const run = async () => {
       //   "observed fees taken: ",
       //   new Decimal(
       //     amtInFeeWalletAfter.sub(amtInFeeWalletBefore).toString()
-      //   ).div(await voltSdk.getNormalizationFactor())
+      // ).div(await voltSdk.getNormalizationFactor())
       // );
 
       return;
@@ -1188,7 +1133,7 @@ const run = async () => {
 
   // if (instruction == "transferPremium") {
   //   const normFactor = new Decimal(10).pow(
-  //     (await quoteToken.getMintInfo()).decimals
+  //     (await getMint(connection, qMint)).decimals
   //   );
   //   const premiumAmount = (
   //     await getAccount(connection, voltSdk.voltVault.premiumPool)
@@ -1310,7 +1255,7 @@ const run = async () => {
   // else if (instruction == "transferDepositInside") {
   //   const normFactor = new anchor.BN(
   //     new Decimal(10)
-  //       .pow((await underlyingToken.getMintInfo()).decimals)
+  //       .pow((await getMint(connection, ulMint)).decimals)
   //       .toString()
   //   );
   //   const underlyingAmount = (
@@ -1806,19 +1751,7 @@ const run = async () => {
       provider.connection,
       new PublicKey(options.targetPool)
     );
-    // await sendIns(
-    //   provider,
-    //   await voltSdk.reinitializeMint(
-    //     new PublicKey(options.targetPool),
-    //     new PublicKey(options.newUnderlyingAssetMint),
-    //     await Token.getAssociatedTokenAddress(
-    //       ASSOCIATED_TOKEN_PROGRAM_ID,
-    //       TOKEN_PROGRAM_ID,
-    //       targetTokenAccount.mint,
-    //       voltSdk.wallet
-    //     )
-    //   )
-    // );
+
     return;
   } else if (instruction == "rebalanceSwapPremium") {
     console.log("settle permissioned market premium funds");
