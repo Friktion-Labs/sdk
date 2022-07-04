@@ -24,7 +24,7 @@
     "lint": "eslint friktion-sdk/src/ --cache",
     "lint:fix": "eslint friktion-sdk/src/ --cache --fix",
     "lint:ci": "eslint friktion-sdk/src/ --max-warnings=0",
-    "release": "git add friktion-sdk/src/package.json && node ./scripts/generate-release-commit-message.js && git commit --allow-empty -F ./scripts/release-message && rm ./scripts/release-message && echo '\n\n🙏 Please run git push with this latest commit at HEAD, or include the commit message in the pull request title'",
+    "release": "git add friktion-sdk/package.json && node ./scripts/generate-release-commit-message.js && git commit --allow-empty -F ./scripts/release-message && rm ./scripts/release-message && echo '\n\n🙏 Please run git push with this latest commit at HEAD, or include the commit message in the pull request title'",
     "bump": "cd friktion-sdk/ && yarn version patch && cd .. && yarn release",
     "format:fix": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css|md)\"",
     "test:rust": "cargo test-bpf",
