@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "noEmit": false,
-    "outDir": "dist/cjs/",
+    "outDir": "src/dist/cjs/",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": false,
