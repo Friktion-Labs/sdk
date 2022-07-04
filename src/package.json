@@ -1,13 +1,13 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "1.1.141",
+  "version": "1.1.144",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/index.js",
   "dependencies": {
     "@blockworks-foundation/mango-client": "3.4.5",
     "@friktion-labs/entropy-client": "^1.7.3",
-    "@friktion-labs/friktion-utils": "0.0.1",
+    "@friktion-labs/friktion-utils": "workspace:^",
     "@oclif/command": "^1.8.16",
     "@project-serum/anchor": "^0.25.0-beta.1",
     "@project-serum/common": "^0.0.1-beta.3",
@@ -27,6 +27,7 @@
   },
   "files": [
     "dist",
-    "dist/cjs"
+    "dist/cjs",
+    "src"
   ]
 }

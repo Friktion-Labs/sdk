@@ -2,15 +2,12 @@ import type * as anchor from "@project-serum/anchor";
 import type { AnchorProvider } from "@project-serum/anchor";
 import type {
   Commitment,
-  PublicKey,
   Signer,
   TransactionInstruction,
   TransactionSignature,
 } from "@solana/web3.js";
 import { ComputeBudgetProgram, Transaction } from "@solana/web3.js";
 
-import type { FriktionSDK, GenericOptionsContractWithKey } from "../../src";
-import { VoltSDK } from "../../src";
 import { makeAndSendTx, sleep } from "./sendTransactionHelpers";
 
 export type TransactionMachineParams = {
@@ -211,67 +208,4 @@ export const sendInsList = async (
     signers ?? [],
     timeout
   );
-};
-
-export const initializeVoltWithoutOptionMarketSeed = async (
-  provider: anchor.AnchorProvider,
-  friktionSdk: FriktionSDK,
-  quoteAssetMint: PublicKey,
-  underlyingAssetMint: PublicKey,
-  permissionedMarketPremiumMint: PublicKey,
-  underlyingAmountPerContract: anchor.BN,
-  expirationInterval: anchor.BN,
-  seed: PublicKey,
-  capacity: anchor.BN,
-  individualCapacity: anchor.BN,
-  permissionlessAuctions: boolean
-) => {
-  const { instruction, voltKey } =
-    await VoltSDK.initializeVoltWithoutOptionMarketSeed({
-      sdk: friktionSdk,
-      adminKey: provider.wallet.publicKey,
-      quoteAssetMint: quoteAssetMint,
-      underlyingAssetMint: underlyingAssetMint,
-      permissionedMarketPremiumMint: permissionedMarketPremiumMint,
-      underlyingAmountPerContract: underlyingAmountPerContract,
-      serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
-      expirationInterval: expirationInterval,
-      seed: seed,
-      capacity: capacity,
-      individualCapacity: individualCapacity,
-      permissionlessAuctions: permissionlessAuctions,
-    });
-
-  await sendIns(provider, instruction);
-
-  return voltKey;
-};
-
-export const initializeVolt = async (
-  provider: anchor.AnchorProvider,
-  friktionSdk: FriktionSDK,
-  optionMarket: GenericOptionsContractWithKey,
-  permissionedMarketPremiumMint: PublicKey,
-  expirationInterval: anchor.BN,
-  seed: PublicKey,
-  capacity: anchor.BN,
-  individualCapacity: anchor.BN,
-  permissionlessAuctions: boolean
-) => {
-  const { instruction, voltKey } = await VoltSDK.initializeVolt({
-    sdk: friktionSdk,
-    adminKey: provider.wallet.publicKey,
-    optionMarket: optionMarket,
-    permissionedMarketPremiumMint: permissionedMarketPremiumMint,
-    serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
-    expirationInterval: expirationInterval,
-    seed: seed,
-    capacity: capacity,
-    individualCapacity: individualCapacity,
-    permissionlessAuctions: permissionlessAuctions,
-  });
-
-  await sendIns(provider, instruction);
-
-  return voltKey;
 };

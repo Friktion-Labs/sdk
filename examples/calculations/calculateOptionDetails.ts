@@ -1,7 +1,7 @@
 import { FriktionSDK } from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { getStrikeFromOptionsContract } from "../../src/programs/Volt/optionMarketUtils";
+import { getStrikeFromOptionsContract } from "@friktion-labs/friktion-sdksrc/programs/Volt/optionMarketUtils";
 
 // SOL Covered Call Volt
 const voltVaultId = new PublicKey(

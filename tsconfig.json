@@ -19,10 +19,8 @@
       "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json"],
+  "include": ["friktion-sdk/src/**/*.ts", "friktion-sdk/src/**/*.json"],
   "exclude": [
-    "dist",
-    "src/dist/",
     "**/node_modules/"
   ]
 }
