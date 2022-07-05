@@ -1,8 +1,9 @@
 {
   "name": "@friktion-labs/friktion-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
+  "main": "dist/cjs/index.js",
   "dependencies": {
     "@project-serum/anchor": "^0.25.0-beta.1",
     "@project-serum/common": "^0.0.1-beta.3",

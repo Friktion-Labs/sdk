@@ -1,6 +1,6 @@
 import { ConnectedVoltSDK, FriktionSDK } from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
 // SOL Covered Call Volt
