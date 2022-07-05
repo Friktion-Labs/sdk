@@ -1,7 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import { Market } from "@project-serum/serum";
 import { sendIns } from "@friktion-labs/friktion-utils";
-import { ConnectedVoltSDK } from "../../src";
+import { ConnectedVoltSDK } from "@friktion-labs/friktion-sdk";
 import { GenericOptionsContractWithKey } from "@friktion-labs/friktion-sdk";
 export const initSerumMarket = async (
   voltSdk: ConnectedVoltSDK,

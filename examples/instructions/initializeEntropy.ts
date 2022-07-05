@@ -3,7 +3,7 @@ import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import { getMint } from "@solana/spl-token";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
-import { ENTROPY_PROGRAM_ID } from "../../src/constants";
+import { ENTROPY_PROGRAM_ID } from "@friktion-labs/friktion-sdk";
 
 const PROVIDER_URL = "https://api.mainnet-beta.solana.com";
 const CLUSTER = "mainnet-beta";

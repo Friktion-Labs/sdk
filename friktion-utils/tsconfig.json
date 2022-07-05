@@ -13,6 +13,6 @@
       "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json"],
-  "exclude": [    "**/node_modules/"  ]
+  "include": ["./src/**/*.ts", "./src/**/*.json"],
+  "exclude": [ "**/node_modules/", "dist" ]
 }

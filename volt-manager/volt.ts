@@ -48,7 +48,7 @@ import {
   INERTIA_FEE_OWNER,
   marketLoader,
   VoltVaultWithKey,
-} from "../src";
+} from "../friktion-sdk/src";
 import { createAccountsAndAirdrop } from "./utils/faucet_helpers";
 import { wait } from "./utils/helpers";
 import {
@@ -366,9 +366,6 @@ const run = async () => {
   if (instruction === "printWhitelist") {
     const whitelist = await friktionSdk.getWhitelist(
       new PublicKey(options.whitelist)
-    );
-    Object.values(whitelist.addresses).forEach((a) =>
-      console.log(a.toString())
     );
     return;
   }
@@ -1982,7 +1979,7 @@ const run = async () => {
       return;
     }
 
-    const order_price = top_bid.price;
+    const order_price = (top_bid as Order).price;
     const order_size = 1;
 
     console.log(

@@ -1,15 +1,18 @@
 import { GenericOptionsContractWithKey } from "@friktion-labs/friktion-sdk";
 import {
   sendIns,
-  sendInsList, sendInsListCatching
+  sendInsList,
+  sendInsListCatching,
 } from "@friktion-labs/friktion-utils";
 import * as anchor from "@project-serum/anchor";
 import { Market } from "@project-serum/serum";
-import {
-  PublicKey
-} from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
-import { ConnectedVoltSDK, FriktionSDK, VoltSDK } from "../../src";
+import {
+  ConnectedVoltSDK,
+  FriktionSDK,
+  VoltSDK,
+} from "@friktion-labs/friktion-sdk";
 import { initSerumMarket } from "./serum";
 
 export const initSerumMarketForVolt = async (
@@ -69,8 +72,8 @@ export const initializeVoltWithoutOptionMarketSeed = async (
       underlyingAssetMint: underlyingAssetMint,
       permissionedMarketPremiumMint: permissionedMarketPremiumMint,
       underlyingAmountPerContract: underlyingAmountPerContract,
-      expirationInterval,
       serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
+      expirationInterval: expirationInterval,
       seed: seed,
       capacity: capacity,
       individualCapacity: individualCapacity,
@@ -87,7 +90,7 @@ export const initializeVolt = async (
   friktionSdk: FriktionSDK,
   optionMarket: GenericOptionsContractWithKey,
   permissionedMarketPremiumMint: PublicKey,
-  expirationInterval: BN,
+  expirationInterval: anchor.BN,
   seed: PublicKey,
   capacity: anchor.BN,
   individualCapacity: anchor.BN,
@@ -99,14 +102,14 @@ export const initializeVolt = async (
     optionMarket: optionMarket,
     permissionedMarketPremiumMint: permissionedMarketPremiumMint,
     serumProgramId: friktionSdk.net.SERUM_DEX_PROGRAM_ID,
+    expirationInterval: expirationInterval,
     seed: seed,
-    expirationInterval,
     capacity: capacity,
     individualCapacity: individualCapacity,
     permissionlessAuctions: permissionlessAuctions,
   });
 
-  await sendInsList(provider, [instruction], undefined, undefined, 400000);
+  await sendIns(provider, instruction);
 
   return voltKey;
 };

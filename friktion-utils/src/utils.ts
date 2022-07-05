@@ -1,4 +1,3 @@
-// Keep this to only general utils
 import { AnchorProvider } from "@project-serum/anchor";
 import { Provider as SerumProvider } from "@project-serum/common";
 import type { Connection, PublicKey, Transaction } from "@solana/web3.js";

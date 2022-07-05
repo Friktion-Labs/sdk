@@ -1,6 +1,7 @@
 {
   "name": "@friktion-labs/friktion-utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "npmPublishAccess": "public",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/index.js",
@@ -15,6 +16,7 @@
   },
   "files": [
     "dist",
-    "dist/cjs"
+    "dist/cjs",
+    "src"
   ]
 }
