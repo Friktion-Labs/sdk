@@ -39,11 +39,15 @@ export type SpreadsIDL = {
           name: "underlyingMint";
           isMut: true;
           isSigner: false;
+          docs: ["The mint for the underlying asset, for example, WBTC."];
         },
         {
           name: "quoteMint";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC."
+          ];
         },
         {
           name: "underlyingPool";
@@ -181,36 +185,45 @@ export type SpreadsIDL = {
           name: "authority";
           isMut: true;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "writerMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionTokenSource";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The user's options tokens used to represent write of exercise."
+          ];
         },
         {
           name: "writerTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's options tokens used to fund writing the options."];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send collateral to."];
         },
         {
           name: "underlyingPool";
@@ -221,6 +234,7 @@ export type SpreadsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -247,6 +261,7 @@ export type SpreadsIDL = {
           name: "contract";
           isMut: true;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "oracleAi";
@@ -267,6 +282,9 @@ export type SpreadsIDL = {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "claimablePool";
@@ -282,6 +300,7 @@ export type SpreadsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token Program."];
         },
         {
           name: "clock";
@@ -303,6 +322,7 @@ export type SpreadsIDL = {
           name: "contract";
           isMut: true;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "oracleAi";
@@ -323,6 +343,9 @@ export type SpreadsIDL = {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "claimablePool";
@@ -338,6 +361,7 @@ export type SpreadsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token Program."];
         },
         {
           name: "clock";
@@ -363,36 +387,45 @@ export type SpreadsIDL = {
           name: "authority";
           isMut: false;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "writerTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The writer's writer token account."];
         },
         {
           name: "writerMint";
           isMut: true;
           isSigner: false;
+          docs: ["The writer mint."];
         },
         {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send to."];
         },
         {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -414,26 +447,31 @@ export type SpreadsIDL = {
           name: "exerciserAuthority";
           isMut: true;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "optionMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's options tokens representing right to exercise."];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send to."];
         },
         {
           name: "claimablePool";
@@ -444,6 +482,7 @@ export type SpreadsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -536,10 +575,12 @@ export type SpreadsIDL = {
           },
           {
             name: "underlyingMint";
+            docs: ["Underlying asset"];
             type: "publicKey";
           },
           {
             name: "quoteMint";
+            docs: ["Strike price is denominated in this"];
             type: "publicKey";
           },
           {
@@ -552,14 +593,17 @@ export type SpreadsIDL = {
           },
           {
             name: "expiryTs";
+            docs: ["When the options expire."];
             type: "u64";
           },
           {
             name: "isCall";
+            docs: ["Whether is a call or put"];
             type: "u64";
           },
           {
             name: "contractBump";
+            docs: ["Bump seeds."];
             type: "u8";
           },
           {
@@ -580,18 +624,28 @@ export type SpreadsIDL = {
           },
           {
             name: "writerMint";
+            docs: [
+              "The right to receive the proceeds from the option being exercised."
+            ];
             type: "publicKey";
           },
           {
             name: "optionMint";
+            docs: ["The option which can be exercised."];
             type: "publicKey";
           },
           {
             name: "underlyingPool";
+            docs: [
+              "The address for the contract's pool of the underlying asset"
+            ];
             type: "publicKey";
           },
           {
             name: "claimablePool";
+            docs: [
+              "The address for the claimable pool where coin goes after expiry, when option was ITM"
+            ];
             type: "publicKey";
           },
           {
@@ -876,6 +930,11 @@ export type SpreadsIDL = {
       code: 6041;
       name: "QuoteAmountsForPutMustBeEqual";
       msg: "quote amounts put must be equal";
+    },
+    {
+      code: 6042;
+      name: "ExpiryInThePast";
+      msg: "expiry is in the past, please give an expiry time in the future";
     }
   ];
 };
@@ -920,11 +979,15 @@ export const SpreadsIDLJsonRaw = {
           name: "underlyingMint",
           isMut: true,
           isSigner: false,
+          docs: ["The mint for the underlying asset, for example, WBTC."],
         },
         {
           name: "quoteMint",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC.",
+          ],
         },
         {
           name: "underlyingPool",
@@ -1062,36 +1125,45 @@ export const SpreadsIDLJsonRaw = {
           name: "authority",
           isMut: true,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "writerMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionTokenSource",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The user's options tokens used to represent write of exercise.",
+          ],
         },
         {
           name: "writerTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's options tokens used to fund writing the options."],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send collateral to."],
         },
         {
           name: "underlyingPool",
@@ -1102,6 +1174,7 @@ export const SpreadsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1128,6 +1201,7 @@ export const SpreadsIDLJsonRaw = {
           name: "contract",
           isMut: true,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "oracleAi",
@@ -1148,6 +1222,9 @@ export const SpreadsIDLJsonRaw = {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "claimablePool",
@@ -1163,6 +1240,7 @@ export const SpreadsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token Program."],
         },
         {
           name: "clock",
@@ -1184,6 +1262,7 @@ export const SpreadsIDLJsonRaw = {
           name: "contract",
           isMut: true,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "oracleAi",
@@ -1204,6 +1283,9 @@ export const SpreadsIDLJsonRaw = {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "claimablePool",
@@ -1219,6 +1301,7 @@ export const SpreadsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token Program."],
         },
         {
           name: "clock",
@@ -1244,36 +1327,45 @@ export const SpreadsIDLJsonRaw = {
           name: "authority",
           isMut: false,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "writerTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The writer's writer token account."],
         },
         {
           name: "writerMint",
           isMut: true,
           isSigner: false,
+          docs: ["The writer mint."],
         },
         {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send to."],
         },
         {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1295,26 +1387,31 @@ export const SpreadsIDLJsonRaw = {
           name: "exerciserAuthority",
           isMut: true,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "optionMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's options tokens representing right to exercise."],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send to."],
         },
         {
           name: "claimablePool",
@@ -1325,6 +1422,7 @@ export const SpreadsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1417,10 +1515,12 @@ export const SpreadsIDLJsonRaw = {
           },
           {
             name: "underlyingMint",
+            docs: ["Underlying asset"],
             type: "publicKey",
           },
           {
             name: "quoteMint",
+            docs: ["Strike price is denominated in this"],
             type: "publicKey",
           },
           {
@@ -1433,14 +1533,17 @@ export const SpreadsIDLJsonRaw = {
           },
           {
             name: "expiryTs",
+            docs: ["When the options expire."],
             type: "u64",
           },
           {
             name: "isCall",
+            docs: ["Whether is a call or put"],
             type: "u64",
           },
           {
             name: "contractBump",
+            docs: ["Bump seeds."],
             type: "u8",
           },
           {
@@ -1461,18 +1564,28 @@ export const SpreadsIDLJsonRaw = {
           },
           {
             name: "writerMint",
+            docs: [
+              "The right to receive the proceeds from the option being exercised.",
+            ],
             type: "publicKey",
           },
           {
             name: "optionMint",
+            docs: ["The option which can be exercised."],
             type: "publicKey",
           },
           {
             name: "underlyingPool",
+            docs: [
+              "The address for the contract's pool of the underlying asset",
+            ],
             type: "publicKey",
           },
           {
             name: "claimablePool",
+            docs: [
+              "The address for the claimable pool where coin goes after expiry, when option was ITM",
+            ],
             type: "publicKey",
           },
           {
@@ -1757,6 +1870,11 @@ export const SpreadsIDLJsonRaw = {
       code: 6041,
       name: "QuoteAmountsForPutMustBeEqual",
       msg: "quote amounts put must be equal",
+    },
+    {
+      code: 6042,
+      name: "ExpiryInThePast",
+      msg: "expiry is in the past, please give an expiry time in the future",
     },
   ],
 };

@@ -559,11 +559,6 @@ export class InertiaSDK {
       params.quoteAmount,
       new BN(expiryTs),
       isCall ? new BN(1) : new BN(0),
-      contractBump,
-      optionBump,
-      writerBump,
-      underlyingPoolBump,
-      claimablePoolBump,
       {
         accounts: {
           payer: user,

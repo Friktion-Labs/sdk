@@ -4,6 +4,7 @@ export type SoloptionsIDL = {
   instructions: [
     {
       name: "newContract";
+      docs: ["Creates a new [OptionsContract]."];
       accounts: [
         {
           name: "payer";
@@ -29,11 +30,15 @@ export type SoloptionsIDL = {
           name: "underlyingMint";
           isMut: true;
           isSigner: false;
+          docs: ["The mint for the underlying asset, for example, WBTC."];
         },
         {
           name: "quoteMint";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC."
+          ];
         },
         {
           name: "underlyingPool";
@@ -105,16 +110,21 @@ export type SoloptionsIDL = {
     },
     {
       name: "optionWrite";
+      docs: ["Writes options for an [OptionsContract]."];
       accounts: [
         {
           name: "writerAuthority";
           isMut: true;
           isSigner: true;
+          docs: [
+            "The authority of the [user_underlying_funding_tokens] account."
+          ];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "userUnderlyingFundingTokens";
@@ -125,16 +135,19 @@ export type SoloptionsIDL = {
           name: "underlyingPool";
           isMut: true;
           isSigner: false;
+          docs: ["Contract underlying token pool"];
         },
         {
           name: "writerTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The writer token account to send to."];
         },
         {
           name: "optionTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The option token account to send to."];
         },
         {
           name: "writerMint";
@@ -155,11 +168,13 @@ export type SoloptionsIDL = {
           name: "underlyingMint";
           isMut: false;
           isSigner: false;
+          docs: ["Mint for the underlying asset. Used as a seed for CPI"];
         },
         {
           name: "quoteMint";
           isMut: false;
           isSigner: false;
+          docs: ["Mint for the quote asset. Used as a seed for CPI"];
         },
         {
           name: "tokenProgram";
@@ -181,46 +196,57 @@ export type SoloptionsIDL = {
     },
     {
       name: "optionExercise";
+      docs: ["Exercises options."];
       accounts: [
         {
           name: "exerciserAuthority";
           isMut: true;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "quoteTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's quote tokens used to fund writing the options."];
         },
         {
           name: "contractQuoteTokens";
           isMut: true;
           isSigner: false;
+          docs: ["The contract's quote tokens."];
         },
         {
           name: "optionMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's options tokens used to fund writing the options."];
         },
         {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The option token account to send to."];
         },
         {
           name: "underlyingMint";
@@ -241,6 +267,7 @@ export type SoloptionsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -262,41 +289,51 @@ export type SoloptionsIDL = {
           name: "redeemerAuthority";
           isMut: false;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "writerTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The writer's writer token account."];
         },
         {
           name: "writerMint";
           isMut: true;
           isSigner: false;
+          docs: ["The writer mint."];
         },
         {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "contractQuoteTokens";
           isMut: true;
           isSigner: false;
+          docs: ["The contract's quote tokens."];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send to."];
         },
         {
           name: "quoteTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The quote token account to send to."];
         },
         {
           name: "underlyingMint";
@@ -312,6 +349,7 @@ export type SoloptionsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -330,23 +368,43 @@ export type SoloptionsIDL = {
   accounts: [
     {
       name: "OptionsContract";
+      docs: [
+        "American option",
+        "",
+        "e.x. 0.1WBTC @ 5000 USDC",
+        'suppose both have 9 decimal places for "sats" or whatever',
+        'exercising ONE contract will be buying 10^8 "sats" of WBTC token',
+        "Given strike is 5000, will require:",
+        "num_options * strike * num_decimals_quote",
+        "",
+        "Passing in a u64 for underlying_multiplier won't work, suppose you want to do",
+        "the ETH/BTC pair, write an option for 1 ETH at 0.1BTC. You want 0.1 of the quote",
+        "for every unit of the underlying",
+        "",
+        'Could pass in a ratio, or just do an amount of "sats" for both explicitly to',
+        "make things easier"
+      ];
       type: {
         kind: "struct";
         fields: [
           {
             name: "underlyingMint";
+            docs: ["Underlying asset"];
             type: "publicKey";
           },
           {
             name: "quoteMint";
+            docs: ["Strike price is denominated in this"];
             type: "publicKey";
           },
           {
             name: "expiryTs";
+            docs: ["When the option expires."];
             type: "u64";
           },
           {
             name: "contractBump";
+            docs: ["Bump seeds."];
             type: "u8";
           },
           {
@@ -359,26 +417,40 @@ export type SoloptionsIDL = {
           },
           {
             name: "underlyingAmount";
+            docs: [
+              "10^{Number of decimals of the underlying per contract}.",
+              "e.g. if the contract had 9 decimals and this was 10^8,",
+              "each contract would be for 0.1 of the underlying"
+            ];
             type: "u64";
           },
           {
             name: "quoteAmount";
+            docs: ["Same logic as underlying"];
             type: "u64";
           },
           {
             name: "writerMint";
+            docs: [
+              "The right to receive the proceeds from the option being exercised."
+            ];
             type: "publicKey";
           },
           {
             name: "optionMint";
+            docs: ["The option which can be exercised."];
             type: "publicKey";
           },
           {
             name: "underlyingPool";
+            docs: [
+              "The address for the contract's pool of the underlying asset"
+            ];
             type: "publicKey";
           },
           {
             name: "quotePool";
+            docs: ["The address for the contract's pool of the quote asset"];
             type: "publicKey";
           },
           {
@@ -567,6 +639,7 @@ export const SoloptionsIDLJsonRaw = {
   instructions: [
     {
       name: "newContract",
+      docs: ["Creates a new [OptionsContract]."],
       accounts: [
         {
           name: "payer",
@@ -592,11 +665,15 @@ export const SoloptionsIDLJsonRaw = {
           name: "underlyingMint",
           isMut: true,
           isSigner: false,
+          docs: ["The mint for the underlying asset, for example, WBTC."],
         },
         {
           name: "quoteMint",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC.",
+          ],
         },
         {
           name: "underlyingPool",
@@ -668,16 +745,21 @@ export const SoloptionsIDLJsonRaw = {
     },
     {
       name: "optionWrite",
+      docs: ["Writes options for an [OptionsContract]."],
       accounts: [
         {
           name: "writerAuthority",
           isMut: true,
           isSigner: true,
+          docs: [
+            "The authority of the [user_underlying_funding_tokens] account.",
+          ],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "userUnderlyingFundingTokens",
@@ -688,16 +770,19 @@ export const SoloptionsIDLJsonRaw = {
           name: "underlyingPool",
           isMut: true,
           isSigner: false,
+          docs: ["Contract underlying token pool"],
         },
         {
           name: "writerTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The writer token account to send to."],
         },
         {
           name: "optionTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The option token account to send to."],
         },
         {
           name: "writerMint",
@@ -718,11 +803,13 @@ export const SoloptionsIDLJsonRaw = {
           name: "underlyingMint",
           isMut: false,
           isSigner: false,
+          docs: ["Mint for the underlying asset. Used as a seed for CPI"],
         },
         {
           name: "quoteMint",
           isMut: false,
           isSigner: false,
+          docs: ["Mint for the quote asset. Used as a seed for CPI"],
         },
         {
           name: "tokenProgram",
@@ -744,46 +831,57 @@ export const SoloptionsIDLJsonRaw = {
     },
     {
       name: "optionExercise",
+      docs: ["Exercises options."],
       accounts: [
         {
           name: "exerciserAuthority",
           isMut: true,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "quoteTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's quote tokens used to fund writing the options."],
         },
         {
           name: "contractQuoteTokens",
           isMut: true,
           isSigner: false,
+          docs: ["The contract's quote tokens."],
         },
         {
           name: "optionMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's options tokens used to fund writing the options."],
         },
         {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The option token account to send to."],
         },
         {
           name: "underlyingMint",
@@ -804,6 +902,7 @@ export const SoloptionsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -825,41 +924,51 @@ export const SoloptionsIDLJsonRaw = {
           name: "redeemerAuthority",
           isMut: false,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "writerTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The writer's writer token account."],
         },
         {
           name: "writerMint",
           isMut: true,
           isSigner: false,
+          docs: ["The writer mint."],
         },
         {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "contractQuoteTokens",
           isMut: true,
           isSigner: false,
+          docs: ["The contract's quote tokens."],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send to."],
         },
         {
           name: "quoteTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The quote token account to send to."],
         },
         {
           name: "underlyingMint",
@@ -875,6 +984,7 @@ export const SoloptionsIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -893,23 +1003,43 @@ export const SoloptionsIDLJsonRaw = {
   accounts: [
     {
       name: "OptionsContract",
+      docs: [
+        "American option",
+        "",
+        "e.x. 0.1WBTC @ 5000 USDC",
+        'suppose both have 9 decimal places for "sats" or whatever',
+        'exercising ONE contract will be buying 10^8 "sats" of WBTC token',
+        "Given strike is 5000, will require:",
+        "num_options * strike * num_decimals_quote",
+        "",
+        "Passing in a u64 for underlying_multiplier won't work, suppose you want to do",
+        "the ETH/BTC pair, write an option for 1 ETH at 0.1BTC. You want 0.1 of the quote",
+        "for every unit of the underlying",
+        "",
+        'Could pass in a ratio, or just do an amount of "sats" for both explicitly to',
+        "make things easier",
+      ],
       type: {
         kind: "struct",
         fields: [
           {
             name: "underlyingMint",
+            docs: ["Underlying asset"],
             type: "publicKey",
           },
           {
             name: "quoteMint",
+            docs: ["Strike price is denominated in this"],
             type: "publicKey",
           },
           {
             name: "expiryTs",
+            docs: ["When the option expires."],
             type: "u64",
           },
           {
             name: "contractBump",
+            docs: ["Bump seeds."],
             type: "u8",
           },
           {
@@ -922,26 +1052,40 @@ export const SoloptionsIDLJsonRaw = {
           },
           {
             name: "underlyingAmount",
+            docs: [
+              "10^{Number of decimals of the underlying per contract}.",
+              "e.g. if the contract had 9 decimals and this was 10^8,",
+              "each contract would be for 0.1 of the underlying",
+            ],
             type: "u64",
           },
           {
             name: "quoteAmount",
+            docs: ["Same logic as underlying"],
             type: "u64",
           },
           {
             name: "writerMint",
+            docs: [
+              "The right to receive the proceeds from the option being exercised.",
+            ],
             type: "publicKey",
           },
           {
             name: "optionMint",
+            docs: ["The option which can be exercised."],
             type: "publicKey",
           },
           {
             name: "underlyingPool",
+            docs: [
+              "The address for the contract's pool of the underlying asset",
+            ],
             type: "publicKey",
           },
           {
             name: "quotePool",
+            docs: ["The address for the contract's pool of the quote asset"],
             type: "publicKey",
           },
           {

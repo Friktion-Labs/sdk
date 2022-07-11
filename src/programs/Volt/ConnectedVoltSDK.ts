@@ -68,7 +68,11 @@ import type {
 // 2. rebalanceSpotEntropy
 // 3. setupRebalanceEntropy
 // 4. takePerformanceFeesEntropy
-// 5. initializeVolt (initialize for volt 1 & 2)
+// 5. setupRebalanceOtcEntropy
+// 6. rebalanceOtcEntropy
+// 7. checkRebalanceOtcHealth
+// 8. initializeVolt (initialize for volt 1 & 2)
+// 9. rebalanceEnter
 // MAYBE:
 // 1. depositWithClaim (when it claims or cancels and does instant deposit)
 // 2. withdrawWithClaim (same as above)
@@ -161,7 +165,7 @@ export class ConnectedVoltSDK extends VoltSDK {
           ? daoAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
-          : SystemProgram.programId,
+          : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
         daoAuthority !== undefined
@@ -268,7 +272,7 @@ export class ConnectedVoltSDK extends VoltSDK {
           ? daoAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
-          : SystemProgram.programId,
+          : this.wallet,
       authorityCheck:
         daoAuthority !== undefined
           ? daoAuthority
@@ -463,7 +467,7 @@ export class ConnectedVoltSDK extends VoltSDK {
           ? daoAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
-          : SystemProgram.programId,
+          : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
         daoAuthority !== undefined
@@ -557,7 +561,7 @@ export class ConnectedVoltSDK extends VoltSDK {
           ? daoAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
-          : SystemProgram.programId,
+          : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
         daoAuthority !== undefined
@@ -676,8 +680,6 @@ export class ConnectedVoltSDK extends VoltSDK {
     >[0] = {
       authority: authority,
 
-      vaultMint: this.voltVault.vaultMint,
-
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -756,7 +758,7 @@ export class ConnectedVoltSDK extends VoltSDK {
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
     const claimPendingStruct: Parameters<
-      VoltProgram["instruction"]["claimPending"]["accounts"]
+      VoltProgram["instruction"]["claimPendingDeposit"]["accounts"]
     >[0] = {
       authority: authority,
 
@@ -775,7 +777,7 @@ export class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    return this.sdk.programs.Volt.instruction.claimPending({
+    return this.sdk.programs.Volt.instruction.claimPendingDeposit({
       accounts: claimPendingStruct,
     });
   }
@@ -860,6 +862,120 @@ export class ConnectedVoltSDK extends VoltSDK {
       code,
       {
         accounts: turnOffDepositsAndWithdrawalsAccounts,
+      }
+    );
+  }
+
+  async initExtraAccountsEntropy({
+    entropyGroupKey,
+    targetPerpMarket,
+    spotPerpMarket,
+    spotMarket,
+  }: {
+    entropyGroupKey: PublicKey;
+    targetPerpMarket: PublicKey;
+    spotPerpMarket: PublicKey;
+    spotMarket: PublicKey;
+  }): Promise<TransactionInstruction> {
+    const ev = await this.getExtraVoltData();
+    const entropyMetadata = await this.getEntropyMetadata();
+    const { vault, extraVoltKey, vaultMint, vaultAuthority, depositPoolKey } =
+      await VoltSDK.findInitializeAddresses(
+        this.sdk,
+        this.sdk.net.MM_TOKEN_MINT,
+        VoltType.Entropy,
+        {
+          pdaStr: entropyMetadata.vaultName,
+        }
+      );
+    const [entropyAccountKey] = await VoltSDK.findEntropyAccountAddress(vault);
+    const [entropyMetadataKey] = await VoltSDK.findEntropyMetadataAddress(
+      vault
+    );
+    const client = new EntropyClient(
+      this.sdk.readonlyProvider.connection,
+      ev.entropyProgramId
+    );
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
+    const entropyCacheKey = entropyGroup.entropyCache;
+
+    const initExtraAccountsAccounts: Parameters<
+      VoltProgram["instruction"]["initExtraAccountsEntropy"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      vaultMint: vaultMint,
+      depositMint: this.voltVault.underlyingAssetMint,
+
+      extraVoltData: extraVoltKey,
+      rent: SYSVAR_RENT_PUBKEY,
+      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+      entropyProgram: ev.entropyProgramId,
+      entropyGroup: entropyGroupKey,
+      entropyAccount: entropyAccountKey,
+      entropyCache: entropyCacheKey,
+      powerPerpMarket: targetPerpMarket,
+      hedgingSpotPerpMarket: spotPerpMarket,
+      hedgingSpotMarket: spotMarket,
+    };
+    return this.sdk.programs.Volt.instruction.initExtraAccountsEntropy({
+      accounts: initExtraAccountsAccounts,
+    });
+  }
+
+  async initExtraAccountsShortOptions({
+    underlyingAssetMint,
+    permissionedMarketPremiumMint,
+    permissionlessAuctions,
+  }: {
+    underlyingAssetMint: PublicKey;
+    permissionedMarketPremiumMint: PublicKey;
+    permissionlessAuctions: boolean;
+  }): Promise<TransactionInstruction> {
+    const {
+      extraVoltKey,
+      vaultMint,
+      depositPoolKey,
+      permissionedMarketPremiumPoolKey,
+      whitelistTokenAccountKey,
+      auctionMetadataKey,
+    } = await VoltSDK.findInitializeAddresses(
+      this.sdk,
+      this.sdk.net.MM_TOKEN_MINT,
+      VoltType.ShortOptions,
+      {
+        seed: this.voltVault.seed,
+      }
+    );
+    const initExtraAccountsAccounts: Parameters<
+      VoltProgram["instruction"]["initExtraAccountsShortOptions"]["accounts"]
+    >[0] = {
+      authority: this.wallet,
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+
+      systemProgram: SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      depositPool: depositPoolKey,
+      vaultMint: vaultMint,
+      underlyingAssetMint: underlyingAssetMint,
+
+      whitelistTokenAccount: whitelistTokenAccountKey,
+      whitelistTokenMint: this.sdk.net.MM_TOKEN_MINT,
+      permissionedMarketPremiumMint: permissionedMarketPremiumMint,
+      permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
+      auctionMetadata: auctionMetadataKey,
+      extraVoltData: extraVoltKey,
+      rent: SYSVAR_RENT_PUBKEY,
+    };
+    return this.sdk.programs.Volt.instruction.initExtraAccountsShortOptions(
+      permissionlessAuctions ? new BN(1) : new BN(0),
+      {
+        accounts: initExtraAccountsAccounts,
       }
     );
   }
@@ -1497,13 +1613,9 @@ export class ConnectedVoltSDK extends VoltSDK {
       rent: SYSVAR_RENT_PUBKEY,
     };
 
-    return this.sdk.programs.Volt.instruction.setNextOption(
-      openOrdersBump,
-      marketAuthorityBump,
-      {
-        accounts: setNextOptionStruct,
-      }
-    );
+    return this.sdk.programs.Volt.instruction.setNextOption({
+      accounts: setNextOptionStruct,
+    });
   }
 
   async resetOptionMarket(): Promise<TransactionInstruction> {

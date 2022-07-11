@@ -39,11 +39,15 @@ export type InertiaIDL = {
           name: "underlyingMint";
           isMut: true;
           isSigner: false;
+          docs: ["The mint for the underlying asset, for example, WBTC."];
         },
         {
           name: "quoteMint";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC."
+          ];
         },
         {
           name: "underlyingPool";
@@ -97,41 +101,26 @@ export type InertiaIDL = {
         {
           name: "isCall";
           type: "u64";
-        },
-        {
-          name: "contractBump";
-          type: "u8";
-        },
-        {
-          name: "optionBump";
-          type: "u8";
-        },
-        {
-          name: "writerBump";
-          type: "u8";
-        },
-        {
-          name: "underlyingPoolBump";
-          type: "u8";
-        },
-        {
-          name: "claimablePoolBump";
-          type: "u8";
         }
       ];
     },
     {
       name: "optionWrite";
+      docs: ["Writes options for an [OptionsContract]."];
       accounts: [
         {
           name: "writerAuthority";
           isMut: true;
           isSigner: true;
+          docs: [
+            "The authority of the [user_underlying_funding_tokens] account."
+          ];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "userUnderlyingFundingTokens";
@@ -142,16 +131,19 @@ export type InertiaIDL = {
           name: "underlyingPool";
           isMut: true;
           isSigner: false;
+          docs: ["Contract underlying token pool"];
         },
         {
           name: "writerTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The writer token account to send to."];
         },
         {
           name: "optionTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The option token account to send to."];
         },
         {
           name: "writerMint";
@@ -193,36 +185,45 @@ export type InertiaIDL = {
           name: "closeAuthority";
           isMut: true;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "writerMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionTokenSource";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The user's options tokens used to represent write of exercise."
+          ];
         },
         {
           name: "writerTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's options tokens used to fund writing the options."];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send collateral to."];
         },
         {
           name: "underlyingPool";
@@ -233,6 +234,7 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -259,6 +261,7 @@ export type InertiaIDL = {
           name: "contract";
           isMut: true;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "oracleAi";
@@ -279,6 +282,9 @@ export type InertiaIDL = {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "claimablePool";
@@ -294,6 +300,7 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token Program."];
         },
         {
           name: "clock";
@@ -305,6 +312,11 @@ export type InertiaIDL = {
     },
     {
       name: "optionSettle";
+      docs: [
+        "Cranks exercise to see if ITM/OTM after expiry.",
+        "If ITM, calc how much underlying goes to claimable pool",
+        "MUST INPUT SETTLE_PRICE AS PRICE * 100"
+      ];
       accounts: [
         {
           name: "authority";
@@ -315,6 +327,7 @@ export type InertiaIDL = {
           name: "contract";
           isMut: true;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "oracleAi";
@@ -335,6 +348,9 @@ export type InertiaIDL = {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "claimablePool";
@@ -350,6 +366,7 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token Program."];
         },
         {
           name: "clock";
@@ -375,36 +392,45 @@ export type InertiaIDL = {
           name: "redeemerAuthority";
           isMut: false;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "writerTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The writer's writer token account."];
         },
         {
           name: "writerMint";
           isMut: true;
           isSigner: false;
+          docs: ["The writer mint."];
         },
         {
           name: "contractUnderlyingTokens";
           isMut: true;
           isSigner: false;
+          docs: [
+            "The contract's underlying tokens which collateralize the options."
+          ];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send to."];
         },
         {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -426,26 +452,31 @@ export type InertiaIDL = {
           name: "exerciserAuthority";
           isMut: true;
           isSigner: true;
+          docs: ["The authority of the [option_token_source] account."];
         },
         {
           name: "contract";
           isMut: false;
           isSigner: false;
+          docs: ["The options contract."];
         },
         {
           name: "optionMint";
           isMut: true;
           isSigner: false;
+          docs: ["The option mint."];
         },
         {
           name: "optionTokenSource";
           isMut: true;
           isSigner: false;
+          docs: ["The user's options tokens representing right to exercise."];
         },
         {
           name: "underlyingTokenDestination";
           isMut: true;
           isSigner: false;
+          docs: ["The underlying token account to send to."];
         },
         {
           name: "claimablePool";
@@ -456,6 +487,7 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+          docs: ["Token program."];
         },
         {
           name: "clock";
@@ -548,22 +580,27 @@ export type InertiaIDL = {
           },
           {
             name: "underlyingMint";
+            docs: ["Underlying asset"];
             type: "publicKey";
           },
           {
             name: "quoteMint";
+            docs: ["Strike price is denominated in this"];
             type: "publicKey";
           },
           {
             name: "expiryTs";
+            docs: ["When the option expires."];
             type: "u64";
           },
           {
             name: "isCall";
+            docs: ["Whether is a call or put"];
             type: "u64";
           },
           {
             name: "contractBump";
+            docs: ["Bump seeds."];
             type: "u8";
           },
           {
@@ -584,26 +621,42 @@ export type InertiaIDL = {
           },
           {
             name: "underlyingAmount";
+            docs: [
+              "10^{Number of decimals of the underlying per contract}.",
+              "e.g. if the contract had 9 decimals and this was 10^8,",
+              "each contract would be for 0.1 of the underlying"
+            ];
             type: "u64";
           },
           {
             name: "quoteAmount";
+            docs: ["Same logic as underlying"];
             type: "u64";
           },
           {
             name: "writerMint";
+            docs: [
+              "The right to receive the proceeds from the option being exercised."
+            ];
             type: "publicKey";
           },
           {
             name: "optionMint";
+            docs: ["The option which can be exercised."];
             type: "publicKey";
           },
           {
             name: "underlyingPool";
+            docs: [
+              "The address for the contract's pool of the underlying asset"
+            ];
             type: "publicKey";
           },
           {
             name: "claimablePool";
+            docs: [
+              "The address for the claimable pool where coin goes after expiry, when option was ITM"
+            ];
             type: "publicKey";
           },
           {
@@ -917,11 +970,15 @@ export const InertiaIDLJsonRaw = {
           name: "underlyingMint",
           isMut: true,
           isSigner: false,
+          docs: ["The mint for the underlying asset, for example, WBTC."],
         },
         {
           name: "quoteMint",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The mint for the quote asset (ie the strike), for example, USDC.",
+          ],
         },
         {
           name: "underlyingPool",
@@ -976,40 +1033,25 @@ export const InertiaIDLJsonRaw = {
           name: "isCall",
           type: "u64",
         },
-        {
-          name: "contractBump",
-          type: "u8",
-        },
-        {
-          name: "optionBump",
-          type: "u8",
-        },
-        {
-          name: "writerBump",
-          type: "u8",
-        },
-        {
-          name: "underlyingPoolBump",
-          type: "u8",
-        },
-        {
-          name: "claimablePoolBump",
-          type: "u8",
-        },
       ],
     },
     {
       name: "optionWrite",
+      docs: ["Writes options for an [OptionsContract]."],
       accounts: [
         {
           name: "writerAuthority",
           isMut: true,
           isSigner: true,
+          docs: [
+            "The authority of the [user_underlying_funding_tokens] account.",
+          ],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "userUnderlyingFundingTokens",
@@ -1020,16 +1062,19 @@ export const InertiaIDLJsonRaw = {
           name: "underlyingPool",
           isMut: true,
           isSigner: false,
+          docs: ["Contract underlying token pool"],
         },
         {
           name: "writerTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The writer token account to send to."],
         },
         {
           name: "optionTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The option token account to send to."],
         },
         {
           name: "writerMint",
@@ -1071,36 +1116,45 @@ export const InertiaIDLJsonRaw = {
           name: "closeAuthority",
           isMut: true,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "writerMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionTokenSource",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The user's options tokens used to represent write of exercise.",
+          ],
         },
         {
           name: "writerTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's options tokens used to fund writing the options."],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send collateral to."],
         },
         {
           name: "underlyingPool",
@@ -1111,6 +1165,7 @@ export const InertiaIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1137,6 +1192,7 @@ export const InertiaIDLJsonRaw = {
           name: "contract",
           isMut: true,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "oracleAi",
@@ -1157,6 +1213,9 @@ export const InertiaIDLJsonRaw = {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "claimablePool",
@@ -1172,6 +1231,7 @@ export const InertiaIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token Program."],
         },
         {
           name: "clock",
@@ -1183,6 +1243,11 @@ export const InertiaIDLJsonRaw = {
     },
     {
       name: "optionSettle",
+      docs: [
+        "Cranks exercise to see if ITM/OTM after expiry.",
+        "If ITM, calc how much underlying goes to claimable pool",
+        "MUST INPUT SETTLE_PRICE AS PRICE * 100",
+      ],
       accounts: [
         {
           name: "authority",
@@ -1193,6 +1258,7 @@ export const InertiaIDLJsonRaw = {
           name: "contract",
           isMut: true,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "oracleAi",
@@ -1213,6 +1279,9 @@ export const InertiaIDLJsonRaw = {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "claimablePool",
@@ -1228,6 +1297,7 @@ export const InertiaIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token Program."],
         },
         {
           name: "clock",
@@ -1253,36 +1323,45 @@ export const InertiaIDLJsonRaw = {
           name: "redeemerAuthority",
           isMut: false,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "writerTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The writer's writer token account."],
         },
         {
           name: "writerMint",
           isMut: true,
           isSigner: false,
+          docs: ["The writer mint."],
         },
         {
           name: "contractUnderlyingTokens",
           isMut: true,
           isSigner: false,
+          docs: [
+            "The contract's underlying tokens which collateralize the options.",
+          ],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send to."],
         },
         {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1304,26 +1383,31 @@ export const InertiaIDLJsonRaw = {
           name: "exerciserAuthority",
           isMut: true,
           isSigner: true,
+          docs: ["The authority of the [option_token_source] account."],
         },
         {
           name: "contract",
           isMut: false,
           isSigner: false,
+          docs: ["The options contract."],
         },
         {
           name: "optionMint",
           isMut: true,
           isSigner: false,
+          docs: ["The option mint."],
         },
         {
           name: "optionTokenSource",
           isMut: true,
           isSigner: false,
+          docs: ["The user's options tokens representing right to exercise."],
         },
         {
           name: "underlyingTokenDestination",
           isMut: true,
           isSigner: false,
+          docs: ["The underlying token account to send to."],
         },
         {
           name: "claimablePool",
@@ -1334,6 +1418,7 @@ export const InertiaIDLJsonRaw = {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
+          docs: ["Token program."],
         },
         {
           name: "clock",
@@ -1426,22 +1511,27 @@ export const InertiaIDLJsonRaw = {
           },
           {
             name: "underlyingMint",
+            docs: ["Underlying asset"],
             type: "publicKey",
           },
           {
             name: "quoteMint",
+            docs: ["Strike price is denominated in this"],
             type: "publicKey",
           },
           {
             name: "expiryTs",
+            docs: ["When the option expires."],
             type: "u64",
           },
           {
             name: "isCall",
+            docs: ["Whether is a call or put"],
             type: "u64",
           },
           {
             name: "contractBump",
+            docs: ["Bump seeds."],
             type: "u8",
           },
           {
@@ -1462,26 +1552,42 @@ export const InertiaIDLJsonRaw = {
           },
           {
             name: "underlyingAmount",
+            docs: [
+              "10^{Number of decimals of the underlying per contract}.",
+              "e.g. if the contract had 9 decimals and this was 10^8,",
+              "each contract would be for 0.1 of the underlying",
+            ],
             type: "u64",
           },
           {
             name: "quoteAmount",
+            docs: ["Same logic as underlying"],
             type: "u64",
           },
           {
             name: "writerMint",
+            docs: [
+              "The right to receive the proceeds from the option being exercised.",
+            ],
             type: "publicKey",
           },
           {
             name: "optionMint",
+            docs: ["The option which can be exercised."],
             type: "publicKey",
           },
           {
             name: "underlyingPool",
+            docs: [
+              "The address for the contract's pool of the underlying asset",
+            ],
             type: "publicKey",
           },
           {
             name: "claimablePool",
+            docs: [
+              "The address for the claimable pool where coin goes after expiry, when option was ITM",
+            ],
             type: "publicKey",
           },
           {

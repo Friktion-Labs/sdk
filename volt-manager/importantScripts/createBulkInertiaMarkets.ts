@@ -130,7 +130,7 @@ const run = async () => {
 
       invariant(
         strikesEqual,
-        "set and calced strike not equal accoriding to spreadsheet"
+        "set and calced strike not equal according to spreadsheet"
       );
       console.log("strike = ", strike, calcedStrike);
       invariant(strike === calcedStrike, "strike and calced strike not equal");

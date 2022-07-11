@@ -6,7 +6,7 @@
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/index.js",
   "dependencies": {
-    "@project-serum/anchor": "^0.25.0-beta.1",
+    "@project-serum/anchor": "^0.25.0",
     "@project-serum/common": "^0.0.1-beta.3",
     "@project-serum/serum": "^0.13.61",
     "@solana/spl-token": "^0.2.0",

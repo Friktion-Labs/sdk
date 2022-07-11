@@ -108,7 +108,7 @@ export type VoltIXAccounts = {
   };
   claimPending: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["claimPending"]["accounts"]
+      VoltProgram["instruction"]["claimPendingDeposit"]["accounts"]
     >[0]]: PublicKey;
   };
   claimPendingWithdrawal: {

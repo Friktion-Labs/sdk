@@ -11,6 +11,8 @@
     "strictFunctionTypes": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
+    "declaration": true,
+    "declarationMap": true,
     "noEmit": true,
     "inlineSources": true,
     "sourceMap": true,

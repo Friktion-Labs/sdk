@@ -6,8 +6,10 @@
     "outDir": "friktion-sdk/dist/cjs/",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": false,
-    "inlineSources": false,
-    "importHelpers": true
+    "sourceMap": true,
+    "inlineSources": true,
+    "importHelpers": true,
+    "composite": true,
+    "incremental": true
   },
 }

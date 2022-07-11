@@ -4,13 +4,14 @@
   "description": "Friktion code examples",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Friktion-Labs/volt"
+    "url": "git+https://github.com/Friktion-Labs/sdk"
   },
   "author": "bigdefidev@protonmail.com",
-  "homepage": "https://github.com/Friktion-Labs/vix-onchain#readme",
+  "homepage": "https://github.com/Friktion-Labs/sdk#readme",
   "dependencies": {
     "@friktion-labs/friktion-sdk": "workspace:^",
-    "@project-serum/anchor": "^0.25.0-beta.1",
+    "@project-serum/anchor": "^0.25.0",
+    "@saberhq/use-solana": "1.13.32",
     "@solana/spl-token": "0.2.0",
     "@solana/web3.js": "^1.42.0",
     "decimal.js": "10.3.1"

@@ -48,7 +48,7 @@ import {
   INERTIA_FEE_OWNER,
   marketLoader,
   VoltVaultWithKey,
-} from "../friktion-sdk/src";
+} from "@friktion-labs/friktion-sdk";
 import { createAccountsAndAirdrop } from "./utils/faucet_helpers";
 import { wait } from "./utils/helpers";
 import {
@@ -1322,7 +1322,7 @@ const run = async () => {
     console.log("succesfully took withdrawal fees");
 
     return;
-  } else if (instruction == "claimPending") {
+  } else if (instruction == "claimPendingDeposit") {
     console.log("claiming vault tokens from previous pending deposit");
 
     console.log(

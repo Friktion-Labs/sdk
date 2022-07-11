@@ -53,7 +53,7 @@ npm install -g yarn
 
 yarn && cd volt-manager && yarn && cd ..
 
-anchor build
+anchor build --skip-lint
 ```
 
 **Recommended IDE Setup:** VSCode, install `rust-analyzer`, `crates`, `prettier`, `beautify`, `gitlens`, `typescript importer`, `typescript hero`

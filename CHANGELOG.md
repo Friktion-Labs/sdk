@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Note:** The minor version will be incremented upon a breaking change and the patch version will be incremented for features.
 
+## [0.0.5] - 2022-06-22
+
+### Features
+
+- Full suite of CPI examples and tests for all deposit/withdraw related instructions
+- move all testing logic into a more generic structure. introduce shared cookie trait for volts
+- Introduce "friktion common" rust crate for all future shared features. Moved account validation trait to there. Removed dependency on vipers
+- introduce bypass code to end epoch early for DOV volts
+
+### Fixes
+
+- updated volt ABI to accurately reflect existing program instructions
+- add --skip-lint default to anchor build to avoid need to useless /// CHECK comments
+- removed majority of logs from volt program. Kept only those that output information about deposits or rebalancing details.
+
+### Breaking
+
+- rebalance_enter now requires 400 CUs
+- renamed daoexamples program to cpi_examples
+- updated to anchor 0.25.0, solana 1.10.29
+- require dao_authority is a signer in (deposit, deposit with claim, withdraw, withdraw with claim) instructions
+- rename ClaimPending anchor context to ClaimPendingDeposit, instruction claim_pending to claim_pending_deposit
+- flip order of token accounts in withdraw
+- delete open_orders_bump and open_orders_init_bump from set_next_option arguments list
+- add init_extra_accounts instructions (necessary to call after initialize now) for DOV and Entropy volts, necessary to avoid stack violations in anchor-generated try_accounts() method
+- delete unnecssary bump parameters from Inertia protocol new_contract instruction.
+
 ## [0.0.4] - 2022-06-22
 
 ### Features
@@ -16,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - docs: new README with docs for env setup, testing, architecture.
 - docs + sdk: examples for deposit/withdraw in examples/instruction directory
 - docs: new integration docs @ https://docs.friktion.fi/integration/overview
+
 ### Fixes
 
 - sdk: refactor of sdk, upgrading @solana/spl-token to 0.2.0. adding option market helpers.

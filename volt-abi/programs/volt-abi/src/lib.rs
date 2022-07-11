@@ -13,33 +13,37 @@ mod volt_abi {
 
     use super::*;
 
-    pub(crate) fn deposit(cx: Context<Deposit>, amount: u64) -> Result<()> {
+    pub(crate) fn deposit(ctx: Context<Deposit>, deposit_amount: u64) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn withdraw(cx: Context<Withdraw>, amount: u64) -> Result<()> {
+    pub(crate) fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn deposit_with_claim(cx: Context<DepositWithClaim>, amount: u64) -> Result<()> {
+    pub(crate) fn deposit_with_claim(
+        ctx: Context<DepositWithClaim>,
+        amount: u64,
+        do_transfer: bool,
+    ) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn withdraw_with_claim(cx: Context<WithdrawWithClaim>, amount: u64) -> Result<()> {
+    pub(crate) fn withdraw_with_claim(ctx: Context<WithdrawWithClaim>, amount: u64) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn claim_pending_deposit(cx: Context<ClaimPendingDeposit>) -> Result<()> {
+    pub(crate) fn claim_pending_deposit(ctx: Context<ClaimPendingDeposit>) -> Result<()> {
         Ok(())
     }
-    pub(crate) fn claim_pending_withdrawal(cx: Context<ClaimPendingWithdrawal>) -> Result<()> {
+    pub(crate) fn claim_pending_withdrawal(ctx: Context<ClaimPendingWithdrawal>) -> Result<()> {
         Ok(())
     }
 
-    pub(crate) fn cancel_pending_deposit(cx: Context<CancelPendingDeposit>) -> Result<()> {
+    pub(crate) fn cancel_pending_deposit(ctx: Context<CancelPendingDeposit>) -> Result<()> {
         Ok(())
     }
-    pub(crate) fn cancel_pending_withdrawal(cx: Context<CancelPendingWithdrawal>) -> Result<()> {
+    pub(crate) fn cancel_pending_withdrawal(ctx: Context<CancelPendingWithdrawal>) -> Result<()> {
         Ok(())
     }
     // ========== TRADING ==========

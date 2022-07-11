@@ -17,8 +17,9 @@ import {
   getAccountBalanceOrZero,
   getAccountBalanceOrZeroStruct,
   getMintSupply,
+  sendIns,
 } from "@friktion-labs/friktion-utils";
-import type { ProgramAccount } from "@project-serum/anchor";
+import type { AnchorProvider, ProgramAccount } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import {
   getAccount,
@@ -513,16 +514,21 @@ export class VoltSDK {
             .min(new I80F48(new BN(0)))
         );
 
-      const targetPerpSize = acctEquityPostDeposits
-        .mul(I80F48.fromString(ev.targetLeverage as string))
-        .sub(
-          I80F48.fromNumber(
-            entropyAccount.getBasePositionUiWithGroup(
-              targetPerpIndex,
-              entropyGroup
-            )
-          ).mul(entropyCache.priceCache[targetPerpIndex]?.price as I80F48)
-        );
+      const targetTotalPerpSize = acctEquityPostDeposits.mul(
+        I80F48.fromString(ev.targetLeverage as string)
+      );
+      const currTotalPerpSize = I80F48.fromNumber(
+        entropyAccount.getBasePositionUiWithGroup(targetPerpIndex, entropyGroup)
+      ).mul(entropyCache.priceCache[targetPerpIndex]?.price as I80F48);
+
+      console.log(
+        "target total: ",
+        targetTotalPerpSize.toString(),
+        "\n curr total: ",
+        currTotalPerpSize.toString()
+      );
+      const targetIncrementalPerpSize =
+        targetTotalPerpSize.sub(currTotalPerpSize);
 
       const hedgingPerpSize = acctEquityPostDeposits
         .mul(I80F48.fromString(entropyMetadata.targetHedgeRatio as string))
@@ -543,7 +549,7 @@ export class VoltSDK {
             ev.powerPerpMarket.toString()
           ]?.toString() ?? "N/A"
         } quote size: `,
-        targetPerpSize.toFixed(4),
+        targetIncrementalPerpSize.toFixed(4),
         `\nneeded ${
           this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
             ev.hedgingSpotPerpMarket.toString()
@@ -932,12 +938,10 @@ export class VoltSDK {
    *
    * spotMarket and seed are dynamically generated. Change the code if you want custom.
    */
-  static async initializeVoltWithoutOptionMarketSeed({
+  static async getInitializeShortOptionsVoltInstruction({
     sdk,
     adminKey,
-    underlyingAssetMint,
     quoteAssetMint,
-    permissionedMarketPremiumMint,
     underlyingAmountPerContract,
     serumProgramId,
     expirationInterval,
@@ -948,9 +952,7 @@ export class VoltSDK {
   }: {
     sdk: FriktionSDK;
     adminKey: PublicKey;
-    underlyingAssetMint: PublicKey;
     quoteAssetMint: PublicKey;
-    permissionedMarketPremiumMint: PublicKey;
     underlyingAmountPerContract: BN;
     serumProgramId: PublicKey;
     expirationInterval: anchor.BN;
@@ -999,22 +1001,13 @@ export class VoltSDK {
 
       voltVault: vault,
       vaultAuthority: vaultAuthority,
-      vaultMint: vaultMint,
       extraVoltData: extraVoltKey,
-      auctionMetadata: auctionMetadataKey,
 
-      depositPool: depositPoolKey,
       premiumPool: premiumPoolKey,
-      permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
-      permissionedMarketPremiumMint: permissionedMarketPremiumMint,
 
-      underlyingAssetMint: underlyingAssetMint,
       quoteAssetMint: quoteAssetMint,
 
       dexProgram: serumProgramId,
-
-      whitelistTokenAccount: whitelistTokenAccountKey,
-      whitelistTokenMint: sdk.net.MM_TOKEN_MINT,
 
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -1208,7 +1201,7 @@ export class VoltSDK {
     );
   }
 
-  static async initializeEntropyVolt({
+  static async getInitializeEntropyVoltInstruction({
     sdk,
     adminKey,
     pdaStr,
@@ -1297,7 +1290,6 @@ export class VoltSDK {
 
       voltVault: vault,
       vaultAuthority: vaultAuthority,
-      vaultMint: vaultMint,
       extraVoltData: extraVoltKey,
       entropyMetadata: entropyMetadataKey,
 
@@ -1305,19 +1297,7 @@ export class VoltSDK {
 
       depositMint: underlyingAssetMint,
 
-      dexProgram: serumProgramId,
-
       entropyProgram: entropyProgramId,
-
-      entropyGroup: entropyGroupKey,
-
-      entropyAccount: entropyAccountKey,
-
-      entropyCache: entropyCacheKey,
-
-      powerPerpMarket: targetPerpMarket,
-      hedgingSpotPerpMarket: spotPerpMarket,
-      hedgingSpotMarket: spotMarket,
 
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -1351,16 +1331,60 @@ export class VoltSDK {
     };
   }
 
+  static async doInitializeShortOptionsVolt({
+    sdk,
+    provider,
+    adminKey,
+    quoteAssetMint,
+    underlyingAmountPerContract,
+    serumProgramId,
+    expirationInterval,
+    capacity,
+    individualCapacity,
+    permissionlessAuctions,
+    seed,
+  }: {
+    sdk: FriktionSDK;
+    provider: AnchorProvider;
+    adminKey: PublicKey;
+    quoteAssetMint: PublicKey;
+    underlyingAmountPerContract: BN;
+    serumProgramId: PublicKey;
+    expirationInterval: anchor.BN;
+    capacity: anchor.BN;
+    individualCapacity: anchor.BN;
+    permissionlessAuctions: boolean;
+
+    seed?: PublicKey;
+  }): Promise<PublicKey> {
+    const { instruction, voltKey } =
+      await VoltSDK.getInitializeShortOptionsVoltInstruction({
+        sdk,
+        adminKey,
+        quoteAssetMint,
+        underlyingAmountPerContract,
+        serumProgramId,
+        expirationInterval,
+        capacity,
+        individualCapacity,
+        permissionlessAuctions,
+        seed,
+      });
+
+    await sendIns(provider, instruction);
+
+    return voltKey;
+  }
+
   /**
    * For an admin to create a volt
    *
    * spotMarket and seed are dynamically generated. Change the code if you want custom.
    */
-  static async initializeVolt({
+  static async getInitializeShortOptionsVoltWithOptionMarketSeedInstruction({
     sdk,
     adminKey,
     optionMarket,
-    permissionedMarketPremiumMint,
     serumProgramId,
     expirationInterval,
     capacity,
@@ -1383,12 +1407,10 @@ export class VoltSDK {
     instruction: TransactionInstruction;
     voltKey: PublicKey;
   }> {
-    return VoltSDK.initializeVoltWithoutOptionMarketSeed({
+    return VoltSDK.getInitializeShortOptionsVoltInstruction({
       sdk,
       adminKey,
-      underlyingAssetMint: optionMarket.underlyingAssetMint,
       quoteAssetMint: optionMarket.quoteAssetMint,
-      permissionedMarketPremiumMint: permissionedMarketPremiumMint,
       underlyingAmountPerContract: optionMarket.underlyingAmountPerContract,
       // whitelistTokenMintKey,
       serumProgramId,

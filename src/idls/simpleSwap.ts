@@ -137,6 +137,7 @@ export type SimpleSwapIDL = {
           name: "whitelistTokenAccount";
           isMut: false;
           isSigner: false;
+          docs: ["so pass in as account info and later validate"];
         },
         {
           name: "systemProgram";
@@ -584,6 +585,7 @@ export const SimpleSwapIDLJsonRaw = {
           name: "whitelistTokenAccount",
           isMut: false,
           isSigner: false,
+          docs: ["so pass in as account info and later validate"],
         },
         {
           name: "systemProgram",

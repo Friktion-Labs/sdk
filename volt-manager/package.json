@@ -16,7 +16,7 @@
   "dependencies": {
     "@friktion-labs/friktion-sdk": "workspace:^",
     "@friktion-labs/friktion-utils": "workspace:^",
-    "@project-serum/anchor": "^0.25.0-beta.1",
+    "@project-serum/anchor": "^0.25.0",
     "@saberhq/anchor-contrib": "1.13.0",
     "@saberhq/chai-solana": "1.13.0",
     "@saberhq/eslint-config": "1.13.0",

@@ -19,7 +19,7 @@ import {
   OptionsProtocol,
   PERFORMANCE_FEE_BPS,
   WITHDRAWAL_FEE_BPS,
-} from "../../src";
+} from "@friktion-labs/friktion-sdk";
 import { INERTIA_PX_NORM_FACTOR } from "@friktion-labs/friktion-sdk";
 import { NetworkName } from "@friktion-labs/friktion-sdk";
 import { getInertiaContractByKey } from "@friktion-labs/friktion-sdk";
@@ -30,6 +30,7 @@ import {
 import { VoltSDK } from "@friktion-labs/friktion-sdk";
 import { crankEventQueue } from "../../tests/utils/serum";
 import { initSerumMarketForVolt } from "../utils/instruction_helpers";
+import TransactionInstruction from "@solana/web3.js";
 
 const cli = new Command();
 
@@ -171,7 +172,6 @@ export const runDOVAuction = async (
         voltSdk.voltVault.optionMarket
       )) === "Inertia"
     ) {
-      console.log("inertia protocol");
       const contract = await getInertiaContractByKeyOrNull(
         voltSdk.sdk.programs.Inertia,
         voltSdk.voltVault.optionMarket
@@ -569,63 +569,62 @@ export const checkDateAndTime = (
               snapshotData["underlyingTokenSymbol"] +
               ", continuing..."
           );
-          continue;
-        }
-
-        doneWhenSpeedy = false;
-        const headlineTokenPrice = (
-          await voltSdk.headlineTokenPrice()
-        ).toNumber();
-        let settlePriceFloat = parseFloat(
-          voltToSettlePrice[voltSdk.voltKey.toString()]
-        );
-
-        invariant(
-          Math.abs(settlePriceFloat - headlineTokenPrice) <
-            headlineTokenPrice * 0.2
-        );
-
-        settlePriceFloat *= 10000.0;
-
-        if (settlePriceFloat === undefined || isNaN(settlePriceFloat)) {
-          console.log(
-            "undefined settle price = " +
-              settlePriceFloat.toString() +
-              " continuing"
+        } else {
+          doneWhenSpeedy = false;
+          const headlineTokenPrice = (
+            await voltSdk.headlineTokenPrice()
+          ).toNumber();
+          let settlePriceFloat = parseFloat(
+            voltToSettlePrice[voltSdk.voltKey.toString()]
           );
-          continue;
+
+          invariant(
+            Math.abs(settlePriceFloat - headlineTokenPrice) <
+              headlineTokenPrice * 0.2
+          );
+
+          settlePriceFloat *= 10000.0;
+
+          if (settlePriceFloat === undefined || isNaN(settlePriceFloat)) {
+            console.log(
+              "undefined settle price = " +
+                settlePriceFloat.toString() +
+                " continuing"
+            );
+            continue;
+          }
+
+          const settlePriceNormalized = new BN(settlePriceFloat.toFixed(0));
+          console.log(
+            "symbol = " +
+              snapshotData["underlyingTokenSymbol"] +
+              ", settle price = ",
+            settlePriceNormalized.toString(),
+            ", normalized settle price = ",
+            new Decimal(settlePriceNormalized.toString())
+              .div(INERTIA_PX_NORM_FACTOR)
+              .toString()
+          );
+          console.log("is this correct? type 'y' to continue");
+          await keypress();
+          console.log("continuing...");
+          const inertiaSDK = new InertiaSDK(contract, {
+            provider: provider,
+            network: CLUSTER,
+          });
+
+          settlePriceIxs.push(
+            await inertiaSDK.settle(
+              {
+                user: provider.wallet.publicKey,
+                settlePrice: settlePriceNormalized,
+              },
+              new BN(123456789)
+            )
+          );
         }
 
-        const settlePriceNormalized = new BN(settlePriceFloat.toFixed(0));
-        console.log(
-          "symbol = " +
-            snapshotData["underlyingTokenSymbol"] +
-            ", settle price = ",
-          settlePriceNormalized.toString(),
-          ", normalized settle price = ",
-          new Decimal(settlePriceNormalized.toString())
-            .div(INERTIA_PX_NORM_FACTOR)
-            .toString()
-        );
-        console.log("is this correct? type 'y' to continue");
-        await keypress();
-        console.log("continuing...");
-
-        const inertiaSDK = new InertiaSDK(contract, {
-          provider: provider,
-          network: CLUSTER,
-        });
-
-        settlePriceIxs.push(
-          await inertiaSDK.settle(
-            {
-              user: provider.wallet.publicKey,
-              settlePrice: settlePriceNormalized,
-            },
-            new BN(123456789)
-          )
-        );
-
+        console.log("is last volt: ", isLastVolt.toString());
         if (
           settlePriceIxs.length === 4 ||
           (isLastVolt && settlePriceIxs.length > 0)
@@ -633,6 +632,10 @@ export const checkDateAndTime = (
           if (options.speedyLikeBot) {
             sendInsListCatching(provider, settlePriceIxs);
           } else {
+            const succeeded = await sendInsListCatching(
+              provider,
+              settlePriceIxs
+            );
             while (
               !(
                 await getInertiaContractByKey(
@@ -651,7 +654,7 @@ export const checkDateAndTime = (
           settlePriceIxs = [];
         }
       } else if (options.mintOptions) {
-        console.log("minting options for volt = ", snapshotData["globalId"]);
+        console.log("running epoch for volt = ", snapshotData["globalId"]);
         auctionRunners.push(
           runDOVAuction(
             provider,
