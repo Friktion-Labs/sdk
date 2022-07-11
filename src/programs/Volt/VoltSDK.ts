@@ -1074,7 +1074,7 @@ export class VoltSDK {
       if (!seed) seed = new Keypair().publicKey;
       [vault, vaultBump] = await PublicKey.findProgramAddress(
         [
-          new BN(vaultType).toBuffer("le", 8),
+          new BN(vaultType).toArrayLike(Buffer, "le", 8),
           seed.toBuffer(),
           textEncoder.encode("vault"),
         ],
@@ -1087,7 +1087,7 @@ export class VoltSDK {
       }
       [vault, vaultBump] = await PublicKey.findProgramAddress(
         [
-          new BN(vaultType).toBuffer("le", 8),
+          new BN(vaultType).toArrayLike(Buffer, "le", 8),
           textEncoder.encode(pdaStr),
           textEncoder.encode("vault"),
         ],
@@ -1981,7 +1981,7 @@ export class VoltSDK {
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("epochInfo"),
       ],
       voltProgramId
@@ -1997,7 +1997,7 @@ export class VoltSDK {
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("entropyRoundInfo"),
       ],
       voltProgramId
@@ -2013,7 +2013,7 @@ export class VoltSDK {
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("roundInfo"),
       ],
       voltProgramId
@@ -2029,7 +2029,7 @@ export class VoltSDK {
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("roundVoltTokens"),
       ],
       voltProgramId
@@ -2042,10 +2042,14 @@ export class VoltSDK {
     voltProgramId: PublicKey
   ): Promise<[PublicKey, number]> {
     const textEncoder = new TextEncoder();
+
+    console.log(voltKey.toBuffer());
+    console.log(new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8));
+    console.log(textEncoder.encode("roundUnderlyingTokens"));
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("roundUnderlyingTokens"),
       ],
       voltProgramId
@@ -2061,7 +2065,7 @@ export class VoltSDK {
     return await PublicKey.findProgramAddress(
       [
         voltKey.toBuffer(),
-        new BN(roundNumber.toString()).toBuffer("le", 8),
+        new BN(roundNumber.toString()).toArrayLike(Buffer, "le", 8),
         textEncoder.encode("roundUlPending"),
       ],
       voltProgramId

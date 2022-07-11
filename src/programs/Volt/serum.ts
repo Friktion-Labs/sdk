@@ -163,7 +163,11 @@ export class Validation implements Middleware {
   }
   prune(ix: TransactionInstruction) {
     // prepend a discriminator and the marketAuthorityBump
-    const bumpBuffer = new BN(this.marketAuthorityBump).toBuffer("le", 1);
+    const bumpBuffer = new BN(this.marketAuthorityBump).toArrayLike(
+      Buffer,
+      "le",
+      1
+    );
     ix.data = Buffer.concat([Buffer.from([6]), bumpBuffer, ix.data]);
     // prepend the optionMarket key
 

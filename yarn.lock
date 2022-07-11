@@ -306,15 +306,15 @@
     yargs "^17.0.1"
 
 "@friktion-labs/friktion-sdk@workspace:^":
-  version "1.1.155"
-  resolved "https://registry.yarnpkg.com/@friktion-labs/friktion-sdk/-/friktion-sdk-1.1.155.tgz#067ee5e437d9f05f2271bad149ca45580f6152e2"
-  integrity sha512-qECtveuWaTs36d4dCIxHFzjs15OxY9Rf0Zy4WK8aKZqLTxyTJqiR2FJSax85eWhvPU/2jg8xWuaAGGzyKgdnrw==
+  version "1.1.157"
+  resolved "https://registry.yarnpkg.com/@friktion-labs/friktion-sdk/-/friktion-sdk-1.1.157.tgz#4af8d7f7651567d55842ffbacaa22685b081aa80"
+  integrity sha512-XEdgtaPfjUy2ZFo28nm6+88IGCE5SPXx2xSRZAnqPWVW+nu5ZP2unkikfFdHsPC1ITyFKihfXOrxxW2mb5L4xQ==
   dependencies:
     "@blockworks-foundation/mango-client" "3.4.5"
     "@friktion-labs/entropy-client" "^1.7.3"
     "@friktion-labs/friktion-utils" "0.0.3"
     "@oclif/command" "^1.8.16"
-    "@project-serum/anchor" "^0.25.0-beta.1"
+    "@project-serum/anchor" "^0.25.0"
     "@project-serum/common" "^0.0.1-beta.3"
     "@project-serum/serum" "^0.13.61"
     "@saberhq/anchor-contrib" "1.12.53"
