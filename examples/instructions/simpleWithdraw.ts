@@ -1,4 +1,8 @@
-import { ConnectedVoltSDK, FriktionSDK } from "@friktion-labs/friktion-sdk";
+import {
+  ConnectedVoltSDK,
+  FriktionSDK,
+  toConnectedSDK,
+} from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 import Decimal from "decimal.js";
@@ -24,13 +28,13 @@ const friktionSDK: FriktionSDK = new FriktionSDK({
 
 const user = provider.wallet.publicKey;
 
-const withdrawAmount: Decimal = new Decimal(0.001);
+const withdrawAmount: Decimal = new Decimal(0.00001);
 
 (async () => {
-  const cVoltSDK = new ConnectedVoltSDK(
+  const cVoltSDK = toConnectedSDK(
+    await friktionSDK.loadVoltSDKByKey(voltVaultId),
     connection,
     user,
-    await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId),
     // below field is only used if depositing from a PDA or other program-owned account
     undefined
   );

@@ -1,4 +1,4 @@
-import { FriktionSDK } from "@friktion-labs/friktion-sdk";
+import { FriktionSDK, VoltSDK } from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 
@@ -20,7 +20,7 @@ const friktionSDK: FriktionSDK = new FriktionSDK({
 const user = provider.wallet.publicKey;
 
 (async () => {
-  const voltSdk = await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId);
+  const voltSdk: VoltSDK = await friktionSDK.loadVoltSDKByKey(voltVaultId);
   console.log(
     "balances for wallet = ",
     user.toString(),

@@ -1,13 +1,13 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "noEmit": false,
     "outDir": "dist/cjs/",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": false,
-    "inlineSources": false,
+    "sourceMap": true,
+    "inlineSources": true,
     "importHelpers": true,
     "paths": {
       "@solana/spl-token": ["./node_modules/@solana/spl-token"]

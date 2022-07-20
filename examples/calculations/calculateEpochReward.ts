@@ -26,20 +26,22 @@ const user = provider.wallet.publicKey;
 const roundNumber = new BN(25);
 
 (async () => {
-  const voltSdk = await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId);
+  const voltSdk = await friktionSDK.loadVoltSDKByKey(voltVaultId);
   console.log("epoch pnl: ", await voltSdk.getPnlForEpoch(roundNumber));
 
   // calculate # of volt tokens user had ownership over during that round.
   // finds apportioned pnl by
   console.log(
-    'apportioned pnl (100000000 volt tokens): ', await voltSdk.getApportionedPnlForEpoch(roundNumber, new BN(1_00_000_000))
+    "apportioned pnl (100000000 volt tokens): ",
+    await voltSdk.getApportionedPnlForEpoch(roundNumber, new BN(1_00_000_000))
   );
 
   // if some deposits haven't been claimed, can sum volt tokens in wallet and mintableShares
   const mintableSharesForRound = 50_000_000;
   const numVoltTokensInWallet = 1_00_000_000;
   console.log(
-    'apportioned pnl including pending deposits, (150000000 volt tokens): ', await voltSdk.getApportionedPnlForEpoch(
+    "apportioned pnl including pending deposits, (150000000 volt tokens): ",
+    await voltSdk.getApportionedPnlForEpoch(
       roundNumber,
       new BN(numVoltTokensInWallet + mintableSharesForRound)
     )

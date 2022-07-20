@@ -20,7 +20,7 @@ const friktionSDK: FriktionSDK = new FriktionSDK({
 const user = provider.wallet.publicKey;
 
 (async () => {
-  const voltSdk = await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId);
+  const voltSdk = await friktionSDK.loadShortOptionsVoltSDKByKey(voltVaultId);
 
   // currently (epoch = ), optionsContract =
   const optionsContract = await voltSdk.getCurrentOptionsContract();

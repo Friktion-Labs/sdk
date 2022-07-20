@@ -17,12 +17,14 @@
     "inlineSources": true,
     "sourceMap": true,
     "noErrorTruncation": true,
+    "experimentalDecorators": true,
     "paths": {
       "@solana/spl-token": ["./node_modules/@solana/spl-token"]
     }
   },
   "include": ["friktion-sdk/src/**/*.ts", "friktion-sdk/src/**/*.json"],
   "exclude": [
+    "friktion-sdk/dist",
     "**/node_modules/"
   ]
 }

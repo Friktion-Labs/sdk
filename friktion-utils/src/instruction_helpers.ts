@@ -77,50 +77,74 @@ class TransactionMachine {
 
   async sendIns(
     ins: TransactionInstruction,
-    signers?: Signer[]
+    signers?: Signer[],
+    computeUnits?: number
   ): Promise<TransactionSignature> {
     if (this.blastAway) return await this.blastTx([ins], signers);
-    return await sendIns(this.provider, ins, this.timeout);
+    return await sendIns(this.provider, ins, this.timeout, computeUnits);
   }
 
-  async sendInsCatching(ins: TransactionInstruction): Promise<{
+  async sendInsCatching(
+    ins: TransactionInstruction,
+    computeUnits?: number
+  ): Promise<{
     success: boolean;
     error: unknown | undefined;
     txid: TransactionSignature | undefined;
   }> {
     // if (this.blastAway)
-    return await sendInsCatching(this.provider, ins, this.timeout);
+    return await sendInsCatching(
+      this.provider,
+      ins,
+      this.timeout,
+      computeUnits
+    );
   }
 
   async sendInsList(
     insList: TransactionInstruction[],
-    signers?: Signer[]
+    signers?: Signer[],
+    computeUnits?: number
   ): Promise<TransactionSignature> {
     if (this.blastAway) return await this.blastTx(insList, signers);
     signers = signers?.concat(this.signers);
-    return await sendInsList(this.provider, insList, signers, this.timeout);
+    return await sendInsList(
+      this.provider,
+      insList,
+      signers,
+      this.timeout,
+      computeUnits
+    );
   }
 
   async sendInsListCatching(
     insList: TransactionInstruction[],
-    signers?: Signer[]
+    signers?: Signer[],
+    computeUnits?: number
   ) {
     signers = signers?.concat(this.signers);
-    await sendInsListCatching(this.provider, insList, signers, this.timeout);
+    await sendInsListCatching(
+      this.provider,
+      insList,
+      signers,
+      this.timeout,
+      computeUnits
+    );
   }
 }
 
 export const sendInsCatching = async (
   provider: anchor.AnchorProvider,
   ins: TransactionInstruction,
-  timeout?: number
+  timeout?: number,
+  computeUnits?: number
 ): Promise<{
   success: boolean;
   error: unknown | undefined;
   txid: TransactionSignature | undefined;
 }> => {
   try {
-    const txid = await sendIns(provider, ins, timeout);
+    const txid = await sendIns(provider, ins, timeout, computeUnits);
     return {
       success: true,
       error: undefined,
@@ -140,9 +164,18 @@ export const sendInsCatching = async (
 export const sendIns = async (
   provider: anchor.AnchorProvider,
   ins: TransactionInstruction,
-  timeout?: number
+  timeout?: number,
+  computeUnits?: number
 ): Promise<TransactionSignature> => {
   const tx = new Transaction();
+
+  if (computeUnits !== undefined)
+    tx.add(
+      ComputeBudgetProgram.requestUnits({
+        units: computeUnits,
+        additionalFee: 0,
+      })
+    );
 
   tx.add(ins);
 
@@ -159,14 +192,21 @@ export const sendInsListCatching = async (
   provider: anchor.AnchorProvider,
   insList: TransactionInstruction[],
   signers?: Signer[],
-  timeout?: number
+  timeout?: number,
+  computeUnits?: number
 ): Promise<{
   success: boolean;
   error: unknown | undefined;
   txid: TransactionSignature | undefined;
 }> => {
   try {
-    const txid = await sendInsList(provider, insList, signers, timeout);
+    const txid = await sendInsList(
+      provider,
+      insList,
+      signers,
+      timeout,
+      computeUnits
+    );
     return {
       success: true,
       error: undefined,

@@ -1,13 +1,13 @@
 import {
-  ConnectedVoltSDK,
   FriktionSDK,
   PendingWithdrawal,
+  toConnectedSDK
 } from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import {
   createAssociatedTokenAccountInstruction,
   getAccount,
-  getAssociatedTokenAddress,
+  getAssociatedTokenAddress
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
@@ -34,13 +34,13 @@ const friktionSDK: FriktionSDK = new FriktionSDK({
 
 const user = provider.wallet.publicKey;
 
-const withdrawAmount: Decimal = new Decimal(0.001);
+const withdrawAmount: Decimal = new Decimal(0.00001);
 
 (async () => {
-  const cVoltSDK = new ConnectedVoltSDK(
+  const cVoltSDK = toConnectedSDK(
+    await friktionSDK.loadVoltSDKByKey(voltVaultId),
     connection,
     user,
-    await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId),
     // below field is only used if depositing from a PDA or other program-owned account
     undefined
   );

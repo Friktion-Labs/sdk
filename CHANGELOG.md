@@ -28,9 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - renamed daoexamples program to cpi_examples
 - updated to anchor 0.25.0, solana 1.10.29
 - require dao_authority is a signer in (deposit, deposit with claim, withdraw, withdraw with claim) instructions
-- rename ClaimPending anchor context to ClaimPendingDeposit, instruction claim_pending to claim_pending_deposit
+- rename ClaimPending anchor context to ClaimPendingDeposit
 - flip order of token accounts in withdraw
 - delete open_orders_bump and open_orders_init_bump from set_next_option arguments list
+- delete vault_mint from cancel_pending_deposit
+- unmark authority as mutable in cancel_pending_deposit and cancel_pending_withdrawal
 - add init_extra_accounts instructions (necessary to call after initialize now) for DOV and Entropy volts, necessary to avoid stack violations in anchor-generated try_accounts() method
 - delete unnecssary bump parameters from Inertia protocol new_contract instruction.
 

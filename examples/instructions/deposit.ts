@@ -1,7 +1,7 @@
 import {
-  ConnectedVoltSDK,
   FriktionSDK,
   PendingDeposit,
+  toConnectedSDK,
 } from "@friktion-labs/friktion-sdk";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 import {
@@ -11,7 +11,7 @@ import {
   getAccount,
   getAssociatedTokenAddress,
 } from "@solana/spl-token";
-import type { Signer, TransactionInstruction } from "@solana/web3.js";
+import type { TransactionInstruction } from "@solana/web3.js";
 import {
   Connection,
   PublicKey,
@@ -44,10 +44,10 @@ const friktionSDK: FriktionSDK = new FriktionSDK({
 const user = provider.wallet.publicKey;
 
 (async () => {
-  const cVoltSDK = new ConnectedVoltSDK(
+  const cVoltSDK = toConnectedSDK(
+    await friktionSDK.loadVoltSDKByKey(voltVaultId),
     connection,
     user,
-    await friktionSDK.loadVoltAndExtraDataByKey(voltVaultId),
     // below field is only used if depositing from a PDA or other program-owned account
     undefined
   );
@@ -74,7 +74,7 @@ const user = provider.wallet.publicKey;
     true
   );
 
-  const depositAmount: Decimal = new Decimal(0.001);
+  const depositAmount: Decimal = new Decimal(0.00001);
 
   if (isWrappedSol) {
     try {
