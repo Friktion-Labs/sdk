@@ -8,9 +8,7 @@ npm i @friktion-labs/friktion-sdk@1.1.127
 
 ## Integration Docs
 
-**
-See [here](https://docs.friktion.fi/integration/typescript-sdk) for an in-depth into how to use the SDK!
-**
+**See [here](https://docs.friktion.fi/integration/typescript-sdk) for an in-depth into how to use the SDK!**
 
 
 
