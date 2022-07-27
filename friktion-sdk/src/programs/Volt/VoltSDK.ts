@@ -9,6 +9,7 @@ import {
   getAccountBalanceOrZeroStruct,
 } from "@friktion-labs/friktion-utils";
 import type { ProgramAccount } from "@project-serum/anchor";
+import type { Account } from "@solana/spl-token";
 import {
   getAccount,
   getAssociatedTokenAddress,
@@ -47,10 +48,17 @@ import type {
   PendingDepositWithKey,
   PendingWithdrawal,
   PendingWithdrawalWithKey,
+  Round,
   RoundWithKey,
   VoltVault,
 } from "./voltTypes";
 
+export type PnlStats = {
+  pnlInDepositToken: Decimal;
+  pnlInDepositTokenAfterFees: Decimal;
+  percentagePnl: Decimal;
+  percentagePnlAfterFees: Decimal;
+};
 export abstract class VoltSDK {
   extraVoltData: ExtraVoltData | undefined;
   normFactor: Decimal | undefined;
@@ -141,6 +149,10 @@ export abstract class VoltSDK {
   }
 
   //// SNAPSHOT DATA ////
+
+  async getGlobalId(): Promise<string> {
+    return (await this.getSnapshot()).globalId;
+  }
 
   async getDepositTokenSymbol(): Promise<string> {
     return (await this.getSnapshot()).depositTokenSymbol;
@@ -542,21 +554,42 @@ export abstract class VoltSDK {
     return VoltSDK.voltTypeFromRaw(this.voltVault);
   }
 
-  static withdrawalFeeAmount(numTokensWithdrawn: BN): BN {
+  static defaultWithdrawalFeeAmount(numTokensWithdrawn: BN): BN {
     if (numTokensWithdrawn.lten(0)) {
       return new BN(0);
     }
     return numTokensWithdrawn.muln(WITHDRAWAL_FEE_BPS).divn(10000);
   }
 
-  static performanceFeeAmount(numTokensGained: BN): BN {
+  static defaultPerformanceFeeAmount(numTokensGained: BN): BN {
     if (numTokensGained.lten(0)) {
       return new BN(0);
     }
     return numTokensGained.muln(PERFORMANCE_FEE_BPS).divn(10000);
   }
 
-  //// USEFUL CALCULATIONS ////
+  static defaultWithdrawalFeeAmountFromDecimal(
+    numTokensWithdrawn: Decimal
+  ): Decimal {
+    if (numTokensWithdrawn.lte(0)) {
+      return new Decimal(0);
+    }
+    return numTokensWithdrawn
+      .mul(new Decimal(WITHDRAWAL_FEE_BPS.toString()))
+      .div(10000);
+  }
+
+  static defaultPerformanceFeeAmountFromDecimal(
+    numTokensGained: Decimal
+  ): Decimal {
+    if (numTokensGained.lte(0)) {
+      return new Decimal(0);
+    }
+    return numTokensGained
+      .mul(new Decimal(PERFORMANCE_FEE_BPS.toString()))
+      .div(10000);
+  }
+
   // 1. TVL
   // 2. currently pending deposits/withdrawals
   // 3. Vault Token
@@ -632,15 +665,14 @@ export abstract class VoltSDK {
     normFactor: Decimal
   ): Promise<Decimal> {
     try {
-      let primaryStrategyTvl = await this.getPrimaryStrategyTvlWithNormFactor(
-        normFactor
-      );
+      let [primaryStrategyTvl, entropyLendingTvl] = await Promise.all([
+        this.getPrimaryStrategyTvlWithNormFactor(normFactor),
+        this.getEntropyLendingTvlInDepositToken(),
+      ]);
 
-      const entropyLendingTvl = (
-        await this.getEntropyLendingTvlInDepositToken()
-      ).div(normFactor);
-
+      entropyLendingTvl = entropyLendingTvl.div(normFactor);
       primaryStrategyTvl = primaryStrategyTvl.add(entropyLendingTvl);
+
       return primaryStrategyTvl;
     } catch (err) {
       console.log(err);
@@ -860,12 +892,13 @@ export abstract class VoltSDK {
     const connection = this.sdk.readonlyProvider.connection;
 
     const client = new EntropyClient(connection, entropyProgramId);
-    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
-
-    const entropyAccount = await client.getEntropyAccount(
-      entropyAccountKey,
-      this.sdk.net.SERUM_DEX_PROGRAM_ID
-    );
+    const [entropyGroup, entropyAccount] = await Promise.all([
+      client.getEntropyGroup(entropyGroupKey),
+      client.getEntropyAccount(
+        entropyAccountKey,
+        this.sdk.net.SERUM_DEX_PROGRAM_ID
+      ),
+    ]);
 
     const entropyCache = await entropyGroup.loadCache(connection);
 
@@ -900,11 +933,7 @@ export abstract class VoltSDK {
       entropyCache
     );
     const acctValueInDepositToken = acctEquity.div(oraclePrice);
-    console.log(
-      "acct equity = ",
-      acctEquity.toString(),
-      oraclePrice.toString()
-    );
+
     return {
       tvlDepositToken: new Decimal(acctValueInDepositToken.toString()),
       tvlUsd: new Decimal(acctEquity.toString()),
@@ -913,6 +942,151 @@ export abstract class VoltSDK {
 
   // Epoch Calculations
 
+  async getPnlStatsForAllEpochs(): Promise<
+    {
+      epochNumber: number;
+      pnlInDepositToken: Decimal;
+      pnlInDepositTokenAfterFees: Decimal;
+      percentagePnl: Decimal;
+      percentagePnlAfterFees: Decimal;
+    }[]
+  > {
+    const auctionResults = await this.fetchAuctionResults();
+
+    return auctionResults.map((ar, idx) => {
+      return {
+        epochNumber: idx + 1,
+        ...this.getPnlStatsFromAuctionResult(ar),
+      };
+    });
+  }
+
+  async getPnlStatsForEpochREST(roundNumber: number): Promise<PnlStats> {
+    const auctionResult = await this.fetchAuctionResultForEpochNumber(
+      roundNumber
+    );
+    return this.getPnlStatsFromAuctionResult(auctionResult);
+  }
+
+  getPnlStatsFromAuctionResult(auctionResult: AuctionResult): PnlStats {
+    const startingAum = auctionResult.BalanceStart;
+
+    const pnlInDepositToken = new Decimal(auctionResult.RealizedPnl);
+    const pnlInDepositTokenAfterFees = pnlInDepositToken.sub(
+      VoltSDK.defaultPerformanceFeeAmountFromDecimal(pnlInDepositToken)
+    );
+
+    const percentagePnl = pnlInDepositToken.div(startingAum);
+    const percentagePnlAfterFees = pnlInDepositTokenAfterFees.div(startingAum);
+
+    return {
+      pnlInDepositToken,
+      pnlInDepositTokenAfterFees,
+      percentagePnl,
+      percentagePnlAfterFees,
+    };
+  }
+
+  async getPnlForEpochREST(
+    roundNumber: number,
+    subtractFees = true
+  ): Promise<Decimal> {
+    const { pnlInDepositToken, pnlInDepositTokenAfterFees } =
+      await this.getPnlStatsForEpochREST(roundNumber);
+
+    return subtractFees ? pnlInDepositTokenAfterFees : pnlInDepositToken;
+  }
+  // only works beginning with epoch on april 7
+  async getApportionedPnlForEpochREST(
+    epochNumber: BN,
+    userVoltTokensDuringEpoch: BN,
+    subtractFees = true
+  ): Promise<Decimal> {
+    if (epochNumber.eqn(0)) {
+      throw new Error("round number must be greater than 0");
+    }
+    const [epochInfo, pnlForRoundResult, normFactorResult] =
+      await Promise.allSettled([
+        this.getEpochInfoByNumber(epochNumber),
+        this.getPnlForEpochREST(epochNumber.toNumber(), subtractFees),
+        this.getDepositTokenNormalizationFactor(),
+      ]);
+
+    if (epochInfo.status === "rejected")
+      throw new Error(
+        "epoch info deprecated for this epoch. Try a newer epoch number"
+      );
+
+    if (pnlForRoundResult.status === "rejected")
+      throw new Error("couldn't load pnl for round");
+    if (normFactorResult.status === "rejected")
+      throw new Error("couldn't load norm factor");
+
+    const normFactor = normFactorResult.value;
+    const pnlForRound = pnlForRoundResult.value;
+
+    const voltTokenSupplyForRound = epochInfo.value.voltTokenSupply;
+
+    const participatingPnl = pnlForRound
+      .mul(new Decimal(userVoltTokensDuringEpoch.toString()).div(normFactor))
+      .div(new Decimal(voltTokenSupplyForRound.toString()).div(normFactor));
+
+    return new Decimal(participatingPnl.toString());
+  }
+
+  async getPnlStatsForEpoch(roundNumber: BN): Promise<{
+    pnlInDepositToken: Decimal;
+    pnlInDepositTokenAfterFees: Decimal;
+    percentagePnl: Decimal;
+    percentagePnlAfterFees: Decimal;
+  }> {
+    const epochInfo = await this.getEpochInfoByNumber(roundNumber);
+    if (epochInfo.number.eqn(0)) {
+      throw new Error(
+        "epoch info deprecated for this epoch. Try a newer epoch number"
+      );
+    }
+    const startEpochAum = epochInfo.underlyingPreEnter;
+
+    let pnlForRound: Decimal;
+    let pnlForRoundAfterFees: Decimal;
+    if (this.voltType() === VoltType.ShortOptions) {
+      pnlForRound = new Decimal(
+        epochInfo.underlyingPostSettle
+          .sub(epochInfo.underlyingPreEnter)
+          .toString()
+      );
+      pnlForRoundAfterFees = pnlForRound.sub(
+        new Decimal(epochInfo.performanceFees.toString())
+      );
+    } else if (this.voltType() === VoltType.Entropy) {
+      pnlForRound = new Decimal(epochInfo.pnl.toString());
+      pnlForRoundAfterFees = pnlForRound.sub(
+        new Decimal(epochInfo.performanceFees.toString())
+      );
+    } else {
+      throw new Error("unsupported volt type");
+    }
+
+    const percentagePnl = new Decimal(pnlForRound.toString()).div(
+      new Decimal(startEpochAum.toString())
+    );
+    const percentagePnlAfterFees = new Decimal(
+      pnlForRoundAfterFees.toString()
+    ).div(new Decimal(startEpochAum.toString()));
+
+    return {
+      pnlInDepositToken: new Decimal(pnlForRound.toString()).div(
+        await this.getDepositTokenNormalizationFactor()
+      ),
+      pnlInDepositTokenAfterFees: new Decimal(
+        pnlForRoundAfterFees.toString()
+      ).div(await this.getDepositTokenNormalizationFactor()),
+      percentagePnl,
+      percentagePnlAfterFees,
+    };
+  }
+
   async getPnlForEpoch(roundNumber: BN, subtractFees = true): Promise<Decimal> {
     const epochInfo = await this.getEpochInfoByNumber(roundNumber);
     if (epochInfo.number.eqn(0)) {
@@ -920,42 +1094,44 @@ export abstract class VoltSDK {
         "epoch info deprecated for this epoch. Try a newer epoch number"
       );
     }
-    if (this.voltType() === VoltType.ShortOptions) {
-      let pnlForRound = epochInfo.underlyingPostSettle.sub(
-        epochInfo.underlyingPreEnter
-      );
-      if (subtractFees && pnlForRound.gtn(0))
-        pnlForRound = pnlForRound.sub(
-          VoltSDK.performanceFeeAmount(pnlForRound)
-        );
-      return new Decimal(pnlForRound.toString()).div(
-        await this.getDepositTokenNormalizationFactor()
-      );
-    } else if (this.voltType() === VoltType.Entropy) {
-      return new Decimal(epochInfo.pnl.toString())
-        .sub(new Decimal(epochInfo.performanceFees.toString()))
-        .div(await this.getDepositTokenNormalizationFactor());
-    } else {
-      throw new Error("invalid volt type");
-    }
+    const { pnlInDepositToken, pnlInDepositTokenAfterFees } =
+      await this.getPnlStatsForEpoch(roundNumber);
+    return subtractFees ? pnlInDepositTokenAfterFees : pnlInDepositToken;
   }
+
   // only works beginning with epoch on april 7
   async getApportionedPnlForEpoch(
-    roundNumber: BN,
-    getApportionedPnlForRound: BN,
+    epochNumber: BN,
+    userVoltTokensDuringEpoch: BN,
     subtractFees = true
   ): Promise<Decimal> {
-    const epochInfo = await this.getEpochInfoByNumber(roundNumber);
-    if (epochInfo.number.eqn(0)) {
+    if (epochNumber.eqn(0)) {
+      throw new Error("round number must be greater than 0");
+    }
+    const [epochInfo, pnlForRoundResult, normFactorResult] =
+      await Promise.allSettled([
+        this.getEpochInfoByNumber(epochNumber),
+        this.getPnlForEpoch(epochNumber, subtractFees),
+        this.getDepositTokenNormalizationFactor(),
+      ]);
+
+    if (epochInfo.status === "rejected")
       throw new Error(
         "epoch info deprecated for this epoch. Try a newer epoch number"
       );
-    }
-    const pnlForRound = await this.getPnlForEpoch(roundNumber, subtractFees);
-    const voltTokenSupplyForRound = epochInfo.voltTokenSupply;
-    const normFactor = await this.getDepositTokenNormalizationFactor();
+
+    if (pnlForRoundResult.status === "rejected")
+      throw new Error("couldn't load pnl for epoch");
+    if (normFactorResult.status === "rejected")
+      throw new Error("couldn't load norm factor");
+
+    const normFactor = normFactorResult.value;
+    const pnlForRound = pnlForRoundResult.value;
+
+    const voltTokenSupplyForRound = epochInfo.value.voltTokenSupply;
+
     const participatingPnl = pnlForRound
-      .mul(new Decimal(getApportionedPnlForRound.toString()).div(normFactor))
+      .mul(new Decimal(userVoltTokensDuringEpoch.toString()).div(normFactor))
       .div(new Decimal(voltTokenSupplyForRound.toString()).div(normFactor));
 
     return new Decimal(participatingPnl.toString());
@@ -1016,81 +1192,211 @@ export abstract class VoltSDK {
     const voltVault = this.voltVault;
     const connection = this.sdk.readonlyProvider.connection;
 
-    const underlyingTokenMintInfo = await getMint(
-      connection,
-      voltVault.underlyingAssetMint
-    );
-    const vaultTokenMintInfo = await getMint(connection, voltVault.vaultMint);
-
-    const normFactor = new Decimal(10).pow(underlyingTokenMintInfo.decimals);
-    const vaultNormFactor = new Decimal(10).pow(vaultTokenMintInfo.decimals);
-
-    const totalVaultValueExcludingPendingDeposits = (
-      await this.getTvlWithoutPendingInDepositToken(normFactor)
-    ).mul(normFactor);
-
-    const roundInfo = await this.getRoundByNumber(voltVault.roundNumber);
-
-    const voltTokenSupply = new Decimal(
-      vaultTokenMintInfo.supply.toString()
-    ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
-
-    const vaultTokenAccount = await getAssociatedTokenAddress(
+    const vaultTokenAccountKey = await getAssociatedTokenAddress(
       voltVault.vaultMint,
       pubkey,
       true
     );
 
-    let userVoltTokens = new Decimal(0);
-    try {
-      userVoltTokens = new Decimal(
-        (
-          await getAccount(
-            this.sdk.readonlyProvider.connection,
-            vaultTokenAccount
-          )
-        ).amount.toString()
+    const [
+      vaultMintInfoResult,
+      depositTokenNormFactorResult,
+      roundInfoResult,
+      pendingDepositInfoResult,
+      pendingWithdrawalInfoResult,
+      vaultTokenAccount,
+    ] = await Promise.allSettled([
+      getMint(connection, voltVault.vaultMint),
+      this.getDepositTokenNormalizationFactor(),
+      this.getRoundByNumber(voltVault.roundNumber),
+      this.getPendingDepositForGivenUser(pubkey),
+      this.getPendingWithdrawalForGivenUser(pubkey),
+      getAccount(this.sdk.readonlyProvider.connection, vaultTokenAccountKey),
+    ]);
+
+    if (
+      vaultMintInfoResult.status === "rejected" ||
+      depositTokenNormFactorResult.status === "rejected" ||
+      roundInfoResult.status === "rejected"
+    ) {
+      throw new Error("failed to load critical account for calculation");
+    }
+
+    const vaultMintInfo = vaultMintInfoResult.value;
+    const roundInfo = roundInfoResult.value;
+
+    const depositTokenNormFactor = depositTokenNormFactorResult.value;
+    const vaultNormFactor = new Decimal(10).pow(vaultMintInfo.decimals);
+
+    const voltTokenSupply = new Decimal(vaultMintInfo.supply.toString()).add(
+      new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString())
+    );
+
+    let userVoltTokens: Decimal = new Decimal(0);
+    if (vaultTokenAccount.status === "fulfilled") {
+      userVoltTokens = new Decimal(vaultTokenAccount.value.amount.toString());
+    }
+
+    const [
+      totalVaultValueExcludingPendingDepositsUnnormalized,
+      pendingDepositAccounts,
+      pendingWithdrawalAccounts,
+    ] = await Promise.all([
+      this.getTvlWithoutPendingInDepositToken(depositTokenNormFactor),
+      (async (): Promise<{
+        roundForPendingDeposit: Round | undefined;
+        pendingDepositsRoundVoltTokensAccount: Account | undefined;
+      }> => {
+        if (
+          pendingDepositInfoResult.status === "fulfilled" &&
+          pendingDepositInfoResult.value.numUnderlyingDeposited.gtn(0)
+        ) {
+          const pendingDepositInfo = pendingDepositInfoResult.value;
+
+          const [
+            roundForPendingDeposit,
+            pendingDepositsRoundVoltTokensAccount,
+          ] = await Promise.all([
+            this.getRoundByNumber(pendingDepositInfo.roundNumber),
+            getAccount(
+              this.sdk.readonlyProvider.connection,
+              (
+                await VoltSDK.findRoundVoltTokensAddress(
+                  this.voltKey,
+                  pendingDepositInfo.roundNumber,
+                  this.sdk.programs.Volt.programId
+                )
+              )[0]
+            ),
+          ]);
+
+          return {
+            roundForPendingDeposit,
+            pendingDepositsRoundVoltTokensAccount,
+          };
+        }
+
+        return {
+          roundForPendingDeposit: undefined,
+          pendingDepositsRoundVoltTokensAccount: undefined,
+        };
+      })(),
+      (async (): Promise<{
+        roundForPendingWithdrawal: Round | undefined;
+        underlyingTokensForPendingWithdrawalRoundTokenAccount:
+          | Account
+          | undefined;
+      }> => {
+        if (
+          pendingWithdrawalInfoResult.status === "fulfilled" &&
+          pendingWithdrawalInfoResult.value.numVoltRedeemed.gtn(0)
+        ) {
+          const pendingWithdrawalInfo = pendingWithdrawalInfoResult.value;
+
+          const [
+            roundForPendingWithdrawal,
+            underlyingTokensForPendingWithdrawalRoundTokenAccount,
+          ] = await Promise.all([
+            this.getRoundByNumber(pendingWithdrawalInfo.roundNumber),
+            getAccount(
+              this.sdk.readonlyProvider.connection,
+              (
+                await VoltSDK.findRoundUnderlyingPendingWithdrawalsAddress(
+                  this.voltKey,
+                  pendingWithdrawalInfo.roundNumber,
+                  this.sdk.programs.Volt.programId
+                )
+              )[0]
+            ),
+          ]);
+
+          return {
+            roundForPendingWithdrawal,
+            underlyingTokensForPendingWithdrawalRoundTokenAccount,
+          };
+        }
+
+        return {
+          roundForPendingWithdrawal: undefined,
+          underlyingTokensForPendingWithdrawalRoundTokenAccount: undefined,
+        };
+      })(),
+    ]);
+
+    const totalVaultValueExcludingPendingDeposits =
+      totalVaultValueExcludingPendingDepositsUnnormalized.mul(
+        depositTokenNormFactor
       );
-      // eslint-disable-next-line no-empty
-    } catch (err) {}
 
-    const userValueExcludingPendingDeposits = voltTokenSupply.lte(0)
-      ? new Decimal(0)
-      : totalVaultValueExcludingPendingDeposits
-          .mul(userVoltTokens)
-          .div(voltTokenSupply);
+    let userValueFromPendingWithdrawals = new Decimal(0);
+    let userClaimableUnderlying = new Decimal(0);
 
-    let pendingDepositInfo = null;
+    if (
+      pendingWithdrawalAccounts.roundForPendingWithdrawal !== undefined &&
+      pendingWithdrawalAccounts.underlyingTokensForPendingWithdrawalRoundTokenAccount !==
+        undefined &&
+      pendingWithdrawalInfoResult.status === "fulfilled"
+    ) {
+      const pendingWithdrawalInfo = pendingWithdrawalInfoResult.value;
+      const underlyingTokensForPendingWithdrawalRoundTokenAccount =
+        pendingWithdrawalAccounts.underlyingTokensForPendingWithdrawalRoundTokenAccount;
+      const roundForPendingWithdrawal =
+        pendingWithdrawalAccounts.roundForPendingWithdrawal;
 
-    try {
-      pendingDepositInfo = await this.getPendingDepositForGivenUser(pubkey);
-    } catch (err) {
-      pendingDepositInfo = null;
+      const underlyingTokensForPendingWithdrawalRound = new Decimal(
+        underlyingTokensForPendingWithdrawalRoundTokenAccount.amount.toString()
+      );
+
+      userValueFromPendingWithdrawals = voltTokenSupply.lte(0)
+        ? new Decimal(0)
+        : pendingWithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
+        ? new Decimal(pendingWithdrawalInfo.numVoltRedeemed.toString())
+            .mul(
+              new Decimal(totalVaultValueExcludingPendingDeposits.toString())
+            )
+            .div(voltTokenSupply)
+        : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
+        ? new Decimal(0)
+        : new Decimal(pendingWithdrawalInfo.numVoltRedeemed.toString())
+            .mul(underlyingTokensForPendingWithdrawalRound)
+            .div(
+              new Decimal(
+                roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
+              )
+            );
+
+      userClaimableUnderlying =
+        voltTokenSupply.lte(0) ||
+        pendingWithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
+          ? new Decimal(0)
+          : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
+          ? new Decimal(0)
+          : new Decimal(pendingWithdrawalInfo.numVoltRedeemed.toString())
+              .mul(underlyingTokensForPendingWithdrawalRound)
+              .div(
+                new Decimal(
+                  roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
+                )
+              );
     }
 
     let userValueFromPendingDeposits = new Decimal(0);
     let userMintableShares = new Decimal(0);
 
     if (
-      pendingDepositInfo !== null &&
-      pendingDepositInfo.numUnderlyingDeposited.gtn(0)
+      pendingDepositAccounts.roundForPendingDeposit !== undefined &&
+      pendingDepositAccounts.pendingDepositsRoundVoltTokensAccount !==
+        undefined &&
+      pendingDepositInfoResult.status === "fulfilled"
     ) {
-      const roundForPendingDeposit = await this.getRoundByNumber(
-        pendingDepositInfo.roundNumber
-      );
+      const pendingDepositsRoundVoltTokensAccount =
+        pendingDepositAccounts.pendingDepositsRoundVoltTokensAccount;
+      const roundForPendingDeposit =
+        pendingDepositAccounts.roundForPendingDeposit;
+      const pendingDepositInfo = pendingDepositInfoResult.value;
+
       const voltTokensForPendingDepositRound = new Decimal(
-        (
-          await getAccount(
-            this.sdk.readonlyProvider.connection,
-            (
-              await VoltSDK.findRoundVoltTokensAddress(
-                this.voltKey,
-                roundForPendingDeposit.number,
-                this.sdk.programs.Volt.programId
-              )
-            )[0]
-          )
-        ).amount.toString()
+        pendingDepositsRoundVoltTokensAccount.amount.toString()
       );
 
       userValueFromPendingDeposits =
@@ -1123,97 +1429,44 @@ export abstract class VoltSDK {
               );
     }
 
-    let pendingwithdrawalInfo = null;
+    // const totalVaultValueExcludingPendingDeposits = (
+    //   await this.getTvlWithoutPendingInDepositToken(depositTokenNormFactor)
+    // ).mul(depositTokenNormFactor);
 
-    try {
-      pendingwithdrawalInfo = await this.getPendingWithdrawalForGivenUser(
-        pubkey
-      );
-    } catch (err) {
-      pendingwithdrawalInfo = null;
-    }
-
-    let userValueFromPendingWithdrawals = new Decimal(0);
-    let userClaimableUnderlying = new Decimal(0);
-
-    if (
-      pendingwithdrawalInfo !== null &&
-      pendingwithdrawalInfo.numVoltRedeemed.gtn(0)
-    ) {
-      const roundForPendingWithdrawal = await this.getRoundByNumber(
-        pendingwithdrawalInfo.roundNumber
-      );
-      const underlyingTokensForPendingWithdrawalRound = new Decimal(
-        (
-          await getAccount(
-            this.sdk.readonlyProvider.connection,
-            (
-              await VoltSDK.findRoundUnderlyingPendingWithdrawalsAddress(
-                this.voltKey,
-                roundForPendingWithdrawal.number,
-                this.sdk.programs.Volt.programId
-              )
-            )[0]
-          )
-        ).amount.toString()
-      );
-
-      userValueFromPendingWithdrawals = voltTokenSupply.lte(0)
-        ? new Decimal(0)
-        : pendingwithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
-        ? new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
-            .mul(
-              new Decimal(totalVaultValueExcludingPendingDeposits.toString())
-            )
-            .div(voltTokenSupply)
-        : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
-        ? new Decimal(0)
-        : new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
-            .mul(underlyingTokensForPendingWithdrawalRound)
-            .div(
-              new Decimal(
-                roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
-              )
-            );
-
-      userClaimableUnderlying =
-        voltTokenSupply.lte(0) ||
-        pendingwithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
-          ? new Decimal(0)
-          : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
-          ? new Decimal(0)
-          : new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
-              .mul(underlyingTokensForPendingWithdrawalRound)
-              .div(
-                new Decimal(
-                  roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
-                )
-              );
-    }
+    const userValueExcludingPendingDeposits = voltTokenSupply.lte(0)
+      ? new Decimal(0)
+      : totalVaultValueExcludingPendingDeposits
+          .mul(userVoltTokens)
+          .div(voltTokenSupply);
 
     const totalUserValue = userValueExcludingPendingDeposits
       .add(userValueFromPendingDeposits)
       .add(userValueFromPendingWithdrawals);
 
     return {
-      totalBalance: totalUserValue.div(normFactor),
-      normalBalance: userValueExcludingPendingDeposits.div(normFactor),
-      pendingDeposits: userValueFromPendingDeposits.div(normFactor),
-      pendingWithdrawals: userValueFromPendingWithdrawals.div(normFactor),
-      mintableShares: userMintableShares.div(normFactor),
-      claimableUnderlying: userClaimableUnderlying.div(normFactor),
-      normFactor: normFactor,
+      totalBalance: totalUserValue.div(depositTokenNormFactor),
+      normalBalance: userValueExcludingPendingDeposits.div(
+        depositTokenNormFactor
+      ),
+      pendingDeposits: userValueFromPendingDeposits.div(depositTokenNormFactor),
+      pendingWithdrawals: userValueFromPendingWithdrawals.div(
+        depositTokenNormFactor
+      ),
+      mintableShares: userMintableShares.div(depositTokenNormFactor),
+      claimableUnderlying: userClaimableUnderlying.div(depositTokenNormFactor),
+      normFactor: depositTokenNormFactor,
       vaultNormFactor: vaultNormFactor,
     };
   }
 
   // crab volt calculations //
 
-  async fetchAuctionResults(GlobalID = "") {
+  async fetchAuctionResults(): Promise<AuctionResult[]> {
+    const globalId = await this.getGlobalId();
     let retries = 0;
     while (true && retries < 5) {
       const response = await fetch(
-        `https://api.friktion.fi/auction_results?GlobalID=${GlobalID}`
+        `https://api.friktion.fi/auction_results?GlobalID=${globalId}`
       );
       if (response.status === 200) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1239,15 +1492,30 @@ export abstract class VoltSDK {
       }
       retries += 1;
     }
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
-    throw new Error("retries failed");
+    throw new Error("failed to retrieve auction results");
+  }
+
+  async fetchAuctionResultForEpochNumber(
+    epochNumber: number
+  ): Promise<AuctionResult> {
+    const fullAuctionResults: AuctionResult[] =
+      await this.fetchAuctionResults();
+    console.log(fullAuctionResults);
+    const auctionResult = fullAuctionResults[epochNumber - 1];
+    if (fullAuctionResults.length > epochNumber || auctionResult === undefined)
+      throw new Error(
+        "no auction data for volt = " +
+          (await this.getGlobalId()) +
+          ", epoch number = " +
+          epochNumber.toString()
+      );
+
+    return auctionResult;
   }
 
   // gets strike of option to be used with delta calculations.
-  async getProductDetails(GlobalID: string) {
-    const auctionResults: AuctionResult[] = await this.fetchAuctionResults(
-      GlobalID
-    );
+  async getProductDetails() {
+    const auctionResults: AuctionResult[] = await this.fetchAuctionResults();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const lastAuction: AuctionResult = auctionResults[
       auctionResults.length - 1
@@ -1769,5 +2037,212 @@ export abstract class VoltSDK {
       ],
       voltProgramId
     );
+  }
+
+  async getBalancesForUserDeprecated(pubkey: PublicKey): Promise<
+    | {
+        totalBalance: Decimal;
+        normalBalance: Decimal;
+        pendingDeposits: Decimal;
+        pendingWithdrawals: Decimal;
+        mintableShares: Decimal;
+        claimableUnderlying: Decimal;
+        normFactor: Decimal;
+        vaultNormFactor: Decimal;
+      }
+    | undefined
+  > {
+    const voltVault = this.voltVault;
+    const connection = this.sdk.readonlyProvider.connection;
+
+    const underlyingTokenMintInfo = await getMint(
+      connection,
+      voltVault.underlyingAssetMint
+    );
+    const vaultTokenMintInfo = await getMint(connection, voltVault.vaultMint);
+
+    const normFactor = new Decimal(10).pow(underlyingTokenMintInfo.decimals);
+    const vaultNormFactor = new Decimal(10).pow(vaultTokenMintInfo.decimals);
+
+    const totalVaultValueExcludingPendingDeposits = (
+      await this.getTvlWithoutPendingInDepositToken(normFactor)
+    ).mul(normFactor);
+
+    const roundInfo = await this.getRoundByNumber(voltVault.roundNumber);
+
+    const voltTokenSupply = new Decimal(
+      vaultTokenMintInfo.supply.toString()
+    ).add(new Decimal(roundInfo.voltTokensFromPendingWithdrawals.toString()));
+
+    const vaultTokenAccount = await getAssociatedTokenAddress(
+      voltVault.vaultMint,
+      pubkey,
+      true
+    );
+
+    let userVoltTokens = new Decimal(0);
+    try {
+      userVoltTokens = new Decimal(
+        (
+          await getAccount(
+            this.sdk.readonlyProvider.connection,
+            vaultTokenAccount
+          )
+        ).amount.toString()
+      );
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+
+    const userValueExcludingPendingDeposits = voltTokenSupply.lte(0)
+      ? new Decimal(0)
+      : totalVaultValueExcludingPendingDeposits
+          .mul(userVoltTokens)
+          .div(voltTokenSupply);
+
+    let pendingDepositInfo = null;
+
+    try {
+      pendingDepositInfo = await this.getPendingDepositForGivenUser(pubkey);
+    } catch (err) {
+      pendingDepositInfo = null;
+    }
+
+    let userValueFromPendingDeposits = new Decimal(0);
+    let userMintableShares = new Decimal(0);
+
+    if (
+      pendingDepositInfo !== null &&
+      pendingDepositInfo.numUnderlyingDeposited.gtn(0)
+    ) {
+      const roundForPendingDeposit = await this.getRoundByNumber(
+        pendingDepositInfo.roundNumber
+      );
+      const voltTokensForPendingDepositRound = new Decimal(
+        (
+          await getAccount(
+            this.sdk.readonlyProvider.connection,
+            (
+              await VoltSDK.findRoundVoltTokensAddress(
+                this.voltKey,
+                roundForPendingDeposit.number,
+                this.sdk.programs.Volt.programId
+              )
+            )[0]
+          )
+        ).amount.toString()
+      );
+
+      userValueFromPendingDeposits =
+        voltTokenSupply.lte(0) ||
+        roundForPendingDeposit.underlyingFromPendingDeposits.lten(0)
+          ? new Decimal(0)
+          : pendingDepositInfo.roundNumber.eq(this.voltVault.roundNumber)
+          ? new Decimal(pendingDepositInfo.numUnderlyingDeposited.toString())
+          : new Decimal(pendingDepositInfo.numUnderlyingDeposited.toString())
+              .mul(voltTokensForPendingDepositRound)
+              .div(
+                new Decimal(
+                  roundForPendingDeposit.underlyingFromPendingDeposits.toString()
+                )
+              )
+              .mul(totalVaultValueExcludingPendingDeposits)
+              .div(voltTokenSupply);
+
+      userMintableShares =
+        voltTokenSupply.lte(0) ||
+        roundForPendingDeposit.underlyingFromPendingDeposits.lten(0) ||
+        pendingDepositInfo.roundNumber.gte(this.voltVault.roundNumber)
+          ? new Decimal(0)
+          : new Decimal(pendingDepositInfo.numUnderlyingDeposited.toString())
+              .mul(voltTokensForPendingDepositRound)
+              .div(
+                new Decimal(
+                  roundForPendingDeposit.underlyingFromPendingDeposits.toString()
+                )
+              );
+    }
+
+    let pendingwithdrawalInfo = null;
+
+    try {
+      pendingwithdrawalInfo = await this.getPendingWithdrawalForGivenUser(
+        pubkey
+      );
+    } catch (err) {
+      pendingwithdrawalInfo = null;
+    }
+
+    let userValueFromPendingWithdrawals = new Decimal(0);
+    let userClaimableUnderlying = new Decimal(0);
+
+    if (
+      pendingwithdrawalInfo !== null &&
+      pendingwithdrawalInfo.numVoltRedeemed.gtn(0)
+    ) {
+      const roundForPendingWithdrawal = await this.getRoundByNumber(
+        pendingwithdrawalInfo.roundNumber
+      );
+      const underlyingTokensForPendingWithdrawalRound = new Decimal(
+        (
+          await getAccount(
+            this.sdk.readonlyProvider.connection,
+            (
+              await VoltSDK.findRoundUnderlyingPendingWithdrawalsAddress(
+                this.voltKey,
+                roundForPendingWithdrawal.number,
+                this.sdk.programs.Volt.programId
+              )
+            )[0]
+          )
+        ).amount.toString()
+      );
+
+      userValueFromPendingWithdrawals = voltTokenSupply.lte(0)
+        ? new Decimal(0)
+        : pendingwithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
+        ? new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
+            .mul(
+              new Decimal(totalVaultValueExcludingPendingDeposits.toString())
+            )
+            .div(voltTokenSupply)
+        : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
+        ? new Decimal(0)
+        : new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
+            .mul(underlyingTokensForPendingWithdrawalRound)
+            .div(
+              new Decimal(
+                roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
+              )
+            );
+
+      userClaimableUnderlying =
+        voltTokenSupply.lte(0) ||
+        pendingwithdrawalInfo.roundNumber.eq(this.voltVault.roundNumber)
+          ? new Decimal(0)
+          : roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.lten(0)
+          ? new Decimal(0)
+          : new Decimal(pendingwithdrawalInfo.numVoltRedeemed.toString())
+              .mul(underlyingTokensForPendingWithdrawalRound)
+              .div(
+                new Decimal(
+                  roundForPendingWithdrawal.voltTokensFromPendingWithdrawals.toString()
+                )
+              );
+    }
+
+    const totalUserValue = userValueExcludingPendingDeposits
+      .add(userValueFromPendingDeposits)
+      .add(userValueFromPendingWithdrawals);
+
+    return {
+      totalBalance: totalUserValue.div(normFactor),
+      normalBalance: userValueExcludingPendingDeposits.div(normFactor),
+      pendingDeposits: userValueFromPendingDeposits.div(normFactor),
+      pendingWithdrawals: userValueFromPendingWithdrawals.div(normFactor),
+      mintableShares: userMintableShares.div(normFactor),
+      claimableUnderlying: userClaimableUnderlying.div(normFactor),
+      normFactor: normFactor,
+      vaultNormFactor: vaultNormFactor,
+    };
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "2.1.5",
+  "version": "2.1.7",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/friktion-sdk/src/index.js",
@@ -23,6 +23,7 @@
     "bn.js": "^5.2.1",
     "csv-parse": "^5.0.4",
     "decimal.js": "^10.3.1",
+
     "fast-csv": "^4.3.6",
     "node-fetch": "2.6.1",
     "superagent": "^7.1.3"

@@ -541,7 +541,7 @@ export class EntropyVoltSDK extends VoltSDK {
     entropyAccount: EntropyAccount;
     entropyCache: EntropyCache;
   }> {
-    const extraVoltData = await this.getExtraVoltData();
+    const extraVoltData = this.extraVoltData;
     return await this.getEntropyObjects(
       extraVoltData.entropyProgramId,
       extraVoltData.entropyGroup,
