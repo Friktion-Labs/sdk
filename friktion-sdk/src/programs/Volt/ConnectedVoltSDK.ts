@@ -71,6 +71,23 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     this.wallet = new PublicKey(this.wallet);
   }
 
+  /// GETTERS ///
+
+  async getUserAssociatedUnderlyingTokenAccount(): Promise<PublicKey> {
+    return await getAssociatedTokenAddress(
+      this.voltVault.underlyingAssetMint,
+      this.daoAuthority ? this.daoAuthority : this.wallet,
+      true
+    );
+  }
+  async getUserAssociatedVaultTokenAccount(): Promise<PublicKey> {
+    return await getAssociatedTokenAddress(
+      this.voltVault.vaultMint,
+      this.daoAuthority ? this.daoAuthority : this.wallet,
+      true
+    );
+  }
+
   //// CLIENT-FACING INSTRUCTIONS ////
 
   /**
@@ -621,11 +638,11 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     });
   }
 
-  async claimPendingWithoutSigning(
+  async claimPendingDepositWithoutSigning(
     vaultTokenDestination: PublicKey,
     replacementAuthority?: PublicKey
   ): Promise<TransactionInstruction> {
-    const ix: TransactionInstruction = await this.claimPending(
+    const ix: TransactionInstruction = await this.claimPendingDeposit(
       vaultTokenDestination,
       replacementAuthority
     );
@@ -649,7 +666,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     return ix;
   }
 
-  async claimPending(
+  async claimPendingDeposit(
     vaultTokenDestination: PublicKey,
     replacementAuthority?: PublicKey
     // additionalSigners?: Signer[]
@@ -872,7 +889,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     }
 
     // if instant transfers aren't currently possible, need to handle already existing pending deposits
-    if (!voltVault.instantTransfersEnabled) {
+    if (!this.areInstantDepositsEnabled()) {
       let pendingDepositInfo: PendingDeposit | undefined;
       try {
         pendingDepositInfo = await this.getPendingDepositForGivenUser(
@@ -891,7 +908,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
         // if is claimable, then claim it first
         if (pendingDepositInfo.roundNumber.lt(voltVault.roundNumber)) {
           depositInstructions.push(
-            await this.claimPending(vaultTokenAccountKey)
+            await this.claimPendingDeposit(vaultTokenAccountKey)
           );
         }
         // else, cancel the deposit or throw an error
@@ -979,7 +996,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     }
 
     // if instant transfers aren't currently possible, need to handle already existing pending withdrawals
-    if (!voltVault.instantTransfersEnabled) {
+    if (!this.areInstantWithdrawalsEnabled()) {
       let pendingWithdrawalInfo: PendingWithdrawal | undefined;
       try {
         pendingWithdrawalInfo = await this.getPendingWithdrawalForGivenUser(

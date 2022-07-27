@@ -14,7 +14,6 @@ export const toConnectedSDK = (
   daoAuthority?: PublicKey | undefined
 ): ConnectedEntropyVoltSDK | ConnectedShortOptionsVoltSDK => {
   if (voltSdk.voltType() === VoltType.ShortOptions) {
-    console.log("creating connected short options volt sdk");
     return toConnectedShortOptionsSDK(
       voltSdk as ShortOptionsVoltSDK,
       connection,

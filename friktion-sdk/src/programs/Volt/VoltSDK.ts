@@ -215,6 +215,14 @@ export abstract class VoltSDK {
     return (await this.getSnapshot()).shareTokenPrice;
   }
 
+  areInstantDepositsEnabled(): boolean {
+    return this.voltVault.instantTransfersEnabled;
+  }
+
+  areInstantWithdrawalsEnabled(): boolean {
+    return this.voltVault.instantTransfersEnabled;
+  }
+
   getCapacityDepositToken(): BN {
     return this.voltVault.capacity;
   }

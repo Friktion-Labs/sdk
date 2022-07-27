@@ -1297,12 +1297,12 @@ export type VoltIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: false;
+          isMut: true;
           isSigner: true;
         },
         {
           name: "vaultMint";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -2160,7 +2160,16 @@ export type VoltIDL = {
           isSigner: false;
         }
       ];
-      args: [];
+      args: [
+        {
+          name: "openOrdersBump";
+          type: "u8";
+        },
+        {
+          name: "openOrdersInitBump";
+          type: "u8";
+        }
+      ];
     },
     {
       name: "resetOptionMarket";
@@ -5502,7 +5511,7 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "daoDeposits";
+            name: "unusedUint1";
             type: "u64";
           },
           {
@@ -8766,12 +8775,12 @@ export const VoltIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: false,
+          isMut: true,
           isSigner: true,
         },
         {
           name: "vaultMint",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -9629,7 +9638,16 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
       ],
-      args: [],
+      args: [
+        {
+          name: "openOrdersBump",
+          type: "u8",
+        },
+        {
+          name: "openOrdersInitBump",
+          type: "u8",
+        },
+      ],
     },
     {
       name: "resetOptionMarket",
@@ -12971,7 +12989,7 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "daoDeposits",
+            name: "unusedUint1",
             type: "u64",
           },
           {

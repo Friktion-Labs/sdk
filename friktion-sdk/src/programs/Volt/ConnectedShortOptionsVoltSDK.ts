@@ -265,7 +265,7 @@ export class ConnectedShortOptionsVoltSDK {
       rent: SYSVAR_RENT_PUBKEY,
     };
 
-    return this.sdk.programs.Volt.instruction.setNextOption({
+    return this.sdk.programs.Volt.instruction.setNextOption(0, 0, {
       accounts: setNextOptionStruct,
     });
   }

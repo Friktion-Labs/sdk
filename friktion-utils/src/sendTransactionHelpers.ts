@@ -1,5 +1,3 @@
-/* eslint-disable */
-import { WalletAdapter } from "@friktion-labs/entropy-client";
 import {
   Account,
   Commitment,
@@ -12,6 +10,7 @@ import {
   TransactionConfirmationStatus,
   TransactionSignature,
 } from "@solana/web3.js";
+import { TimeoutError } from "./transactionErrors";
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,17 +19,6 @@ export async function sleep(ms: number): Promise<void> {
 export const getUnixTs = (): number => {
   return new Date().getTime() / 1000;
 };
-
-export class TimeoutError extends Error {
-  override message: string;
-  txid: string;
-
-  constructor({ txid }: { txid: string }) {
-    super();
-    this.message = `Timed out awaiting confirmation. Please confirm in the explorer: `;
-    this.txid = txid;
-  }
-}
 
 export class FriktionTransactionError extends Error {
   override message: string;
