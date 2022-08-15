@@ -1,5 +1,7 @@
-import { AnchorProvider } from "@project-serum/anchor";
+import { AnchorProvider } from "@friktion-labs/anchor";
 import type { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { SystemProgram } from "@solana/web3.js";
+
 export interface AnchorWallet {
   signTransaction(tx: Transaction): Promise<Transaction>;
   signAllTransactions(txs: Transaction[]): Promise<Transaction[]>;
@@ -31,4 +33,8 @@ export const providerToAnchorProvider = (
   return new AnchorProvider(provider.connection, provider.wallet, {
     commitment: "confirmed",
   });
+};
+
+export const isDefaultPubkey = (pubkey: PublicKey): boolean => {
+  return pubkey.toString() === SystemProgram.programId.toString();
 };

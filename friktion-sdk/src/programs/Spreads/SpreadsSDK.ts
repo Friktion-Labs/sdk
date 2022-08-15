@@ -1,15 +1,10 @@
+import type { AnchorProvider } from "@friktion-labs/anchor";
+import { BN, Program } from "@friktion-labs/anchor";
 import type { ProviderLike } from "@friktion-labs/friktion-utils";
 import { providerToAnchorProvider } from "@friktion-labs/friktion-utils";
-import type { AnchorProvider } from "@project-serum/anchor";
-import { BN, Program } from "@project-serum/anchor";
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import {
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
 import type { FriktionSDK } from "../..";
@@ -383,10 +378,10 @@ export class SpreadsSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new BN(underlyingAmount.toString()).toBuffer("le", 8),
-        new BN(quoteAmount.toString()).toBuffer("le", 8),
-        new BN(expiry.toString()).toBuffer("le", 8),
-        isCall ? new BN(1).toBuffer() : new BN(0).toBuffer("le", 8),
+        new BN(underlyingAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(quoteAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(expiry.toString()).toArrayLike(Buffer, "le", 8),
+        isCall ? new BN(1).toBuffer() : new BN(0).toArrayLike(Buffer, "le", 8),
       ],
       program.programId
     );
@@ -470,12 +465,12 @@ export class SpreadsSDK {
         textEncoder.encode("SpreadsContract"),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new BN(underlyingAmountBuy.toString()).toBuffer("le", 8),
-        new BN(quoteAmountBuy.toString()).toBuffer("le", 8),
-        new BN(underlyingAmountSell.toString()).toBuffer("le", 8),
-        new BN(quoteAmountSell.toString()).toBuffer("le", 8),
-        new BN(expiryTs.toString()).toBuffer("le", 8),
-        new BN(isCall.toString()).toBuffer("le", 8),
+        new BN(underlyingAmountBuy.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(quoteAmountBuy.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(underlyingAmountSell.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(quoteAmountSell.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(expiryTs.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(isCall.toString()).toArrayLike(Buffer, "le", 8),
       ],
       spreadsProgramId
     );
@@ -492,7 +487,6 @@ export class SpreadsSDK {
       underlyingTokenDestination,
       claimablePool: this.spreadsContract.claimablePool,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.exercise(amount, {
@@ -526,7 +520,6 @@ export class SpreadsSDK {
       exerciseFeeAccount: await this.getSpreadsExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.settle(settlePrice, bypassCode, {
@@ -548,7 +541,6 @@ export class SpreadsSDK {
       exerciseFeeAccount: await this.getSpreadsExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.revertSettle({
@@ -576,7 +568,6 @@ export class SpreadsSDK {
       writerTokenDestination,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
       feeDestination,
-      clock: SYSVAR_CLOCK_PUBKEY,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
@@ -597,7 +588,6 @@ export class SpreadsSDK {
       writerTokenSource: redeemerTokenSource,
       underlyingTokenDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.redeem(new BN(amount), {
@@ -624,7 +614,6 @@ export class SpreadsSDK {
       underlyingTokenDestination,
       underlyingPool: this.spreadsContract.underlyingPool,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.closePosition(new BN(amount), {

@@ -1,4 +1,4 @@
-import type { Idl } from "@project-serum/anchor";
+import type { Idl } from "@friktion-labs/anchor";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 import { InertiaIDLJsonRaw } from "./idls/inertia";
@@ -12,19 +12,37 @@ export enum VoltStrategy {
   ShortPuts,
   ShortCrab,
   LongBasis,
+  ProtectionAndPuts,
 }
 
-export type VoltNumber = 1 | 2 | 3 | 4;
+export type VoltNumber = 1 | 2 | 3 | 4 | 5;
 export type OptionsProtocol = "Inertia" | "Soloptions" | "Spreads";
 
 export type PerpProtocol = "Entropy" | "Mango";
 
+export const GLOBAL_VOLT_ADMIN = new PublicKey(
+  "DxMJgeSVoe1cWo1NPExiAsmn83N3bADvkT86dSP1k7WE"
+);
+
 export const FRIKTION_SNAPSHOT_URL =
   "https://raw.githubusercontent.com/Friktion-Labs/mainnet-tvl-snapshots/main/friktionSnapshot.json";
+
+export const VoltTypeValues = {
+  ShortOptions: {
+    shortOptions: {},
+  },
+  Entropy: {
+    entropy: {},
+  },
+  PrincipalProtection: {
+    principalProtection: {},
+  },
+};
 
 export enum VoltType {
   ShortOptions = 0,
   Entropy = 1,
+  PrincipalProtection = 2,
 }
 
 export const WRAPPED_SOL_ADDRESS = new PublicKey(
@@ -55,6 +73,9 @@ export const DAO_EXAMPLES_PROGRAM_ID = new PublicKey(
   "DAo2pDtpiBFDu4TTiv2WggP6PfQ6FnKqwSRYxpMjyuV2"
 );
 
+export const METAPLEX_TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+  "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+);
 // mint authorities
 
 export const MM_TOKEN_MINT_AUTHORITY = new PublicKey(
@@ -63,7 +84,11 @@ export const MM_TOKEN_MINT_AUTHORITY = new PublicKey(
 
 // fee wallets
 
-export const REFERRAL_AUTHORITY = new PublicKey(
+export const JUP_FEE_OWNER = new PublicKey(
+  "GE8NJKn3M6cWVytXomdqvqeUWKHBCwBqgSHPRRLNjGNc"
+);
+
+export const VOLT_FEE_OWNER = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
 );
 
@@ -79,8 +104,9 @@ export const SPREADS_FEE_OWNER = new PublicKey(
   "3KjJiWBfaw96qGhysq6Fc9FTxdPgPTNY6shM7Bwfp8EJ"
 );
 
-export const WITHDRAWAL_FEE_BPS = 10;
-export const PERFORMANCE_FEE_BPS = 1000;
+export const DEFAULT_WITHDRAWAL_FEE_BPS = 10;
+export const DEFAULT_PERFORMANCE_FEE_BPS = 1000;
+export const DEFAULT_AUM_FEE_BPS = 0;
 
 export const SOLOPTIONS_MINT_FEE_BPS = 0;
 export const SOLOPTIONS_EXERCISE_FEE_BPS = 0;
@@ -126,6 +152,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     stSOL: "lido-staked-sol",
     AVAX: "avalanche-2",
     SAMO: "samoyedcoin",
+    NEAR: "near",
   },
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
@@ -150,6 +177,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
     SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
+    NEAR: new PublicKey("BYPsjxa3YuZESQz1dKuBw1QSFCSpecsm8nCQhY5xbU1Z"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
@@ -187,6 +215,9 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     ),
     EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv: new PublicKey(
       "7eiWUQ4EkE3BzKC3MFdn23ydK56Bd5rUCYQZpud9kyhZ"
+    ),
+    BYPsjxa3YuZESQz1dKuBw1QSFCSpecsm8nCQhY5xbU1Z: new PublicKey(
+      "BSgb8vw2sEo3wpnQ8jMwrjTceWXSDwBxgtsK7CfR6xaX"
     ),
     "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs": new PublicKey(
       "izwhTAj2xfCgr9X6UBRme39UcNvncp7omnCCwUCmQ9J"
@@ -228,6 +259,96 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
       "2nRHbu47Wt9jVJtcLxdmhn1YWbC1gzAuPKSuycyL4GGa"
     ),
   },
+
+  JUP_PLATFORM_FEE_ACCOUNTS: {
+    feeBps: 10,
+    feeAccounts: new Map([
+      [
+        "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+        new PublicKey("FqvQQFa8aNuR8XokTBU6pxBRbXSiY6qyp4yTAVN7F55e"),
+      ],
+      [
+        "5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm",
+        new PublicKey("8L45vsUWJtpTKcoFea7xwSeBksTNqveAuTdb55DL133T"),
+      ],
+      [
+        "7dHbWXmci3dT8UFYWYZweBLXgycu7Y3iL6trKn1Y7ARj",
+        new PublicKey("5TVNjYfy8A3r72hvgzgXJpZjCempQARR27K9buGPa3Vg"),
+      ],
+      [
+        "7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT",
+        new PublicKey("BxL8NYKjgA44AxbLwgyunXcZLJDDsrnCjkguXfmykYYM"),
+      ],
+      [
+        "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+        new PublicKey("FMgT8z1Z3XMiptLXduWMrpRsFXn4KzGaj1tHPgrc1NNE"),
+      ],
+      [
+        "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
+        new PublicKey("EMtkqX7F4bWitoRg7WuPQX4S8Ce98sYyhdjPqSpVnnM5"),
+      ],
+      [
+        "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
+        new PublicKey("8TV9bKtdaQxcY1FAmMqB6tSMZ9eBapnWAs4nAzP8AkuZ"),
+      ],
+      [
+        "Cvvh8nsKZet59nsDDo3orMa3rZnPWQhpgrMCVcRDRgip",
+        new PublicKey("FVUPENb7BXnA9BZJwTEipZQqLcZ7PUHz5pp9W9Ph4Yff"),
+      ],
+      [
+        "Ea5SjE2Y6yvCeW5dYTn7PYMuW5ikXkvbGdcmSnXeaLjS",
+        new PublicKey("FEGxgTCebsarToZbRPTNd2srVVsw8vgZRs3Yh3zhaoJ4"),
+      ],
+      [
+        "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        new PublicKey("3iQEkAF45iwS5UjkUdqFG9m8K8M98BvihN2JR8mhFQQ8"),
+      ],
+      [
+        "EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv",
+        new PublicKey("AJDmwEuvdM8tniwUriJ1t55rKDVtZ3YgCkz3LdUDt8gE"),
+      ],
+      [
+        "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+        new PublicKey("Bj3K2kd9Z6W5To1FPZNxjtSBG2ddu4i5KvvwFZnp2pRh"),
+      ],
+      [
+        "F6v4wfAdJB8D8p77bMXZgYt8TDKsYxLYxH5AFhUkYx9W",
+        new PublicKey("BUbbWbkp5ecEbAbEXYGzw8H7SccBcLQBqwEFC5g29rNV"),
+      ],
+      [
+        "KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE",
+        new PublicKey("1bgxpJ1wzPik22phrKtWpCwZUuS2s7YTSyT6qshq9NX"),
+      ],
+      [
+        "MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac",
+        new PublicKey("2WVzAqr2o78wrKWG7YeXW3RJGZRZWGNAEfz4xjGUPnJE"),
+      ],
+      [
+        "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+        new PublicKey("HdqBarqKTf1GkjUBAhDiw4ujZvwR6YVNFMnpXgPSbHJE"),
+      ],
+      [
+        "Saber2gLauYim4Mvftnrasomsv6NvAuncvMEZwcLpD1",
+        new PublicKey("63UWybkSPzXGS4mcbsyzWRNMBFN5zaAk8KZAjXcw2aYU"),
+      ],
+      [
+        "So11111111111111111111111111111111111111112",
+        new PublicKey("A7MPmmWKqykquNEfsHUcCUB9ysVLfwMgoDH2z4oBjQog"),
+      ],
+      [
+        "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+        new PublicKey("Hm5zGps1eHRHfrKuQkcwPgXGmeZkZTKLyTvteiPucWUY"),
+      ],
+      [
+        "StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT",
+        new PublicKey("6XGLmdevQ5NYM1iwGPmKC7ZSKU2CA9ywSEE1yUAWNwxp"),
+      ],
+      [
+        "BYPsjxa3YuZESQz1dKuBw1QSFCSpecsm8nCQhY5xbU1Z",
+        new PublicKey("5UCW44c43tus4sZxg8497nCnKZUa352QACew8nyU8Vzq"),
+      ],
+    ]),
+  },
 };
 
 export type NetworkSpecificConstants = Omit<
@@ -262,6 +383,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     ETH: new PublicKey("7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs"),
     FTT: new PublicKey("EzfgjvkSwthhgHaceR3LnKXUoRkP6NUhfghdaHAj1tUv"),
     SAMO: new PublicKey("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"),
+    NEAR: new PublicKey("BYPsjxa3YuZESQz1dKuBw1QSFCSpecsm8nCQhY5xbU1Z"),
     SRM: new PublicKey("SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"),
     MNGO: new PublicKey("MangoCzJ36AjZyKwVj3VnYU4GTonjfVEnJmvvWaxLac"),
     scnSOL: new PublicKey("5oVNBeEEQvYi1cX3ir8Dx5n1P7pdxydbGF2X4TxVusJm"),
@@ -289,6 +411,10 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So: new PublicKey(
       "DRzNhinWFjmspx1vy8e7ryDqPGU6AYV93XXUzC6jxoKB"
     ),
+  },
+  JUP_PLATFORM_FEE_ACCOUNTS: {
+    feeBps: 10,
+    feeAccounts: new Map([]),
   },
 };
 
@@ -331,3 +457,6 @@ export enum RuntimeEnvironment {
   Test,
   Production,
 }
+
+export const NUM_WEEKS_PER_YEAR = 52;
+export const NUM_SECONDS_PER_YEAR = 60 * 60 * 24 * 365;

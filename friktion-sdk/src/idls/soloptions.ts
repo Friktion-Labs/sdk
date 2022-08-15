@@ -113,8 +113,8 @@ export type SoloptionsIDL = {
       docs: ["Writes options for an [OptionsContract]."];
       accounts: [
         {
-          name: "writerAuthority";
-          isMut: true;
+          name: "authority";
+          isMut: false;
           isSigner: true;
           docs: [
             "The authority of the [user_underlying_funding_tokens] account."
@@ -180,11 +180,6 @@ export type SoloptionsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -200,7 +195,7 @@ export type SoloptionsIDL = {
       accounts: [
         {
           name: "exerciserAuthority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
           docs: ["The authority of the [option_token_source] account."];
         },
@@ -268,11 +263,6 @@ export type SoloptionsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -350,11 +340,6 @@ export type SoloptionsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -748,8 +733,8 @@ export const SoloptionsIDLJsonRaw = {
       docs: ["Writes options for an [OptionsContract]."],
       accounts: [
         {
-          name: "writerAuthority",
-          isMut: true,
+          name: "authority",
+          isMut: false,
           isSigner: true,
           docs: [
             "The authority of the [user_underlying_funding_tokens] account.",
@@ -816,11 +801,6 @@ export const SoloptionsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -835,7 +815,7 @@ export const SoloptionsIDLJsonRaw = {
       accounts: [
         {
           name: "exerciserAuthority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
           docs: ["The authority of the [option_token_source] account."],
         },
@@ -903,11 +883,6 @@ export const SoloptionsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
           docs: ["Token program."],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [
@@ -985,11 +960,6 @@ export const SoloptionsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
           docs: ["Token program."],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [

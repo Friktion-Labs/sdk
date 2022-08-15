@@ -1,4 +1,4 @@
-import {
+import type {
   Account,
   Commitment,
   Connection,
@@ -10,6 +10,7 @@ import {
   TransactionConfirmationStatus,
   TransactionSignature,
 } from "@solana/web3.js";
+
 import { TimeoutError } from "./transactionErrors";
 
 export async function sleep(ms: number): Promise<void> {
@@ -61,6 +62,7 @@ export async function signTransaction({
   connection,
 }: {
   transaction: Transaction;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payer: any;
   signers: Signer[];
   connection: Connection;
@@ -236,6 +238,14 @@ export async function sendSignedTransaction({
 }): Promise<TransactionSignature> {
   const rawTransaction = signedTransaction.serialize();
   const startTime = getUnixTs();
+
+  // const result = await connection.simulateTransaction(signedTransaction);
+  // console.log(
+  //   "simulation err = ",
+  //   result.value.err,
+  //   ", logs = ",
+  //   result.value.logs
+  // );
 
   const txid: TransactionSignature = await connection.sendRawTransaction(
     rawTransaction,

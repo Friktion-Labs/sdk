@@ -4,7 +4,6 @@
     "packages": [
       "friktion-sdk",
       "friktion-utils",
-      "volt-manager",
       "examples"
     ]
   },

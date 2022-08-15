@@ -1,10 +1,10 @@
 import { BN, Config as MangoConfig } from "@blockworks-foundation/mango-client";
-import type NodeBank from "@friktion-labs/entropy-client";
 import type {
   EntropyAccount,
   EntropyCache,
   EntropyGroup,
   GroupConfig,
+  NodeBank,
   RootBank,
 } from "@friktion-labs/entropy-client";
 import {
@@ -15,7 +15,7 @@ import {
 import { getAccountBalance, sendInsList } from "@friktion-labs/friktion-utils";
 import type { AnchorProvider } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import type { TransactionInstruction } from "@solana/web3.js";
+import type { AccountMeta, TransactionInstruction } from "@solana/web3.js";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
@@ -64,8 +64,7 @@ export class EntropyVoltSDK extends VoltSDK {
     const voltNumber = this.voltNumber();
     // can only be 3 or 4
     switch (voltNumber) {
-      case 1:
-      case 2:
+      default:
         throw new Error("invalid volt number for entropy sdk");
       case 3: {
         return new Promise((resolve) => {
@@ -74,11 +73,11 @@ export class EntropyVoltSDK extends VoltSDK {
             "Short" +
               " Crab (-" +
               this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-                this.extraVoltData.powerPerpMarket.toString()
+                this.extraVoltData.targetPerpMarket.toString()
               ]?.toString() +
               ", +" +
               this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-                this.getHedgingInstrument().toString()
+                this.getHedgingInstrumentKey().toString()
               ]?.toString() +
               ")"
           );
@@ -91,11 +90,11 @@ export class EntropyVoltSDK extends VoltSDK {
             "Long" +
               " Basis (+" +
               this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-                this.extraVoltData.powerPerpMarket.toString()
+                this.extraVoltData.targetPerpMarket.toString()
               ]?.toString() +
               ", -" +
               this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-                this.getHedgingInstrument().toString()
+                this.getHedgingInstrumentKey().toString()
               ]?.toString() +
               ")"
           );
@@ -118,10 +117,10 @@ export class EntropyVoltSDK extends VoltSDK {
     ] as string;
   }
 
-  getHedgingInstrument(): PublicKey {
+  getHedgingInstrumentKey(): PublicKey {
     return this.entropyMetadata.hedgeWithSpot
       ? this.extraVoltData.hedgingSpotMarket
-      : this.extraVoltData.hedgingSpotPerpMarket;
+      : this.extraVoltData.hedgingPerpMarket;
   }
 
   async getCurrentEntropyRound(): Promise<EntropyRoundWithKey> {
@@ -197,9 +196,9 @@ export class EntropyVoltSDK extends VoltSDK {
     console.log(
       "\n ENTROPY: ",
       "\n, target perp market: ",
-      ev.powerPerpMarket.toString(),
+      ev.targetPerpMarket.toString(),
       "\n hedging perp market: ",
-      ev.hedgingSpotPerpMarket.toString(),
+      ev.hedgingPerpMarket.toString(),
       "\n hedging spot market: ",
       ev.hedgingSpotMarket.toString(),
       "\n hedging?: ",
@@ -218,7 +217,7 @@ export class EntropyVoltSDK extends VoltSDK {
       "\n, done rebalancing?: ",
       ev.doneRebalancing,
       "\n, done rebalancing target perp?: ",
-      ev.doneRebalancingPowerPerp,
+      ev.doneRebalancingTargetPerp,
       "\n, have taken perf fees?: ",
       ev.haveTakenPerformanceFees,
       "\n, have resolved deposits?: ",
@@ -235,15 +234,17 @@ export class EntropyVoltSDK extends VoltSDK {
 
     const entropyMetadata = await this.getEntropyMetadata();
 
-    const targetPerpIndex = entropyGroup.getPerpMarketIndex(ev.powerPerpMarket);
-    const spotPerpIndex = entropyGroup.getPerpMarketIndex(
-      ev.hedgingSpotPerpMarket
+    const targetPerpIndex = entropyGroup.getPerpMarketIndex(
+      ev.targetPerpMarket
+    );
+    const hedgePerpIndex = entropyGroup.getPerpMarketIndex(
+      ev.hedgingPerpMarket
     );
 
     const acctEquityPostDeposits = entropyAccount
       .computeValue(entropyGroup, entropyCache)
       .add(
-        I80F48.fromString(entropyRound.netDeposits as string)
+        I80F48.fromString(entropyRound.netDepositsQuote as string)
           .div(
             I80F48.fromString(
               (await this.getDepositTokenNormalizationFactor()).toString()
@@ -260,6 +261,33 @@ export class EntropyVoltSDK extends VoltSDK {
     ).mul(entropyCache.priceCache[targetPerpIndex]?.price as I80F48);
 
     console.log(
+      "target perp long funding: ",
+      (
+        entropyCache.perpMarketCache[targetPerpIndex]?.longFunding as I80F48
+      ).toString(),
+      "target perp short funding: ",
+      (
+        entropyCache.perpMarketCache[targetPerpIndex]?.shortFunding as I80F48
+      ).toString(),
+      "\nhedge perp long funding: ",
+      (
+        entropyCache.perpMarketCache[hedgePerpIndex]?.longFunding as I80F48
+      ).toString(),
+      "hedge perp short funding: ",
+      (
+        entropyCache.perpMarketCache[hedgePerpIndex]?.shortFunding as I80F48
+      ).toString(),
+      "\ntarget perp oracle price: ",
+      (entropyCache.priceCache[targetPerpIndex]?.price as I80F48).toString(),
+      "\nfrom getPrice(): ",
+      entropyGroup
+        .getPrice(
+          entropyGroup.getPerpMarketIndex(this.extraVoltData.targetPerpMarket),
+          entropyCache
+        )
+        .toString()
+    );
+    console.log(
       "target total: ",
       targetTotalPerpSize.toString(),
       "\n curr total: ",
@@ -273,21 +301,24 @@ export class EntropyVoltSDK extends VoltSDK {
       .mul(I80F48.fromString(ev.targetLeverage as string))
       .sub(
         I80F48.fromNumber(
-          entropyAccount.getBasePositionUiWithGroup(spotPerpIndex, entropyGroup)
-        ).mul(entropyCache.priceCache[spotPerpIndex]?.price as I80F48)
+          entropyAccount.getBasePositionUiWithGroup(
+            hedgePerpIndex,
+            entropyGroup
+          )
+        ).mul(entropyCache.priceCache[hedgePerpIndex]?.price as I80F48)
       );
 
     console.log(
       `equity post deposits = ${acctEquityPostDeposits.toString()}`,
       `\nneeded ${
         this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-          ev.powerPerpMarket.toString()
+          ev.targetPerpMarket.toString()
         ]?.toString() ?? "N/A"
       } quote size: `,
       targetIncrementalPerpSize.toFixed(4),
       `\nneeded ${
         this.sdk.net.ENTROPY_PERP_MARKET_NAMES[
-          ev.hedgingSpotPerpMarket.toString()
+          ev.hedgingPerpMarket.toString()
         ]?.toString() ?? "N/A"
       } quote size: `,
       hedgingPerpSize.toFixed(4)
@@ -295,8 +326,6 @@ export class EntropyVoltSDK extends VoltSDK {
   }
 
   async printPositionStats(): Promise<void> {
-    if (this.voltType() !== VoltType.Entropy)
-      throw new Error("volt type must be Entropy");
     const ev = this.extraVoltData;
     if (ev === undefined)
       throw new Error("please load extraVoltData before calling");
@@ -321,6 +350,21 @@ export class EntropyVoltSDK extends VoltSDK {
     );
   }
 
+  async estimateCurrentPerformanceAsPercentage(): Promise<Decimal> {
+    const { entropyAccount, entropyGroup, entropyCache } =
+      await this.getEntropyObjectsForEvData();
+
+    const entropyRound = await this.getCurrentEntropyRound();
+    const startEquity = I80F48.fromString(
+      entropyRound.acctEquityStart as string
+    );
+    const currEquity = entropyAccount.computeValue(entropyGroup, entropyCache);
+
+    const pnlEquity = currEquity.sub(startEquity);
+    const pnlPct = pnlEquity.div(startEquity);
+
+    return new Decimal(pnlPct.div(I80F48.fromNumber(100)).toString());
+  }
   //// INITIALIZE INSTRUCTION ////
 
   static async getInitializeVoltInstruction({
@@ -329,6 +373,12 @@ export class EntropyVoltSDK extends VoltSDK {
     vaultName,
     underlyingAssetMint,
     entropyProgramId,
+
+    entropyGroupKey,
+    targetPerpMarket,
+    spotPerpMarket,
+    spotMarket,
+
     targetLeverageRatio,
     targetLeverageLenience,
     targetHedgeLenience,
@@ -346,7 +396,12 @@ export class EntropyVoltSDK extends VoltSDK {
     vaultName: string;
     underlyingAssetMint: PublicKey;
     entropyProgramId: PublicKey;
-    // entropyGroupKey: PublicKey;
+
+    entropyGroupKey: PublicKey;
+    targetPerpMarket: PublicKey;
+    spotPerpMarket: PublicKey;
+    spotMarket: PublicKey;
+
     targetLeverageRatio: number;
     targetLeverageLenience: number;
     targetHedgeLenience: number;
@@ -367,51 +422,87 @@ export class EntropyVoltSDK extends VoltSDK {
       vaultAuthorityBump,
       extraVoltKey,
       vaultAuthority,
+      vaultMint,
       depositPoolKey,
       entropyMetadataKey,
+      whitelistTokenAccountKey,
     } = await EntropyVoltSDK.findInitializeAddresses(sdk, vaultName);
+
+    const [entropyAccountKey] = await EntropyVoltSDK.findEntropyAccountAddress(
+      vault
+    );
+    const client = new EntropyClient(
+      sdk.readonlyProvider.connection,
+      entropyProgramId
+    );
+    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
+    const entropyCacheKey = entropyGroup.entropyCache;
 
     const initializeEntropyAccounts: {
       [K in keyof Parameters<
         VoltProgram["instruction"]["initializeEntropy"]["accounts"]
-      >[0]]: PublicKey;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      >[0]]: PublicKey | any;
     } = {
-      authority: adminKey,
+      initializeBaseAccounts: {
+        authority: adminKey,
+        adminKey: adminKey,
+        voltVault: vault,
+        vaultAuthority: vaultAuthority,
+        vaultMint: vaultMint,
 
-      adminKey: adminKey,
+        extraVoltData: extraVoltKey,
 
+        depositMint: underlyingAssetMint,
+
+        depositPool: depositPoolKey,
+
+        whitelistTokenAccount: whitelistTokenAccountKey,
+        whitelistTokenMint: sdk.net.MM_TOKEN_MINT,
+
+        dexProgram: sdk.net.SERUM_DEX_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      },
       voltVault: vault,
-      vaultAuthority: vaultAuthority,
-      extraVoltData: extraVoltKey,
+
       entropyMetadata: entropyMetadataKey,
 
-      depositPool: depositPoolKey,
-
-      depositMint: underlyingAssetMint,
-
       entropyProgram: entropyProgramId,
+      entropyGroup: entropyGroupKey,
+      entropyAccount: entropyAccountKey,
+      entropyCache: entropyCacheKey,
+      targetPerpMarket: targetPerpMarket,
+      hedgingPerpMarket: spotPerpMarket,
+      hedgingSpotMarket: spotMarket,
 
-      tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
       systemProgram: SystemProgram.programId,
     };
 
-    // const instruction: TransactionInstruction =
+    const baseArgs = {
+      vaultName,
+      capacity,
+      individualCapacity,
+      bumps: {
+        vaultAuthorityBump,
+      },
+    };
+
     const instruction: TransactionInstruction =
       sdk.programs.Volt.instruction.initializeEntropy(
-        vaultName,
-        vaultAuthorityBump,
-        targetLeverageRatio,
-        targetLeverageLenience,
-        targetHedgeLenience,
-        exitEarlyRatio,
-        capacity,
-        individualCapacity,
-        shouldHedge,
-        hedgeWithSpot,
-        targetHedgeRatio,
-        rebalancingLenience,
-        requiredBasisFromOracle,
+        {
+          baseArgs: baseArgs,
+          targetLeverageRatio,
+          targetLeverageLenience,
+          targetHedgeLenience,
+          exitEarlyRatio,
+          shouldHedge,
+          hedgeWithSpot,
+          targetHedgeRatio,
+          rebalancingLenience,
+          requiredBasisFromOracle,
+        } as never,
         {
           accounts: initializeEntropyAccounts,
         }
@@ -476,6 +567,10 @@ export class EntropyVoltSDK extends VoltSDK {
         vaultName,
         underlyingAssetMint,
         entropyProgramId,
+        entropyGroupKey,
+        targetPerpMarket,
+        spotPerpMarket,
+        spotMarket,
         targetLeverageRatio,
         targetLeverageLenience,
         targetHedgeLenience,
@@ -489,46 +584,7 @@ export class EntropyVoltSDK extends VoltSDK {
         individualCapacity,
       });
 
-    const { vault, extraVoltKey, vaultMint, vaultAuthority } =
-      await EntropyVoltSDK.findInitializeAddresses(sdk, vaultName);
-    const [entropyAccountKey] = await EntropyVoltSDK.findEntropyAccountAddress(
-      vault
-    );
-    const client = new EntropyClient(
-      sdk.readonlyProvider.connection,
-      entropyProgramId
-    );
-    const entropyGroup = await client.getEntropyGroup(entropyGroupKey);
-    const entropyCacheKey = entropyGroup.entropyCache;
-
-    const initExtraAccountsAccounts: Parameters<
-      VoltProgram["instruction"]["initExtraAccountsEntropy"]["accounts"]
-    >[0] = {
-      authority: provider.wallet.publicKey,
-      voltVault: voltKey,
-      vaultAuthority: vaultAuthority,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      vaultMint: vaultMint,
-      depositMint: underlyingAssetMint,
-
-      extraVoltData: extraVoltKey,
-      rent: SYSVAR_RENT_PUBKEY,
-      dexProgram: sdk.net.SERUM_DEX_PROGRAM_ID,
-      entropyProgram: entropyProgramId,
-      entropyGroup: entropyGroupKey,
-      entropyAccount: entropyAccountKey,
-      entropyCache: entropyCacheKey,
-      powerPerpMarket: targetPerpMarket,
-      hedgingSpotPerpMarket: spotPerpMarket,
-      hedgingSpotMarket: spotMarket,
-    };
-    const initExtraIx = sdk.programs.Volt.instruction.initExtraAccountsEntropy({
-      accounts: initExtraAccountsAccounts,
-    });
-
-    await sendInsList(provider, [instruction, initExtraIx]);
+    await sendInsList(provider, [instruction]);
 
     return voltKey;
   }
@@ -551,7 +607,7 @@ export class EntropyVoltSDK extends VoltSDK {
 
   async getRootAndNodeBank(entropyGroup: EntropyGroup): Promise<{
     rootBank: RootBank;
-    nodeBank: NodeBank.NodeBank;
+    nodeBank: NodeBank;
   }> {
     const connection = this.sdk.readonlyProvider.connection;
     const banks = await entropyGroup.loadRootBanks(connection);
@@ -577,9 +633,9 @@ export class EntropyVoltSDK extends VoltSDK {
   ): Promise<{
     entropyGroup: EntropyGroup;
     rootBank: RootBank | undefined;
-    nodeBank: NodeBank.NodeBank | undefined;
+    nodeBank: NodeBank | undefined;
     quoteRootBank: RootBank | undefined;
-    quoteNodeBank: NodeBank.NodeBank | undefined;
+    quoteNodeBank: NodeBank | undefined;
     depositIndex: number;
   }> {
     if (!this.extraVoltData) throw new Error("extra volt data must be defined");
@@ -642,6 +698,7 @@ export class EntropyVoltSDK extends VoltSDK {
     depositPoolKey: PublicKey;
     entropyAccountKey: PublicKey;
     entropyMetadataKey: PublicKey;
+    whitelistTokenAccountKey: PublicKey;
   }> {
     const textEncoder = new TextEncoder();
 
@@ -660,6 +717,7 @@ export class EntropyVoltSDK extends VoltSDK {
       vaultAuthority,
       depositPoolKey,
       vaultAuthorityBump,
+      whitelistTokenAccountKey,
     } = await VoltSDK.findSharedInitializeAddresses(sdk, vault);
 
     const [entropyAccountKey] = await EntropyVoltSDK.findEntropyAccountAddress(
@@ -678,6 +736,7 @@ export class EntropyVoltSDK extends VoltSDK {
       depositPoolKey,
       entropyAccountKey,
       entropyMetadataKey,
+      whitelistTokenAccountKey,
     };
   }
 
@@ -695,7 +754,7 @@ export class EntropyVoltSDK extends VoltSDK {
   static async findEntropyRoundInfoAddress(
     voltKey: PublicKey,
     roundNumber: BN,
-    voltProgramId: PublicKey
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
   ): Promise<[PublicKey, number]> {
     const textEncoder = new TextEncoder();
     return await PublicKey.findProgramAddress(
@@ -733,5 +792,138 @@ export class EntropyVoltSDK extends VoltSDK {
       ],
       voltProgramId
     );
+  }
+
+  getDefaultEntropyClient(): EntropyClient {
+    return new EntropyClient(
+      this.sdk.readonlyProvider.connection,
+      this.extraVoltData.entropyProgramId
+    );
+  }
+
+  getTargetPerpMarketKey(): PublicKey {
+    return this.extraVoltData.targetPerpMarket;
+  }
+
+  async getEntropyBaseAccountsContext(
+    rootBankKey?: PublicKey,
+    nodeBankKey?: PublicKey,
+    vaultKey?: PublicKey
+  ): Promise<{
+    voltVault: PublicKey;
+    extraVoltData: PublicKey;
+    program: PublicKey;
+    group: PublicKey;
+    account: PublicKey;
+    cache: PublicKey;
+    rootBank: PublicKey;
+    nodeBank: PublicKey;
+    vault: PublicKey;
+  }> {
+    if (rootBankKey === undefined || nodeBankKey === undefined) {
+      const { rootBank, nodeBank } = await this.getGroupAndBanksForEvData(
+        this.getDefaultEntropyClient(),
+        this.extraVoltData.depositMint
+      );
+      if (rootBank === undefined || nodeBank === undefined) {
+        throw new Error("can't find root bank or node bank");
+      }
+      rootBankKey = rootBank?.publicKey;
+      nodeBankKey = nodeBank?.publicKey;
+      vaultKey = nodeBank?.vault;
+    }
+
+    return {
+      voltVault: this.voltKey,
+      extraVoltData: (await VoltSDK.findExtraVoltDataAddress(this.voltKey))[0],
+      program: this.extraVoltData.entropyProgramId,
+      group: this.extraVoltData.entropyGroup,
+      account: this.extraVoltData.entropyAccount,
+      cache: this.extraVoltData.entropyCache,
+      rootBank: rootBankKey,
+      nodeBank: nodeBankKey,
+      vault: vaultKey as PublicKey,
+    };
+  }
+
+  async getTargetPerpBaseDecimals(
+    entropyGroup?: EntropyGroup
+  ): Promise<number> {
+    if (entropyGroup === undefined)
+      ({ entropyGroup } = await this.getGroupAndBanksForEvData(
+        this.getDefaultEntropyClient(),
+        this.extraVoltData.depositMint
+      ));
+
+    const targetPerpMarketIndex = entropyGroup.getPerpMarketIndex(
+      this.extraVoltData.targetPerpMarket
+    );
+    const decimals = entropyGroup.tokens[targetPerpMarketIndex]?.decimals;
+    if (decimals === undefined)
+      throw new Error(
+        "power perp base decimnals is undefined, likely market index does not exist in the entropy group"
+      );
+    return decimals;
+  }
+
+  async getHedgingPerpBaseDecimals(
+    entropyGroup?: EntropyGroup
+  ): Promise<number> {
+    if (entropyGroup === undefined)
+      ({ entropyGroup } = await this.getGroupAndBanksForEvData(
+        this.getDefaultEntropyClient(),
+        this.extraVoltData.depositMint
+      ));
+    const spotPerpIndex = entropyGroup.getPerpMarketIndex(
+      this.extraVoltData.hedgingPerpMarket
+    );
+
+    const decimals = entropyGroup.tokens[spotPerpIndex]?.decimals;
+    if (decimals === undefined)
+      throw new Error(
+        "spot perp base decimals is undefined, likely market index does not exist in the entropy group"
+      );
+    return decimals;
+  }
+
+  async getQuoteDecimals(entropyGroup?: EntropyGroup): Promise<number> {
+    if (entropyGroup === undefined)
+      ({ entropyGroup } = await this.getGroupAndBanksForEvData(
+        this.getDefaultEntropyClient(),
+        this.extraVoltData.depositMint
+      ));
+    const quoteDecimals = entropyGroup.getQuoteTokenInfo().decimals;
+    return quoteDecimals;
+  }
+
+  async getEntropyContextAccountsAsRemaining(): Promise<AccountMeta[]> {
+    const accts = await this.getEntropyContextAccountsOrDefault();
+    return [
+      {
+        pubkey: accts.extraVoltData as PublicKey,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: accts.program as PublicKey,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: accts.group as PublicKey,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: accts.cache as PublicKey,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: accts.account as PublicKey,
+        isSigner: false,
+        isWritable: false,
+      },
+    ];
   }
 }

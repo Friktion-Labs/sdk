@@ -3,118 +3,6 @@ export type VoltIDL = {
   name: "volt";
   instructions: [
     {
-      name: "initialize";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "adminKey";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "seed";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "bump";
-          type: "u8";
-        },
-        {
-          name: "bumpAuthority";
-          type: "u8";
-        },
-        {
-          name: "serumOrderSizeOptions";
-          type: "u64";
-        },
-        {
-          name: "serumOrderType";
-          type: {
-            defined: "OrderType";
-          };
-        },
-        {
-          name: "serumSelfTradeBehavior";
-          type: {
-            defined: "SelfTradeBehavior";
-          };
-        },
-        {
-          name: "expirationInterval";
-          type: "u64";
-        },
-        {
-          name: "underlyingAmountPerContract";
-          type: "u64";
-        },
-        {
-          name: "vaultCapacity";
-          type: "u64";
-        },
-        {
-          name: "individualCapacity";
-          type: "u64";
-        },
-        {
-          name: "permissionlessAuctions";
-          type: "u64";
-        }
-      ];
-    },
-    {
       name: "turnOffDepositsAndWithdrawals";
       accounts: [
         {
@@ -151,248 +39,6 @@ export type VoltIDL = {
       args: [
         {
           name: "code";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "createSwapOrder";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "swapOrder";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "userOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltGivePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "givePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "giveMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "receivePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "receiveMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "counterparty";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "whitelistTokenMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "swapProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "optionsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "giveSize";
-          type: "u64";
-        },
-        {
-          name: "receiveSize";
-          type: "u64";
-        },
-        {
-          name: "expiry";
-          type: "u64";
-        },
-        {
-          name: "isCounterpartyProvided";
-          type: "bool";
-        },
-        {
-          name: "isWhitelisted";
-          type: "bool";
-        },
-        {
-          name: "enforceMintMatch";
-          type: "bool";
-        }
-      ];
-    },
-    {
-      name: "claimSwapOrder";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "swapOrder";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltGivePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltReceivePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "givePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "receivePool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "counterparty";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "whitelistTokenMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "swapProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "changeCapacity";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "capacity";
-          type: "u64";
-        },
-        {
-          name: "individualCapacity";
           type: "u64";
         }
       ];
@@ -441,6 +87,10 @@ export type VoltIDL = {
           type: "u64";
         },
         {
+          name: "aumFeeBps";
+          type: "u64";
+        },
+        {
           name: "takeFeesInUnderlying";
           type: "bool";
         },
@@ -451,7 +101,7 @@ export type VoltIDL = {
       ];
     },
     {
-      name: "changeAdmin";
+      name: "changeCapacity";
       accounts: [
         {
           name: "authority";
@@ -460,6 +110,11 @@ export type VoltIDL = {
         },
         {
           name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
           isMut: true;
           isSigner: false;
         },
@@ -481,8 +136,176 @@ export type VoltIDL = {
       ];
       args: [
         {
-          name: "adminKey";
-          type: "publicKey";
+          name: "capacity";
+          type: "u64";
+        },
+        {
+          name: "individualCapacity";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "initializeShortOptions";
+      accounts: [
+        {
+          name: "seed";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "sharedAccounts";
+          accounts: [
+            {
+              name: "initializeBaseAccounts";
+              accounts: [
+                {
+                  name: "authority";
+                  isMut: true;
+                  isSigner: true;
+                  docs: ["signator of transaction"];
+                },
+                {
+                  name: "adminKey";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "voltVault";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "extraVoltData";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "vaultAuthority";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "vaultMint";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "depositMint";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "depositPool";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "whitelistTokenMint";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "whitelistTokenAccount";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "dexProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "rent";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "tokenProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "systemProgram";
+                  isMut: false;
+                  isSigner: false;
+                }
+              ];
+            },
+            {
+              name: "quoteAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "auctionMetadata";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "permissionedMarketPremiumPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "permissionedMarketPremiumMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "args";
+          type: {
+            defined: "InitializeShortOptionsArgs";
+          };
         }
       ];
     },
@@ -533,203 +356,7 @@ export type VoltIDL = {
       ];
     },
     {
-      name: "changeQuoteMint";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "newQuoteMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "changeDecimalsByFactor";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "factor";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "resetRebalancing";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "onlyResetHedge";
-          type: "bool";
-        }
-      ];
-    },
-    {
-      name: "changeHedging";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "shouldHedge";
-          type: "bool";
-        },
-        {
-          name: "hedgeWithSpot";
-          type: "bool";
-        },
-        {
-          name: "hedgeRatio";
-          type: "f64";
-        },
-        {
-          name: "hedgeLenience";
-          type: "f64";
-        }
-      ];
-    },
-    {
-      name: "setStrategyParams";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "targetLeverageRatio";
-          type: "f64";
-        },
-        {
-          name: "targetLeverageLenience";
-          type: "f64";
-        },
-        {
-          name: "targetHedgeRatio";
-          type: "f64";
-        },
-        {
-          name: "targetHedgeLenience";
-          type: "f64";
-        }
-      ];
-    },
-    {
-      name: "startRound";
+      name: "startRoundShortOptions";
       docs: ["* start next epoch. opens transfer window and adjusts FSM state"];
       accounts: [
         {
@@ -743,12 +370,139 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "underlyingAssetMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "initializeStartRoundAccounts";
+          accounts: [
+            {
+              name: "authority";
+              isMut: true;
+              isSigner: true;
+            },
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundVoltTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "setNextOption";
+      docs: ["* sets the next option market this volt will trade"];
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "extraVoltData";
           isMut: true;
           isSigner: false;
         },
         {
           name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
           isMut: false;
           isSigner: false;
         },
@@ -763,32 +517,47 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "vaultMint";
+          name: "roundInfoAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "rawDerivsContract";
           isMut: false;
           isSigner: false;
         },
         {
-          name: "roundInfo";
+          name: "optionMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "optionPool";
           isMut: true;
           isSigner: false;
         },
         {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
+          name: "writerTokenPool";
           isMut: true;
           isSigner: false;
         },
@@ -811,7 +580,1069 @@ export type VoltIDL = {
       args: [];
     },
     {
-      name: "endRound";
+      name: "resetOptionMarket";
+      docs: ["* resets option market on the volt"];
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "optionsProtocolAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "mintPool";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionsPrograms";
+              accounts: [
+                {
+                  name: "inertiaProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "soloptionsProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "spreadsProgram";
+                  isMut: false;
+                  isSigner: false;
+                }
+              ];
+            },
+            {
+              name: "rawDerivsContract";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "feeDestination";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "backupOptionPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "backupWriterTokenPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "rebalancePrepare";
+      docs: [
+        "* prepares to invest in the current options market. For covered calls, this would involve minting"
+      ];
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionsContractAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "mintPool";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionsPrograms";
+              accounts: [
+                {
+                  name: "inertiaProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "soloptionsProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "spreadsProgram";
+                  isMut: false;
+                  isSigner: false;
+                }
+              ];
+            },
+            {
+              name: "rawDerivsContract";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "feeDestination";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "rebalanceSwapPremium";
+      docs: [
+        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc."
+      ];
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tradingPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "serumMarketAccounts";
+          accounts: [
+            {
+              name: "dexProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "pcReferrerWallet";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "serumVaultSigner";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "srmReferralAcct";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "market";
+              isMut: true;
+              isSigner: false;
+              docs: [
+                "Serum Market Account",
+                "admin instruction so no attack vector"
+              ];
+            },
+            {
+              name: "requestQueue";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "eventQueue";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "bids";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "asks";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "coinVault";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "pcVault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "openOrdersMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfoAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "clientOrderPrice";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "rebalanceEnter";
+      docs: ["* enter options position. buys/sells on serum"];
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "auctionMetadata";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rawDerivsContract";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "middlewareProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "serumMarketAccounts";
+          accounts: [
+            {
+              name: "dexProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "pcReferrerWallet";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "serumVaultSigner";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "srmReferralAcct";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "market";
+              isMut: true;
+              isSigner: false;
+              docs: [
+                "Serum Market Account",
+                "admin instruction so no attack vector"
+              ];
+            },
+            {
+              name: "requestQueue";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "eventQueue";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "bids";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "asks";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "coinVault";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "pcVault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "market";
+          isMut: true;
+          isSigner: false;
+          docs: ["The Serum Market"];
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+          docs: ["The vault's OpenOrders account"];
+        },
+        {
+          name: "serumMarketAuthority";
+          isMut: true;
+          isSigner: false;
+          docs: ["The Serum Market market authority"];
+        },
+        {
+          name: "whitelistTokenAccount";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "clientOrderPrice";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "rebalanceEnterCreateSwap";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "auctionMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapAdmin";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionsContract";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "newSwapOrder";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "givePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receivePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "counterparty";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "params";
+          type: {
+            defined: "CreateSwapParams";
+          };
+        }
+      ];
+    },
+    {
+      name: "rebalanceEnterClaimSwap";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "auctionMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "optionPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "swapOrder";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "givePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "giveMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "receivePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "receiveMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "swapProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "settleTemporaryUsdcFeesEarly";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "rebalanceSettle";
+      docs: [
+        "* settles the current options position. redeems writer tokens for underlying or quote asset."
+      ];
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "premiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "permissionedMarketPremiumPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfoAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "optionsContractAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "mintPool";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionsPrograms";
+              accounts: [
+                {
+                  name: "inertiaProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "soloptionsProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "spreadsProgram";
+                  isMut: false;
+                  isSigner: false;
+                }
+              ];
+            },
+            {
+              name: "rawDerivsContract";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "underlyingAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "writerTokenMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "feeDestination";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "temporaryUsdcFeePool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "endRoundShortOptions";
       docs: ["* ends current epoch. settles pending deposits & withdrawals."];
       accounts: [
         {
@@ -845,6 +1676,11 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "permissionedMarketPremiumPool";
           isMut: true;
           isSigner: false;
@@ -855,24 +1691,34 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
+          name: "roundAccts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundVoltTokens";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
         },
         {
           name: "epochInfo";
@@ -880,22 +1726,42 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
-          name: "entropyLendingProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyLendingGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyLendingAccount";
+          name: "temporaryUsdcFeePool";
           isMut: true;
           isSigner: false;
         },
         {
-          name: "feeAcct";
+          name: "lendingAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "ulFeeAcct";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "usdcFeeAcct";
           isMut: true;
           isSigner: false;
         },
@@ -906,11 +1772,6 @@ export type VoltIDL = {
         },
         {
           name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
           isMut: false;
           isSigner: false;
         },
@@ -928,7 +1789,329 @@ export type VoltIDL = {
       ];
     },
     {
-      name: "takePendingWithdrawalFees";
+      name: "initializeEntropy";
+      accounts: [
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "initializeBaseAccounts";
+          accounts: [
+            {
+              name: "authority";
+              isMut: true;
+              isSigner: true;
+              docs: ["signator of transaction"];
+            },
+            {
+              name: "adminKey";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "extraVoltData";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "depositMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "whitelistTokenMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "whitelistTokenAccount";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "dexProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyGroup";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyCache";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "targetPerpMarket";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "hedgingPerpMarket";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "hedgingSpotMarket";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "args";
+          type: {
+            defined: "InitializeEntropyArgs";
+          };
+        }
+      ];
+    },
+    {
+      name: "setStrategyParams";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+          docs: ["signator of transaction"];
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "targetLeverageRatio";
+          type: "f64";
+        },
+        {
+          name: "targetLeverageLenience";
+          type: "f64";
+        },
+        {
+          name: "targetHedgeRatio";
+          type: "f64";
+        },
+        {
+          name: "targetHedgeLenience";
+          type: "f64";
+        },
+        {
+          name: "shouldHedge";
+          type: "bool";
+        },
+        {
+          name: "hedgeWithSpot";
+          type: "bool";
+        }
+      ];
+    },
+    {
+      name: "takePerformanceAndAumFeesEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "openOrders";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "feeAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "startRoundEntropy";
       accounts: [
         {
           name: "authority";
@@ -941,12 +2124,1883 @@ export type VoltIDL = {
           isSigner: false;
         },
         {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "vaultAuthority";
           isMut: false;
           isSigner: false;
         },
         {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "initializeStartRoundAccounts";
+          accounts: [
+            {
+              name: "authority";
+              isMut: true;
+              isSigner: true;
+            },
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundVoltTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "endRoundEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+          docs: ["signator of transaction"];
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
           name: "roundUnderlyingTokensForPendingWithdrawals";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "lendingAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "feeAcct";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "bypassCode";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "setupRebalanceEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundAccts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundVoltTokens";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "targetPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "expectedOraclePx";
+          type: "f64";
+        }
+      ];
+    },
+    {
+      name: "rebalanceIntoPerpEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+          docs: ["signator of transaction"];
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyRound";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "eventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "targetPerpEventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "bids";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "asks";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "targetPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "hedgingPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "params";
+          type: {
+            defined: "EntropyPlaceOrderParams";
+          };
+        },
+        {
+          name: "forceHedgeFirst";
+          type: "bool";
+        }
+      ];
+    },
+    {
+      name: "rebalanceIntoSpotEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+          docs: ["Volt Vault data"];
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rootBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "nodeBank";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "vault";
+              isMut: true;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "targetPerpEventQueue";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "targetPerpMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "bids";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "asks";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexRequestQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexEventQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexBase";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexQuote";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "quoteVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "dexSigner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "msrmOrSrmVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "params";
+          type: {
+            defined: "EntropyPlaceOrderParams";
+          };
+        }
+      ];
+    },
+    {
+      name: "initSpotOpenOrdersEntropy";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+          docs: ["Volt Vault data"];
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "entropyMetadata";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyProgram";
+          isMut: false;
+          isSigner: false;
+          docs: ["Entropy program"];
+        },
+        {
+          name: "entropyGroup";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "entropyAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "spotMarket";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "dexProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "openOrders";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "signer";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "dexSigner";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initializePrincipalProtection";
+      accounts: [
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "principalProtectionVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "initializeAccounts";
+          accounts: [
+            {
+              name: "initializeBaseAccounts";
+              accounts: [
+                {
+                  name: "authority";
+                  isMut: true;
+                  isSigner: true;
+                  docs: ["signator of transaction"];
+                },
+                {
+                  name: "adminKey";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "voltVault";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "extraVoltData";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "vaultAuthority";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "vaultMint";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "depositMint";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "depositPool";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "whitelistTokenMint";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "whitelistTokenAccount";
+                  isMut: true;
+                  isSigner: false;
+                },
+                {
+                  name: "dexProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "rent";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "tokenProgram";
+                  isMut: false;
+                  isSigner: false;
+                },
+                {
+                  name: "systemProgram";
+                  isMut: false;
+                  isSigner: false;
+                }
+              ];
+            },
+            {
+              name: "quoteAssetMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "auctionMetadata";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "permissionedMarketPremiumPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "permissionedMarketPremiumMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "quoteAssetPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "tulipAccounts";
+          accounts: [
+            {
+              name: "vault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "sharesMint";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "args";
+          type: {
+            defined: "InitializePrincipalProtectionArgs";
+          };
+        }
+      ];
+    },
+    {
+      name: "startRoundPrincipalProtection";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "ppVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "initializeStartRoundAccounts";
+          accounts: [
+            {
+              name: "authority";
+              isMut: true;
+              isSigner: true;
+            },
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultAuthority";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "vaultMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositMint";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "roundInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundVoltTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokens";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "epochInfo";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "rent";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "tokenProgram";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "systemProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "ppContextAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "ppVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositTrackingAccount";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingSharesPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVault";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVaultProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "initTulipAccounts";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "ppVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "lendingSharesPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositIntoLendingAta";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "tulipVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositTrackingAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositTrackingQueue";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositTrackingHold";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "sharesMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositTrackingPda";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "associatedTokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "deployLending";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "ppVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "ppContextAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "ppVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositTrackingAccount";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "depositTrackingPda";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "optionTokenPool";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "sharesMint";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingSharesPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVault";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVaultPda";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "lendingVaultProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "depositIntoLendingAta";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "lendingVaultUlAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "globalTulipV2Authority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "endRoundPrincipalProtection";
+      accounts: [
+        {
+          name: "authority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "ppVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "ppContextAccounts";
+          accounts: [
+            {
+              name: "voltVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "ppVault";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "depositTrackingAccount";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingSharesPool";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVault";
+              isMut: true;
+              isSigner: false;
+            },
+            {
+              name: "lendingVaultProgram";
+              isMut: false;
+              isSigner: false;
+            }
+          ];
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "deposit";
+      docs: [
+        "* deposits into volt, receives volt tokens or a receipt for a pending deposit"
+      ];
+      accounts: [
+        {
+          name: "payerAuthority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "nonPayerAuthority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
+          docs: [
+            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token"
+          ];
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "userVaultTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userUlTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "depositAmount";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "depositWithClaim";
+      accounts: [
+        {
+          name: "payerAuthority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "nonPayerAuthority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "solTransferAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "writerTokenPool";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "userVaultTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userUlTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositRoundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositRoundVoltTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositRoundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "depositAmount";
+          type: "u64";
+        },
+        {
+          name: "doTransfer";
+          type: "bool";
+        }
+      ];
+    },
+    {
+      name: "withdraw";
+      docs: [
+        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal"
+      ];
+      accounts: [
+        {
+          name: "payerAuthority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "nonPayerAuthority";
+          isMut: false;
+          isSigner: true;
+          docs: [
+            "if is authority on token accounts (aka === authority_check), should be a signer"
+          ];
+        },
+        {
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
+          docs: ["should be equal to 1 of authority or non_payer_authority"];
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "whitelist";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultTokenSource";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingWithdrawalInfo";
           isMut: true;
           isSigner: false;
         },
@@ -969,12 +4023,258 @@ export type VoltIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "withdrawAmount";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "withdrawWithClaim";
+      accounts: [
+        {
+          name: "payerAuthority";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "nonPayerAuthority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "authorityCheck";
+          isMut: false;
+          isSigner: false;
+          docs: ["should be equal to 1 of authority or non_payer_authority"];
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "depositPool";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "vaultTokenSource";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingWithdrawalRoundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingWithdrawalRoundUnderlyingTokensForPws";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "feeAcct";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "withdrawAmount";
+          type: "u64";
+        }
+      ];
+    },
+    {
+      name: "cancelPendingDeposit";
+      docs: ["* cancels a users pending deposit"];
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "underlyingTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundUnderlyingTokens";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingDepositInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [];
     },
     {
-      name: "claimPending";
+      name: "cancelPendingWithdrawal";
+      docs: ["* cancels a users pending withdrawal"];
+      accounts: [
+        {
+          name: "authority";
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: "vaultMint";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "voltVault";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "extraVoltData";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultAuthority";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "vaultTokenDestination";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "roundInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "pendingWithdrawalInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "epochInfo";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
+      name: "claimPendingDeposit";
       docs: ["* claims volt tokens from a previously pending deposit"];
       accounts: [
         {
@@ -1093,875 +4393,44 @@ export type VoltIDL = {
       args: [];
     },
     {
-      name: "solendDepositReserveLiquidity";
+      name: "dummyInstruction";
       accounts: [
         {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "srcLiquidityToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dstCollateralToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserve";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserveLiquiditySupplyToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserveCollateralMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lendingMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lendingMarketAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clockSysvar";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "solendProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "liquidityAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "solendWithdrawReserveLiquidity";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "srcCollateralToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dstLiquidityToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserve";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserveCollateralMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "reserveLiquiditySupplyToken";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lendingMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "lendingMarketAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clockSysvar";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "solendProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "collateralAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "cancelPendingWithdrawal";
-      docs: ["* cancels a users pending withdrawal"];
-      accounts: [
-        {
-          name: "authority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingWithdrawalInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "cancelPendingDeposit";
-      docs: ["* cancels a users pending deposit"];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "deposit";
-      docs: [
-        "* deposits into volt, receives volt tokens or a receipt for a pending deposit"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "daoAuthority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "authorityCheck";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "whitelist";
-          isMut: false;
-          isSigner: false;
-          docs: [
-            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token"
+          name: "entropyBaseAccounts";
+          accounts: [
+            {
+              name: "extraVoltData";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "program";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "group";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "cache";
+              isMut: false;
+              isSigner: false;
+            },
+            {
+              name: "account";
+              isMut: false;
+              isSigner: false;
+            }
           ];
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "depositAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "depositWithClaim";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "daoAuthority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "solTransferAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "authorityCheck";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositRoundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositRoundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingDepositRoundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "depositAmount";
-          type: "u64";
-        },
-        {
-          name: "doTransfer";
-          type: "bool";
-        }
-      ];
-    },
-    {
-      name: "withdraw";
-      docs: [
-        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "daoAuthority";
-          isMut: false;
-          isSigner: true;
-          docs: [
-            "if is authority on token accounts (aka === authority_check), should be a signer"
-          ];
-        },
-        {
-          name: "authorityCheck";
-          isMut: false;
-          isSigner: false;
-          docs: ["should be equal to 1 of authority or dao_authority"];
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "whitelist";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingWithdrawalInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeAcct";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "withdrawAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "withdrawWithClaim";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "daoAuthority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "authorityCheck";
-          isMut: false;
-          isSigner: false;
-          docs: ["should be equal to 1 of authority or dao_authority"];
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingTokenDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultTokenSource";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingWithdrawalInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingWithdrawalRoundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pendingWithdrawalRoundUnderlyingTokensForPws";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeAcct";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "withdrawAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "bypassSettlement";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "soloptionsProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "inertiaProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "quoteAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "userWriterTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeOwner";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [];
     },
     {
-      name: "rebalanceSettle";
-      docs: [
-        "* settles the current options position. redeems writer tokens for underlying or quote asset."
-      ];
+      name: "includeOptionsProgramsAccounts";
       accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
         {
           name: "inertiaProgram";
           isMut: false;
@@ -1976,3089 +4445,9 @@ export type VoltIDL = {
           name: "spreadsProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [];
-    },
-    {
-      name: "setNextOption";
-      docs: ["* sets the next option market this volt will trade"];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "optionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "optionMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "openOrdersBump";
-          type: "u8";
-        },
-        {
-          name: "openOrdersInitBump";
-          type: "u8";
-        }
-      ];
-    },
-    {
-      name: "resetOptionMarket";
-      docs: ["* resets option market on the volt"];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "inertiaProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "backupOptionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "backupWriterTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "rebalancePrepare";
-      docs: [
-        "* prepares to invest in the current options market. For covered calls, this would involve minting"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "inertiaProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "soloptionsProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "spreadsProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "optionMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "quoteAssetMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionProtocolFeeDestination";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "associatedTokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "rebalanceSwapPremium";
-      docs: [
-        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc."
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tradingPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "market";
-          isMut: true;
-          isSigner: false;
-          docs: ["The Serum Market", "admin instruction so no attack vector"];
-        },
-        {
-          name: "pcReferrerWallet";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "srmReferralAcct";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "serumVaultSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "openOrdersMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "marketBids";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "marketAsks";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "requestQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "coinVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "clientOrderPrice";
-          type: "u64";
-        },
-        {
-          name: "clientOrderSize";
-          type: "u64";
-        },
-        {
-          name: "ulOpenOrdersBump";
-          type: "u8";
-        }
-      ];
-    },
-    {
-      name: "rebalanceEnter";
-      docs: ["* enter options position. buys/sells on serum"];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "middlewareProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "auctionMetadata";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "pcReferrerWallet";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "serumVaultSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "srmReferralAcct";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-          docs: ["The vault's OpenOrders account"];
-        },
-        {
-          name: "market";
-          isMut: true;
-          isSigner: false;
-          docs: ["The Serum Market"];
-        },
-        {
-          name: "serumMarketAuthority";
-          isMut: true;
-          isSigner: false;
-          docs: ["The Serum Market market authority"];
-        },
-        {
-          name: "requestQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "marketBids";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "marketAsks";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "coinVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "whitelistTokenAccount";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "clientOrderPrice";
-          type: "u64";
-        },
-        {
-          name: "clientOrderSize";
-          type: "u64";
-        },
-        {
-          name: "clientOpenOrdersBump";
-          type: "u8";
-        },
-        {
-          name: "clientOpenOrdersInitBump";
-          type: "u8";
-        }
-      ];
-    },
-    {
-      name: "settleEnterFunds";
-      docs: [
-        "* settle funds gained/lost on this program's OpenOrders account for rebalance_enter"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "middlewareProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "optionPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcReferrerWallet";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "serumVaultSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "market";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "serumMarketAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "coinVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "feeAcct";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "settlePermissionedMarketPremiumFunds";
-      docs: [
-        "* settle funds from permissioned market premium pool to deposit pool or premium pool"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "premiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rawDerivsContract";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "writerTokenMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "settleSwapPremiumFunds";
-      docs: [
-        "* settle funds gained/lost on this program's OpenOrders account for rebalance_swap_premium"
-      ];
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tradingPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcReferrerWallet";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "serumVaultSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "market";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "coinVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "pcVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "initWhitelist";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "seed";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "whitelist";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "addWhitelist";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "whitelist";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "accountToAdd";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "removeWhitelist";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "whitelist";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "accountToRemove";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "attachWhitelist";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "whitelist";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "attachDao";
-      accounts: [
-        {
-          name: "authority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "daoProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "daoAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "detachDao";
-      accounts: [
-        {
-          name: "authority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "initExtraAccountsShortOptions";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "auctionMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "whitelistTokenMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "whitelistTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "permissionedMarketPremiumMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "permissionlessAuctions";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "initExtraAccountsEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "hedgingSpotPerpMarket";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "hedgingSpotMarket";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "initializeEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "adminKey";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "vaultName";
-          type: "string";
-        },
-        {
-          name: "bumpAuthority";
-          type: "u8";
-        },
-        {
-          name: "targetLeverageRatio";
-          type: "f64";
-        },
-        {
-          name: "targetLeverageLenience";
-          type: "f64";
-        },
-        {
-          name: "targetHedgeLenience";
-          type: "f64";
-        },
-        {
-          name: "exitEarlyRatio";
-          type: "f64";
-        },
-        {
-          name: "vaultCapacity";
-          type: "u64";
-        },
-        {
-          name: "individualCapacity";
-          type: "u64";
-        },
-        {
-          name: "shouldHedge";
-          type: "bool";
-        },
-        {
-          name: "hedgeWithSpot";
-          type: "bool";
-        },
-        {
-          name: "targetHedgeRatio";
-          type: "f64";
-        },
-        {
-          name: "rebalancingLenience";
-          type: "f64";
-        },
-        {
-          name: "requiredBasisFromOracle";
-          type: "f64";
-        }
-      ];
-    },
-    {
-      name: "takePerformanceFeesEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "feeAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "startRoundEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "underlyingAssetMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "endRoundEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyLendingProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyLendingGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyLendingAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "bypassCode";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "depositDiscretionaryEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "adminDepositTokenAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositDiscretionaryTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "depositMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "depositAmt";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "setupRebalanceEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultMint";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "depositPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundVoltTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokens";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "expectedOraclePx";
-          type: "f64";
-        }
-      ];
-    },
-    {
-      name: "setupRebalanceOtcEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyOtcOrdersPda";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCounterpartyWallet";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpEventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "price";
-          type: "i64";
-        },
-        {
-          name: "maxQuotePosChange";
-          type: "u64";
-        },
-        {
-          name: "expires";
-          type: "i64";
-        },
-        {
-          name: "bypassCode";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "checkRebalanceOtcHealthEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["1", "signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["2"];
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-          docs: ["3"];
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-          docs: ["4"];
-        },
-        {
-          name: "entropyRound";
-          isMut: false;
-          isSigner: false;
-          docs: ["5"];
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-          docs: ["6"];
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-          docs: ["7"];
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["8"];
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-          docs: ["9"];
-        },
-        {
-          name: "entropyOtcOrdersPda";
-          isMut: true;
-          isSigner: false;
-          docs: ["10"];
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-          docs: ["11"];
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-          docs: ["12"];
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-          docs: ["13"];
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-          docs: ["14"];
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-          docs: ["15"];
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-          docs: ["16"];
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-          docs: ["17"];
-        },
-        {
-          name: "powerPerpEventQueue";
-          isMut: true;
-          isSigner: false;
-          docs: ["18"];
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-          docs: ["19"];
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["20"];
-        }
-      ];
-      args: [
-        {
-          name: "forceHedgeFirst";
-          type: "bool";
-        },
-        {
-          name: "orderId";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "rebalanceEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyRound";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "powerPerpEventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "bids";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "asks";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "clientBidPrice";
-          type: "u64";
-        },
-        {
-          name: "clientAskPrice";
-          type: "u64";
-        },
-        {
-          name: "maxQuotePosChange";
-          type: "u64";
-        },
-        {
-          name: "forceHedgeFirst";
-          type: "bool";
-        }
-      ];
-    },
-    {
-      name: "rebalanceSpotEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: false;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["Volt Vault data"];
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["Entropy program"];
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "spotMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "bids";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "asks";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexRequestQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexEventQueue";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexBase";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexQuote";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "baseRootBank";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "baseNodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "baseVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "quoteRootBank";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "quoteNodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "quoteVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "msrmOrSrmVault";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "clientBidPrice";
-          type: "u64";
-        },
-        {
-          name: "clientAskPrice";
-          type: "u64";
-        },
-        {
-          name: "maxQuotePosChange";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "rebalanceOtcEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-          docs: ["1", "signature of transaction"];
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["2"];
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-          docs: ["3"];
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-          docs: ["4"];
-        },
-        {
-          name: "entropyRound";
-          isMut: false;
-          isSigner: false;
-          docs: ["5"];
-        },
-        {
-          name: "epochInfo";
-          isMut: true;
-          isSigner: false;
-          docs: ["6"];
-        },
-        {
-          name: "vaultAuthority";
-          isMut: true;
-          isSigner: false;
-          docs: ["7"];
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["8"];
-        },
-        {
-          name: "entropyGroup";
-          isMut: true;
-          isSigner: false;
-          docs: ["9"];
-        },
-        {
-          name: "creatorEntropyOtcOrdersPda";
-          isMut: true;
-          isSigner: false;
-          docs: ["10"];
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-          docs: ["11"];
-        },
-        {
-          name: "creatorEntropyAccount";
-          isMut: true;
-          isSigner: false;
-          docs: ["12"];
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-          docs: ["13"];
-        },
-        {
-          name: "powerPerpMarket";
-          isMut: true;
-          isSigner: false;
-          docs: ["14"];
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-          docs: ["15"];
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-          docs: ["16"];
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-          docs: ["17"];
-        },
-        {
-          name: "eventQueue";
-          isMut: true;
-          isSigner: false;
-          docs: ["18"];
-        },
-        {
-          name: "powerPerpEventQueue";
-          isMut: true;
-          isSigner: false;
-          docs: ["19"];
-        },
-        {
-          name: "spotPerpMarket";
-          isMut: true;
-          isSigner: false;
-          docs: ["20"];
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["21"];
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-          docs: ["22"];
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["23"];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
-          docs: ["24"];
-        }
-      ];
-      args: [
-        {
-          name: "maxQuotePosChange";
-          type: "u64";
-        },
-        {
-          name: "forceHedgeFirst";
-          type: "bool";
-        },
-        {
-          name: "orderId";
-          type: "u64";
-        },
-        {
-          name: "openOrdersCount";
-          type: "u64";
-        },
-        {
-          name: "bypassCode";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "initSpotOpenOrdersEntropy";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-          docs: ["Volt Vault data"];
-        },
-        {
-          name: "extraVoltData";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyMetadata";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-          docs: ["Entropy program"];
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "spotMarket";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "dexProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "openOrders";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "dexSigner";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rent";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: "moveAssetsToLendingAccount";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "targetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "depositAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "withdrawAssetsFromLendingAccount";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "targetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "entropyProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyGroup";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyCache";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "rootBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "nodeBank";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "signer";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "entropyAccount";
-          isMut: true;
-          isSigner: false;
-          docs: ["CHECKED: checked by PDA macro"];
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "withdrawAmount";
-          type: "u64";
-        }
-      ];
-    },
-    {
-      name: "transferDeposit";
-      accounts: [
-        {
-          name: "authority";
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: "voltVault";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "vaultAuthority";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "targetPool";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "underlyingUserAcct";
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: "systemProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: "amount";
-          type: "u64";
-        }
-      ];
     },
     {
       name: "initSerumMarket";
@@ -5186,71 +4575,6 @@ export type VoltIDL = {
   ];
   accounts: [
     {
-      name: "PendingDeposit";
-      docs: [
-        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"'
-      ];
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "initialized";
-            type: "bool";
-          },
-          {
-            name: "roundNumber";
-            type: "u64";
-          },
-          {
-            name: "numUnderlyingDeposited";
-            type: "u64";
-          }
-        ];
-      };
-    },
-    {
-      name: "PendingWithdrawal";
-      docs: [
-        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"'
-      ];
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "initialized";
-            type: "bool";
-          },
-          {
-            name: "roundNumber";
-            type: "u64";
-          },
-          {
-            name: "numVoltRedeemed";
-            type: "u64";
-          }
-        ];
-      };
-    },
-    {
-      name: "Whitelist";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "admin";
-            type: "publicKey";
-          },
-          {
-            name: "addresses";
-            docs: ["The storage for information on reserves in the market"];
-            type: {
-              vec: "publicKey";
-            };
-          }
-        ];
-      };
-    },
-    {
       name: "UlOpenOrdersMetadata";
       type: {
         kind: "struct";
@@ -5263,121 +4587,13 @@ export type VoltIDL = {
       };
     },
     {
-      name: "EntropyRound";
+      name: "AuctionMetadata";
       type: {
         kind: "struct";
         fields: [
           {
-            name: "instantDepositsNative";
-            type: "u64";
-          },
-          {
-            name: "prevEntropyAccountDeposits";
-            type: "u64";
-          },
-          {
-            name: "initialEquity";
-            type: "f64";
-          },
-          {
-            name: "newEquityPostDeposit";
-            type: "f64";
-          },
-          {
-            name: "depositAmt";
-            type: "f64";
-          },
-          {
-            name: "withdrawCompFromDeposit";
-            type: "u64";
-          },
-          {
-            name: "netDeposits";
-            type: "f64";
-          },
-          {
-            name: "depositAmtNative";
-            type: "u64";
-          },
-          {
-            name: "withdrawAmtNative";
-            type: "u64";
-          },
-          {
-            name: "totalVoltSupply";
-            type: "u64";
-          },
-          {
-            name: "oraclePrice";
-            type: "f64";
-          },
-          {
-            name: "acctEquityStart";
-            type: "f64";
-          },
-          {
-            name: "acctEquityBeforeNextRebalance";
-            type: "f64";
-          },
-          {
-            name: "pnlQuote";
-            type: "f64";
-          },
-          {
-            name: "performanceFeesQuote";
-            type: "f64";
-          },
-          {
-            name: "temp1";
-            type: "publicKey";
-          },
-          {
-            name: "temp2";
-            type: "publicKey";
-          },
-          {
-            name: "temp3";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey11";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey12";
-            type: "publicKey";
-          },
-          {
-            name: "unusedUintFour";
-            type: "u64";
-          },
-          {
-            name: "unusedUintFive";
-            type: "u64";
-          },
-          {
-            name: "unusedUintSix";
-            type: "u64";
-          },
-          {
-            name: "unusedUint12";
-            type: "u64";
-          },
-          {
-            name: "targetCurrBasePosition";
-            type: "f64";
-          },
-          {
-            name: "targetCurrQuotePosition";
-            type: "f64";
-          },
-          {
-            name: "unusedFloat3";
-            type: "f64";
-          },
-          {
-            name: "unusedFloat4";
-            type: "f64";
+            name: "isPermissionless";
+            type: "bool";
           },
           {
             name: "unusedBoolOne";
@@ -5394,168 +4610,13 @@ export type VoltIDL = {
           {
             name: "unusedBoolFour";
             type: "bool";
-          }
-        ];
-      };
-    },
-    {
-      name: "Round";
-      docs: [
-        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal"
-      ];
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "number";
-            type: "u64";
           },
           {
-            name: "underlyingFromPendingDeposits";
-            type: "u64";
-          },
-          {
-            name: "voltTokensFromPendingWithdrawals";
-            type: "u64";
-          },
-          {
-            name: "underlyingPreEnter";
-            type: "u64";
-          },
-          {
-            name: "underlyingPostSettle";
-            type: "u64";
-          },
-          {
-            name: "premiumFarmed";
-            type: "u64";
-          }
-        ];
-      };
-    },
-    {
-      name: "FriktionEpochInfo";
-      type: {
-        kind: "struct";
-        fields: [
-          {
-            name: "vaultTokenPrice";
-            type: "f64";
-          },
-          {
-            name: "pctPnl";
-            type: "f64";
-          },
-          {
-            name: "number";
-            type: "u64";
-          },
-          {
-            name: "underlyingPreEnter";
-            type: "u64";
-          },
-          {
-            name: "underlyingPostSettle";
-            type: "u64";
-          },
-          {
-            name: "voltTokenSupply";
-            type: "u64";
-          },
-          {
-            name: "pnl";
-            type: "i64";
-          },
-          {
-            name: "performanceFees";
-            type: "u64";
-          },
-          {
-            name: "withdrawalFees";
-            type: "u64";
-          },
-          {
-            name: "pendingDeposits";
-            type: "u64";
-          },
-          {
-            name: "pendingWithdrawalsVoltTokens";
-            type: "u64";
-          },
-          {
-            name: "pendingWithdrawals";
-            type: "u64";
-          },
-          {
-            name: "canceledWithdrawals";
-            type: "u64";
-          },
-          {
-            name: "canceledDeposits";
-            type: "u64";
-          },
-          {
-            name: "totalWithdrawals";
-            type: "u64";
-          },
-          {
-            name: "totalDeposits";
-            type: "u64";
-          },
-          {
-            name: "instantDeposits";
-            type: "u64";
-          },
-          {
-            name: "instantWithdrawals";
-            type: "u64";
-          },
-          {
-            name: "unusedUint1";
-            type: "u64";
-          },
-          {
-            name: "mintedOptions";
-            type: "u64";
-          },
-          {
-            name: "enterNumTimesCalled";
-            type: "u64";
-          },
-          {
-            name: "swapPremiumNumTimesCalled";
-            type: "u64";
-          },
-          {
-            name: "optionKey";
+            name: "userOrders";
             type: "publicKey";
           },
           {
-            name: "extraKeyFour";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey5";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey6";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey7";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey8";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey9";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey10";
+            name: "currSwapOrder";
             type: "publicKey";
           },
           {
@@ -5567,15 +4628,27 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "startRoundTime";
+            name: "extraKey13";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey14";
+            type: "publicKey";
+          },
+          {
+            name: "participantType";
             type: "u64";
           },
           {
-            name: "beginAuctionTime";
+            name: "optionType";
             type: "u64";
           },
           {
-            name: "endAuctionTime";
+            name: "unusedUintFive";
+            type: "u64";
+          },
+          {
+            name: "unusedUintSix";
             type: "u64";
           },
           {
@@ -5595,36 +4668,28 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "totalWithdrawalsFromRealms";
+            name: "unusedUint11";
             type: "u64";
           },
           {
-            name: "totalDepositsFromRealms";
+            name: "unusedUint12";
             type: "u64";
           },
           {
-            name: "dovPerformanceFeesInUnderlying";
-            type: "bool";
+            name: "unusedFloatOne";
+            type: "f64";
           },
           {
-            name: "usedOtcOrders";
-            type: "bool";
+            name: "unusedFloatFour";
+            type: "f64";
           },
           {
-            name: "unusedBoolThree";
-            type: "bool";
+            name: "unusedFloatFive";
+            type: "f64";
           },
           {
-            name: "unusedBoolFour";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolFive";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolSix";
-            type: "bool";
+            name: "unusedFloatSix";
+            type: "f64";
           }
         ];
       };
@@ -5814,6 +4879,338 @@ export type VoltIDL = {
       };
     },
     {
+      name: "EntropyRound";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "instantDepositsNative";
+            type: "u64";
+          },
+          {
+            name: "prevEntropyAccountDeposits";
+            type: "u64";
+          },
+          {
+            name: "initialEquity";
+            type: "f64";
+          },
+          {
+            name: "newEquityPostDeposit";
+            type: "f64";
+          },
+          {
+            name: "depositAmtQuote";
+            type: "f64";
+          },
+          {
+            name: "withdrawCompFromDepositNative";
+            type: "u64";
+          },
+          {
+            name: "netDepositsQuote";
+            type: "f64";
+          },
+          {
+            name: "depositAmtNative";
+            type: "u64";
+          },
+          {
+            name: "withdrawAmtNative";
+            type: "u64";
+          },
+          {
+            name: "totalVoltSupply";
+            type: "u64";
+          },
+          {
+            name: "oraclePrice";
+            type: "f64";
+          },
+          {
+            name: "acctEquityStart";
+            type: "f64";
+          },
+          {
+            name: "acctEquityBeforeNextRebalance";
+            type: "f64";
+          },
+          {
+            name: "pnlQuote";
+            type: "f64";
+          },
+          {
+            name: "performanceFeesQuote";
+            type: "f64";
+          },
+          {
+            name: "temp1";
+            type: "publicKey";
+          },
+          {
+            name: "temp2";
+            type: "publicKey";
+          },
+          {
+            name: "temp3";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey11";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey12";
+            type: "publicKey";
+          },
+          {
+            name: "number";
+            type: "u64";
+          },
+          {
+            name: "unusedUintFive";
+            type: "u64";
+          },
+          {
+            name: "unusedUintSix";
+            type: "u64";
+          },
+          {
+            name: "unusedUint12";
+            type: "u64";
+          },
+          {
+            name: "targetCurrBasePosition";
+            type: "f64";
+          },
+          {
+            name: "targetCurrQuotePosition";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat3";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat4";
+            type: "f64";
+          },
+          {
+            name: "unusedBoolOne";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolTwo";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolThree";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFour";
+            type: "bool";
+          }
+        ];
+      };
+    },
+    {
+      name: "FriktionEpochInfo";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "vaultTokenPrice";
+            type: "f64";
+          },
+          {
+            name: "pctPnl";
+            type: "f64";
+          },
+          {
+            name: "number";
+            type: "u64";
+          },
+          {
+            name: "aumInDepositTokenAtEpochStart";
+            type: "u64";
+          },
+          {
+            name: "aumInDepositTokenAtEpochEnd";
+            type: "u64";
+          },
+          {
+            name: "voltTokenSupply";
+            type: "u64";
+          },
+          {
+            name: "pnl";
+            type: "i64";
+          },
+          {
+            name: "performanceFees";
+            type: "u64";
+          },
+          {
+            name: "withdrawalFees";
+            type: "u64";
+          },
+          {
+            name: "pendingDeposits";
+            type: "u64";
+          },
+          {
+            name: "pendingWithdrawalsVoltTokens";
+            type: "u64";
+          },
+          {
+            name: "pendingWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "canceledWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "canceledDeposits";
+            type: "u64";
+          },
+          {
+            name: "totalWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "totalDeposits";
+            type: "u64";
+          },
+          {
+            name: "instantDeposits";
+            type: "u64";
+          },
+          {
+            name: "instantWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "aumFees";
+            type: "u64";
+          },
+          {
+            name: "mintedOptions";
+            type: "u64";
+          },
+          {
+            name: "enterNumTimesCalled";
+            type: "u64";
+          },
+          {
+            name: "swapPremiumNumTimesCalled";
+            type: "u64";
+          },
+          {
+            name: "optionKey";
+            type: "publicKey";
+          },
+          {
+            name: "extraKeyFour";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey5";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey6";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey7";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey8";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey9";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey10";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey11";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey12";
+            type: "publicKey";
+          },
+          {
+            name: "startRoundTime";
+            type: "u64";
+          },
+          {
+            name: "beginAuctionTime";
+            type: "u64";
+          },
+          {
+            name: "endAuctionTime";
+            type: "u64";
+          },
+          {
+            name: "underlyingFromPendingDeposits";
+            type: "u64";
+          },
+          {
+            name: "voltTokensFromPendingWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "heldAsidePerformanceFees";
+            type: "u64";
+          },
+          {
+            name: "lastSwapSize";
+            type: "u64";
+          },
+          {
+            name: "totalWithdrawalsFromRealms";
+            type: "u64";
+          },
+          {
+            name: "totalDepositsFromRealms";
+            type: "u64";
+          },
+          {
+            name: "dovPerformanceFeesInUnderlying";
+            type: "bool";
+          },
+          {
+            name: "usedOtcOrders";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolThree";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFour";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolFive";
+            type: "bool";
+          },
+          {
+            name: "unusedBoolSix";
+            type: "bool";
+          }
+        ];
+      };
+    },
+    {
       name: "ExtraVoltData";
       type: {
         kind: "struct";
@@ -5863,7 +5260,7 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "powerPerpMarket";
+            name: "targetPerpMarket";
             type: "publicKey";
           },
           {
@@ -5887,7 +5284,7 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "hedgingSpotPerpMarket";
+            name: "hedgingPerpMarket";
             docs: ["pubkey of perp market to hedge"];
             type: "publicKey";
           },
@@ -5948,15 +5345,15 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "unusedUint7";
+            name: "timeLastTookAumFees";
             type: "u64";
           },
           {
-            name: "unusedUint8";
+            name: "unusedUint1234";
             type: "u64";
           },
           {
-            name: "unusedUint9";
+            name: "aumFeeBps";
             type: "u64";
           },
           {
@@ -5984,7 +5381,7 @@ export type VoltIDL = {
             type: "bool";
           },
           {
-            name: "doneRebalancingPowerPerp";
+            name: "doneRebalancingTargetPerp";
             type: "bool";
           },
           {
@@ -5994,6 +5391,121 @@ export type VoltIDL = {
           {
             name: "haveTakenPerformanceFees";
             type: "bool";
+          }
+        ];
+      };
+    },
+    {
+      name: "PendingDeposit";
+      docs: [
+        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"'
+      ];
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "initialized";
+            type: "bool";
+          },
+          {
+            name: "roundNumber";
+            type: "u64";
+          },
+          {
+            name: "numUnderlyingDeposited";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "PendingWithdrawal";
+      docs: [
+        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"'
+      ];
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "initialized";
+            type: "bool";
+          },
+          {
+            name: "roundNumber";
+            type: "u64";
+          },
+          {
+            name: "numVoltRedeemed";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "PrincipalProtectionVaultV1";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "initialized";
+            type: "bool";
+          },
+          {
+            name: "vaultName";
+            type: "string";
+          },
+          {
+            name: "keys";
+            type: {
+              defined: "PrincipalProtectionAccountsV1";
+            };
+          },
+          {
+            name: "allocationStrategy";
+            type: {
+              defined: "SecondLegAllocationStrategy";
+            };
+          },
+          {
+            name: "lendingStrategy";
+            type: {
+              defined: "LendingStrategy";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "Round";
+      docs: [
+        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal"
+      ];
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "number";
+            type: "u64";
+          },
+          {
+            name: "underlyingFromPendingDeposits";
+            type: "u64";
+          },
+          {
+            name: "voltTokensFromPendingWithdrawals";
+            type: "u64";
+          },
+          {
+            name: "aumInDepositTokenAtEpochStart";
+            type: "u64";
+          },
+          {
+            name: "aumInDepositTokenAtEpochEnd";
+            type: "u64";
+          },
+          {
+            name: "premiumFarmed";
+            type: "u64";
           }
         ];
       };
@@ -6028,11 +5540,11 @@ export type VoltIDL = {
             type: "bool";
           },
           {
-            name: "currOptionWasSettled";
+            name: "currOptionWasSettledFirstTime";
             type: "bool";
           },
           {
-            name: "mustSwapPremiumToUnderlying";
+            name: "mustSwapQuoteAssetAfterSettle";
             type: "bool";
           },
           {
@@ -6040,7 +5552,7 @@ export type VoltIDL = {
             type: "bool";
           },
           {
-            name: "firstEverOptionWasSet";
+            name: "mustSwapPremiumAfterEnter";
             type: "bool";
           },
           {
@@ -6064,11 +5576,11 @@ export type VoltIDL = {
             type: "u64";
           },
           {
-            name: "totalUnderlyingPreEnter";
+            name: "aumInDepositTokenAtEpochStart";
             type: "u64";
           },
           {
-            name: "totalUnderlyingPostSettle";
+            name: "aumInDepositTokenAtEpochEnd";
             type: "u64";
           },
           {
@@ -6100,7 +5612,7 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "underlyingAssetMint";
+            name: "depositMint";
             type: "publicKey";
           },
           {
@@ -6116,7 +5628,7 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "optionMarket";
+            name: "optionsContract";
             type: "publicKey";
           },
           {
@@ -6162,15 +5674,15 @@ export type VoltIDL = {
             type: "publicKey";
           },
           {
-            name: "openOrdersBump";
+            name: "mustSwapUsdcFeesAfterSettle";
             type: "u8";
           },
           {
-            name: "openOrdersInitBump";
+            name: "finishedSettlingOption";
             type: "u8";
           },
           {
-            name: "ulOpenOrdersBump";
+            name: "voltType";
             type: "u8";
           },
           {
@@ -6182,7 +5694,7 @@ export type VoltIDL = {
             type: "bool";
           },
           {
-            name: "bumpAuthority";
+            name: "vaultAuthorityBump";
             type: "u8";
           },
           {
@@ -6229,109 +5741,20 @@ export type VoltIDL = {
       };
     },
     {
-      name: "AuctionMetadata";
+      name: "Whitelist";
       type: {
         kind: "struct";
         fields: [
           {
-            name: "isPermissionless";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolOne";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolTwo";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolThree";
-            type: "bool";
-          },
-          {
-            name: "unusedBoolFour";
-            type: "bool";
-          },
-          {
-            name: "extraKey9";
+            name: "admin";
             type: "publicKey";
           },
           {
-            name: "extraKey10";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey11";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey12";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey13";
-            type: "publicKey";
-          },
-          {
-            name: "extraKey14";
-            type: "publicKey";
-          },
-          {
-            name: "unusedUintOne";
-            type: "u64";
-          },
-          {
-            name: "unusedUintFour";
-            type: "u64";
-          },
-          {
-            name: "unusedUintFive";
-            type: "u64";
-          },
-          {
-            name: "unusedUintSix";
-            type: "u64";
-          },
-          {
-            name: "unusedUint7";
-            type: "u64";
-          },
-          {
-            name: "unusedUint8";
-            type: "u64";
-          },
-          {
-            name: "unusedUint9";
-            type: "u64";
-          },
-          {
-            name: "unusedUint10";
-            type: "u64";
-          },
-          {
-            name: "unusedUint11";
-            type: "u64";
-          },
-          {
-            name: "unusedUint12";
-            type: "u64";
-          },
-          {
-            name: "unusedFloatOne";
-            type: "f64";
-          },
-          {
-            name: "unusedFloatFour";
-            type: "f64";
-          },
-          {
-            name: "unusedFloatFive";
-            type: "f64";
-          },
-          {
-            name: "unusedFloatSix";
-            type: "f64";
+            name: "addresses";
+            docs: ["The storage for information on reserves in the market"];
+            type: {
+              vec: "publicKey";
+            };
           }
         ];
       };
@@ -6339,18 +5762,543 @@ export type VoltIDL = {
   ];
   types: [
     {
-      name: "TwoTokenDerivativesProtocol";
+      name: "SerumOrderPreferences";
       type: {
-        kind: "enum";
-        variants: [
+        kind: "struct";
+        fields: [
           {
-            name: "Soloptions";
+            name: "limit";
+            type: "u16";
           },
           {
-            name: "Inertia";
+            name: "orderType";
+            type: {
+              defined: "OrderType";
+            };
           },
           {
-            name: "Spreads";
+            name: "selfTradeBehavior";
+            type: {
+              defined: "SelfTradeBehavior";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "CreateSwapParams";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "giveSize";
+            type: "u64";
+          },
+          {
+            name: "receiveSize";
+            type: "u64";
+          },
+          {
+            name: "expiry";
+            type: "u64";
+          },
+          {
+            name: "isCounterpartyProvided";
+            type: "bool";
+          },
+          {
+            name: "isWhitelisted";
+            type: "bool";
+          },
+          {
+            name: "enforceMintMatch";
+            type: "bool";
+          }
+        ];
+      };
+    },
+    {
+      name: "VoltBumps";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "vaultAuthorityBump";
+            type: "u8";
+          }
+        ];
+      };
+    },
+    {
+      name: "InitializeArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "vaultName";
+            type: "string";
+          },
+          {
+            name: "capacity";
+            type: "u64";
+          },
+          {
+            name: "individualCapacity";
+            type: "u64";
+          },
+          {
+            name: "bumps";
+            type: {
+              defined: "VoltBumps";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "SerumArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "orderSizeOptions";
+            type: "u64";
+          },
+          {
+            name: "orderType";
+            type: "u64";
+          },
+          {
+            name: "selfTradeBehavior";
+            type: "u16";
+          }
+        ];
+      };
+    },
+    {
+      name: "OptionsContractArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "participantType";
+            type: {
+              defined: "DovParticipantType";
+            };
+          },
+          {
+            name: "optionType";
+            type: {
+              defined: "OptionType";
+            };
+          },
+          {
+            name: "expirationInterval";
+            type: "u64";
+          },
+          {
+            name: "underlyingAmountPerContract";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "InitializeDovArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "serumArgs";
+            type: {
+              defined: "SerumArgs";
+            };
+          },
+          {
+            name: "optionsArgs";
+            type: {
+              defined: "OptionsContractArgs";
+            };
+          },
+          {
+            name: "permissionlessAuctions";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "InitializeShortOptionsArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "baseArgs";
+            type: {
+              defined: "InitializeArgs";
+            };
+          },
+          {
+            name: "dovArgs";
+            type: {
+              defined: "InitializeDovArgs";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "InitializePrincipalProtectionArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "baseArgs";
+            type: {
+              defined: "InitializeArgs";
+            };
+          },
+          {
+            name: "dovArgs";
+            type: {
+              defined: "InitializeDovArgs";
+            };
+          },
+          {
+            name: "allocationStrategy";
+            type: {
+              defined: "SecondLegAllocationStrategy";
+            };
+          },
+          {
+            name: "lendingStrategy";
+            type: {
+              defined: "LendingStrategy";
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: "InitializeEntropyArgs";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "baseArgs";
+            type: {
+              defined: "InitializeArgs";
+            };
+          },
+          {
+            name: "targetLeverageRatio";
+            type: "f64";
+          },
+          {
+            name: "targetLeverageLenience";
+            type: "f64";
+          },
+          {
+            name: "targetHedgeLenience";
+            type: "f64";
+          },
+          {
+            name: "exitEarlyRatio";
+            type: "f64";
+          },
+          {
+            name: "shouldHedge";
+            type: "bool";
+          },
+          {
+            name: "hedgeWithSpot";
+            type: "bool";
+          },
+          {
+            name: "targetHedgeRatio";
+            type: "f64";
+          },
+          {
+            name: "rebalancingLenience";
+            type: "f64";
+          },
+          {
+            name: "requiredBasisFromOracle";
+            type: "f64";
+          }
+        ];
+      };
+    },
+    {
+      name: "PrincipalProtectionAccountsV1";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "lendingKeys";
+            type: {
+              defined: "LendingKeys";
+            };
+          },
+          {
+            name: "optionsKeys";
+            type: {
+              defined: "OptionsContractKeys";
+            };
+          },
+          {
+            name: "lendingSharesPool";
+            type: "publicKey";
+          },
+          {
+            name: "depositIntoLendingAta";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey1";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey2";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey3";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey4";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey5";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey6";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey7";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "OptionsContractKeys";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "programId";
+            type: "publicKey";
+          },
+          {
+            name: "optionsContract";
+            type: "publicKey";
+          },
+          {
+            name: "optionTokenPool";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey1";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey2";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey3";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey4";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "EntropyPlaceOrderParams";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "clientBidPrice";
+            type: "u64";
+          },
+          {
+            name: "clientAskPrice";
+            type: "u64";
+          },
+          {
+            name: "maxQuotePosChange";
+            type: "u64";
+          }
+        ];
+      };
+    },
+    {
+      name: "LendingParams";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bool1";
+            type: "u8";
+          },
+          {
+            name: "bool2";
+            type: "u8";
+          },
+          {
+            name: "bool3";
+            type: "u8";
+          },
+          {
+            name: "bool4";
+            type: "u8";
+          },
+          {
+            name: "maxAllowedUtilizationBps";
+            type: "u64";
+          },
+          {
+            name: "unusedUint1";
+            type: "u64";
+          },
+          {
+            name: "unusedUint2";
+            type: "u64";
+          },
+          {
+            name: "unusedUint3";
+            type: "u64";
+          },
+          {
+            name: "unusedUint4";
+            type: "u64";
+          },
+          {
+            name: "unusedFloat1";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat2";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat3";
+            type: "f64";
+          },
+          {
+            name: "unusedFloat4";
+            type: "f64";
+          }
+        ];
+      };
+    },
+    {
+      name: "PrimaryVaultKeys";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "vault";
+            type: "publicKey";
+          },
+          {
+            name: "vaultPda";
+            type: "publicKey";
+          },
+          {
+            name: "underlyingDepositQueue";
+            type: "publicKey";
+          },
+          {
+            name: "underlyingWithdrawQueue";
+            type: "publicKey";
+          },
+          {
+            name: "sharesMint";
+            type: "publicKey";
+          },
+          {
+            name: "underlyingMint";
+            type: "publicKey";
+          },
+          {
+            name: "depositTrackingAccount";
+            type: "publicKey";
+          },
+          {
+            name: "depositTrackingQueueAccount";
+            type: "publicKey";
+          },
+          {
+            name: "depositTrackingHoldAccount";
+            type: "publicKey";
+          },
+          {
+            name: "depositTrackingPda";
+            type: "publicKey";
+          },
+          {
+            name: "programId";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey1";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey2";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey3";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey4";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey5";
+            type: "publicKey";
+          },
+          {
+            name: "extraKey6";
+            type: "publicKey";
+          }
+        ];
+      };
+    },
+    {
+      name: "LendingKeys";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "primaryVault";
+            type: {
+              defined: "PrimaryVaultKeys";
+            };
+          },
+          {
+            name: "mangoVault";
+            type: "publicKey";
+          },
+          {
+            name: "solendVault";
+            type: "publicKey";
+          },
+          {
+            name: "tulipVault";
+            type: "publicKey";
           }
         ];
       };
@@ -6404,6 +6352,48 @@ export type VoltIDL = {
       };
     },
     {
+      name: "DovParticipantType";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "OptionSeller";
+          },
+          {
+            name: "OptionBuyer";
+          }
+        ];
+      };
+    },
+    {
+      name: "OptionType";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "Call";
+          },
+          {
+            name: "Put";
+          }
+        ];
+      };
+    },
+    {
+      name: "ExecutionType";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "Spot";
+          },
+          {
+            name: "Perp";
+          }
+        ];
+      };
+    },
+    {
       name: "VoltType";
       type: {
         kind: "enum";
@@ -6413,6 +6403,100 @@ export type VoltIDL = {
           },
           {
             name: "Entropy";
+          },
+          {
+            name: "PrincipalProtection";
+          }
+        ];
+      };
+    },
+    {
+      name: "SecondLegAllocationStrategy";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "MinApr";
+            fields: [
+              {
+                name: "apr";
+                type: "u64";
+              }
+            ];
+          },
+          {
+            name: "ProjectedPnlFraction";
+            fields: [
+              {
+                name: "fraction_bps";
+                type: "u64";
+              }
+            ];
+          },
+          {
+            name: "FixedFraction";
+            fields: [
+              {
+                name: "fraction_bps";
+                type: "u64";
+              }
+            ];
+          },
+          {
+            name: "ExtraStrategy1";
+            fields: [
+              {
+                name: "uint1";
+                type: "u64";
+              },
+              {
+                name: "uint2";
+                type: "u64";
+              },
+              {
+                name: "uint3";
+                type: "u64";
+              },
+              {
+                name: "uint4";
+                type: "u64";
+              },
+              {
+                name: "u81";
+                type: "u8";
+              },
+              {
+                name: "u82";
+                type: "u8";
+              },
+              {
+                name: "u83";
+                type: "u8";
+              },
+              {
+                name: "u84";
+                type: "u8";
+              }
+            ];
+          }
+        ];
+      };
+    },
+    {
+      name: "LendingStrategy";
+      type: {
+        kind: "enum";
+        variants: [
+          {
+            name: "TulipOptimizer";
+            fields: [
+              {
+                name: "params";
+                type: {
+                  defined: "LendingParams";
+                };
+              }
+            ];
           }
         ];
       };
@@ -7041,438 +7125,579 @@ export type VoltIDL = {
     },
     {
       code: 6124;
-      name: "InvalidTakePendingWithdrawalFeesState";
-      msg: "invalid take pending withdrawal fees state";
-    },
-    {
-      code: 6125;
       name: "PendingDepositInfoNotInitialized";
       msg: "pending deposit info not initialized";
     },
     {
-      code: 6126;
+      code: 6125;
       name: "PendingDepositDoesNotExist";
       msg: "pending deposits does not exist";
     },
     {
-      code: 6127;
+      code: 6126;
       name: "CannotCancelPendingDepositFromOldRound";
       msg: "cannot cancel pending deposit from old round";
     },
     {
-      code: 6128;
+      code: 6127;
       name: "VaultDestinationDoesNotMatchVoltVault";
       msg: "vault destination does not match volt vault";
     },
     {
-      code: 6129;
+      code: 6128;
       name: "MustTakeWithdrawalFeesBeforeStartingRound";
       msg: "must take withdrawal fees before starting round";
     },
     {
-      code: 6130;
+      code: 6129;
       name: "RoundMustBeEnded";
       msg: "round must be ended";
     },
     {
-      code: 6131;
+      code: 6130;
       name: "MustNotHaveSoldOptionTokens";
       msg: "must not have sold option tokens to reset";
     },
     {
-      code: 6132;
+      code: 6131;
       name: "CantCloseAccountUnlessEmpty";
       msg: "cannot close account unless empty";
     },
     {
-      code: 6133;
+      code: 6132;
       name: "OpenOrderMustBeEmptyToClose";
       msg: "open orders must be empty to close";
     },
     {
-      code: 6134;
+      code: 6133;
       name: "InvalidWhitelistAccountVector";
       msg: "invalid whitelist account (vector)";
     },
     {
-      code: 6135;
+      code: 6134;
       name: "InvalidDaoProgramId";
       msg: "invalid dao program ID";
     },
     {
-      code: 6136;
+      code: 6135;
       name: "VoltMustBeForDao";
       msg: "volt must be for dao";
     },
     {
-      code: 6137;
+      code: 6136;
       name: "InvalidDaoAuthority";
       msg: "invalid dao authority";
     },
     {
-      code: 6138;
+      code: 6137;
       name: "DaoAuthorityMustSign";
       msg: "dao authority must sign";
     },
     {
-      code: 6139;
+      code: 6138;
       name: "InvalidPendingDepositKey";
       msg: "invalid pending deposit key";
     },
     {
-      code: 6140;
+      code: 6139;
       name: "InvalidAuthorityCheck";
       msg: "invalid authority check";
     },
     {
-      code: 6141;
+      code: 6140;
       name: "InvalidEndEntropyRoundState";
       msg: "entropy: invalid end entropy round state";
     },
     {
-      code: 6142;
+      code: 6141;
       name: "InvalidVoltType";
       msg: "invalid volt type";
     },
     {
-      code: 6143;
+      code: 6142;
       name: "CantFindPerpMarketIndex";
       msg: "can't find perp market index";
     },
     {
-      code: 6144;
+      code: 6143;
       name: "AccountEquityLessThanZero";
       msg: "account equity less than zero";
     },
     {
-      code: 6145;
+      code: 6144;
       name: "QuotePositionChangedTooMuch";
       msg: "quote position changed too much";
     },
     {
-      code: 6146;
+      code: 6145;
       name: "MustMoveCloserToTargetCollateralization";
       msg: "must move closer to target collateralization";
     },
     {
-      code: 6147;
+      code: 6146;
       name: "CollateralNotWithinLenience";
       msg: "collateral not within lenience";
     },
     {
-      code: 6148;
+      code: 6147;
       name: "InvalidRebalanceEntropyState";
       msg: "invalid rebalance entropy state";
     },
     {
-      code: 6149;
+      code: 6148;
       name: "BasePositionMustBeNegative";
       msg: "volt must have negative base position (be short)";
     },
     {
-      code: 6150;
+      code: 6149;
       name: "QuotePositionMustBePositive";
       msg: "volt must have positive quote position (be short)";
     },
     {
-      code: 6151;
+      code: 6150;
       name: "TargetCollateralRatioMustBeNegative";
       msg: "target collateral ratio must be neggat";
     },
     {
-      code: 6152;
+      code: 6151;
       name: "NewEquityMustBeHigherThanDepositAmount";
       msg: "new equity must be higher than deposit amt";
     },
     {
-      code: 6153;
+      code: 6152;
       name: "InstantTransfersMustBeDisabled";
       msg: "instant transfers must be enabled";
     },
     {
-      code: 6154;
+      code: 6153;
       name: "RebalanceMustBeReady";
       msg: "rebalance must be ready";
     },
     {
-      code: 6155;
+      code: 6154;
       name: "IncorrectHedge";
       msg: "spot hedge unbalanced";
     },
     {
-      code: 6156;
+      code: 6155;
       name: "VaultNameMustBeNonZeroLength";
       msg: "vault name must be zero length";
     },
     {
-      code: 6157;
+      code: 6156;
       name: "VaultDoesNotSupportOverLeveragedStrategies";
       msg: "vault does not support over leveraged strategies";
     },
     {
-      code: 6158;
+      code: 6157;
       name: "LenienceMustBeGreaterThanZero";
       msg: "lenience must be greater than zero";
     },
     {
-      code: 6159;
+      code: 6158;
       name: "LenienceShouldNotBeGreaterThanLeverage";
       msg: "lenience should not be greater than leverage";
     },
     {
-      code: 6160;
+      code: 6159;
       name: "HedgeLenienceMustBeGreaterThanZero";
       msg: "hedge lenience should be greater than leverage";
     },
     {
-      code: 6161;
+      code: 6160;
       name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies";
       msg: "exit early ratio must be < 1.0";
     },
     {
-      code: 6162;
+      code: 6161;
       name: "RoundNumberMustNotOverflow";
       msg: "round number must not overflow";
     },
     {
-      code: 6163;
+      code: 6162;
       name: "InvalidWhitelistTokenAccountMint";
       msg: "invalid whitelist token account mint";
     },
     {
-      code: 6164;
+      code: 6163;
       name: "SoloptionsProgramIdDoesNotMatch";
       msg: "soloptions program id does not matchf";
     },
     {
-      code: 6165;
+      code: 6164;
       name: "WhitelistTokenAccountOwnerIsNotUser";
       msg: "whitelist token account owner is not user";
     },
     {
-      code: 6166;
+      code: 6165;
       name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram";
       msg: "sol transfer authority must be owned by volt program";
     },
     {
-      code: 6167;
+      code: 6166;
       name: "InsufficientCollateralForDeposit";
       msg: "Insufficient collateral to deposit.";
     },
     {
-      code: 6168;
+      code: 6167;
       name: "SolTransferAuthorityMustBeWritableAndSigner";
       msg: "sol transfer authority must be writable/signer";
     },
     {
-      code: 6169;
+      code: 6168;
       name: "VoltMustBeOfEntropyType";
       msg: "volt must be entropy type";
     },
     {
-      code: 6170;
+      code: 6169;
       name: "VoltMustBeofShortOptionsType";
       msg: "volt must be of short options type";
     },
     {
-      code: 6171;
+      code: 6170;
       name: "DepositsAndWithdrawalsAreTurnedOff";
       msg: "deposits and withdrawals are turned off";
     },
     {
-      code: 6172;
+      code: 6171;
       name: "ShouldBeDoneRebalancing";
       msg: "should be done rebalancing";
     },
     {
-      code: 6173;
+      code: 6172;
       name: "UnrecognizedEntropyProgramId";
       msg: "unrecognized entropy program id";
     },
     {
-      code: 6174;
+      code: 6173;
       name: "InvalidTakePerformanceFeesState";
       msg: "invalid take performance fees state";
     },
     {
-      code: 6175;
+      code: 6174;
       name: "DiscriminatorDoesNotMatch";
       msg: "discriminator does not match";
     },
     {
-      code: 6176;
+      code: 6175;
       name: "RealizedOraclePriceTooFarOffClientProvided";
       msg: "realized oracle price too far off client provided";
     },
     {
-      code: 6177;
+      code: 6176;
       name: "VaultMintSupplyMustBeZeroIfEquityIsZero";
       msg: "vault mint supply must be zero if equity is zero";
     },
     {
-      code: 6178;
+      code: 6177;
       name: "InvalidSetupRebalanceEntropyState";
       msg: "invalid setup rebalance entropy state";
     },
     {
-      code: 6179;
+      code: 6178;
       name: "HedgeWithSpotMustBeTrue";
       msg: "hedge with spot must be true";
     },
     {
-      code: 6180;
+      code: 6179;
       name: "PowerPerpMustBeDoneRebalancing";
       msg: "power perp must be done rebalancing";
     },
     {
-      code: 6181;
+      code: 6180;
       name: "HedgingMustBeOn";
       msg: "hedging must be on";
     },
     {
-      code: 6182;
+      code: 6181;
       name: "DepositedAmountOfHedgeAssetShouldBeZero";
       msg: "deposited amount of hedge asset should be zero";
     },
     {
-      code: 6183;
+      code: 6182;
       name: "BorrowedAmountOfHedgeAssetShouldBeZero";
       msg: "borrowed amount of hedge asset should be zero";
     },
     {
-      code: 6184;
+      code: 6183;
       name: "SwapPremiumMustHaveBeenCalledAtLeastOnce";
       msg: "swap premium must have been called at least once";
     },
     {
-      code: 6185;
+      code: 6184;
       name: "ShouldHedgeWithSpotNotPerp";
       msg: "should hedge with spot not perp";
     },
     {
-      code: 6186;
+      code: 6185;
       name: "InvalidRebalanceSpotEntropyState";
       msg: "invalid rebalane spot entropy state";
     },
     {
-      code: 6187;
+      code: 6186;
       name: "CompleteBasePositionDoesNotMatchNormal";
       msg: "complete base position does not match normal";
     },
     {
-      code: 6188;
+      code: 6187;
       name: "InvalidUserUnderlyingTokens";
       msg: "invalid user underlying tokens";
     },
     {
-      code: 6189;
+      code: 6188;
       name: "InvalidRoundForCancel";
       msg: "invalid round number for cancel";
     },
     {
-      code: 6190;
+      code: 6189;
       name: "InvalidEpochForCancel";
       msg: "invalid epoch number for cancel";
     },
     {
-      code: 6191;
+      code: 6190;
       name: "PendingDepositAlreadyExists";
       msg: "pending deposit already exists";
     },
     {
-      code: 6192;
+      code: 6191;
       name: "InvalidPendingWithdrawalKey";
       msg: "invalid pending withdrawal key";
     },
     {
-      code: 6193;
+      code: 6192;
       name: "InvalidDepositDiscretionaryState";
       msg: "invalid deposit discretionary state";
     },
     {
-      code: 6194;
+      code: 6193;
       name: "InvalidInitSerumMarketState";
       msg: "invalid init serum market state";
     },
     {
-      code: 6195;
+      code: 6194;
       name: "QuotePositionMustMoveCloserToDesired";
       msg: "quote position must move closer to desired";
     },
     {
-      code: 6196;
+      code: 6195;
       name: "PermissionedMarketPremiumPoolAmountMustBeZero";
       msg: "permissioned market premium pool amount must be zero";
     },
     {
-      code: 6197;
+      code: 6196;
       name: "PremiumPoolAmountMustBeZero";
       msg: "premium pool amount must be zero";
     },
     {
-      code: 6198;
+      code: 6197;
       name: "WriterTokenMintDoesNotMatchVoltVault";
       msg: "writer token mint doesn't match vv";
     },
     {
-      code: 6199;
+      code: 6198;
       name: "InvalidTargetPoolForSwapOrder";
       msg: "invalid target pool for swap order";
     },
     {
-      code: 6200;
+      code: 6199;
       name: "GivePoolMustBeEmpty";
       msg: "give pool must be empty";
     },
     {
-      code: 6201;
+      code: 6200;
       name: "ReceivePoolMustBeEmpty";
       msg: "receive pool must be empty";
     },
     {
-      code: 6202;
+      code: 6201;
       name: "InvalidOracleType";
       msg: "invalid oracle type";
     },
     {
-      code: 6203;
+      code: 6202;
       name: "MustNotBeLendingUnderlyingAssetMint";
       msg: "must not be lending underlying asset mint";
     },
     {
-      code: 6204;
+      code: 6203;
       name: "MustNotBeLendingQuoteAssetMint";
       msg: "must not be lending quote asset mint";
     },
     {
-      code: 6205;
+      code: 6204;
       name: "InvalidSettleEnterFundsState";
       msg: "invalid settle enter funds state";
     },
     {
-      code: 6206;
+      code: 6205;
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount";
       msg: "premium farmed must match permissioned market premium pool";
     },
     {
-      code: 6207;
+      code: 6206;
       name: "InvalidWithdrawAmount";
       msg: "invalid withdraw amount";
     },
     {
-      code: 6208;
+      code: 6207;
       name: "InvalidOtcOrderPrice";
       msg: "invalid OTC order price";
     },
     {
-      code: 6209;
+      code: 6208;
       name: "UnhealthyEntropyAccount";
       msg: "unhealthy entropy account";
     },
     {
-      code: 6210;
+      code: 6209;
       name: "TransferAuthorityMustSign";
       msg: "transfer authority must sign";
+    },
+    {
+      code: 6210;
+      name: "MustHaveLastTimeTookAumFees";
+      msg: "please end an epoch and get a time last took aum fees";
+    },
+    {
+      code: 6211;
+      name: "TradingPoolAmountMustBeGreaterThanZero";
+      msg: "trading pool amount must be greater than 0";
+    },
+    {
+      code: 6212;
+      name: "VoltMustBeADOV";
+      msg: "volt must be a dov (defi options volt)";
+    },
+    {
+      code: 6213;
+      name: "MintOptionMustMatchSetOption";
+      msg: "mint option must match set option";
+    },
+    {
+      code: 6214;
+      name: "NoMatchingPool";
+    },
+    {
+      code: 6215;
+      name: "RoundHasNotEnded";
+    },
+    {
+      code: 6216;
+      name: "InvalidPerformanceFeeMint";
+    },
+    {
+      code: 6217;
+      name: "InsufficientFundsToOffer";
+    },
+    {
+      code: 6218;
+      name: "InsufficientFundsToBid";
+    },
+    {
+      code: 6219;
+      name: "PriceTooLow";
+    },
+    {
+      code: 6220;
+      name: "PriceTooHigh";
+    },
+    {
+      code: 6221;
+      name: "OrderSizeZero";
+    },
+    {
+      code: 6222;
+      name: "MustSwapPremiumAfterEnter";
+    },
+    {
+      code: 6223;
+      name: "NoValidShortOptionsEpochStage";
+      msg: "no valid short options epoch stage";
+    },
+    {
+      code: 6224;
+      name: "InvalidCallToShortOptionsEpochStage";
+      msg: "invalid call to short options epoch stage";
+    },
+    {
+      code: 6225;
+      name: "InvalidPendingWithdrawalState";
+    },
+    {
+      code: 6226;
+      name: "InvalidRoundNumber";
+    },
+    {
+      code: 6227;
+      name: "InvalidTokenAccount";
+    },
+    {
+      code: 6228;
+      name: "InvalidPDA";
+    },
+    {
+      code: 6229;
+      name: "InvalidOpenOrders";
+    },
+    {
+      code: 6230;
+      name: "InvalidHedgingStrategy";
+    },
+    {
+      code: 6231;
+      name: "UnsupportedOrderStrategy";
+    },
+    {
+      code: 6232;
+      name: "InvalidMarketType";
+    },
+    {
+      code: 6233;
+      name: "InvalidFeeAccount";
+    },
+    {
+      code: 6234;
+      name: "InvalidSettleFeesEarly";
+    },
+    {
+      code: 6235;
+      name: "InvalidVaultMint";
+    },
+    {
+      code: 6236;
+      name: "InvalidWriterTokenPool";
+    },
+    {
+      code: 6237;
+      name: "NoOpenOrders";
+    },
+    {
+      code: 6238;
+      name: "InvalidTargetPerpMarket";
+    },
+    {
+      code: 6239;
+      name: "InvalidHedgingPerpMarket";
+    },
+    {
+      code: 6240;
+      name: "AlreadyInitialized";
+    },
+    {
+      code: 6241;
+      name: "InvalidAccount";
+    },
+    {
+      code: 6242;
+      name: "InvalidDepositMint";
+    },
+    {
+      code: 6243;
+      name: "InvalidEnterSwapClaimState";
+    },
+    {
+      code: 6244;
+      name: "InvalidCurrSwapOrder";
     }
   ];
 };
@@ -7480,118 +7705,6 @@ export const VoltIDLJsonRaw = {
   version: "0.1.0",
   name: "volt",
   instructions: [
-    {
-      name: "initialize",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "adminKey",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "seed",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "bump",
-          type: "u8",
-        },
-        {
-          name: "bumpAuthority",
-          type: "u8",
-        },
-        {
-          name: "serumOrderSizeOptions",
-          type: "u64",
-        },
-        {
-          name: "serumOrderType",
-          type: {
-            defined: "OrderType",
-          },
-        },
-        {
-          name: "serumSelfTradeBehavior",
-          type: {
-            defined: "SelfTradeBehavior",
-          },
-        },
-        {
-          name: "expirationInterval",
-          type: "u64",
-        },
-        {
-          name: "underlyingAmountPerContract",
-          type: "u64",
-        },
-        {
-          name: "vaultCapacity",
-          type: "u64",
-        },
-        {
-          name: "individualCapacity",
-          type: "u64",
-        },
-        {
-          name: "permissionlessAuctions",
-          type: "u64",
-        },
-      ],
-    },
     {
       name: "turnOffDepositsAndWithdrawals",
       accounts: [
@@ -7629,248 +7742,6 @@ export const VoltIDLJsonRaw = {
       args: [
         {
           name: "code",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "createSwapOrder",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "swapOrder",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "userOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltGivePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "givePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "giveMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "receivePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "receiveMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "counterparty",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "whitelistTokenMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "swapProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "optionsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "giveSize",
-          type: "u64",
-        },
-        {
-          name: "receiveSize",
-          type: "u64",
-        },
-        {
-          name: "expiry",
-          type: "u64",
-        },
-        {
-          name: "isCounterpartyProvided",
-          type: "bool",
-        },
-        {
-          name: "isWhitelisted",
-          type: "bool",
-        },
-        {
-          name: "enforceMintMatch",
-          type: "bool",
-        },
-      ],
-    },
-    {
-      name: "claimSwapOrder",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "swapOrder",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltGivePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltReceivePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "givePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "receivePool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "counterparty",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "whitelistTokenMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "swapProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "changeCapacity",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "capacity",
-          type: "u64",
-        },
-        {
-          name: "individualCapacity",
           type: "u64",
         },
       ],
@@ -7919,6 +7790,10 @@ export const VoltIDLJsonRaw = {
           type: "u64",
         },
         {
+          name: "aumFeeBps",
+          type: "u64",
+        },
+        {
           name: "takeFeesInUnderlying",
           type: "bool",
         },
@@ -7929,7 +7804,7 @@ export const VoltIDLJsonRaw = {
       ],
     },
     {
-      name: "changeAdmin",
+      name: "changeCapacity",
       accounts: [
         {
           name: "authority",
@@ -7938,6 +7813,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
           isMut: true,
           isSigner: false,
         },
@@ -7959,8 +7839,176 @@ export const VoltIDLJsonRaw = {
       ],
       args: [
         {
-          name: "adminKey",
-          type: "publicKey",
+          name: "capacity",
+          type: "u64",
+        },
+        {
+          name: "individualCapacity",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "initializeShortOptions",
+      accounts: [
+        {
+          name: "seed",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "sharedAccounts",
+          accounts: [
+            {
+              name: "initializeBaseAccounts",
+              accounts: [
+                {
+                  name: "authority",
+                  isMut: true,
+                  isSigner: true,
+                  docs: ["signator of transaction"],
+                },
+                {
+                  name: "adminKey",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "voltVault",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "extraVoltData",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "vaultAuthority",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "vaultMint",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "depositMint",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "depositPool",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "whitelistTokenMint",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "whitelistTokenAccount",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "dexProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "rent",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "tokenProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "systemProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+              ],
+            },
+            {
+              name: "quoteAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "auctionMetadata",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "permissionedMarketPremiumPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "permissionedMarketPremiumMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "args",
+          type: {
+            defined: "InitializeShortOptionsArgs",
+          },
         },
       ],
     },
@@ -8011,7 +8059,8 @@ export const VoltIDLJsonRaw = {
       ],
     },
     {
-      name: "changeQuoteMint",
+      name: "startRoundShortOptions",
+      docs: ["* start next epoch. opens transfer window and adjusts FSM state"],
       accounts: [
         {
           name: "authority",
@@ -8024,7 +8073,7 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "newQuoteMint",
+          name: "depositPool",
           isMut: false,
           isSigner: false,
         },
@@ -8034,8 +8083,481 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "initializeStartRoundAccounts",
+          accounts: [
+            {
+              name: "authority",
+              isMut: true,
+              isSigner: true,
+            },
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundVoltTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
           name: "systemProgram",
           isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "setNextOption",
+      docs: ["* sets the next option market this volt will trade"],
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "underlyingAssetMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "roundInfoAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "rawDerivsContract",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "resetOptionMarket",
+      docs: ["* resets option market on the volt"],
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionsProtocolAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "mintPool",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionsPrograms",
+              accounts: [
+                {
+                  name: "inertiaProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "soloptionsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "spreadsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+              ],
+            },
+            {
+              name: "rawDerivsContract",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "feeDestination",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "backupOptionPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "backupWriterTokenPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "rebalancePrepare",
+      docs: [
+        "* prepares to invest in the current options market. For covered calls, this would involve minting",
+      ],
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionsContractAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "mintPool",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionsPrograms",
+              accounts: [
+                {
+                  name: "inertiaProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "soloptionsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "spreadsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+              ],
+            },
+            {
+              name: "rawDerivsContract",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "feeDestination",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -8047,7 +8569,339 @@ export const VoltIDLJsonRaw = {
       args: [],
     },
     {
-      name: "changeDecimalsByFactor",
+      name: "rebalanceSwapPremium",
+      docs: [
+        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc.",
+      ],
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tradingPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "serumMarketAccounts",
+          accounts: [
+            {
+              name: "dexProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "pcReferrerWallet",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "serumVaultSigner",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "srmReferralAcct",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "market",
+              isMut: true,
+              isSigner: false,
+              docs: [
+                "Serum Market Account",
+                "admin instruction so no attack vector",
+              ],
+            },
+            {
+              name: "requestQueue",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "eventQueue",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "bids",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "asks",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "coinVault",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "pcVault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "openOrdersMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfoAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "clientOrderPrice",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "rebalanceEnter",
+      docs: ["* enter options position. buys/sells on serum"],
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "auctionMetadata",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rawDerivsContract",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "middlewareProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "serumMarketAccounts",
+          accounts: [
+            {
+              name: "dexProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "pcReferrerWallet",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "serumVaultSigner",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "srmReferralAcct",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "market",
+              isMut: true,
+              isSigner: false,
+              docs: [
+                "Serum Market Account",
+                "admin instruction so no attack vector",
+              ],
+            },
+            {
+              name: "requestQueue",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "eventQueue",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "bids",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "asks",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "coinVault",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "pcVault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "market",
+          isMut: true,
+          isSigner: false,
+          docs: ["The Serum Market"],
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+          docs: ["The vault's OpenOrders account"],
+        },
+        {
+          name: "serumMarketAuthority",
+          isMut: true,
+          isSigner: false,
+          docs: ["The Serum Market market authority"],
+        },
+        {
+          name: "whitelistTokenAccount",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "clientOrderPrice",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "rebalanceEnterCreateSwap",
       accounts: [
         {
           name: "authority",
@@ -8065,13 +8919,553 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "epochInfo",
+          name: "auctionMetadata",
           isMut: true,
           isSigner: false,
         },
         {
           name: "vaultAuthority",
           isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapAdmin",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionsContract",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "newSwapOrder",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "givePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receivePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "counterparty",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "params",
+          type: {
+            defined: "CreateSwapParams",
+          },
+        },
+      ],
+    },
+    {
+      name: "rebalanceEnterClaimSwap",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "auctionMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "optionPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "swapOrder",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "givePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "giveMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "receivePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "receiveMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "swapProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "settleTemporaryUsdcFeesEarly",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "rebalanceSettle",
+      docs: [
+        "* settles the current options position. redeems writer tokens for underlying or quote asset.",
+      ],
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfoAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "optionsContractAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "mintPool",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionsPrograms",
+              accounts: [
+                {
+                  name: "inertiaProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "soloptionsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "spreadsProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+              ],
+            },
+            {
+              name: "rawDerivsContract",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "underlyingAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "writerTokenMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "feeDestination",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "endRoundShortOptions",
+      docs: ["* ends current epoch. settles pending deposits & withdrawals."],
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "premiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "permissionedMarketPremiumPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundAccts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundVoltTokens",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "temporaryUsdcFeePool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "lendingAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "ulFeeAcct",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "usdcFeeAcct",
+          isMut: true,
           isSigner: false,
         },
         {
@@ -8084,81 +9478,155 @@ export const VoltIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
-          name: "factor",
+          name: "bypassCode",
           type: "u64",
         },
       ],
     },
     {
-      name: "resetRebalancing",
+      name: "initializeEntropy",
       accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
         {
           name: "voltVault",
           isMut: true,
           isSigner: false,
         },
         {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "onlyResetHedge",
-          type: "bool",
-        },
-      ],
-    },
-    {
-      name: "changeHedging",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
+          name: "initializeBaseAccounts",
+          accounts: [
+            {
+              name: "authority",
+              isMut: true,
+              isSigner: true,
+              docs: ["signator of transaction"],
+            },
+            {
+              name: "adminKey",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "extraVoltData",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "depositMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "whitelistTokenMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "whitelistTokenAccount",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "dexProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
         },
         {
           name: "entropyMetadata",
           isMut: true,
           isSigner: false,
         },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyGroup",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyCache",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "targetPerpMarket",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "hedgingPerpMarket",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "hedgingSpotMarket",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
-          name: "shouldHedge",
-          type: "bool",
-        },
-        {
-          name: "hedgeWithSpot",
-          type: "bool",
-        },
-        {
-          name: "hedgeRatio",
-          type: "f64",
-        },
-        {
-          name: "hedgeLenience",
-          type: "f64",
+          name: "args",
+          type: {
+            defined: "InitializeEntropyArgs",
+          },
         },
       ],
     },
@@ -8169,7 +9637,7 @@ export const VoltIDLJsonRaw = {
           name: "authority",
           isMut: true,
           isSigner: true,
-          docs: ["signature of transaction"],
+          docs: ["signator of transaction"],
         },
         {
           name: "voltVault",
@@ -8204,11 +9672,149 @@ export const VoltIDLJsonRaw = {
           name: "targetHedgeLenience",
           type: "f64",
         },
+        {
+          name: "shouldHedge",
+          type: "bool",
+        },
+        {
+          name: "hedgeWithSpot",
+          type: "bool",
+        },
       ],
     },
     {
-      name: "startRound",
-      docs: ["* start next epoch. opens transfer window and adjusts FSM state"],
+      name: "takePerformanceAndAumFeesEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "openOrders",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "feeAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "startRoundEntropy",
       accounts: [
         {
           name: "authority",
@@ -8226,17 +9832,17 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "vaultAuthority",
           isMut: false,
           isSigner: false,
         },
         {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
+          name: "depositMint",
           isMut: false,
           isSigner: false,
         },
@@ -8246,27 +9852,122 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
         },
         {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
+          name: "initializeStartRoundAccounts",
+          accounts: [
+            {
+              name: "authority",
+              isMut: true,
+              isSigner: true,
+            },
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundVoltTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
         },
         {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
+          name: "entropyRound",
           isMut: true,
           isSigner: false,
         },
@@ -8289,13 +9990,13 @@ export const VoltIDLJsonRaw = {
       args: [],
     },
     {
-      name: "endRound",
-      docs: ["* ends current epoch. settles pending deposits & withdrawals."],
+      name: "endRoundEntropy",
       accounts: [
         {
           name: "authority",
           isMut: true,
           isSigner: true,
+          docs: ["signator of transaction"],
         },
         {
           name: "voltVault",
@@ -8305,6 +10006,11 @@ export const VoltIDLJsonRaw = {
         {
           name: "extraVoltData",
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: false,
           isSigner: false,
         },
         {
@@ -8318,37 +10024,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
           name: "depositPool",
-          isMut: true,
+          isMut: false,
           isSigner: false,
         },
         {
           name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
           isMut: true,
           isSigner: false,
         },
@@ -8358,18 +10039,103 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "entropyLendingProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyLendingGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyLendingAccount",
+          name: "roundVoltTokens",
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokensForPendingWithdrawals",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "lendingAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: false,
           isSigner: false,
         },
         {
@@ -8378,22 +10144,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "tokenProgram",
           isMut: false,
           isSigner: false,
         },
         {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
+          name: "systemProgram",
           isMut: false,
           isSigner: false,
         },
@@ -8406,7 +10162,732 @@ export const VoltIDLJsonRaw = {
       ],
     },
     {
-      name: "takePendingWithdrawalFees",
+      name: "setupRebalanceEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundAccts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundVoltTokens",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "targetPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "expectedOraclePx",
+          type: "f64",
+        },
+      ],
+    },
+    {
+      name: "rebalanceIntoPerpEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+          docs: ["signator of transaction"],
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyRound",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "eventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "targetPerpEventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "bids",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "asks",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "targetPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "hedgingPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "params",
+          type: {
+            defined: "EntropyPlaceOrderParams",
+          },
+        },
+        {
+          name: "forceHedgeFirst",
+          type: "bool",
+        },
+      ],
+    },
+    {
+      name: "rebalanceIntoSpotEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Volt Vault data"],
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rootBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "nodeBank",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "vault",
+              isMut: true,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "targetPerpEventQueue",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "targetPerpMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "bids",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "asks",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexRequestQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexEventQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexBase",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexQuote",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "quoteVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "dexSigner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "msrmOrSrmVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "params",
+          type: {
+            defined: "EntropyPlaceOrderParams",
+          },
+        },
+      ],
+    },
+    {
+      name: "initSpotOpenOrdersEntropy",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+          docs: ["Volt Vault data"],
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "entropyMetadata",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyProgram",
+          isMut: false,
+          isSigner: false,
+          docs: ["Entropy program"],
+        },
+        {
+          name: "entropyGroup",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "entropyAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "spotMarket",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "dexProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "openOrders",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "signer",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "dexSigner",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initializePrincipalProtection",
+      accounts: [
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "principalProtectionVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "initializeAccounts",
+          accounts: [
+            {
+              name: "initializeBaseAccounts",
+              accounts: [
+                {
+                  name: "authority",
+                  isMut: true,
+                  isSigner: true,
+                  docs: ["signator of transaction"],
+                },
+                {
+                  name: "adminKey",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "voltVault",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "extraVoltData",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "vaultAuthority",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "vaultMint",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "depositMint",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "depositPool",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "whitelistTokenMint",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "whitelistTokenAccount",
+                  isMut: true,
+                  isSigner: false,
+                },
+                {
+                  name: "dexProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "rent",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "tokenProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+                {
+                  name: "systemProgram",
+                  isMut: false,
+                  isSigner: false,
+                },
+              ],
+            },
+            {
+              name: "quoteAssetMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "auctionMetadata",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "permissionedMarketPremiumPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "permissionedMarketPremiumMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "quoteAssetPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "tulipAccounts",
+          accounts: [
+            {
+              name: "vault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "sharesMint",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "args",
+          type: {
+            defined: "InitializePrincipalProtectionArgs",
+          },
+        },
+      ],
+    },
+    {
+      name: "startRoundPrincipalProtection",
       accounts: [
         {
           name: "authority",
@@ -8419,12 +10900,810 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "ppVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "vaultAuthority",
           isMut: false,
           isSigner: false,
         },
         {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
+          name: "depositMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "initializeStartRoundAccounts",
+          accounts: [
+            {
+              name: "authority",
+              isMut: true,
+              isSigner: true,
+            },
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultAuthority",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "vaultMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositMint",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "roundInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundVoltTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokens",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "roundUnderlyingTokensForPendingWithdrawals",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "epochInfo",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "rent",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "tokenProgram",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "systemProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "ppContextAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "ppVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositTrackingAccount",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingSharesPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVault",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVaultProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "initTulipAccounts",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "ppVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "lendingSharesPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositIntoLendingAta",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "tulipVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositTrackingAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositTrackingQueue",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositTrackingHold",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "sharesMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositTrackingPda",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "associatedTokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "deployLending",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "ppVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "ppContextAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "ppVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositTrackingAccount",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "depositTrackingPda",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "optionTokenPool",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "sharesMint",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingSharesPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVault",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVaultPda",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "lendingVaultProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "depositIntoLendingAta",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "lendingVaultUlAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "globalTulipV2Authority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "endRoundPrincipalProtection",
+      accounts: [
+        {
+          name: "authority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "ppVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "ppContextAccounts",
+          accounts: [
+            {
+              name: "voltVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "ppVault",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "depositTrackingAccount",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingSharesPool",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVault",
+              isMut: true,
+              isSigner: false,
+            },
+            {
+              name: "lendingVaultProgram",
+              isMut: false,
+              isSigner: false,
+            },
+          ],
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "deposit",
+      docs: [
+        "* deposits into volt, receives volt tokens or a receipt for a pending deposit",
+      ],
+      accounts: [
+        {
+          name: "payerAuthority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "nonPayerAuthority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
+          docs: [
+            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token",
+          ],
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "userVaultTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userUlTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "depositAmount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "depositWithClaim",
+      accounts: [
+        {
+          name: "payerAuthority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "nonPayerAuthority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "solTransferAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "writerTokenPool",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "userVaultTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userUlTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundVoltTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositRoundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "depositAmount",
+          type: "u64",
+        },
+        {
+          name: "doTransfer",
+          type: "bool",
+        },
+      ],
+    },
+    {
+      name: "withdraw",
+      docs: [
+        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal",
+      ],
+      accounts: [
+        {
+          name: "payerAuthority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "nonPayerAuthority",
+          isMut: false,
+          isSigner: true,
+          docs: [
+            "if is authority on token accounts (aka === authority_check), should be a signer",
+          ],
+        },
+        {
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
+          docs: ["should be equal to 1 of authority or non_payer_authority"],
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "whitelist",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultTokenSource",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingWithdrawalInfo",
           isMut: true,
           isSigner: false,
         },
@@ -8448,11 +11727,257 @@ export const VoltIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "withdrawAmount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "withdrawWithClaim",
+      accounts: [
+        {
+          name: "payerAuthority",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "nonPayerAuthority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "authorityCheck",
+          isMut: false,
+          isSigner: false,
+          docs: ["should be equal to 1 of authority or non_payer_authority"],
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "depositPool",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "vaultTokenSource",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingWithdrawalRoundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingWithdrawalRoundUnderlyingTokensForPws",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "feeAcct",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "withdrawAmount",
+          type: "u64",
+        },
+      ],
+    },
+    {
+      name: "cancelPendingDeposit",
+      docs: ["* cancels a users pending deposit"],
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "underlyingTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundUnderlyingTokens",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingDepositInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [],
     },
     {
-      name: "claimPending",
+      name: "cancelPendingWithdrawal",
+      docs: ["* cancels a users pending withdrawal"],
+      accounts: [
+        {
+          name: "authority",
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: "vaultMint",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "voltVault",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "extraVoltData",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultAuthority",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "vaultTokenDestination",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "roundInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "pendingWithdrawalInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "epochInfo",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "claimPendingDeposit",
       docs: ["* claims volt tokens from a previously pending deposit"],
       accounts: [
         {
@@ -8571,875 +12096,44 @@ export const VoltIDLJsonRaw = {
       args: [],
     },
     {
-      name: "solendDepositReserveLiquidity",
+      name: "dummyInstruction",
       accounts: [
         {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "srcLiquidityToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dstCollateralToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserve",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserveLiquiditySupplyToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserveCollateralMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lendingMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lendingMarketAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clockSysvar",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "solendProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "liquidityAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "solendWithdrawReserveLiquidity",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "srcCollateralToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dstLiquidityToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserve",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserveCollateralMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "reserveLiquiditySupplyToken",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lendingMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "lendingMarketAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clockSysvar",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "solendProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "collateralAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "cancelPendingWithdrawal",
-      docs: ["* cancels a users pending withdrawal"],
-      accounts: [
-        {
-          name: "authority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingWithdrawalInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "cancelPendingDeposit",
-      docs: ["* cancels a users pending deposit"],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "deposit",
-      docs: [
-        "* deposits into volt, receives volt tokens or a receipt for a pending deposit",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "daoAuthority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "authorityCheck",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "whitelist",
-          isMut: false,
-          isSigner: false,
-          docs: [
-            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token",
+          name: "entropyBaseAccounts",
+          accounts: [
+            {
+              name: "extraVoltData",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "program",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "group",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "cache",
+              isMut: false,
+              isSigner: false,
+            },
+            {
+              name: "account",
+              isMut: false,
+              isSigner: false,
+            },
           ],
         },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "depositWithClaim",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "daoAuthority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "solTransferAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "authorityCheck",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositRoundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositRoundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingDepositRoundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmount",
-          type: "u64",
-        },
-        {
-          name: "doTransfer",
-          type: "bool",
-        },
-      ],
-    },
-    {
-      name: "withdraw",
-      docs: [
-        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "daoAuthority",
-          isMut: false,
-          isSigner: true,
-          docs: [
-            "if is authority on token accounts (aka === authority_check), should be a signer",
-          ],
-        },
-        {
-          name: "authorityCheck",
-          isMut: false,
-          isSigner: false,
-          docs: ["should be equal to 1 of authority or dao_authority"],
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "whitelist",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingWithdrawalInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeAcct",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "withdrawAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "withdrawWithClaim",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "daoAuthority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "authorityCheck",
-          isMut: false,
-          isSigner: false,
-          docs: ["should be equal to 1 of authority or dao_authority"],
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingTokenDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultTokenSource",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingWithdrawalInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingWithdrawalRoundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pendingWithdrawalRoundUnderlyingTokensForPws",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeAcct",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "withdrawAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "bypassSettlement",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "soloptionsProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "inertiaProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "userWriterTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeOwner",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [],
     },
     {
-      name: "rebalanceSettle",
-      docs: [
-        "* settles the current options position. redeems writer tokens for underlying or quote asset.",
-      ],
+      name: "includeOptionsProgramsAccounts",
       accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
         {
           name: "inertiaProgram",
           isMut: false,
@@ -9455,3088 +12149,8 @@ export const VoltIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [],
-    },
-    {
-      name: "setNextOption",
-      docs: ["* sets the next option market this volt will trade"],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "optionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "optionMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "openOrdersBump",
-          type: "u8",
-        },
-        {
-          name: "openOrdersInitBump",
-          type: "u8",
-        },
-      ],
-    },
-    {
-      name: "resetOptionMarket",
-      docs: ["* resets option market on the volt"],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "inertiaProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "backupOptionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "backupWriterTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "rebalancePrepare",
-      docs: [
-        "* prepares to invest in the current options market. For covered calls, this would involve minting",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "inertiaProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "soloptionsProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "spreadsProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "optionMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteAssetMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionProtocolFeeDestination",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "associatedTokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "rebalanceSwapPremium",
-      docs: [
-        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc.",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tradingPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "market",
-          isMut: true,
-          isSigner: false,
-          docs: ["The Serum Market", "admin instruction so no attack vector"],
-        },
-        {
-          name: "pcReferrerWallet",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "srmReferralAcct",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "serumVaultSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "openOrdersMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "marketBids",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "marketAsks",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "requestQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "coinVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "clientOrderPrice",
-          type: "u64",
-        },
-        {
-          name: "clientOrderSize",
-          type: "u64",
-        },
-        {
-          name: "ulOpenOrdersBump",
-          type: "u8",
-        },
-      ],
-    },
-    {
-      name: "rebalanceEnter",
-      docs: ["* enter options position. buys/sells on serum"],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "middlewareProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "auctionMetadata",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "pcReferrerWallet",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "serumVaultSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "srmReferralAcct",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-          docs: ["The vault's OpenOrders account"],
-        },
-        {
-          name: "market",
-          isMut: true,
-          isSigner: false,
-          docs: ["The Serum Market"],
-        },
-        {
-          name: "serumMarketAuthority",
-          isMut: true,
-          isSigner: false,
-          docs: ["The Serum Market market authority"],
-        },
-        {
-          name: "requestQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "marketBids",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "marketAsks",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "coinVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "whitelistTokenAccount",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "clientOrderPrice",
-          type: "u64",
-        },
-        {
-          name: "clientOrderSize",
-          type: "u64",
-        },
-        {
-          name: "clientOpenOrdersBump",
-          type: "u8",
-        },
-        {
-          name: "clientOpenOrdersInitBump",
-          type: "u8",
-        },
-      ],
-    },
-    {
-      name: "settleEnterFunds",
-      docs: [
-        "* settle funds gained/lost on this program's OpenOrders account for rebalance_enter",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "middlewareProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "optionPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcReferrerWallet",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "serumVaultSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "market",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "serumMarketAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "coinVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "feeAcct",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "settlePermissionedMarketPremiumFunds",
-      docs: [
-        "* settle funds from permissioned market premium pool to deposit pool or premium pool",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "premiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rawDerivsContract",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "writerTokenMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "settleSwapPremiumFunds",
-      docs: [
-        "* settle funds gained/lost on this program's OpenOrders account for rebalance_swap_premium",
-      ],
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tradingPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcReferrerWallet",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "serumVaultSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "market",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "coinVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "pcVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "initWhitelist",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "seed",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "whitelist",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "addWhitelist",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "whitelist",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "accountToAdd",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "removeWhitelist",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "whitelist",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "accountToRemove",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "attachWhitelist",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "whitelist",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "attachDao",
-      accounts: [
-        {
-          name: "authority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "daoProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "daoAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "detachDao",
-      accounts: [
-        {
-          name: "authority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "initExtraAccountsShortOptions",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "auctionMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "whitelistTokenMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "whitelistTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "permissionedMarketPremiumMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "permissionlessAuctions",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "initExtraAccountsEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "hedgingSpotPerpMarket",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "hedgingSpotMarket",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "initializeEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "adminKey",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "vaultName",
-          type: "string",
-        },
-        {
-          name: "bumpAuthority",
-          type: "u8",
-        },
-        {
-          name: "targetLeverageRatio",
-          type: "f64",
-        },
-        {
-          name: "targetLeverageLenience",
-          type: "f64",
-        },
-        {
-          name: "targetHedgeLenience",
-          type: "f64",
-        },
-        {
-          name: "exitEarlyRatio",
-          type: "f64",
-        },
-        {
-          name: "vaultCapacity",
-          type: "u64",
-        },
-        {
-          name: "individualCapacity",
-          type: "u64",
-        },
-        {
-          name: "shouldHedge",
-          type: "bool",
-        },
-        {
-          name: "hedgeWithSpot",
-          type: "bool",
-        },
-        {
-          name: "targetHedgeRatio",
-          type: "f64",
-        },
-        {
-          name: "rebalancingLenience",
-          type: "f64",
-        },
-        {
-          name: "requiredBasisFromOracle",
-          type: "f64",
-        },
-      ],
-    },
-    {
-      name: "takePerformanceFeesEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "feeAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "startRoundEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "underlyingAssetMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "endRoundEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyLendingProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyLendingGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyLendingAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "bypassCode",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "depositDiscretionaryEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "adminDepositTokenAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositDiscretionaryTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "depositMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmt",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "setupRebalanceEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultMint",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "depositPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundVoltTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokens",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "roundUnderlyingTokensForPendingWithdrawals",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "expectedOraclePx",
-          type: "f64",
-        },
-      ],
-    },
-    {
-      name: "setupRebalanceOtcEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyOtcOrdersPda",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCounterpartyWallet",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpEventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "price",
-          type: "i64",
-        },
-        {
-          name: "maxQuotePosChange",
-          type: "u64",
-        },
-        {
-          name: "expires",
-          type: "i64",
-        },
-        {
-          name: "bypassCode",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "checkRebalanceOtcHealthEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["1", "signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["2"],
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-          docs: ["3"],
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-          docs: ["4"],
-        },
-        {
-          name: "entropyRound",
-          isMut: false,
-          isSigner: false,
-          docs: ["5"],
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-          docs: ["6"],
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-          docs: ["7"],
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["8"],
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-          docs: ["9"],
-        },
-        {
-          name: "entropyOtcOrdersPda",
-          isMut: true,
-          isSigner: false,
-          docs: ["10"],
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-          docs: ["11"],
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-          docs: ["12"],
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-          docs: ["13"],
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-          docs: ["14"],
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-          docs: ["15"],
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-          docs: ["16"],
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-          docs: ["17"],
-        },
-        {
-          name: "powerPerpEventQueue",
-          isMut: true,
-          isSigner: false,
-          docs: ["18"],
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-          docs: ["19"],
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["20"],
-        },
-      ],
-      args: [
-        {
-          name: "forceHedgeFirst",
-          type: "bool",
-        },
-        {
-          name: "orderId",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "rebalanceEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyRound",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "powerPerpEventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "bids",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "asks",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "clientBidPrice",
-          type: "u64",
-        },
-        {
-          name: "clientAskPrice",
-          type: "u64",
-        },
-        {
-          name: "maxQuotePosChange",
-          type: "u64",
-        },
-        {
-          name: "forceHedgeFirst",
-          type: "bool",
-        },
-      ],
-    },
-    {
-      name: "rebalanceSpotEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: false,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["Volt Vault data"],
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["Entropy program"],
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "spotMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "bids",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "asks",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexRequestQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexEventQueue",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexBase",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexQuote",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "baseRootBank",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "baseNodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "baseVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteRootBank",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "quoteNodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "quoteVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "msrmOrSrmVault",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "clientBidPrice",
-          type: "u64",
-        },
-        {
-          name: "clientAskPrice",
-          type: "u64",
-        },
-        {
-          name: "maxQuotePosChange",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "rebalanceOtcEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-          docs: ["1", "signature of transaction"],
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["2"],
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-          docs: ["3"],
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-          docs: ["4"],
-        },
-        {
-          name: "entropyRound",
-          isMut: false,
-          isSigner: false,
-          docs: ["5"],
-        },
-        {
-          name: "epochInfo",
-          isMut: true,
-          isSigner: false,
-          docs: ["6"],
-        },
-        {
-          name: "vaultAuthority",
-          isMut: true,
-          isSigner: false,
-          docs: ["7"],
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["8"],
-        },
-        {
-          name: "entropyGroup",
-          isMut: true,
-          isSigner: false,
-          docs: ["9"],
-        },
-        {
-          name: "creatorEntropyOtcOrdersPda",
-          isMut: true,
-          isSigner: false,
-          docs: ["10"],
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-          docs: ["11"],
-        },
-        {
-          name: "creatorEntropyAccount",
-          isMut: true,
-          isSigner: false,
-          docs: ["12"],
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-          docs: ["13"],
-        },
-        {
-          name: "powerPerpMarket",
-          isMut: true,
-          isSigner: false,
-          docs: ["14"],
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-          docs: ["15"],
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-          docs: ["16"],
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-          docs: ["17"],
-        },
-        {
-          name: "eventQueue",
-          isMut: true,
-          isSigner: false,
-          docs: ["18"],
-        },
-        {
-          name: "powerPerpEventQueue",
-          isMut: true,
-          isSigner: false,
-          docs: ["19"],
-        },
-        {
-          name: "spotPerpMarket",
-          isMut: true,
-          isSigner: false,
-          docs: ["20"],
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["21"],
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-          docs: ["22"],
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["23"],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-          docs: ["24"],
-        },
-      ],
-      args: [
-        {
-          name: "maxQuotePosChange",
-          type: "u64",
-        },
-        {
-          name: "forceHedgeFirst",
-          type: "bool",
-        },
-        {
-          name: "orderId",
-          type: "u64",
-        },
-        {
-          name: "openOrdersCount",
-          type: "u64",
-        },
-        {
-          name: "bypassCode",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "initSpotOpenOrdersEntropy",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-          docs: ["Volt Vault data"],
-        },
-        {
-          name: "extraVoltData",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyMetadata",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-          docs: ["Entropy program"],
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "spotMarket",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "dexProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "openOrders",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "dexSigner",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rent",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
-      name: "moveAssetsToLendingAccount",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "targetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "depositAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "withdrawAssetsFromLendingAccount",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "targetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "entropyProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyGroup",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyCache",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "rootBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "nodeBank",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "signer",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "entropyAccount",
-          isMut: true,
-          isSigner: false,
-          docs: ["CHECKED: checked by PDA macro"],
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "withdrawAmount",
-          type: "u64",
-        },
-      ],
-    },
-    {
-      name: "transferDeposit",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "voltVault",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "vaultAuthority",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "targetPool",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "underlyingUserAcct",
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: "amount",
-          type: "u64",
-        },
-      ],
     },
     {
       name: "initSerumMarket",
@@ -12664,71 +12278,6 @@ export const VoltIDLJsonRaw = {
   ],
   accounts: [
     {
-      name: "PendingDeposit",
-      docs: [
-        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"',
-      ],
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "initialized",
-            type: "bool",
-          },
-          {
-            name: "roundNumber",
-            type: "u64",
-          },
-          {
-            name: "numUnderlyingDeposited",
-            type: "u64",
-          },
-        ],
-      },
-    },
-    {
-      name: "PendingWithdrawal",
-      docs: [
-        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"',
-      ],
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "initialized",
-            type: "bool",
-          },
-          {
-            name: "roundNumber",
-            type: "u64",
-          },
-          {
-            name: "numVoltRedeemed",
-            type: "u64",
-          },
-        ],
-      },
-    },
-    {
-      name: "Whitelist",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "admin",
-            type: "publicKey",
-          },
-          {
-            name: "addresses",
-            docs: ["The storage for information on reserves in the market"],
-            type: {
-              vec: "publicKey",
-            },
-          },
-        ],
-      },
-    },
-    {
       name: "UlOpenOrdersMetadata",
       type: {
         kind: "struct",
@@ -12741,121 +12290,13 @@ export const VoltIDLJsonRaw = {
       },
     },
     {
-      name: "EntropyRound",
+      name: "AuctionMetadata",
       type: {
         kind: "struct",
         fields: [
           {
-            name: "instantDepositsNative",
-            type: "u64",
-          },
-          {
-            name: "prevEntropyAccountDeposits",
-            type: "u64",
-          },
-          {
-            name: "initialEquity",
-            type: "f64",
-          },
-          {
-            name: "newEquityPostDeposit",
-            type: "f64",
-          },
-          {
-            name: "depositAmt",
-            type: "f64",
-          },
-          {
-            name: "withdrawCompFromDeposit",
-            type: "u64",
-          },
-          {
-            name: "netDeposits",
-            type: "f64",
-          },
-          {
-            name: "depositAmtNative",
-            type: "u64",
-          },
-          {
-            name: "withdrawAmtNative",
-            type: "u64",
-          },
-          {
-            name: "totalVoltSupply",
-            type: "u64",
-          },
-          {
-            name: "oraclePrice",
-            type: "f64",
-          },
-          {
-            name: "acctEquityStart",
-            type: "f64",
-          },
-          {
-            name: "acctEquityBeforeNextRebalance",
-            type: "f64",
-          },
-          {
-            name: "pnlQuote",
-            type: "f64",
-          },
-          {
-            name: "performanceFeesQuote",
-            type: "f64",
-          },
-          {
-            name: "temp1",
-            type: "publicKey",
-          },
-          {
-            name: "temp2",
-            type: "publicKey",
-          },
-          {
-            name: "temp3",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey11",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey12",
-            type: "publicKey",
-          },
-          {
-            name: "unusedUintFour",
-            type: "u64",
-          },
-          {
-            name: "unusedUintFive",
-            type: "u64",
-          },
-          {
-            name: "unusedUintSix",
-            type: "u64",
-          },
-          {
-            name: "unusedUint12",
-            type: "u64",
-          },
-          {
-            name: "targetCurrBasePosition",
-            type: "f64",
-          },
-          {
-            name: "targetCurrQuotePosition",
-            type: "f64",
-          },
-          {
-            name: "unusedFloat3",
-            type: "f64",
-          },
-          {
-            name: "unusedFloat4",
-            type: "f64",
+            name: "isPermissionless",
+            type: "bool",
           },
           {
             name: "unusedBoolOne",
@@ -12873,167 +12314,12 @@ export const VoltIDLJsonRaw = {
             name: "unusedBoolFour",
             type: "bool",
           },
-        ],
-      },
-    },
-    {
-      name: "Round",
-      docs: [
-        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal",
-      ],
-      type: {
-        kind: "struct",
-        fields: [
           {
-            name: "number",
-            type: "u64",
-          },
-          {
-            name: "underlyingFromPendingDeposits",
-            type: "u64",
-          },
-          {
-            name: "voltTokensFromPendingWithdrawals",
-            type: "u64",
-          },
-          {
-            name: "underlyingPreEnter",
-            type: "u64",
-          },
-          {
-            name: "underlyingPostSettle",
-            type: "u64",
-          },
-          {
-            name: "premiumFarmed",
-            type: "u64",
-          },
-        ],
-      },
-    },
-    {
-      name: "FriktionEpochInfo",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "vaultTokenPrice",
-            type: "f64",
-          },
-          {
-            name: "pctPnl",
-            type: "f64",
-          },
-          {
-            name: "number",
-            type: "u64",
-          },
-          {
-            name: "underlyingPreEnter",
-            type: "u64",
-          },
-          {
-            name: "underlyingPostSettle",
-            type: "u64",
-          },
-          {
-            name: "voltTokenSupply",
-            type: "u64",
-          },
-          {
-            name: "pnl",
-            type: "i64",
-          },
-          {
-            name: "performanceFees",
-            type: "u64",
-          },
-          {
-            name: "withdrawalFees",
-            type: "u64",
-          },
-          {
-            name: "pendingDeposits",
-            type: "u64",
-          },
-          {
-            name: "pendingWithdrawalsVoltTokens",
-            type: "u64",
-          },
-          {
-            name: "pendingWithdrawals",
-            type: "u64",
-          },
-          {
-            name: "canceledWithdrawals",
-            type: "u64",
-          },
-          {
-            name: "canceledDeposits",
-            type: "u64",
-          },
-          {
-            name: "totalWithdrawals",
-            type: "u64",
-          },
-          {
-            name: "totalDeposits",
-            type: "u64",
-          },
-          {
-            name: "instantDeposits",
-            type: "u64",
-          },
-          {
-            name: "instantWithdrawals",
-            type: "u64",
-          },
-          {
-            name: "unusedUint1",
-            type: "u64",
-          },
-          {
-            name: "mintedOptions",
-            type: "u64",
-          },
-          {
-            name: "enterNumTimesCalled",
-            type: "u64",
-          },
-          {
-            name: "swapPremiumNumTimesCalled",
-            type: "u64",
-          },
-          {
-            name: "optionKey",
+            name: "userOrders",
             type: "publicKey",
           },
           {
-            name: "extraKeyFour",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey5",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey6",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey7",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey8",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey9",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey10",
+            name: "currSwapOrder",
             type: "publicKey",
           },
           {
@@ -13045,15 +12331,27 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "startRoundTime",
+            name: "extraKey13",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey14",
+            type: "publicKey",
+          },
+          {
+            name: "participantType",
             type: "u64",
           },
           {
-            name: "beginAuctionTime",
+            name: "optionType",
             type: "u64",
           },
           {
-            name: "endAuctionTime",
+            name: "unusedUintFive",
+            type: "u64",
+          },
+          {
+            name: "unusedUintSix",
             type: "u64",
           },
           {
@@ -13073,36 +12371,28 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "totalWithdrawalsFromRealms",
+            name: "unusedUint11",
             type: "u64",
           },
           {
-            name: "totalDepositsFromRealms",
+            name: "unusedUint12",
             type: "u64",
           },
           {
-            name: "dovPerformanceFeesInUnderlying",
-            type: "bool",
+            name: "unusedFloatOne",
+            type: "f64",
           },
           {
-            name: "usedOtcOrders",
-            type: "bool",
+            name: "unusedFloatFour",
+            type: "f64",
           },
           {
-            name: "unusedBoolThree",
-            type: "bool",
+            name: "unusedFloatFive",
+            type: "f64",
           },
           {
-            name: "unusedBoolFour",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolFive",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolSix",
-            type: "bool",
+            name: "unusedFloatSix",
+            type: "f64",
           },
         ],
       },
@@ -13292,6 +12582,338 @@ export const VoltIDLJsonRaw = {
       },
     },
     {
+      name: "EntropyRound",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "instantDepositsNative",
+            type: "u64",
+          },
+          {
+            name: "prevEntropyAccountDeposits",
+            type: "u64",
+          },
+          {
+            name: "initialEquity",
+            type: "f64",
+          },
+          {
+            name: "newEquityPostDeposit",
+            type: "f64",
+          },
+          {
+            name: "depositAmtQuote",
+            type: "f64",
+          },
+          {
+            name: "withdrawCompFromDepositNative",
+            type: "u64",
+          },
+          {
+            name: "netDepositsQuote",
+            type: "f64",
+          },
+          {
+            name: "depositAmtNative",
+            type: "u64",
+          },
+          {
+            name: "withdrawAmtNative",
+            type: "u64",
+          },
+          {
+            name: "totalVoltSupply",
+            type: "u64",
+          },
+          {
+            name: "oraclePrice",
+            type: "f64",
+          },
+          {
+            name: "acctEquityStart",
+            type: "f64",
+          },
+          {
+            name: "acctEquityBeforeNextRebalance",
+            type: "f64",
+          },
+          {
+            name: "pnlQuote",
+            type: "f64",
+          },
+          {
+            name: "performanceFeesQuote",
+            type: "f64",
+          },
+          {
+            name: "temp1",
+            type: "publicKey",
+          },
+          {
+            name: "temp2",
+            type: "publicKey",
+          },
+          {
+            name: "temp3",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey11",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey12",
+            type: "publicKey",
+          },
+          {
+            name: "number",
+            type: "u64",
+          },
+          {
+            name: "unusedUintFive",
+            type: "u64",
+          },
+          {
+            name: "unusedUintSix",
+            type: "u64",
+          },
+          {
+            name: "unusedUint12",
+            type: "u64",
+          },
+          {
+            name: "targetCurrBasePosition",
+            type: "f64",
+          },
+          {
+            name: "targetCurrQuotePosition",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat3",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat4",
+            type: "f64",
+          },
+          {
+            name: "unusedBoolOne",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolTwo",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolThree",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFour",
+            type: "bool",
+          },
+        ],
+      },
+    },
+    {
+      name: "FriktionEpochInfo",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "vaultTokenPrice",
+            type: "f64",
+          },
+          {
+            name: "pctPnl",
+            type: "f64",
+          },
+          {
+            name: "number",
+            type: "u64",
+          },
+          {
+            name: "aumInDepositTokenAtEpochStart",
+            type: "u64",
+          },
+          {
+            name: "aumInDepositTokenAtEpochEnd",
+            type: "u64",
+          },
+          {
+            name: "voltTokenSupply",
+            type: "u64",
+          },
+          {
+            name: "pnl",
+            type: "i64",
+          },
+          {
+            name: "performanceFees",
+            type: "u64",
+          },
+          {
+            name: "withdrawalFees",
+            type: "u64",
+          },
+          {
+            name: "pendingDeposits",
+            type: "u64",
+          },
+          {
+            name: "pendingWithdrawalsVoltTokens",
+            type: "u64",
+          },
+          {
+            name: "pendingWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "canceledWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "canceledDeposits",
+            type: "u64",
+          },
+          {
+            name: "totalWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "totalDeposits",
+            type: "u64",
+          },
+          {
+            name: "instantDeposits",
+            type: "u64",
+          },
+          {
+            name: "instantWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "aumFees",
+            type: "u64",
+          },
+          {
+            name: "mintedOptions",
+            type: "u64",
+          },
+          {
+            name: "enterNumTimesCalled",
+            type: "u64",
+          },
+          {
+            name: "swapPremiumNumTimesCalled",
+            type: "u64",
+          },
+          {
+            name: "optionKey",
+            type: "publicKey",
+          },
+          {
+            name: "extraKeyFour",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey5",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey6",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey7",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey8",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey9",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey10",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey11",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey12",
+            type: "publicKey",
+          },
+          {
+            name: "startRoundTime",
+            type: "u64",
+          },
+          {
+            name: "beginAuctionTime",
+            type: "u64",
+          },
+          {
+            name: "endAuctionTime",
+            type: "u64",
+          },
+          {
+            name: "underlyingFromPendingDeposits",
+            type: "u64",
+          },
+          {
+            name: "voltTokensFromPendingWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "heldAsidePerformanceFees",
+            type: "u64",
+          },
+          {
+            name: "lastSwapSize",
+            type: "u64",
+          },
+          {
+            name: "totalWithdrawalsFromRealms",
+            type: "u64",
+          },
+          {
+            name: "totalDepositsFromRealms",
+            type: "u64",
+          },
+          {
+            name: "dovPerformanceFeesInUnderlying",
+            type: "bool",
+          },
+          {
+            name: "usedOtcOrders",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolThree",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFour",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolFive",
+            type: "bool",
+          },
+          {
+            name: "unusedBoolSix",
+            type: "bool",
+          },
+        ],
+      },
+    },
+    {
       name: "ExtraVoltData",
       type: {
         kind: "struct",
@@ -13341,7 +12963,7 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "powerPerpMarket",
+            name: "targetPerpMarket",
             type: "publicKey",
           },
           {
@@ -13365,7 +12987,7 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "hedgingSpotPerpMarket",
+            name: "hedgingPerpMarket",
             docs: ["pubkey of perp market to hedge"],
             type: "publicKey",
           },
@@ -13426,15 +13048,15 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "unusedUint7",
+            name: "timeLastTookAumFees",
             type: "u64",
           },
           {
-            name: "unusedUint8",
+            name: "unusedUint1234",
             type: "u64",
           },
           {
-            name: "unusedUint9",
+            name: "aumFeeBps",
             type: "u64",
           },
           {
@@ -13462,7 +13084,7 @@ export const VoltIDLJsonRaw = {
             type: "bool",
           },
           {
-            name: "doneRebalancingPowerPerp",
+            name: "doneRebalancingTargetPerp",
             type: "bool",
           },
           {
@@ -13472,6 +13094,121 @@ export const VoltIDLJsonRaw = {
           {
             name: "haveTakenPerformanceFees",
             type: "bool",
+          },
+        ],
+      },
+    },
+    {
+      name: "PendingDeposit",
+      docs: [
+        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"',
+      ],
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "initialized",
+            type: "bool",
+          },
+          {
+            name: "roundNumber",
+            type: "u64",
+          },
+          {
+            name: "numUnderlyingDeposited",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "PendingWithdrawal",
+      docs: [
+        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"',
+      ],
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "initialized",
+            type: "bool",
+          },
+          {
+            name: "roundNumber",
+            type: "u64",
+          },
+          {
+            name: "numVoltRedeemed",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "PrincipalProtectionVaultV1",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "initialized",
+            type: "bool",
+          },
+          {
+            name: "vaultName",
+            type: "string",
+          },
+          {
+            name: "keys",
+            type: {
+              defined: "PrincipalProtectionAccountsV1",
+            },
+          },
+          {
+            name: "allocationStrategy",
+            type: {
+              defined: "SecondLegAllocationStrategy",
+            },
+          },
+          {
+            name: "lendingStrategy",
+            type: {
+              defined: "LendingStrategy",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "Round",
+      docs: [
+        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal",
+      ],
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "number",
+            type: "u64",
+          },
+          {
+            name: "underlyingFromPendingDeposits",
+            type: "u64",
+          },
+          {
+            name: "voltTokensFromPendingWithdrawals",
+            type: "u64",
+          },
+          {
+            name: "aumInDepositTokenAtEpochStart",
+            type: "u64",
+          },
+          {
+            name: "aumInDepositTokenAtEpochEnd",
+            type: "u64",
+          },
+          {
+            name: "premiumFarmed",
+            type: "u64",
           },
         ],
       },
@@ -13506,11 +13243,11 @@ export const VoltIDLJsonRaw = {
             type: "bool",
           },
           {
-            name: "currOptionWasSettled",
+            name: "currOptionWasSettledFirstTime",
             type: "bool",
           },
           {
-            name: "mustSwapPremiumToUnderlying",
+            name: "mustSwapQuoteAssetAfterSettle",
             type: "bool",
           },
           {
@@ -13518,7 +13255,7 @@ export const VoltIDLJsonRaw = {
             type: "bool",
           },
           {
-            name: "firstEverOptionWasSet",
+            name: "mustSwapPremiumAfterEnter",
             type: "bool",
           },
           {
@@ -13542,11 +13279,11 @@ export const VoltIDLJsonRaw = {
             type: "u64",
           },
           {
-            name: "totalUnderlyingPreEnter",
+            name: "aumInDepositTokenAtEpochStart",
             type: "u64",
           },
           {
-            name: "totalUnderlyingPostSettle",
+            name: "aumInDepositTokenAtEpochEnd",
             type: "u64",
           },
           {
@@ -13578,7 +13315,7 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "underlyingAssetMint",
+            name: "depositMint",
             type: "publicKey",
           },
           {
@@ -13594,7 +13331,7 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "optionMarket",
+            name: "optionsContract",
             type: "publicKey",
           },
           {
@@ -13640,15 +13377,15 @@ export const VoltIDLJsonRaw = {
             type: "publicKey",
           },
           {
-            name: "openOrdersBump",
+            name: "mustSwapUsdcFeesAfterSettle",
             type: "u8",
           },
           {
-            name: "openOrdersInitBump",
+            name: "finishedSettlingOption",
             type: "u8",
           },
           {
-            name: "ulOpenOrdersBump",
+            name: "voltType",
             type: "u8",
           },
           {
@@ -13660,7 +13397,7 @@ export const VoltIDLJsonRaw = {
             type: "bool",
           },
           {
-            name: "bumpAuthority",
+            name: "vaultAuthorityBump",
             type: "u8",
           },
           {
@@ -13707,109 +13444,20 @@ export const VoltIDLJsonRaw = {
       },
     },
     {
-      name: "AuctionMetadata",
+      name: "Whitelist",
       type: {
         kind: "struct",
         fields: [
           {
-            name: "isPermissionless",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolOne",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolTwo",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolThree",
-            type: "bool",
-          },
-          {
-            name: "unusedBoolFour",
-            type: "bool",
-          },
-          {
-            name: "extraKey9",
+            name: "admin",
             type: "publicKey",
           },
           {
-            name: "extraKey10",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey11",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey12",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey13",
-            type: "publicKey",
-          },
-          {
-            name: "extraKey14",
-            type: "publicKey",
-          },
-          {
-            name: "unusedUintOne",
-            type: "u64",
-          },
-          {
-            name: "unusedUintFour",
-            type: "u64",
-          },
-          {
-            name: "unusedUintFive",
-            type: "u64",
-          },
-          {
-            name: "unusedUintSix",
-            type: "u64",
-          },
-          {
-            name: "unusedUint7",
-            type: "u64",
-          },
-          {
-            name: "unusedUint8",
-            type: "u64",
-          },
-          {
-            name: "unusedUint9",
-            type: "u64",
-          },
-          {
-            name: "unusedUint10",
-            type: "u64",
-          },
-          {
-            name: "unusedUint11",
-            type: "u64",
-          },
-          {
-            name: "unusedUint12",
-            type: "u64",
-          },
-          {
-            name: "unusedFloatOne",
-            type: "f64",
-          },
-          {
-            name: "unusedFloatFour",
-            type: "f64",
-          },
-          {
-            name: "unusedFloatFive",
-            type: "f64",
-          },
-          {
-            name: "unusedFloatSix",
-            type: "f64",
+            name: "addresses",
+            docs: ["The storage for information on reserves in the market"],
+            type: {
+              vec: "publicKey",
+            },
           },
         ],
       },
@@ -13817,18 +13465,543 @@ export const VoltIDLJsonRaw = {
   ],
   types: [
     {
-      name: "TwoTokenDerivativesProtocol",
+      name: "SerumOrderPreferences",
       type: {
-        kind: "enum",
-        variants: [
+        kind: "struct",
+        fields: [
           {
-            name: "Soloptions",
+            name: "limit",
+            type: "u16",
           },
           {
-            name: "Inertia",
+            name: "orderType",
+            type: {
+              defined: "OrderType",
+            },
           },
           {
-            name: "Spreads",
+            name: "selfTradeBehavior",
+            type: {
+              defined: "SelfTradeBehavior",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "CreateSwapParams",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "giveSize",
+            type: "u64",
+          },
+          {
+            name: "receiveSize",
+            type: "u64",
+          },
+          {
+            name: "expiry",
+            type: "u64",
+          },
+          {
+            name: "isCounterpartyProvided",
+            type: "bool",
+          },
+          {
+            name: "isWhitelisted",
+            type: "bool",
+          },
+          {
+            name: "enforceMintMatch",
+            type: "bool",
+          },
+        ],
+      },
+    },
+    {
+      name: "VoltBumps",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "vaultAuthorityBump",
+            type: "u8",
+          },
+        ],
+      },
+    },
+    {
+      name: "InitializeArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "vaultName",
+            type: "string",
+          },
+          {
+            name: "capacity",
+            type: "u64",
+          },
+          {
+            name: "individualCapacity",
+            type: "u64",
+          },
+          {
+            name: "bumps",
+            type: {
+              defined: "VoltBumps",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "SerumArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "orderSizeOptions",
+            type: "u64",
+          },
+          {
+            name: "orderType",
+            type: "u64",
+          },
+          {
+            name: "selfTradeBehavior",
+            type: "u16",
+          },
+        ],
+      },
+    },
+    {
+      name: "OptionsContractArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "participantType",
+            type: {
+              defined: "DovParticipantType",
+            },
+          },
+          {
+            name: "optionType",
+            type: {
+              defined: "OptionType",
+            },
+          },
+          {
+            name: "expirationInterval",
+            type: "u64",
+          },
+          {
+            name: "underlyingAmountPerContract",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "InitializeDovArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "serumArgs",
+            type: {
+              defined: "SerumArgs",
+            },
+          },
+          {
+            name: "optionsArgs",
+            type: {
+              defined: "OptionsContractArgs",
+            },
+          },
+          {
+            name: "permissionlessAuctions",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "InitializeShortOptionsArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "baseArgs",
+            type: {
+              defined: "InitializeArgs",
+            },
+          },
+          {
+            name: "dovArgs",
+            type: {
+              defined: "InitializeDovArgs",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "InitializePrincipalProtectionArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "baseArgs",
+            type: {
+              defined: "InitializeArgs",
+            },
+          },
+          {
+            name: "dovArgs",
+            type: {
+              defined: "InitializeDovArgs",
+            },
+          },
+          {
+            name: "allocationStrategy",
+            type: {
+              defined: "SecondLegAllocationStrategy",
+            },
+          },
+          {
+            name: "lendingStrategy",
+            type: {
+              defined: "LendingStrategy",
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: "InitializeEntropyArgs",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "baseArgs",
+            type: {
+              defined: "InitializeArgs",
+            },
+          },
+          {
+            name: "targetLeverageRatio",
+            type: "f64",
+          },
+          {
+            name: "targetLeverageLenience",
+            type: "f64",
+          },
+          {
+            name: "targetHedgeLenience",
+            type: "f64",
+          },
+          {
+            name: "exitEarlyRatio",
+            type: "f64",
+          },
+          {
+            name: "shouldHedge",
+            type: "bool",
+          },
+          {
+            name: "hedgeWithSpot",
+            type: "bool",
+          },
+          {
+            name: "targetHedgeRatio",
+            type: "f64",
+          },
+          {
+            name: "rebalancingLenience",
+            type: "f64",
+          },
+          {
+            name: "requiredBasisFromOracle",
+            type: "f64",
+          },
+        ],
+      },
+    },
+    {
+      name: "PrincipalProtectionAccountsV1",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "lendingKeys",
+            type: {
+              defined: "LendingKeys",
+            },
+          },
+          {
+            name: "optionsKeys",
+            type: {
+              defined: "OptionsContractKeys",
+            },
+          },
+          {
+            name: "lendingSharesPool",
+            type: "publicKey",
+          },
+          {
+            name: "depositIntoLendingAta",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey1",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey2",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey3",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey4",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey5",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey6",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey7",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "OptionsContractKeys",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "programId",
+            type: "publicKey",
+          },
+          {
+            name: "optionsContract",
+            type: "publicKey",
+          },
+          {
+            name: "optionTokenPool",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey1",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey2",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey3",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey4",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "EntropyPlaceOrderParams",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "clientBidPrice",
+            type: "u64",
+          },
+          {
+            name: "clientAskPrice",
+            type: "u64",
+          },
+          {
+            name: "maxQuotePosChange",
+            type: "u64",
+          },
+        ],
+      },
+    },
+    {
+      name: "LendingParams",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bool1",
+            type: "u8",
+          },
+          {
+            name: "bool2",
+            type: "u8",
+          },
+          {
+            name: "bool3",
+            type: "u8",
+          },
+          {
+            name: "bool4",
+            type: "u8",
+          },
+          {
+            name: "maxAllowedUtilizationBps",
+            type: "u64",
+          },
+          {
+            name: "unusedUint1",
+            type: "u64",
+          },
+          {
+            name: "unusedUint2",
+            type: "u64",
+          },
+          {
+            name: "unusedUint3",
+            type: "u64",
+          },
+          {
+            name: "unusedUint4",
+            type: "u64",
+          },
+          {
+            name: "unusedFloat1",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat2",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat3",
+            type: "f64",
+          },
+          {
+            name: "unusedFloat4",
+            type: "f64",
+          },
+        ],
+      },
+    },
+    {
+      name: "PrimaryVaultKeys",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "vault",
+            type: "publicKey",
+          },
+          {
+            name: "vaultPda",
+            type: "publicKey",
+          },
+          {
+            name: "underlyingDepositQueue",
+            type: "publicKey",
+          },
+          {
+            name: "underlyingWithdrawQueue",
+            type: "publicKey",
+          },
+          {
+            name: "sharesMint",
+            type: "publicKey",
+          },
+          {
+            name: "underlyingMint",
+            type: "publicKey",
+          },
+          {
+            name: "depositTrackingAccount",
+            type: "publicKey",
+          },
+          {
+            name: "depositTrackingQueueAccount",
+            type: "publicKey",
+          },
+          {
+            name: "depositTrackingHoldAccount",
+            type: "publicKey",
+          },
+          {
+            name: "depositTrackingPda",
+            type: "publicKey",
+          },
+          {
+            name: "programId",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey1",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey2",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey3",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey4",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey5",
+            type: "publicKey",
+          },
+          {
+            name: "extraKey6",
+            type: "publicKey",
+          },
+        ],
+      },
+    },
+    {
+      name: "LendingKeys",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "primaryVault",
+            type: {
+              defined: "PrimaryVaultKeys",
+            },
+          },
+          {
+            name: "mangoVault",
+            type: "publicKey",
+          },
+          {
+            name: "solendVault",
+            type: "publicKey",
+          },
+          {
+            name: "tulipVault",
+            type: "publicKey",
           },
         ],
       },
@@ -13882,6 +14055,48 @@ export const VoltIDLJsonRaw = {
       },
     },
     {
+      name: "DovParticipantType",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "OptionSeller",
+          },
+          {
+            name: "OptionBuyer",
+          },
+        ],
+      },
+    },
+    {
+      name: "OptionType",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "Call",
+          },
+          {
+            name: "Put",
+          },
+        ],
+      },
+    },
+    {
+      name: "ExecutionType",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "Spot",
+          },
+          {
+            name: "Perp",
+          },
+        ],
+      },
+    },
+    {
       name: "VoltType",
       type: {
         kind: "enum",
@@ -13891,6 +14106,100 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "Entropy",
+          },
+          {
+            name: "PrincipalProtection",
+          },
+        ],
+      },
+    },
+    {
+      name: "SecondLegAllocationStrategy",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "MinApr",
+            fields: [
+              {
+                name: "apr",
+                type: "u64",
+              },
+            ],
+          },
+          {
+            name: "ProjectedPnlFraction",
+            fields: [
+              {
+                name: "fraction_bps",
+                type: "u64",
+              },
+            ],
+          },
+          {
+            name: "FixedFraction",
+            fields: [
+              {
+                name: "fraction_bps",
+                type: "u64",
+              },
+            ],
+          },
+          {
+            name: "ExtraStrategy1",
+            fields: [
+              {
+                name: "uint1",
+                type: "u64",
+              },
+              {
+                name: "uint2",
+                type: "u64",
+              },
+              {
+                name: "uint3",
+                type: "u64",
+              },
+              {
+                name: "uint4",
+                type: "u64",
+              },
+              {
+                name: "u81",
+                type: "u8",
+              },
+              {
+                name: "u82",
+                type: "u8",
+              },
+              {
+                name: "u83",
+                type: "u8",
+              },
+              {
+                name: "u84",
+                type: "u8",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "LendingStrategy",
+      type: {
+        kind: "enum",
+        variants: [
+          {
+            name: "TulipOptimizer",
+            fields: [
+              {
+                name: "params",
+                type: {
+                  defined: "LendingParams",
+                },
+              },
+            ],
           },
         ],
       },
@@ -14519,438 +14828,579 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6124,
-      name: "InvalidTakePendingWithdrawalFeesState",
-      msg: "invalid take pending withdrawal fees state",
-    },
-    {
-      code: 6125,
       name: "PendingDepositInfoNotInitialized",
       msg: "pending deposit info not initialized",
     },
     {
-      code: 6126,
+      code: 6125,
       name: "PendingDepositDoesNotExist",
       msg: "pending deposits does not exist",
     },
     {
-      code: 6127,
+      code: 6126,
       name: "CannotCancelPendingDepositFromOldRound",
       msg: "cannot cancel pending deposit from old round",
     },
     {
-      code: 6128,
+      code: 6127,
       name: "VaultDestinationDoesNotMatchVoltVault",
       msg: "vault destination does not match volt vault",
     },
     {
-      code: 6129,
+      code: 6128,
       name: "MustTakeWithdrawalFeesBeforeStartingRound",
       msg: "must take withdrawal fees before starting round",
     },
     {
-      code: 6130,
+      code: 6129,
       name: "RoundMustBeEnded",
       msg: "round must be ended",
     },
     {
-      code: 6131,
+      code: 6130,
       name: "MustNotHaveSoldOptionTokens",
       msg: "must not have sold option tokens to reset",
     },
     {
-      code: 6132,
+      code: 6131,
       name: "CantCloseAccountUnlessEmpty",
       msg: "cannot close account unless empty",
     },
     {
-      code: 6133,
+      code: 6132,
       name: "OpenOrderMustBeEmptyToClose",
       msg: "open orders must be empty to close",
     },
     {
-      code: 6134,
+      code: 6133,
       name: "InvalidWhitelistAccountVector",
       msg: "invalid whitelist account (vector)",
     },
     {
-      code: 6135,
+      code: 6134,
       name: "InvalidDaoProgramId",
       msg: "invalid dao program ID",
     },
     {
-      code: 6136,
+      code: 6135,
       name: "VoltMustBeForDao",
       msg: "volt must be for dao",
     },
     {
-      code: 6137,
+      code: 6136,
       name: "InvalidDaoAuthority",
       msg: "invalid dao authority",
     },
     {
-      code: 6138,
+      code: 6137,
       name: "DaoAuthorityMustSign",
       msg: "dao authority must sign",
     },
     {
-      code: 6139,
+      code: 6138,
       name: "InvalidPendingDepositKey",
       msg: "invalid pending deposit key",
     },
     {
-      code: 6140,
+      code: 6139,
       name: "InvalidAuthorityCheck",
       msg: "invalid authority check",
     },
     {
-      code: 6141,
+      code: 6140,
       name: "InvalidEndEntropyRoundState",
       msg: "entropy: invalid end entropy round state",
     },
     {
-      code: 6142,
+      code: 6141,
       name: "InvalidVoltType",
       msg: "invalid volt type",
     },
     {
-      code: 6143,
+      code: 6142,
       name: "CantFindPerpMarketIndex",
       msg: "can't find perp market index",
     },
     {
-      code: 6144,
+      code: 6143,
       name: "AccountEquityLessThanZero",
       msg: "account equity less than zero",
     },
     {
-      code: 6145,
+      code: 6144,
       name: "QuotePositionChangedTooMuch",
       msg: "quote position changed too much",
     },
     {
-      code: 6146,
+      code: 6145,
       name: "MustMoveCloserToTargetCollateralization",
       msg: "must move closer to target collateralization",
     },
     {
-      code: 6147,
+      code: 6146,
       name: "CollateralNotWithinLenience",
       msg: "collateral not within lenience",
     },
     {
-      code: 6148,
+      code: 6147,
       name: "InvalidRebalanceEntropyState",
       msg: "invalid rebalance entropy state",
     },
     {
-      code: 6149,
+      code: 6148,
       name: "BasePositionMustBeNegative",
       msg: "volt must have negative base position (be short)",
     },
     {
-      code: 6150,
+      code: 6149,
       name: "QuotePositionMustBePositive",
       msg: "volt must have positive quote position (be short)",
     },
     {
-      code: 6151,
+      code: 6150,
       name: "TargetCollateralRatioMustBeNegative",
       msg: "target collateral ratio must be neggat",
     },
     {
-      code: 6152,
+      code: 6151,
       name: "NewEquityMustBeHigherThanDepositAmount",
       msg: "new equity must be higher than deposit amt",
     },
     {
-      code: 6153,
+      code: 6152,
       name: "InstantTransfersMustBeDisabled",
       msg: "instant transfers must be enabled",
     },
     {
-      code: 6154,
+      code: 6153,
       name: "RebalanceMustBeReady",
       msg: "rebalance must be ready",
     },
     {
-      code: 6155,
+      code: 6154,
       name: "IncorrectHedge",
       msg: "spot hedge unbalanced",
     },
     {
-      code: 6156,
+      code: 6155,
       name: "VaultNameMustBeNonZeroLength",
       msg: "vault name must be zero length",
     },
     {
-      code: 6157,
+      code: 6156,
       name: "VaultDoesNotSupportOverLeveragedStrategies",
       msg: "vault does not support over leveraged strategies",
     },
     {
-      code: 6158,
+      code: 6157,
       name: "LenienceMustBeGreaterThanZero",
       msg: "lenience must be greater than zero",
     },
     {
-      code: 6159,
+      code: 6158,
       name: "LenienceShouldNotBeGreaterThanLeverage",
       msg: "lenience should not be greater than leverage",
     },
     {
-      code: 6160,
+      code: 6159,
       name: "HedgeLenienceMustBeGreaterThanZero",
       msg: "hedge lenience should be greater than leverage",
     },
     {
-      code: 6161,
+      code: 6160,
       name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies",
       msg: "exit early ratio must be < 1.0",
     },
     {
-      code: 6162,
+      code: 6161,
       name: "RoundNumberMustNotOverflow",
       msg: "round number must not overflow",
     },
     {
-      code: 6163,
+      code: 6162,
       name: "InvalidWhitelistTokenAccountMint",
       msg: "invalid whitelist token account mint",
     },
     {
-      code: 6164,
+      code: 6163,
       name: "SoloptionsProgramIdDoesNotMatch",
       msg: "soloptions program id does not matchf",
     },
     {
-      code: 6165,
+      code: 6164,
       name: "WhitelistTokenAccountOwnerIsNotUser",
       msg: "whitelist token account owner is not user",
     },
     {
-      code: 6166,
+      code: 6165,
       name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram",
       msg: "sol transfer authority must be owned by volt program",
     },
     {
-      code: 6167,
+      code: 6166,
       name: "InsufficientCollateralForDeposit",
       msg: "Insufficient collateral to deposit.",
     },
     {
-      code: 6168,
+      code: 6167,
       name: "SolTransferAuthorityMustBeWritableAndSigner",
       msg: "sol transfer authority must be writable/signer",
     },
     {
-      code: 6169,
+      code: 6168,
       name: "VoltMustBeOfEntropyType",
       msg: "volt must be entropy type",
     },
     {
-      code: 6170,
+      code: 6169,
       name: "VoltMustBeofShortOptionsType",
       msg: "volt must be of short options type",
     },
     {
-      code: 6171,
+      code: 6170,
       name: "DepositsAndWithdrawalsAreTurnedOff",
       msg: "deposits and withdrawals are turned off",
     },
     {
-      code: 6172,
+      code: 6171,
       name: "ShouldBeDoneRebalancing",
       msg: "should be done rebalancing",
     },
     {
-      code: 6173,
+      code: 6172,
       name: "UnrecognizedEntropyProgramId",
       msg: "unrecognized entropy program id",
     },
     {
-      code: 6174,
+      code: 6173,
       name: "InvalidTakePerformanceFeesState",
       msg: "invalid take performance fees state",
     },
     {
-      code: 6175,
+      code: 6174,
       name: "DiscriminatorDoesNotMatch",
       msg: "discriminator does not match",
     },
     {
-      code: 6176,
+      code: 6175,
       name: "RealizedOraclePriceTooFarOffClientProvided",
       msg: "realized oracle price too far off client provided",
     },
     {
-      code: 6177,
+      code: 6176,
       name: "VaultMintSupplyMustBeZeroIfEquityIsZero",
       msg: "vault mint supply must be zero if equity is zero",
     },
     {
-      code: 6178,
+      code: 6177,
       name: "InvalidSetupRebalanceEntropyState",
       msg: "invalid setup rebalance entropy state",
     },
     {
-      code: 6179,
+      code: 6178,
       name: "HedgeWithSpotMustBeTrue",
       msg: "hedge with spot must be true",
     },
     {
-      code: 6180,
+      code: 6179,
       name: "PowerPerpMustBeDoneRebalancing",
       msg: "power perp must be done rebalancing",
     },
     {
-      code: 6181,
+      code: 6180,
       name: "HedgingMustBeOn",
       msg: "hedging must be on",
     },
     {
-      code: 6182,
+      code: 6181,
       name: "DepositedAmountOfHedgeAssetShouldBeZero",
       msg: "deposited amount of hedge asset should be zero",
     },
     {
-      code: 6183,
+      code: 6182,
       name: "BorrowedAmountOfHedgeAssetShouldBeZero",
       msg: "borrowed amount of hedge asset should be zero",
     },
     {
-      code: 6184,
+      code: 6183,
       name: "SwapPremiumMustHaveBeenCalledAtLeastOnce",
       msg: "swap premium must have been called at least once",
     },
     {
-      code: 6185,
+      code: 6184,
       name: "ShouldHedgeWithSpotNotPerp",
       msg: "should hedge with spot not perp",
     },
     {
-      code: 6186,
+      code: 6185,
       name: "InvalidRebalanceSpotEntropyState",
       msg: "invalid rebalane spot entropy state",
     },
     {
-      code: 6187,
+      code: 6186,
       name: "CompleteBasePositionDoesNotMatchNormal",
       msg: "complete base position does not match normal",
     },
     {
-      code: 6188,
+      code: 6187,
       name: "InvalidUserUnderlyingTokens",
       msg: "invalid user underlying tokens",
     },
     {
-      code: 6189,
+      code: 6188,
       name: "InvalidRoundForCancel",
       msg: "invalid round number for cancel",
     },
     {
-      code: 6190,
+      code: 6189,
       name: "InvalidEpochForCancel",
       msg: "invalid epoch number for cancel",
     },
     {
-      code: 6191,
+      code: 6190,
       name: "PendingDepositAlreadyExists",
       msg: "pending deposit already exists",
     },
     {
-      code: 6192,
+      code: 6191,
       name: "InvalidPendingWithdrawalKey",
       msg: "invalid pending withdrawal key",
     },
     {
-      code: 6193,
+      code: 6192,
       name: "InvalidDepositDiscretionaryState",
       msg: "invalid deposit discretionary state",
     },
     {
-      code: 6194,
+      code: 6193,
       name: "InvalidInitSerumMarketState",
       msg: "invalid init serum market state",
     },
     {
-      code: 6195,
+      code: 6194,
       name: "QuotePositionMustMoveCloserToDesired",
       msg: "quote position must move closer to desired",
     },
     {
-      code: 6196,
+      code: 6195,
       name: "PermissionedMarketPremiumPoolAmountMustBeZero",
       msg: "permissioned market premium pool amount must be zero",
     },
     {
-      code: 6197,
+      code: 6196,
       name: "PremiumPoolAmountMustBeZero",
       msg: "premium pool amount must be zero",
     },
     {
-      code: 6198,
+      code: 6197,
       name: "WriterTokenMintDoesNotMatchVoltVault",
       msg: "writer token mint doesn't match vv",
     },
     {
-      code: 6199,
+      code: 6198,
       name: "InvalidTargetPoolForSwapOrder",
       msg: "invalid target pool for swap order",
     },
     {
-      code: 6200,
+      code: 6199,
       name: "GivePoolMustBeEmpty",
       msg: "give pool must be empty",
     },
     {
-      code: 6201,
+      code: 6200,
       name: "ReceivePoolMustBeEmpty",
       msg: "receive pool must be empty",
     },
     {
-      code: 6202,
+      code: 6201,
       name: "InvalidOracleType",
       msg: "invalid oracle type",
     },
     {
-      code: 6203,
+      code: 6202,
       name: "MustNotBeLendingUnderlyingAssetMint",
       msg: "must not be lending underlying asset mint",
     },
     {
-      code: 6204,
+      code: 6203,
       name: "MustNotBeLendingQuoteAssetMint",
       msg: "must not be lending quote asset mint",
     },
     {
-      code: 6205,
+      code: 6204,
       name: "InvalidSettleEnterFundsState",
       msg: "invalid settle enter funds state",
     },
     {
-      code: 6206,
+      code: 6205,
       name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount",
       msg: "premium farmed must match permissioned market premium pool",
     },
     {
-      code: 6207,
+      code: 6206,
       name: "InvalidWithdrawAmount",
       msg: "invalid withdraw amount",
     },
     {
-      code: 6208,
+      code: 6207,
       name: "InvalidOtcOrderPrice",
       msg: "invalid OTC order price",
     },
     {
-      code: 6209,
+      code: 6208,
       name: "UnhealthyEntropyAccount",
       msg: "unhealthy entropy account",
     },
     {
-      code: 6210,
+      code: 6209,
       name: "TransferAuthorityMustSign",
       msg: "transfer authority must sign",
+    },
+    {
+      code: 6210,
+      name: "MustHaveLastTimeTookAumFees",
+      msg: "please end an epoch and get a time last took aum fees",
+    },
+    {
+      code: 6211,
+      name: "TradingPoolAmountMustBeGreaterThanZero",
+      msg: "trading pool amount must be greater than 0",
+    },
+    {
+      code: 6212,
+      name: "VoltMustBeADOV",
+      msg: "volt must be a dov (defi options volt)",
+    },
+    {
+      code: 6213,
+      name: "MintOptionMustMatchSetOption",
+      msg: "mint option must match set option",
+    },
+    {
+      code: 6214,
+      name: "NoMatchingPool",
+    },
+    {
+      code: 6215,
+      name: "RoundHasNotEnded",
+    },
+    {
+      code: 6216,
+      name: "InvalidPerformanceFeeMint",
+    },
+    {
+      code: 6217,
+      name: "InsufficientFundsToOffer",
+    },
+    {
+      code: 6218,
+      name: "InsufficientFundsToBid",
+    },
+    {
+      code: 6219,
+      name: "PriceTooLow",
+    },
+    {
+      code: 6220,
+      name: "PriceTooHigh",
+    },
+    {
+      code: 6221,
+      name: "OrderSizeZero",
+    },
+    {
+      code: 6222,
+      name: "MustSwapPremiumAfterEnter",
+    },
+    {
+      code: 6223,
+      name: "NoValidShortOptionsEpochStage",
+      msg: "no valid short options epoch stage",
+    },
+    {
+      code: 6224,
+      name: "InvalidCallToShortOptionsEpochStage",
+      msg: "invalid call to short options epoch stage",
+    },
+    {
+      code: 6225,
+      name: "InvalidPendingWithdrawalState",
+    },
+    {
+      code: 6226,
+      name: "InvalidRoundNumber",
+    },
+    {
+      code: 6227,
+      name: "InvalidTokenAccount",
+    },
+    {
+      code: 6228,
+      name: "InvalidPDA",
+    },
+    {
+      code: 6229,
+      name: "InvalidOpenOrders",
+    },
+    {
+      code: 6230,
+      name: "InvalidHedgingStrategy",
+    },
+    {
+      code: 6231,
+      name: "UnsupportedOrderStrategy",
+    },
+    {
+      code: 6232,
+      name: "InvalidMarketType",
+    },
+    {
+      code: 6233,
+      name: "InvalidFeeAccount",
+    },
+    {
+      code: 6234,
+      name: "InvalidSettleFeesEarly",
+    },
+    {
+      code: 6235,
+      name: "InvalidVaultMint",
+    },
+    {
+      code: 6236,
+      name: "InvalidWriterTokenPool",
+    },
+    {
+      code: 6237,
+      name: "NoOpenOrders",
+    },
+    {
+      code: 6238,
+      name: "InvalidTargetPerpMarket",
+    },
+    {
+      code: 6239,
+      name: "InvalidHedgingPerpMarket",
+    },
+    {
+      code: 6240,
+      name: "AlreadyInitialized",
+    },
+    {
+      code: 6241,
+      name: "InvalidAccount",
+    },
+    {
+      code: 6242,
+      name: "InvalidDepositMint",
+    },
+    {
+      code: 6243,
+      name: "InvalidEnterSwapClaimState",
+    },
+    {
+      code: 6244,
+      name: "InvalidCurrSwapOrder",
     },
   ],
 };

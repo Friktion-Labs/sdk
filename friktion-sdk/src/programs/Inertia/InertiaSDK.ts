@@ -4,12 +4,7 @@ import type { AnchorProvider } from "@project-serum/anchor";
 import { BN, Program } from "@project-serum/anchor";
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import {
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import type Decimal from "decimal.js";
 
 import type { FriktionSDK } from "../..";
@@ -279,10 +274,12 @@ export class InertiaSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new BN(underlyingAmount.toString()).toBuffer("le", 8),
-        new BN(quoteAmount.toString()).toBuffer("le", 8),
-        new BN(expiry.toString()).toBuffer("le", 8),
-        isCall ? new BN(1).toBuffer("le", 8) : new BN(0).toBuffer("le", 8),
+        new BN(underlyingAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(quoteAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(expiry.toString()).toArrayLike(Buffer, "le", 8),
+        isCall
+          ? new BN(1).toArrayLike(Buffer, "le", 8)
+          : new BN(0).toArrayLike(Buffer, "le", 8),
       ],
       program.programId
     );
@@ -299,7 +296,6 @@ export class InertiaSDK {
       underlyingTokenDestination,
       claimablePool: this.optionsContract.claimablePool,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.optionExercise(amount, {
@@ -344,7 +340,6 @@ export class InertiaSDK {
       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     console.log(
@@ -386,7 +381,6 @@ export class InertiaSDK {
       exerciseFeeAccount: await this.getInertiaExerciseFeeAccount(),
 
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.revertOptionSettle({
@@ -411,10 +405,9 @@ export class InertiaSDK {
       underlyingPool: this.optionsContract.underlyingPool,
       writerMint: this.optionsContract.writerMint,
       writerTokenDestination,
-      writerAuthority: user,
+      authority: user,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
       feeDestination,
-      clock: SYSVAR_CLOCK_PUBKEY,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
@@ -435,7 +428,6 @@ export class InertiaSDK {
       writerTokenSource: redeemerTokenSource,
       underlyingTokenDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.optionRedeem(new BN(amount), {
@@ -462,7 +454,6 @@ export class InertiaSDK {
       underlyingTokenDestination,
       underlyingPool: this.optionsContract.underlyingPool,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.closePosition(new BN(amount), {

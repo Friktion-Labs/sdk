@@ -86,7 +86,7 @@ export class SwapSDK {
       [
         textEncoder.encode("swapOrder"),
         user.toBuffer(),
-        orderId.toBuffer("le", 8),
+        orderId.toArrayLike(Buffer, "le", 8),
       ],
       swapProgramId
     );
@@ -138,6 +138,7 @@ export class SwapSDK {
   static async create(
     sdk: FriktionSDK,
     user: PublicKey,
+    admin: PublicKey,
     giveMint: PublicKey,
     receiveMint: PublicKey,
     creatorGivePool: PublicKey,
@@ -170,6 +171,7 @@ export class SwapSDK {
     const accounts: SimpleSwapIXAccounts["create"] = {
       payer: user,
       authority: user,
+      admin,
       userOrders: userOrdersKey,
       swapOrder: swapOrderKey,
       givePool: givePoolKey,
@@ -242,15 +244,17 @@ export class SwapSDK {
 
   async execMsg(
     user: PublicKey,
-    giveTokenAccount: PublicKey,
-    receiveTokenAccount: PublicKey,
-    whitelistTokenAccount: PublicKey,
+    counterpartyGivePool: PublicKey,
+    counterpartyReceivePool: PublicKey,
     rawMsg: Uint8Array,
-    signature: Uint8Array
+    signature: Uint8Array,
+    whitelistTokenAccount?: PublicKey
   ): Promise<TransactionInstruction[]> {
-    if (!this.swapOrder.isCounterpartyProvided) {
+    if (!this.swapOrder.isCounterpartyProvided)
       throw new Error("if using execMsg counterparty must be provided");
-    }
+
+    if (this.swapOrder.admin.toString() !== user.toString())
+      throw new Error("admin must sign execMsg instruction");
 
     const signer = this.swapOrder.counterparty;
     const [delegate] = await SwapSDK.findDelegateAuthorityAddress();
@@ -260,15 +264,15 @@ export class SwapSDK {
       givePool: this.swapOrder.givePool,
       receivePool: this.swapOrder.receivePool,
 
-      counterpartyReceivePool: receiveTokenAccount,
-      counterpartyGivePool: giveTokenAccount,
+      counterpartyReceivePool,
+      counterpartyGivePool,
 
       delegateAuthority: delegate,
 
-      whitelistTokenAccount: whitelistTokenAccount,
+      counterpartyWallet: this.swapOrder.counterparty,
+      whitelistTokenAccount: whitelistTokenAccount ?? SystemProgram.programId,
 
       instructionSysvar: SYSVAR_INSTRUCTIONS_PUBKEY,
-
       tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
     };

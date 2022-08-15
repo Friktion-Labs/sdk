@@ -1,14 +1,12 @@
+import type {
+  AnchorProvider,
+  Idl,
+  ProgramAccount,
+} from "@friktion-labs/anchor";
+import { Program } from "@friktion-labs/anchor";
 import type { ProviderLike } from "@friktion-labs/friktion-utils";
 import { providerToAnchorProvider } from "@friktion-labs/friktion-utils";
-import type { AnchorProvider, ProgramAccount } from "@project-serum/anchor";
-import { Program } from "@project-serum/anchor";
-import type { TransactionInstruction } from "@solana/web3.js";
-import {
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+import type { PublicKey } from "@solana/web3.js";
 
 import type { NetworkSpecificConstants, OptionsProtocol } from "./constants";
 import {
@@ -22,6 +20,7 @@ import {
   VoltType,
 } from "./constants";
 import { checkAnchorErrorCode } from "./errorCodes";
+import type { VoltIDL } from "./idls/volt";
 import { InertiaSDK } from "./programs/Inertia";
 import type {
   InertiaContractWithKey,
@@ -53,8 +52,9 @@ import type {
   SimpleSwapProgram,
   SimpleSwapUserOrdersWithKey,
 } from "./programs/Swap/swapTypes";
-import type { VoltProgram, VoltVault, Whitelist } from "./programs/Volt";
+import type { VoltVault, Whitelist } from "./programs/Volt";
 import { EntropyVoltSDK } from "./programs/Volt/EntropyVoltSDK";
+import { PrincipalProtectionVoltSDK } from "./programs/Volt/Principal/PrincipalProtectionVoltSDK";
 import { ShortOptionsVoltSDK } from "./programs/Volt/ShortOptionsVoltSDK";
 import { SimpleVoltSDK } from "./programs/Volt/SimpleVoltSDK";
 import type { NetworkName } from "./programs/Volt/utils/helperTypes";
@@ -64,16 +64,14 @@ import type {
   EntropyMetadata,
   ExtraVoltData,
   GenericOptionsContractWithKey,
+  PrincipalProtectionVaultV1,
+  VoltProgram,
+  VoltWithNewIdlProgram,
 } from "./programs/Volt/voltTypes";
-
-export type LegacyAnchorPrograms = {
-  Volt: Program;
-  Soloptions: Program;
-  Inertia: Program;
-};
 
 export type FriktionPrograms = {
   Volt: VoltProgram;
+  VoltWithNewIdl: VoltWithNewIdlProgram;
   Soloptions: SoloptionsProgram;
   Inertia: InertiaProgram;
   Spreads: SpreadsProgram;
@@ -157,6 +155,7 @@ export type VoltSnapshot = {
   // fees in basis points (0.01%)
   performanceFeeRate: number;
   withdrawalFeeRate: number;
+  aumFeeRateAnnualized: number;
 
   // does this volt have a non-weekly epoch
   abnormalEpochLength?: number;
@@ -204,7 +203,6 @@ export const DefaultFriktionSDKOpts = {
  */
 export class FriktionSDK {
   readonly programs: FriktionPrograms;
-  readonly legacyAnchorPrograms: LegacyAnchorPrograms;
   readonly readonlyProvider: AnchorProvider;
   readonly network: NetworkName;
   readonly testingOpts?: TestingOpts;
@@ -222,7 +220,7 @@ export class FriktionSDK {
       ? "mainnet-beta"
       : opts.network;
 
-    const voltIdl = FRIKTION_IDLS.Volt;
+    const voltIdl = FRIKTION_IDLS.Volt as VoltIDL;
     if (!voltIdl) {
       console.error("FRIKTION_IDLS", FRIKTION_IDLS);
       // this used to be a big bug
@@ -255,7 +253,7 @@ export class FriktionSDK {
       );
     }
 
-    let voltProgramIdForNetwork = null;
+    let voltProgramIdForNetwork: PublicKey | null = null;
     if (this.network === "mainnet-beta") {
       voltProgramIdForNetwork = FRIKTION_PROGRAM_ID;
     } else if (this.network === "devnet") {
@@ -269,6 +267,12 @@ export class FriktionSDK {
     }
 
     const Volt = new Program(
+      voltIdl as Idl,
+      voltProgramIdForNetwork,
+      this.readonlyProvider
+    );
+
+    const VoltWithNewIdl: Program<VoltIDL> = new Program<VoltIDL>(
       voltIdl,
       voltProgramIdForNetwork,
       this.readonlyProvider
@@ -297,16 +301,11 @@ export class FriktionSDK {
 
     this.programs = {
       Volt: Volt as unknown as VoltProgram,
+      VoltWithNewIdl: VoltWithNewIdl,
       Soloptions: Soloptions as unknown as SoloptionsProgram,
       Inertia: Inertia as unknown as InertiaProgram,
       SimpleSwap: SimpleSwap as unknown as SimpleSwapProgram,
       Spreads: Spreads as unknown as SpreadsProgram,
-    };
-
-    this.legacyAnchorPrograms = {
-      Volt: Volt,
-      Soloptions: Soloptions,
-      Inertia: Inertia,
     };
   }
 
@@ -331,6 +330,18 @@ export class FriktionSDK {
 
   get mainnet() {
     throw new Error("Don't do this. Use sdk.net");
+  }
+
+  isKeyAStableCoin(key: PublicKey): boolean {
+    return [
+      this.net.mints.USDC,
+      this.net.mints.UST,
+      this.net.mints.PAI,
+      this.net.mints.UXD,
+      this.net.mints.TUSDCV2,
+    ]
+      .map((k) => k.toString())
+      .includes(key.toString());
   }
 
   async reloadSnapshot(): Promise<void> {
@@ -464,6 +475,7 @@ export class FriktionSDK {
     extraVoltData?: ExtraVoltData | undefined,
     loadExtraVoltData = false,
     entropyMetadata?: EntropyMetadata | undefined,
+    principalProtectionVault?: PrincipalProtectionVaultV1 | undefined,
     forceIgnoreEntropyMetadata = false
   ): Promise<VoltSDK> {
     if (!voltKey) {
@@ -512,9 +524,44 @@ export class FriktionSDK {
         extraVoltData,
         entropyMetadata
       );
+    } else if (voltType === VoltType.PrincipalProtection) {
+      if (extraVoltData === undefined) {
+        extraVoltData = await this.programs.Volt.account.extraVoltData.fetch(
+          extraVoltKey
+        );
+      }
+      if (principalProtectionVault === undefined) {
+        const [principalProtectionVaultKey] =
+          PrincipalProtectionVoltSDK.findPrincipalProtectionVaultAddress(
+            voltKey
+          );
+
+        principalProtectionVault = await this.getPrincipalProtectionVaultByKey(
+          principalProtectionVaultKey
+        );
+      }
+
+      return this.loadPrincipalProtectionVoltSDK(
+        voltKey,
+        voltVault,
+        extraVoltData,
+        principalProtectionVault
+      );
     } else {
       throw new Error("Volt SDK of unknown type");
     }
+  }
+
+  async getPrincipalProtectionVaultByKey(
+    key: PublicKey
+  ): Promise<PrincipalProtectionVaultV1> {
+    console.log(" account = ", this.programs.VoltWithNewIdl.account);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return (await this.programs.VoltWithNewIdl.account.principalProtectionVaultV1.fetch(
+      key
+    )) as PrincipalProtectionVaultV1;
   }
 
   async getAllVoltVaults(loadExtravoltData = false): Promise<VoltSDK[]> {
@@ -689,104 +736,48 @@ export class FriktionSDK {
     );
   }
 
+  loadPrincipalProtectionVoltSDK(
+    voltKey: PublicKey,
+    voltVault: VoltVault,
+    extraVoltData: ExtraVoltData,
+    principalProtectionVault: PrincipalProtectionVaultV1
+  ): PrincipalProtectionVoltSDK {
+    return new PrincipalProtectionVoltSDK(
+      this,
+      voltKey,
+      voltVault,
+      extraVoltData,
+      principalProtectionVault
+    );
+  }
+
+  async loadPrincipalProtectionVoltSDKByKey(
+    key: PublicKey,
+    voltVault?: VoltVault | undefined,
+    extraVoltData?: ExtraVoltData | undefined,
+    loadExtraVoltData = false,
+    principalProtectionVault?: PrincipalProtectionVaultV1
+  ): Promise<PrincipalProtectionVoltSDK> {
+    const sdk = await this.loadVoltSDKByKey(
+      key,
+      voltVault,
+      extraVoltData,
+      loadExtraVoltData,
+      undefined,
+      principalProtectionVault
+    );
+    if (!(sdk instanceof PrincipalProtectionVoltSDK)) {
+      throw new Error(
+        `Volt key ${key.toString()} is not a Principal Protected volt. Got ${sdk.voltType()}`
+      );
+    }
+    return sdk;
+  }
+
   async getWhitelist(key: PublicKey): Promise<Whitelist> {
     const whitelist: Whitelist =
       await this.programs.Volt.account.whitelist.fetch(key);
     return whitelist;
-  }
-
-  async initWhitelist(
-    user: PublicKey,
-    seed?: PublicKey
-  ): Promise<{
-    instruction: TransactionInstruction;
-    whitelistKey: PublicKey;
-  }> {
-    const textEncoder = new TextEncoder();
-
-    // If desired, change the SDK to allow custom seed
-    if (!seed) seed = new Keypair().publicKey;
-
-    const [whitelistKey, _whitelistBump] = await PublicKey.findProgramAddress(
-      [seed.toBuffer(), textEncoder.encode("whitelist")],
-      this.programs.Volt.programId
-    );
-
-    const initWhitelistAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["initWhitelist"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: user,
-
-      seed: seed,
-
-      whitelist: whitelistKey,
-
-      rent: SYSVAR_RENT_PUBKEY,
-      systemProgram: SystemProgram.programId,
-    };
-
-    const instruction = this.programs.Volt.instruction.initWhitelist({
-      accounts: initWhitelistAccounts,
-    });
-
-    return {
-      instruction: instruction,
-      whitelistKey: whitelistKey,
-    };
-  }
-
-  addWhitelist(
-    user: PublicKey,
-    whitelistKey: PublicKey,
-    keyToAdd: PublicKey
-  ): TransactionInstruction {
-    const addWhitelistAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["addWhitelist"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: user,
-
-      whitelist: whitelistKey,
-
-      accountToAdd: keyToAdd,
-
-      systemProgram: SystemProgram.programId,
-    };
-
-    const instruction = this.programs.Volt.instruction.addWhitelist({
-      accounts: addWhitelistAccounts,
-    });
-
-    return instruction;
-  }
-
-  removeWhitelist(
-    user: PublicKey,
-    whitelistKey: PublicKey,
-    keyToRemove: PublicKey
-  ): TransactionInstruction {
-    const removeWhitelistAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["removeWhitelist"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: user,
-
-      whitelist: whitelistKey,
-
-      accountToRemove: keyToRemove,
-
-      systemProgram: SystemProgram.programId,
-    };
-
-    const instruction = this.programs.Volt.instruction.removeWhitelist({
-      accounts: removeWhitelistAccounts,
-    });
-
-    return instruction;
   }
 
   /**

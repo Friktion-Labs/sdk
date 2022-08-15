@@ -8,17 +8,18 @@ export type InstructionError = [
 ];
 
 export class TransactionError extends Error {
-  public txid: string;
+  txid: string;
 
-  public transaction: Transaction;
+  transaction: Transaction;
 
-  public instructionError?: InstructionError;
+  instructionError?: InstructionError;
 
   constructor(message: string, transaction: Transaction, txid: string) {
     super(message);
     this.txid = txid;
     this.transaction = transaction;
     if (message.match(/{"InstructionError":\[\d+,{"Custom":\d+}\]}/)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       this.instructionError = JSON.parse(message).InstructionError;
     }
   }

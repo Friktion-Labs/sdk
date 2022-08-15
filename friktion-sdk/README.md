@@ -104,7 +104,7 @@ Now that the program is deployed, you undoubtedly wish to interact with it. We d
 A simple and commonly desired action is to view the details of the current state. This is possible via the `printVoltDetails` command in volt manager, as illustrated below in a (truncated) example.
 
 ```bash
- ~/Friktion/volt/volt-manager ╱ main *1 !1 ?1  ts-node volt.ts -i printVoltDetails --volt CMVV4kfSdJRufiTNrrhr6PsvYY8SFhNs3TVjsWS3rJvP
+ ~/Friktion/volt/volt-manager ╱ main *1 !1 ?1  ts-node volt-manager.ts -i printVoltDetails --volt CMVV4kfSdJRufiTNrrhr6PsvYY8SFhNs3TVjsWS3rJvP
 
 
 

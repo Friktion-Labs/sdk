@@ -7,12 +7,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
-import {
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  SYSVAR_RENT_PUBKEY,
-} from "@solana/web3.js";
+import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 
 import type { FriktionSDK, GenericOptionsContractWithKey } from "../..";
 import {
@@ -152,9 +147,9 @@ export class SoloptionsSDK {
         textEncoder.encode(kind),
         underlyingMint.toBuffer(),
         quoteMint.toBuffer(),
-        new BN(underlyingAmount.toString()).toBuffer("le", 8),
-        new BN(quoteAmount.toString()).toBuffer("le", 8),
-        new BN(expiry.toString()).toBuffer("le", 8),
+        new BN(underlyingAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(quoteAmount.toString()).toArrayLike(Buffer, "le", 8),
+        new BN(expiry.toString()).toArrayLike(Buffer, "le", 8),
       ],
       program.programId
     );
@@ -310,7 +305,6 @@ export class SoloptionsSDK {
       quoteMint: this.optionsContract.quoteMint,
       feeDestination,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.optionExercise(amount, {
@@ -338,11 +332,10 @@ export class SoloptionsSDK {
       underlyingPool: this.optionsContract.underlyingPool,
       writerMint: this.optionsContract.writerMint,
       writerTokenDestination,
-      writerAuthority: user,
+      authority: user,
       userUnderlyingFundingTokens: writerUnderlyingFundingTokens,
 
       feeDestination,
-      clock: SYSVAR_CLOCK_PUBKEY,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
@@ -372,7 +365,6 @@ export class SoloptionsSDK {
       underlyingMint: this.optionsContract.underlyingMint,
       quoteMint: this.optionsContract.quoteMint,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
     };
 
     return this.program.instruction.optionRedeem(new BN(amount), {

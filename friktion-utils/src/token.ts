@@ -1,4 +1,4 @@
-import type { AnchorProvider } from "@project-serum/anchor";
+import type { AnchorProvider } from "@friktion-labs/anchor";
 import {
   createInitializeAccountInstruction,
   createInitializeMintInstruction,
@@ -154,7 +154,6 @@ export async function getMintSupply(
     return new Decimal(0);
   }
 }
-
 
 export async function getMintSupplyOrZero(
   connection: Connection,

@@ -2,6 +2,7 @@ import {
   getBalanceOrZero,
   getMintSupplyOrZero,
   sendInsList,
+  sleep,
 } from "@friktion-labs/friktion-utils";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -16,8 +17,13 @@ import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import BN from "bn.js";
 import Decimal from "decimal.js";
 
-import { SOL_NORM_FACTOR, WRAPPED_SOL_ADDRESS } from "../../constants";
-import { getGroupAndBanks } from "./utils/entropyHelpers";
+import {
+  SOL_NORM_FACTOR,
+  VoltType,
+  WRAPPED_SOL_ADDRESS,
+} from "../../constants";
+import type { EntropyVoltSDK } from "./EntropyVoltSDK";
+import type { PrincipalProtectionVoltSDK } from "./Principal/PrincipalProtectionVoltSDK";
 import { VoltSDK } from "./VoltSDK";
 import type {
   PendingDeposit,
@@ -25,6 +31,7 @@ import type {
   PendingWithdrawal,
   PendingWithdrawalWithKey,
   VoltProgram,
+  VoltWithNewIdlProgram,
 } from "./voltTypes";
 
 /// NOTE: the following instructions currently consume > 200k CUs (forced to compile with opt-level Z in order to fit in program account size)
@@ -73,21 +80,107 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
   /// GETTERS ///
 
-  async getUserAssociatedUnderlyingTokenAccount(): Promise<PublicKey> {
-    return await getAssociatedTokenAddress(
-      this.voltVault.underlyingAssetMint,
-      this.daoAuthority ? this.daoAuthority : this.wallet,
-      true
-    );
-  }
-  async getUserAssociatedVaultTokenAccount(): Promise<PublicKey> {
-    return await getAssociatedTokenAddress(
-      this.voltVault.vaultMint,
-      this.daoAuthority ? this.daoAuthority : this.wallet,
-      true
+  async getAssociatedUnderlyingTokenAccount(): Promise<PublicKey> {
+    return this.getAssociatedUnderlyingTokenAccountForUser(
+      this.daoAuthority ? this.daoAuthority : this.wallet
     );
   }
 
+  async getAssociatedVaultTokenAccount(): Promise<PublicKey> {
+    return this.getAssociatedVaultTokenAccountForUser(
+      this.daoAuthority ? this.daoAuthority : this.wallet
+    );
+  }
+
+  async updateVoltForRefactor(): Promise<TransactionInstruction> {
+    await sleep(1);
+    throw new Error("disabled");
+    // const textEncoder = new TextEncoder();
+    // const aMetadata = (
+    //   await PublicKey.findProgramAddress(
+    //     [this.voltKey.toBuffer(), textEncoder.encode("auctionMetadata")],
+    //     FRIKTION_PROGRAM_ID
+    //   )
+    // )[0];
+    // const refactorAccountsStruct: Parameters<
+    //   VoltWithNewIdlProgram["instruction"]["updateVoltForRefactor"]["accounts"]
+    // >[0] = {
+    //   authority: this.wallet,
+
+    //   voltVault: this.voltKey,
+
+    //   vaultAuthority: this.voltVault.vaultAuthority,
+
+    //   auctionMetadata: aMetadata,
+
+    //   systemProgram: SystemProgram.programId,
+    //   tokenProgram: TOKEN_PROGRAM_ID,
+    // };
+
+    // const voltTypeNum =
+    //   this.voltType() === VoltType.ShortOptions
+    //     ? 0
+    //     : this.voltType() === VoltType.Entropy
+    //     ? 1
+    //     : undefined;
+
+    // if (voltTypeNum === undefined)
+    //   throw new Error("volt not intended for refactor");
+
+    // const isCallBn =
+    //   this.voltType() === VoltType.ShortOptions &&
+    //   !this.sdk.isKeyAStableCoin(this.voltVault.depositMint)
+    //     ? new BN(1)
+    //     : new BN(0);
+    // return this.sdk.programs.VoltWithNewIdl.instruction.updateVoltForRefactor(
+    //   isCallBn,
+    //   voltTypeNum as number,
+    //   {
+    //     accounts: refactorAccountsStruct,
+    //   }
+    // );
+  }
+
+  addShareTokenMetadata(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    name: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    symbol: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    uri: string
+  ): TransactionInstruction {
+    throw new Error("disabled");
+    // const textEncoder = new TextEncoder();
+    // const [tokenMetadataKey] = PublicKey.findProgramAddressSync(
+    //   [
+    //     textEncoder.encode("metadata"),
+    //     METAPLEX_TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+    //     this.voltVault.vaultMint.toBuffer(),
+    //   ],
+    //   METAPLEX_TOKEN_METADATA_PROGRAM_ID
+    // );
+    // const addShareTokenMetadataAccounts: Parameters<
+    //   VoltWithNewIdlProgram["instruction"]["addShareTokenMetadata"]["accounts"]
+    // >[0] = {
+    //   authority: this.wallet,
+    //   voltVault: this.voltKey,
+    //   vaultAuthority: this.voltVault.vaultAuthority,
+    //   systemProgram: SystemProgram.programId,
+    //   tokenProgram: TOKEN_PROGRAM_ID,
+    //   vaultMint: this.voltVault.vaultMint,
+    //   metaplexTokenMetadataProgram: METAPLEX_TOKEN_METADATA_PROGRAM_ID,
+    //   newTokenMetadata: tokenMetadataKey,
+    //   rent: SYSVAR_RENT_PUBKEY,
+    // };
+    // return this.sdk.programs.VoltWithNewIdl.instruction.addShareTokenMetadata(
+    //   name,
+    //   symbol,
+    //   uri,
+    //   {
+    //     accounts: addShareTokenMetadataAccounts,
+    //   }
+    // );
+  }
   //// CLIENT-FACING INSTRUCTIONS ////
 
   /**
@@ -100,10 +193,10 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     humanDepositAmount: Decimal,
     underlyingTokenSource: PublicKey,
     vaultTokenDestination: PublicKey,
-    daoAuthority?: PublicKey,
+    nonPayerAuthority?: PublicKey,
     decimals?: number
   ): Promise<TransactionInstruction> {
-    if (daoAuthority === undefined) daoAuthority = this.daoAuthority;
+    if (nonPayerAuthority === undefined) nonPayerAuthority = this.daoAuthority;
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -113,7 +206,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      nonPayerAuthority !== undefined ? nonPayerAuthority : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -130,21 +223,21 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     // TODO: delete this for efficiencies sake
 
     const depositAccountsStruct: Parameters<
-      VoltProgram["instruction"]["deposit"]["accounts"]
+      VoltWithNewIdlProgram["instruction"]["deposit"]["accounts"]
     >[0] = {
       // tx fee + rent payer, optionally authority on underlyingTokenSource token account
-      authority: this.wallet,
+      payerAuthority: this.wallet,
       // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
-      daoAuthority:
-        daoAuthority !== undefined
-          ? daoAuthority
+      nonPayerAuthority:
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
-        daoAuthority !== undefined
-          ? daoAuthority
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
@@ -160,8 +253,8 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       depositPool: this.voltVault.depositPool,
       writerTokenPool: this.voltVault.writerTokenPool,
 
-      underlyingTokenSource: underlyingTokenSource,
-      vaultTokenDestination: vaultTokenDestination,
+      userUlTokens: underlyingTokenSource,
+      userVaultTokens: vaultTokenDestination,
 
       roundInfo: roundInfoKey,
       roundVoltTokens: roundVoltTokensKey,
@@ -173,19 +266,24 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-
-      // required to calculate total $ value of volts integrated w/ entropy or mango
-      entropyGroup: this.extraVoltData?.entropyGroup ?? SystemProgram.programId,
-      entropyAccount:
-        this.extraVoltData?.entropyAccount ?? SystemProgram.programId,
-      entropyCache: this.extraVoltData?.entropyCache ?? SystemProgram.programId,
-      entropyProgram:
-        this.extraVoltData?.entropyProgramId ?? SystemProgram.programId,
     };
 
-    return this.sdk.programs.Volt.instruction.deposit(normalizedDepositAmount, {
-      accounts: depositAccountsStruct,
-    });
+    return this.sdk.programs.VoltWithNewIdl.instruction.deposit(
+      normalizedDepositAmount,
+      {
+        accounts: depositAccountsStruct,
+        remainingAccounts:
+          this.voltType() === VoltType.PrincipalProtection
+            ? await (
+                this as unknown as PrincipalProtectionVoltSDK
+              ).getPrincipalProtectionContextAccountsAsRemaining()
+            : this.voltType() === VoltType.Entropy
+            ? await (
+                this as unknown as EntropyVoltSDK
+              ).getEntropyContextAccountsAsRemaining()
+            : [],
+      }
+    );
   }
 
   async depositWithClaim(
@@ -194,10 +292,10 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     vaultTokenDestination: PublicKey,
     shouldTransferSol = false,
     solTransferAuthority?: PublicKey,
-    daoAuthority?: PublicKey,
+    nonPayerAuthority?: PublicKey,
     decimals?: number
   ): Promise<TransactionInstruction> {
-    if (daoAuthority === undefined) daoAuthority = this.daoAuthority;
+    if (nonPayerAuthority === undefined) nonPayerAuthority = this.daoAuthority;
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -206,7 +304,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      nonPayerAuthority !== undefined ? nonPayerAuthority : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -239,38 +337,35 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
     const depositWithClaimAccounts: Parameters<
-      VoltProgram["instruction"]["depositWithClaim"]["accounts"]
+      VoltWithNewIdlProgram["instruction"]["depositWithClaim"]["accounts"]
     >[0] = {
-      authority: this.wallet,
-      daoAuthority:
-        daoAuthority !== undefined
-          ? daoAuthority
+      payerAuthority: this.wallet,
+      nonPayerAuthority:
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
       authorityCheck:
-        daoAuthority !== undefined
-          ? daoAuthority
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
       solTransferAuthority: solTransferAuthority
         ? solTransferAuthority
         : this.wallet,
-      // underlyingAssetMint: this.voltVault.underlyingAssetMint,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
 
       vaultAuthority: this.voltVault.vaultAuthority,
-      // whitelist: this?.extraVoltData?.whitelist ?? SystemProgram.programId,
-
       vaultMint: this.voltVault.vaultMint,
 
       depositPool: this.voltVault.depositPool,
       writerTokenPool: this.voltVault.writerTokenPool,
 
-      underlyingTokenSource: underlyingTokenSource,
-      vaultTokenDestination: vaultTokenDestination,
+      userUlTokens: underlyingTokenSource,
+      userVaultTokens: vaultTokenDestination,
 
       roundInfo: roundInfoKey,
       roundUnderlyingTokens: roundUnderlyingTokensKey,
@@ -287,11 +382,21 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    return this.sdk.programs.Volt.instruction.depositWithClaim(
+    return this.sdk.programs.VoltWithNewIdl.instruction.depositWithClaim(
       normalizedDepositAmount,
       shouldTransferSol,
       {
         accounts: depositWithClaimAccounts,
+        remainingAccounts:
+          this.voltType() === VoltType.PrincipalProtection
+            ? await (
+                this as unknown as PrincipalProtectionVoltSDK
+              ).getPrincipalProtectionContextAccountsAsRemaining()
+            : this.voltType() === VoltType.Entropy
+            ? await (
+                this as unknown as EntropyVoltSDK
+              ).getEntropyContextAccountsAsRemaining()
+            : [],
       }
     );
   }
@@ -310,6 +415,10 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
   ): Promise<TransactionInstruction> {
     const estimatedTotalWithoutPendingDepositTokenAmount =
       await this.getTvlWithoutPendingInDepositToken(normFactor);
+    console.log(
+      "estimated total tvl without pending : ",
+      estimatedTotalWithoutPendingDepositTokenAmount.toString()
+    );
     const roundInfo = await this.getRoundByKey(
       (
         await VoltSDK.findRoundInfoAddress(
@@ -348,6 +457,10 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       }
     }
 
+    console.log(
+      "withdraw amt volt tokens = ",
+      withdrawalAmountVaultTokens.toString()
+    );
     if (withClaim) {
       return await this.withdrawWithClaim(
         new BN(withdrawalAmountVaultTokens),
@@ -375,9 +488,10 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     withdrawAmount: BN,
     userVaultTokens: PublicKey,
     underlyingTokenDestination: PublicKey,
-    daoAuthority?: PublicKey
+    nonPayerAuthority?: PublicKey
   ): Promise<TransactionInstruction> {
-    if (!daoAuthority) daoAuthority = this.daoAuthority;
+    console.log("withdraw amount = ", withdrawAmount.toString());
+    if (!nonPayerAuthority) nonPayerAuthority = this.daoAuthority;
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -386,7 +500,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      nonPayerAuthority !== undefined ? nonPayerAuthority : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -396,18 +510,18 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       VoltProgram["instruction"]["withdraw"]["accounts"]
     >[0] = {
       // tx fee + rent payer, optionally authority on underlyingTokenSource token account
-      authority: this.wallet,
+      payerAuthority: this.wallet,
       // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
-      daoAuthority:
-        daoAuthority !== undefined
-          ? daoAuthority
+      nonPayerAuthority:
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
-        daoAuthority !== undefined
-          ? daoAuthority
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
@@ -450,9 +564,9 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     withdrawAmount: BN,
     userVaultTokens: PublicKey,
     underlyingTokenDestination: PublicKey,
-    daoAuthority?: PublicKey
+    nonPayerAuthority?: PublicKey
   ): Promise<TransactionInstruction> {
-    if (!daoAuthority) daoAuthority = this.daoAuthority;
+    if (!nonPayerAuthority) nonPayerAuthority = this.daoAuthority;
     const {
       roundInfoKey,
       roundUnderlyingTokensKey,
@@ -461,7 +575,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     } = await VoltSDK.findUsefulAddresses(
       this.voltKey,
       this.voltVault,
-      daoAuthority !== undefined ? daoAuthority : this.wallet,
+      nonPayerAuthority !== undefined ? nonPayerAuthority : this.wallet,
       this.sdk.programs.Volt.programId
     );
 
@@ -490,18 +604,18 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       VoltProgram["instruction"]["withdrawWithClaim"]["accounts"]
     >[0] = {
       // tx fee + rent payer, optionally authority on underlyingTokenSource token account
-      authority: this.wallet,
+      payerAuthority: this.wallet,
       // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
-      daoAuthority:
-        daoAuthority !== undefined
-          ? daoAuthority
+      nonPayerAuthority:
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
       // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
       authorityCheck:
-        daoAuthority !== undefined
-          ? daoAuthority
+        nonPayerAuthority !== undefined
+          ? nonPayerAuthority
           : this.extraVoltData?.isForDao
           ? this.extraVoltData.daoAuthority
           : this.wallet,
@@ -581,7 +695,6 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       epochInfo: epochInfoKey,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
     };
 
     return this.sdk.programs.Volt.instruction.cancelPendingWithdrawal({
@@ -619,7 +732,6 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
-      vaultMint: this.voltVault.vaultMint,
 
       underlyingTokenDestination: userUnderlyingTokens,
 
@@ -630,7 +742,6 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       epochInfo: epochInfoKey,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
     };
 
     return this.sdk.programs.Volt.instruction.cancelPendingDeposit({
@@ -697,7 +808,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
     const claimPendingStruct: Parameters<
-      VoltProgram["instruction"]["claimPending"]["accounts"]
+      VoltProgram["instruction"]["claimPendingDeposit"]["accounts"]
     >[0] = {
       authority: authority,
 
@@ -716,7 +827,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       tokenProgram: TOKEN_PROGRAM_ID,
     };
 
-    return this.sdk.programs.Volt.instruction.claimPending({
+    return this.sdk.programs.Volt.instruction.claimPendingDeposit({
       accounts: claimPendingStruct,
     });
   }
@@ -808,7 +919,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     const authority = this.daoAuthority ? this.daoAuthority : this.wallet;
     const solTransferAuthority = solTransferAuthorityReplacement ?? this.wallet;
     const voltVault = this.voltVault;
-    const depositMint = voltVault.underlyingAssetMint;
+    const depositMint = voltVault.depositMint;
     const vaultMint = voltVault.vaultMint;
 
     const isWrappedSol =
@@ -953,7 +1064,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     const authority = this.daoAuthority ? this.daoAuthority : this.wallet;
 
     const voltVault = this.voltVault;
-    const depositMint = voltVault.underlyingAssetMint;
+    const depositMint = voltVault.depositMint;
     const vaultMint = voltVault.vaultMint;
 
     const withdrawalInstructions: TransactionInstruction[] = [];
@@ -1070,51 +1181,6 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     );
   }
 
-  changeQuoteMint(newQuoteMint: PublicKey): TransactionInstruction {
-    const changeQuoteMintAccounts: Parameters<
-      VoltProgram["instruction"]["changeQuoteMint"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      newQuoteMint: newQuoteMint,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
-
-    return this.sdk.programs.Volt.instruction.changeQuoteMint({
-      accounts: changeQuoteMintAccounts,
-    });
-  }
-
-  async changeDecimalsByFactor(factor: BN): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-
-    const { epochInfoKey } = await VoltSDK.findRoundAddresses(
-      this.voltKey,
-      this.voltVault.roundNumber.subn(1),
-      this.sdk.programs.Volt.programId
-    );
-
-    const changeDecimalsByFactorAccounts: Parameters<
-      VoltProgram["instruction"]["changeDecimalsByFactor"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      extraVoltData: extraVoltKey,
-      epochInfo: epochInfoKey,
-    };
-
-    return this.sdk.programs.Volt.instruction.changeDecimalsByFactor(factor, {
-      accounts: changeDecimalsByFactorAccounts,
-    });
-  }
-
   async changeCapacity(
     capacity: BN,
     individualCapacity: BN
@@ -1149,6 +1215,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
   async changeFees(
     performanceFeeBps: BN,
     withdrawalFeeBps: BN,
+    aumFeeBps: BN,
     dovTakeFeesInUnderlying?: boolean,
     useCustomFees?: boolean
   ): Promise<TransactionInstruction> {
@@ -1183,104 +1250,13 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     return this.sdk.programs.Volt.instruction.changeFees(
       performanceFeeBps,
       withdrawalFeeBps,
+      aumFeeBps,
       dovTakeFeesInUnderlying as boolean,
       useCustomFees,
       {
         accounts: changeFeesAccounts,
       }
     );
-  }
-
-  changeAdmin(newAdmin: PublicKey): TransactionInstruction {
-    const changeAdminAccounts: Parameters<
-      VoltProgram["instruction"]["changeAdmin"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
-
-    return this.sdk.programs.Volt.instruction.changeAdmin(newAdmin, {
-      accounts: changeAdminAccounts,
-    });
-  }
-
-  async attachWhitelist(
-    whitelistKey: PublicKey
-  ): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    const attachWhitelistAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["attachWhitelist"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: this.wallet,
-
-      voltVault: this.voltKey,
-
-      extraVoltData: extraVoltKey,
-      whitelist: whitelistKey,
-
-      systemProgram: SystemProgram.programId,
-    };
-
-    const instruction = this.sdk.programs.Volt.instruction.attachWhitelist({
-      accounts: attachWhitelistAccounts,
-    });
-
-    return instruction;
-  }
-
-  async attachDao(
-    daoProgramId: PublicKey,
-    daoAuthority: PublicKey
-  ): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    const attachDaoAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["attachDao"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: this.wallet,
-
-      voltVault: this.voltKey,
-
-      extraVoltData: extraVoltKey,
-
-      daoProgram: daoProgramId,
-
-      daoAuthority: daoAuthority,
-    };
-
-    const instruction = this.sdk.programs.Volt.instruction.attachDao({
-      accounts: attachDaoAccounts,
-    });
-
-    return instruction;
-  }
-
-  async detachDao(): Promise<TransactionInstruction> {
-    const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    const detachDaoAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["detachDao"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
-      authority: this.wallet,
-
-      voltVault: this.voltKey,
-
-      extraVoltData: extraVoltKey,
-    };
-
-    const instruction = this.sdk.programs.Volt.instruction.detachDao({
-      accounts: detachDaoAccounts,
-    });
-
-    return instruction;
   }
 
   async getPendingDepositForUser(): Promise<PendingDepositWithKey> {
@@ -1298,193 +1274,5 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
     return this.getPendingWithdrawalByKey(key);
   }
 
-  // Entropy Instructions
-
-  transferDeposit(
-    targetPool: PublicKey,
-    underlyingDestination: PublicKey,
-    amount: BN
-  ): TransactionInstruction {
-    const transferDepositAccounts: Parameters<
-      VoltProgram["instruction"]["transferDeposit"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      underlyingUserAcct: underlyingDestination,
-      targetPool: targetPool,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
-
-    return this.sdk.programs.Volt.instruction.transferDeposit(amount, {
-      accounts: transferDepositAccounts,
-    });
-  }
-
   //// ENTROPY LENDING INSTRUCTIONS ////
-
-  async moveAssetsToLendingAccount(
-    targetPool: PublicKey,
-    amount: BN,
-    entropyGroupGivenKey?: PublicKey,
-    entropyProgramGivenKey?: PublicKey
-  ): Promise<TransactionInstruction> {
-    if (!this.extraVoltData) throw new Error("requires ev data");
-
-    const [entropyLendingAccountKey] =
-      await VoltSDK.findEntropyLendingAccountAddress(this.voltKey);
-    try {
-      await getAccount(
-        this.sdk.readonlyProvider.connection,
-        entropyLendingAccountKey
-      );
-    } catch (err) {
-      if (
-        entropyGroupGivenKey === undefined ||
-        entropyProgramGivenKey === undefined
-      )
-        throw new Error(
-          "entropy account doesn't exist, must provide program id + group"
-        );
-    }
-    let entropyGroupKey: PublicKey, entropyProgramKey: PublicKey;
-    if (
-      entropyGroupGivenKey === undefined ||
-      entropyProgramGivenKey === undefined
-    ) {
-      const { entropyClient, entropyGroup } =
-        await this.getEntropyLendingObjects();
-      entropyGroupKey = entropyGroup.publicKey;
-      entropyProgramKey = entropyClient.programId;
-    } else {
-      entropyGroupKey = entropyGroupGivenKey;
-      entropyProgramKey = entropyProgramGivenKey;
-    }
-
-    const { entropyClient, entropyGroup } = await this.getEntropyGroup(
-      entropyProgramKey,
-      entropyGroupKey
-    );
-
-    const { rootBank, nodeBank } = await getGroupAndBanks(
-      entropyClient,
-      entropyGroup.publicKey,
-      (
-        await getAccount(this.sdk.readonlyProvider.connection, targetPool)
-      ).mint
-    );
-
-    console.log(
-      "root bank = ",
-      rootBank?.publicKey.toString(),
-      "node bank = ",
-      nodeBank?.publicKey.toString()
-    );
-
-    const moveAssetsToLendingAccounts: Parameters<
-      VoltProgram["instruction"]["moveAssetsToLendingAccount"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      targetPool: targetPool,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      entropyProgram: entropyClient.programId,
-      entropyGroup: entropyGroup.publicKey,
-      entropyAccount: entropyLendingAccountKey,
-      entropyCache: entropyGroup.entropyCache,
-      rootBank: rootBank?.publicKey as PublicKey,
-      nodeBank: nodeBank?.publicKey as PublicKey,
-      vault: nodeBank?.vault as PublicKey,
-    };
-
-    return this.sdk.programs.Volt.instruction.moveAssetsToLendingAccount(
-      amount,
-      {
-        accounts: moveAssetsToLendingAccounts,
-      }
-    );
-  }
-
-  async withdrawAssetsFromLendingAccount(
-    targetPool: PublicKey,
-    amount: BN
-  ): Promise<TransactionInstruction> {
-    if (!this.extraVoltData) throw new Error("requires ev data");
-
-    const { entropyClient, entropyGroup, entropyAccount } =
-      await this.getEntropyLendingObjects();
-
-    const { rootBank, nodeBank } = await getGroupAndBanks(
-      entropyClient,
-      entropyGroup.publicKey,
-      this.voltVault.underlyingAssetMint
-    );
-
-    const withdrawAssetsFromLendingAccounts: Parameters<
-      VoltProgram["instruction"]["withdrawAssetsFromLendingAccount"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      targetPool: targetPool,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      entropyProgram: entropyClient.programId,
-      entropyGroup: entropyGroup.publicKey,
-      entropyAccount: entropyAccount.publicKey,
-      entropyCache: entropyGroup.entropyCache,
-      rootBank: rootBank?.publicKey as PublicKey,
-      nodeBank: nodeBank?.publicKey as PublicKey,
-      vault: nodeBank?.vault as PublicKey,
-      signer: entropyGroup.signerKey,
-    };
-
-    return this.sdk.programs.Volt.instruction.withdrawAssetsFromLendingAccount(
-      amount,
-      {
-        accounts: withdrawAssetsFromLendingAccounts,
-      }
-    );
-  }
-
-  async takePendingWithdrawalFees(): Promise<TransactionInstruction> {
-    const { roundUnderlyingPendingWithdrawalsKey, epochInfoKey } =
-      await VoltSDK.findUsefulAddresses(
-        this.voltKey,
-        this.voltVault,
-        this.wallet,
-        this.sdk.programs.Volt.programId
-      );
-
-    const takePendingWithdrawalFeesStruct: Parameters<
-      VoltProgram["instruction"]["takePendingWithdrawalFees"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-
-      roundUnderlyingTokensForPendingWithdrawals:
-        roundUnderlyingPendingWithdrawalsKey,
-
-      epochInfo: epochInfoKey,
-
-      feeAcct: await this.getFeeTokenAccount(),
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
-
-    return this.sdk.programs.Volt.instruction.takePendingWithdrawalFees({
-      accounts: takePendingWithdrawalFeesStruct,
-    });
-  }
 }

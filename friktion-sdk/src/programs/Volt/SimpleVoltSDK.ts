@@ -43,4 +43,7 @@ export class SimpleVoltSDK extends VoltSDK {
   getPrimaryStrategyTvlWithNormFactor(_normFactor: Decimal): Promise<Decimal> {
     throw new Error("not implemented");
   }
+  estimateCurrentPerformanceAsPercentage(): Promise<Decimal> {
+    throw new Error("not implemented");
+  }
 }

@@ -6,12 +6,12 @@ export type CpiExamplesIDL = {
       name: "depositExample";
       accounts: [
         {
-          name: "authority";
+          name: "payerAuthority";
           isMut: true;
           isSigner: true;
         },
         {
-          name: "daoAuthority";
+          name: "nonPayerAuthority";
           isMut: false;
           isSigner: false;
         },
@@ -137,7 +137,7 @@ export type CpiExamplesIDL = {
           isSigner: true;
         },
         {
-          name: "daoAuthority";
+          name: "nonPayerAuthority";
           isMut: false;
           isSigner: false;
         },
@@ -248,7 +248,7 @@ export type CpiExamplesIDL = {
           isSigner: true;
         },
         {
-          name: "daoAuthority";
+          name: "nonPayerAuthority";
           isMut: false;
           isSigner: false;
         },
@@ -364,7 +364,7 @@ export type CpiExamplesIDL = {
           isSigner: true;
         },
         {
-          name: "daoAuthority";
+          name: "nonPayerAuthority";
           isMut: false;
           isSigner: false;
         },
@@ -777,12 +777,12 @@ export const CpiExamplesIDLJsonRaw = {
       name: "depositExample",
       accounts: [
         {
-          name: "authority",
+          name: "payerAuthority",
           isMut: true,
           isSigner: true,
         },
         {
-          name: "daoAuthority",
+          name: "nonPayerAuthority",
           isMut: false,
           isSigner: false,
         },
@@ -908,7 +908,7 @@ export const CpiExamplesIDLJsonRaw = {
           isSigner: true,
         },
         {
-          name: "daoAuthority",
+          name: "nonPayerAuthority",
           isMut: false,
           isSigner: false,
         },
@@ -1019,7 +1019,7 @@ export const CpiExamplesIDLJsonRaw = {
           isSigner: true,
         },
         {
-          name: "daoAuthority",
+          name: "nonPayerAuthority",
           isMut: false,
           isSigner: false,
         },
@@ -1135,7 +1135,7 @@ export const CpiExamplesIDLJsonRaw = {
           isSigner: true,
         },
         {
-          name: "daoAuthority",
+          name: "nonPayerAuthority",
           isMut: false,
           isSigner: false,
         },

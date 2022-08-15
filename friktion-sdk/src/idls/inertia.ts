@@ -104,8 +104,8 @@ export type InertiaIDL = {
       name: "optionWrite";
       accounts: [
         {
-          name: "writerAuthority";
-          isMut: true;
+          name: "authority";
+          isMut: false;
           isSigner: true;
         },
         {
@@ -152,11 +152,6 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -171,7 +166,7 @@ export type InertiaIDL = {
       accounts: [
         {
           name: "closeAuthority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -213,11 +208,6 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -232,7 +222,7 @@ export type InertiaIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -272,11 +262,6 @@ export type InertiaIDL = {
         },
         {
           name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
           isMut: false;
           isSigner: false;
         }
@@ -288,7 +273,7 @@ export type InertiaIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -328,11 +313,6 @@ export type InertiaIDL = {
         },
         {
           name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
           isMut: false;
           isSigner: false;
         }
@@ -385,11 +365,6 @@ export type InertiaIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -404,7 +379,7 @@ export type InertiaIDL = {
       accounts: [
         {
           name: "exerciserAuthority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -434,11 +409,6 @@ export type InertiaIDL = {
         },
         {
           name: "tokenProgram";
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: "clock";
           isMut: false;
           isSigner: false;
         }
@@ -962,8 +932,8 @@ export const InertiaIDLJsonRaw = {
       name: "optionWrite",
       accounts: [
         {
-          name: "writerAuthority",
-          isMut: true,
+          name: "authority",
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1011,11 +981,6 @@ export const InertiaIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1029,7 +994,7 @@ export const InertiaIDLJsonRaw = {
       accounts: [
         {
           name: "closeAuthority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1072,11 +1037,6 @@ export const InertiaIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1090,7 +1050,7 @@ export const InertiaIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1130,11 +1090,6 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
           isMut: false,
           isSigner: false,
         },
@@ -1146,7 +1101,7 @@ export const InertiaIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1186,11 +1141,6 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
           isMut: false,
           isSigner: false,
         },
@@ -1244,11 +1194,6 @@ export const InertiaIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1262,7 +1207,7 @@ export const InertiaIDLJsonRaw = {
       accounts: [
         {
           name: "exerciserAuthority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1292,11 +1237,6 @@ export const InertiaIDLJsonRaw = {
         },
         {
           name: "tokenProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "clock",
           isMut: false,
           isSigner: false,
         },

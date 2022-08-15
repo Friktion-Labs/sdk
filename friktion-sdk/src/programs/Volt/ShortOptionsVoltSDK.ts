@@ -6,6 +6,7 @@ import {
   sendInsList,
 } from "@friktion-labs/friktion-utils";
 import type { AnchorProvider } from "@project-serum/anchor";
+import type { MarketProxy } from "@project-serum/serum";
 import {
   getAssociatedTokenAddress,
   getMint,
@@ -26,6 +27,7 @@ import {
   FRIKTION_PROGRAM_ID,
   INERTIA_FEE_OWNER,
   SOLOPTIONS_FEE_OWNER,
+  SPREADS_FEE_OWNER,
   VoltStrategy,
   VoltType,
 } from "../../constants";
@@ -35,13 +37,20 @@ import { SoloptionsSDK } from "../../programs/Soloptions";
 import type { InertiaContract } from "../Inertia/inertiaTypes";
 import { getInertiaContractByKeyOrNull } from "../Inertia/inertiaUtils";
 import type { OptionsContractDetails } from "./utils/helperTypes";
-import { OrderType, SelfTradeBehavior } from "./utils/helperTypes";
+import {
+  DovParticipantTypeValues,
+  OptionTypeValues,
+  OrderTypeValues,
+  SelfTradeBehaviorValues,
+} from "./utils/helperTypes";
 import { getStrikeFromOptionsContract } from "./utils/optionMarketUtils";
+import { marketLoader } from "./utils/serumHelpers";
 import { VoltSDK } from "./VoltSDK";
 import type {
   AuctionMetadata,
   ExtraVoltData,
   GenericOptionsContractWithKey,
+  ShortOptionsUsefulAddresses,
   VoltProgram,
   VoltVault,
 } from "./voltTypes";
@@ -53,7 +62,6 @@ export type ShortOptionsVoltSDKParams = {
 };
 
 // SUPER DUPER IMPORTANT NOTE: cannot allow any imports from "./" inside this file since it will import ConnectedShortOptionsVoltSDK and make you cry
-
 export class ShortOptionsVoltSDK extends VoltSDK {
   constructor(
     sdk: FriktionSDK,
@@ -70,7 +78,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   //// SIMPLE HELPERS ////
 
   getLastTradedOptionKey(): PublicKey {
-    return this.voltVault.optionMarket;
+    return this.voltVault.optionsContract;
   }
 
   async getLastTradedOptionContract(): Promise<
@@ -101,26 +109,28 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     return this.voltVault.premiumPool;
   }
 
+  getOptionsContractKey(): PublicKey {
+    return this.voltVault.optionsContract;
+  }
+
   // mint displayed on the UI
   getHeadlineMint(): PublicKey {
     return this.isCall()
-      ? this.voltVault.underlyingAssetMint
+      ? this.voltVault.depositMint
       : this.voltVault.quoteAssetMint;
   }
 
   requiresSwapPremium(): boolean {
     return (
-      this.voltType() === VoltType.ShortOptions &&
       this.voltVault.permissionedMarketPremiumMint.toString() !==
-        this.voltVault.underlyingAssetMint.toString()
+      this.voltVault.depositMint.toString()
     );
   }
 
   definitelyDoesntRequirePermissionedSettle(): boolean {
     return (
-      this.voltType() === VoltType.ShortOptions &&
       this.voltVault.permissionedMarketPremiumMint.toString() !==
-        this.voltVault.underlyingAssetMint.toString() &&
+        this.voltVault.depositMint.toString() &&
       this.voltVault.permissionedMarketPremiumMint.toString() !==
         this.voltVault.quoteAssetMint.toString()
     );
@@ -131,14 +141,11 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   isOptionsContractACall(
     optionsContract: GenericOptionsContractWithKey
   ): boolean {
-    return !this.isKeyAStableCoin(optionsContract.underlyingAssetMint);
+    return !this.sdk.isKeyAStableCoin(optionsContract.underlyingAssetMint);
   }
 
   isCall(): boolean {
-    if (this.voltType() !== VoltType.ShortOptions)
-      throw new Error("wrong volt type, should be DOV");
-
-    return !this.isKeyAStableCoin(this.voltVault.underlyingAssetMint);
+    return !this.sdk.isKeyAStableCoin(this.voltVault.depositMint);
   }
 
   async specificVoltName(): Promise<string> {
@@ -156,8 +163,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
           ")"
         );
       }
-      case 3:
-      case 4:
+      default:
         throw new Error("invalid volt number for short options sdk");
     }
   }
@@ -167,6 +173,17 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     optionsProtocol?: OptionsProtocol
   ): Promise<GenericOptionsContractWithKey> {
     return await this.sdk.getOptionMarketByKey(key, optionsProtocol);
+  }
+
+  async getOptionsContractForEpoch(
+    epochNumber: BN
+  ): Promise<GenericOptionsContractWithKey> {
+    const epochInfo = await this.getEpochInfoByNumber(epochNumber);
+    if (epochInfo.optionKey.toString() === SystemProgram.programId.toString())
+      throw new Error(
+        "epoch too old. Doesn't support retrieving options contract"
+      );
+    return await this.sdk.getOptionMarketByKey(epochInfo.optionKey);
   }
 
   async getOptionsProtocolForKey(key: PublicKey): Promise<OptionsProtocol> {
@@ -219,14 +236,14 @@ export class ShortOptionsVoltSDK extends VoltSDK {
 
   async getSoloptionsMintFeeAccount() {
     return await getAssociatedTokenAddress(
-      this.voltVault.underlyingAssetMint,
+      this.voltVault.depositMint,
       SOLOPTIONS_FEE_OWNER
     );
   }
 
   async getInertiaMintFeeAccount() {
     return await getAssociatedTokenAddress(
-      this.voltVault.underlyingAssetMint,
+      this.voltVault.depositMint,
       INERTIA_FEE_OWNER
     );
   }
@@ -242,6 +259,31 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       this.voltVault.quoteAssetMint
     );
   }
+
+  async getTemporaryUsdcFeePoolAmount(): Promise<BN> {
+    return await getAccountBalanceOrZero(
+      this.sdk.readonlyProvider.connection,
+      (
+        await ShortOptionsVoltSDK.findTemporaryUsdcFeePoolAddress(this.voltKey)
+      )[0]
+    );
+  }
+
+  estimateCurrentPerformanceAsPercentage(): Promise<Decimal> {
+    return new Promise(() => new Decimal(0.0));
+  }
+
+  static async findTemporaryUsdcFeePoolAddress(
+    voltKey: PublicKey,
+    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
+  ): Promise<[PublicKey, number]> {
+    const textEncoder = new TextEncoder();
+    return await PublicKey.findProgramAddress(
+      [voltKey.toBuffer(), textEncoder.encode("temporaryUsdcFeePool")],
+      voltProgramId
+    );
+  }
+
   //// LOGGING ////
 
   printAuctionDetails(): Promise<void> {
@@ -251,8 +293,6 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   printStateMachine(): void {
     console.log(
       "\nShort Options State:",
-      "\n, firstEverOptionWasSet: ",
-      this.voltVault.firstEverOptionWasSet,
       "\n, nextOptionSet: ",
       this.voltVault.nextOptionWasSet,
       "\n, has started?: ",
@@ -260,9 +300,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       "\n, taken withdrawal fees: ",
       this.voltVault.haveTakenWithdrawalFees,
       "\n, isSettled: ",
-      this.voltVault.currOptionWasSettled,
-      "\n, mustSwapPremium: ",
-      this.voltVault.mustSwapPremiumToUnderlying,
+      this.voltVault.finishedSettlingOption,
+      "\n, must swap premium post settle: ",
+      this.voltVault.mustSwapQuoteAssetAfterSettle,
       "\n, preparedIsFinished: ",
       this.voltVault.prepareIsFinished,
       "\n, enterIsFinished: ",
@@ -271,7 +311,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   }
 
   async printPositionStats(): Promise<void> {
-    const symbol = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
+    const symbol = this.mintNameFromKey(this.voltVault.depositMint);
 
     try {
       const optionMarket = await this.getCurrentOptionsContract();
@@ -349,13 +389,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   }
 
   printStrategyParams(): void {
-    console.log(
-      "\n DOV: ",
-      "\n, isCall: ",
-      this.isCall(),
-      "\n, firstEverOptionWasSet: ",
-      this.voltVault.firstEverOptionWasSet
-    );
+    console.log("\n DOV: ", "\n, isCall: ", this.isCall());
   }
 
   async printOptionsContract(
@@ -453,18 +487,15 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   }
 
   async getCurrentOptionsContract(): Promise<GenericOptionsContractWithKey> {
-    if (this.voltType() !== VoltType.ShortOptions)
-      throw new Error("volt must trade options");
-
     if (
-      this.voltVault.optionMarket.toString() ===
+      this.voltVault.optionsContract.toString() ===
       SystemProgram.programId.toString()
     )
       throw new NoOptionMarketError(
         "option market must not be systemprogram (not set)"
       );
 
-    return await this.getOptionsContractByKey(this.voltVault.optionMarket);
+    return await this.getOptionsContractByKey(this.voltVault.optionsContract);
   }
 
   async getCurrentOptionsContractDetails(): Promise<OptionsContractDetails> {
@@ -484,7 +515,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       .div(await this.getDepositTokenNormalizationFactor())
       .toNumber();
 
-    const mintName = this.mintNameFromKey(this.voltVault.underlyingAssetMint);
+    const mintName = this.mintNameFromKey(this.voltVault.depositMint);
     const expiry = optionsContract.expirationUnixTimestamp
       .muln(1000)
       .toNumber();
@@ -520,7 +551,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   //// SERUM MARKET HELPERS ////
 
   async getCurrentMarketAndAuthorityInfo() {
-    return await this.getMarketAndAuthorityInfo(this.voltVault.optionMarket);
+    return await this.getMarketAndAuthorityInfo(this.voltVault.optionsContract);
   }
 
   async getMarketAndAuthorityInfo(optionMarketKey: PublicKey): Promise<{
@@ -586,7 +617,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       await ShortOptionsVoltSDK.getInitializeVoltInstruction({
         sdk,
         adminKey,
+        underlyingAssetMint,
         quoteAssetMint,
+        permissionedMarketPremiumMint,
         underlyingAmountPerContract,
         serumProgramId,
         expirationInterval,
@@ -596,50 +629,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
         seed,
       });
 
-    const {
-      extraVoltKey,
-      vaultAuthority,
-      vaultMint,
-      depositPoolKey,
-      permissionedMarketPremiumPoolKey,
-      whitelistTokenAccountKey,
-      auctionMetadataKey,
-    } = await ShortOptionsVoltSDK.findInitializeAddresses(
-      sdk,
-      sdk.net.MM_TOKEN_MINT,
-      seed
-    );
-    const initExtraAccountsAccounts: Parameters<
-      VoltProgram["instruction"]["initExtraAccountsShortOptions"]["accounts"]
-    >[0] = {
-      authority: provider.wallet.publicKey,
-      voltVault: voltKey,
-      vaultAuthority: vaultAuthority,
-
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      depositPool: depositPoolKey,
-      vaultMint: vaultMint,
-      underlyingAssetMint: underlyingAssetMint,
-
-      whitelistTokenAccount: whitelistTokenAccountKey,
-      whitelistTokenMint: sdk.net.MM_TOKEN_MINT,
-      permissionedMarketPremiumMint: permissionedMarketPremiumMint,
-      permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
-      auctionMetadata: auctionMetadataKey,
-      extraVoltData: extraVoltKey,
-      rent: SYSVAR_RENT_PUBKEY,
-    };
-
-    const initExtraIx =
-      sdk.programs.Volt.instruction.initExtraAccountsShortOptions(
-        permissionlessAuctions ? new BN(1) : new BN(0),
-        {
-          accounts: initExtraAccountsAccounts,
-        }
-      );
-
-    await sendInsList(provider, [instruction, initExtraIx]);
+    await sendInsList(provider, [instruction]);
 
     return voltKey;
   }
@@ -652,7 +642,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   static async getInitializeVoltInstruction({
     sdk,
     adminKey,
+    underlyingAssetMint,
     quoteAssetMint,
+    permissionedMarketPremiumMint,
     underlyingAmountPerContract,
     serumProgramId,
     expirationInterval,
@@ -663,14 +655,15 @@ export class ShortOptionsVoltSDK extends VoltSDK {
   }: {
     sdk: FriktionSDK;
     adminKey: PublicKey;
+    underlyingAssetMint: PublicKey;
     quoteAssetMint: PublicKey;
+    permissionedMarketPremiumMint: PublicKey;
     underlyingAmountPerContract: BN;
     serumProgramId: PublicKey;
     expirationInterval: BN;
     capacity: BN;
     individualCapacity: BN;
     permissionlessAuctions: boolean;
-
     seed?: PublicKey;
   }): Promise<{
     instruction: TransactionInstruction;
@@ -680,59 +673,103 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     // If desired, change the SDK to allow custom seed
     const {
       vault,
-      vaultBump,
+      vaultMint,
       vaultAuthorityBump,
       extraVoltKey,
       vaultAuthority,
       premiumPoolKey,
+      depositPoolKey,
+      permissionedMarketPremiumPoolKey,
+      whitelistTokenAccountKey,
+      auctionMetadataKey,
     } = await ShortOptionsVoltSDK.findInitializeAddresses(
       sdk,
       sdk.net.MM_TOKEN_MINT,
       seed
     );
 
+    const [temporaryUsdcFeePoolKey] =
+      await ShortOptionsVoltSDK.findTemporaryUsdcFeePoolAddress(vault);
+
     const initializeAccountsStruct: {
       [K in keyof Parameters<
-        VoltProgram["instruction"]["initialize"]["accounts"]
-      >[0]]: PublicKey;
+        VoltProgram["instruction"]["initializeShortOptions"]["accounts"]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      >[0]]: PublicKey | any;
     } = {
-      authority: adminKey,
+      sharedAccounts: {
+        initializeBaseAccounts: {
+          authority: adminKey,
+          adminKey: adminKey,
+          voltVault: vault,
+          vaultAuthority: vaultAuthority,
+          vaultMint: vaultMint,
 
-      adminKey: adminKey,
+          extraVoltData: extraVoltKey,
 
-      seed: seed,
+          depositMint: underlyingAssetMint,
 
+          depositPool: depositPoolKey,
+
+          whitelistTokenAccount: whitelistTokenAccountKey,
+          whitelistTokenMint: sdk.net.MM_TOKEN_MINT,
+
+          dexProgram: serumProgramId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: SYSVAR_RENT_PUBKEY,
+          systemProgram: SystemProgram.programId,
+        },
+        voltVault: vault,
+
+        quoteAssetMint: quoteAssetMint,
+
+        quoteAssetPool: premiumPoolKey,
+
+        permissionedMarketPremiumMint: permissionedMarketPremiumMint,
+        permissionedMarketPremiumPool: permissionedMarketPremiumPoolKey,
+
+        auctionMetadata: auctionMetadataKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      },
       voltVault: vault,
-      vaultAuthority: vaultAuthority,
-      extraVoltData: extraVoltKey,
-
-      premiumPool: premiumPoolKey,
-
-      quoteAssetMint: quoteAssetMint,
-
-      dexProgram: serumProgramId,
-
+      seed: seed,
+      temporaryUsdcFeePool: temporaryUsdcFeePoolKey,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
       systemProgram: SystemProgram.programId,
     };
 
-    const serumOrderSize = new BN(1);
-    const serumOrderType = OrderType.ImmediateOrCancel;
-    // const serumLimit = new BN(65535);
-    const serumSelfTradeBehavior = SelfTradeBehavior.AbortTransaction;
-
-    const instruction = sdk.programs.Volt.instruction.initialize(
-      vaultBump,
-      vaultAuthorityBump,
-      serumOrderSize,
-      serumOrderType,
-      serumSelfTradeBehavior,
-      expirationInterval,
-      underlyingAmountPerContract,
-      capacity,
-      individualCapacity,
-      permissionlessAuctions ? new BN(1) : new BN(0),
+    const instruction = sdk.programs.Volt.instruction.initializeShortOptions(
+      {
+        baseArgs: {
+          vaultName: "defaultName",
+          capacity,
+          individualCapacity,
+          bumps: {
+            vaultAuthorityBump,
+          },
+        } as never,
+        dovArgs: {
+          serumArgs: {
+            serumOrderSize: new BN(1),
+            serumOrderType: OrderTypeValues.ImmediateOrCancel,
+            serumSelfTradeBehavior: SelfTradeBehaviorValues.AbortTransaction,
+          },
+          optionsArgs: {
+            expirationInterval,
+            underlyingAmountPerContract,
+            optionType: sdk.isKeyAStableCoin(underlyingAssetMint)
+              ? OptionTypeValues.Put
+              : OptionTypeValues.Call,
+            participantType: DovParticipantTypeValues.OptionSeller,
+          },
+          permissionlessAuctions: permissionlessAuctions
+            ? new BN(1)
+            : new BN(0),
+        } as never,
+      },
       {
         accounts: initializeAccountsStruct,
       }
@@ -753,6 +790,7 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     sdk,
     adminKey,
     optionMarket,
+    permissionedMarketPremiumMint,
     serumProgramId,
     expirationInterval,
     capacity,
@@ -764,7 +802,6 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     adminKey: PublicKey;
     optionMarket: GenericOptionsContractWithKey;
     permissionedMarketPremiumMint: PublicKey;
-    // whitelistTokenMintKey: PublicKey;
     serumProgramId: PublicKey;
     expirationInterval: BN;
     capacity: BN;
@@ -778,7 +815,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     return ShortOptionsVoltSDK.getInitializeVoltInstruction({
       sdk,
       adminKey,
+      underlyingAssetMint: optionMarket.underlyingAssetMint,
       quoteAssetMint: optionMarket.quoteAssetMint,
+      permissionedMarketPremiumMint,
       underlyingAmountPerContract: optionMarket.underlyingAmountPerContract,
       serumProgramId,
       expirationInterval,
@@ -867,19 +906,19 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       sdk.programs.Volt.programId
     );
 
-    const [premiumPoolKey] = await PublicKey.findProgramAddress(
-      [vault.toBuffer(), textEncoder.encode("premiumPool")],
+    const [premiumPoolKey] = await VoltSDK.findQuoteAssetPoolAddress(
+      vault,
       sdk.programs.Volt.programId
     );
 
     const [permissionedMarketPremiumPoolKey] =
-      await PublicKey.findProgramAddress(
-        [vault.toBuffer(), textEncoder.encode("permissionedMarketPremiumPool")],
+      await VoltSDK.findPermissionedMarketPremiumPoolAddress(
+        vault,
         sdk.programs.Volt.programId
       );
 
     const [whitelistTokenAccountKey] =
-      await ShortOptionsVoltSDK.findWhitelistTokenAccountAddress(
+      await VoltSDK.findWhitelistTokenAccountAddress(
         vault,
         whitelistTokenMintKey,
         sdk.programs.Volt.programId
@@ -929,33 +968,6 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       backupOptionPoolKey,
       backupWriterTokenPoolKey,
     };
-  }
-
-  static async findPermissionedMarketPremiumPoolAddress(
-    voltKey: PublicKey,
-    voltProgramId: PublicKey
-  ): Promise<[PublicKey, number]> {
-    const textEncoder = new TextEncoder();
-    return await PublicKey.findProgramAddress(
-      [voltKey.toBuffer(), textEncoder.encode("permissionedMarketPremiumPool")],
-      voltProgramId
-    );
-  }
-
-  static async findWhitelistTokenAccountAddress(
-    voltKey: PublicKey,
-    whitelistMintKey: PublicKey,
-    voltProgramId: PublicKey
-  ) {
-    const textEncoder = new TextEncoder();
-    return await PublicKey.findProgramAddress(
-      [
-        voltKey.toBuffer(),
-        whitelistMintKey.toBuffer(),
-        textEncoder.encode("whitelistTokenAccount"),
-      ],
-      voltProgramId
-    );
   }
 
   static async findSetNextOptionAddresses(
@@ -1081,15 +1093,26 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     );
   }
 
-  static async findAuctionMetadataAddress(
+  static override async findUsefulAddresses(
     voltKey: PublicKey,
-    voltProgramId: PublicKey = FRIKTION_PROGRAM_ID
-  ): Promise<[PublicKey, number]> {
-    const textEncoder = new TextEncoder();
-    return await PublicKey.findProgramAddress(
-      [voltKey.toBuffer(), textEncoder.encode("auctionMetadata")],
-      voltProgramId
-    );
+    voltVault: VoltVault,
+    user: PublicKey,
+    voltProgramId: PublicKey
+  ): Promise<ShortOptionsUsefulAddresses> {
+    const [auctionMetadataKey] =
+      await ShortOptionsVoltSDK.findAuctionMetadataAddress(voltKey);
+    const [temporaryUsdcFeePoolKey] =
+      await ShortOptionsVoltSDK.findTemporaryUsdcFeePoolAddress(voltKey);
+    return {
+      ...(await VoltSDK.findUsefulAddresses(
+        voltKey,
+        voltVault,
+        user,
+        voltProgramId
+      )),
+      auctionMetadataKey,
+      temporaryUsdcFeePoolKey,
+    };
   }
 
   getReferrerQuoteAcct(mint: PublicKey): PublicKey {
@@ -1103,5 +1126,88 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     }
 
     return referrerQuoteAcct;
+  }
+
+  async getOptionsContractAccounts() {
+    const optionMarket = await this.getOptionsContractByKey(
+      this.voltVault.optionsContract
+    );
+
+    return {
+      voltVault: this.voltKey,
+      vaultAuthority: this.voltVault.vaultAuthority,
+      mintPool: this.voltVault.depositPool,
+      optionsPrograms: this.getOptionsProgramAccounts(),
+      rawDerivsContract: this.voltVault.optionsContract,
+
+      optionPool: this.voltVault.optionPool,
+      writerTokenPool: this.voltVault.writerTokenPool,
+
+      optionMint: optionMarket.optionMint,
+      writerTokenMint: optionMarket.writerTokenMint,
+
+      underlyingAssetPool: optionMarket.underlyingAssetPool,
+      quoteAssetPool: optionMarket.quoteAssetPool,
+
+      underlyingAssetMint: this.voltVault.depositMint,
+      quoteAssetMint: this.voltVault.quoteAssetMint,
+
+      feeDestination: await this.getOptionsProtocolFeeDestination(
+        optionMarket.protocol
+      ),
+      tokenProgram: TOKEN_PROGRAM_ID,
+    };
+  }
+
+  async getOptionsProtocolFeeDestination(optionsProtocol: OptionsProtocol) {
+    if (optionsProtocol === "Inertia") {
+      return await getAssociatedTokenAddress(
+        this.voltVault.depositMint,
+        INERTIA_FEE_OWNER
+      );
+    } else if (optionsProtocol === "Soloptions") {
+      return await getAssociatedTokenAddress(
+        this.voltVault.depositMint,
+        SOLOPTIONS_FEE_OWNER
+      );
+    } else if (optionsProtocol === "Spreads") {
+      return getAssociatedTokenAddress(
+        this.voltVault.depositMint,
+        SPREADS_FEE_OWNER
+      );
+    } else {
+      throw new Error("Unsupported options protocol");
+    }
+  }
+
+  async getSerumMarketProxy(): Promise<MarketProxy> {
+    const whitelistTokenAccountKey =
+      await this.findThisWhitelistTokenAccountAddress();
+
+    const [optionSerumMarketKey] =
+      await ShortOptionsVoltSDK.findSerumMarketAddress(
+        this.voltKey,
+        this.sdk.net.MM_TOKEN_MINT,
+        this.voltVault.optionsContract
+      );
+
+    const optionSerumMarketProxy = await marketLoader(
+      this,
+      this.voltVault.optionsContract,
+      optionSerumMarketKey,
+      whitelistTokenAccountKey
+    );
+
+    return optionSerumMarketProxy;
+  }
+
+  async findThisWhitelistTokenAccountAddress(): Promise<PublicKey> {
+    const [whitelistTokenAccountKey] =
+      await VoltSDK.findWhitelistTokenAccountAddress(
+        this.voltKey,
+        this.sdk.net.MM_TOKEN_MINT,
+        this.sdk.programs.Volt.programId
+      );
+    return whitelistTokenAccountKey;
   }
 }

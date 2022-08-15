@@ -1,11 +1,11 @@
-import type { BN } from "@project-serum/anchor";
+import type { BN, Program } from "@friktion-labs/anchor";
 import type { AnchorTypes } from "@saberhq/anchor-contrib";
 import type { PublicKey } from "@solana/web3.js";
 
 import type { OptionsProtocol } from "../../constants";
 import type { VoltIDL } from "../../idls/volt";
 // DO NOT DO THIS. DUE TO SOME OBSCURE EDGECASES, THIS DOESNT WORK ... SOMETIMES
-// import { VoltIDLJsonRaw } from "../../idls/volt";
+// import { VoltIDLJsonRaw, VoltIDL } from '../../idls/volt';
 import type { InertiaContract } from "../Inertia/inertiaTypes";
 import type { SoloptionsContract } from "../Soloptions/soloptionsTypes";
 import type { SpreadsContract } from "../Spreads/spreadsTypes";
@@ -16,14 +16,19 @@ export type VoltTypes = AnchorTypes<
   {
     voltVault: VoltVault;
     extraVoltData: ExtraVoltData;
-    entropyMetadata: EntropyMetadata;
-    auctionMetadata: AuctionMetadata;
-    whitelist: Whitelist;
+
     round: Round;
     friktionEpochInfo: FriktionEpochInfo;
-    entropyRound: EntropyRound;
+
     pendingDeposit: PendingDeposit;
     pendingWithdrawal: PendingWithdrawal;
+
+    auctionMetadata: AuctionMetadata;
+
+    entropyMetadata: EntropyMetadata;
+    entropyRound: EntropyRound;
+
+    whitelist: Whitelist;
   }
 >;
 
@@ -36,16 +41,57 @@ export type VoltInstructions = VoltTypes["Instructions"];
 export type VoltMethods = VoltTypes["Methods"];
 export type VoltEvents = VoltTypes["Events"];
 
-export type PendingDeposit = VoltAccounts["PendingDeposit"];
-export type PendingWithdrawal = VoltAccounts["PendingWithdrawal"];
-export type Round = VoltAccounts["Round"];
-export type FriktionEpochInfo = VoltAccounts["FriktionEpochInfo"];
+// generic types
 export type VoltVault = VoltAccounts["VoltVault"];
 export type ExtraVoltData = VoltAccounts["ExtraVoltData"];
-export type EntropyMetadata = VoltAccounts["EntropyMetadata"];
+export type Round = VoltAccounts["Round"];
+export type FriktionEpochInfo = VoltAccounts["FriktionEpochInfo"];
 export type Whitelist = VoltAccounts["Whitelist"];
-export type EntropyRound = VoltAccounts["EntropyRound"];
+
+// client types
+export type PendingDeposit = VoltAccounts["PendingDeposit"];
+export type PendingWithdrawal = VoltAccounts["PendingWithdrawal"];
+
+// DOV types
 export type AuctionMetadata = VoltAccounts["AuctionMetadata"];
+
+// entropy types
+export type EntropyMetadata = VoltAccounts["EntropyMetadata"];
+export type EntropyRound = VoltAccounts["EntropyRound"];
+
+// export type PrincipalProtectionVaultV1 = VoltIDL["types"][8];
+export type VoltWithNewIdlProgram = Program<VoltIDL>;
+export type PrincipalProtectionVaultV1 = Awaited<
+  ReturnType<
+    VoltWithNewIdlProgram["account"]["PrincipalProtectionVaultV1"]["fetch"]
+  >
+>;
+export type PrimaryVault =
+  PrincipalProtectionVaultV1["keys"]["lendingKeys"]["primaryVault"];
+
+export type OptionsContractKeys =
+  PrincipalProtectionVaultV1["keys"]["optionsKeys"];
+
+export type PrincipalProtectionContextExtendedAccounts = Parameters<
+  VoltWithNewIdlProgram["instruction"]["deployLending"]["accounts"]
+>[0]["ppContextAccounts"];
+
+export type PrincipalProtectionContextAccounts = Parameters<
+  VoltWithNewIdlProgram["instruction"]["startRoundPrincipalProtection"]["accounts"]
+>[0]["ppContextAccounts"];
+
+export type EntropyBaseAccounts = Parameters<
+  VoltWithNewIdlProgram["instruction"]["rebalanceIntoPerpEntropy"]["accounts"]
+>[0]["entropyBaseAccounts"];
+
+export type EntropyBaseAccountsWithoutBanks = Parameters<
+  VoltWithNewIdlProgram["instruction"]["dummyInstruction"]["accounts"]
+>[0]["entropyBaseAccounts"];
+
+// PP types
+// export type PrincipalProtectionVaultV1 = VoltIDL["accounts"];
+// VoltAccounts["PrincipalProtectionVaultV1"];
+
 export type WithKey = {
   key: PublicKey;
 };
@@ -60,6 +106,8 @@ export type VoltVaultWithKey = VoltVault & WithKey;
 export type ExtraVoltDataWithKey = ExtraVoltData & WithKey;
 export type WhitelistWithKey = Whitelist & WithKey;
 export type AuctionMetadataWithKey = AuctionMetadata & WithKey;
+// export type PrincipalProtectionVaultV1WithKey = PrincipalProtectionVaultV1 &
+//   WithKey;
 
 export type GenericOptionsContract = {
   optionMint: PublicKey;
@@ -81,6 +129,24 @@ export type GenericOptionsContract = {
   rawContract: InertiaContract | SoloptionsContract | SpreadsContract;
 };
 
+export type UsefulAddresses = {
+  extraVoltKey: PublicKey;
+  pendingDepositInfoKey: PublicKey;
+  pendingWithdrawalInfoKey: PublicKey;
+  roundInfoKey: PublicKey;
+  roundVoltTokensKey: PublicKey;
+  roundUnderlyingTokensKey: PublicKey;
+  roundUnderlyingPendingWithdrawalsKey: PublicKey;
+  epochInfoKey: PublicKey;
+  whitelistTokenAccountKey: PublicKey;
+  epochInfoBump: number;
+};
+
+export type ShortOptionsUsefulAddresses = UsefulAddresses & {
+  auctionMetadataKey: PublicKey;
+  temporaryUsdcFeePoolKey: PublicKey;
+};
+
 export type GenericOptionsContractWithKey = GenericOptionsContract & {
   key: PublicKey;
 };
@@ -88,27 +154,23 @@ export type GenericOptionsContractWithKey = GenericOptionsContract & {
 export type VoltIXAccounts = {
   initialize: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["initialize"]["accounts"]
+      VoltProgram["instruction"]["initializeShortOptions"]["accounts"]
     >[0]]: PublicKey;
   };
-  changeCapacity: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["changeCapacity"]["accounts"]
-    >[0]]: PublicKey;
-  };
+
   startRound: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["startRound"]["accounts"]
+      VoltProgram["instruction"]["startRoundShortOptions"]["accounts"]
     >[0]]: PublicKey;
   };
   endRound: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["endRound"]["accounts"]
+      VoltProgram["instruction"]["endRoundShortOptions"]["accounts"]
     >[0]]: PublicKey;
   };
   claimPendingDeposit: {
     [A in keyof Parameters<
-      VoltProgram["instruction"]["claimPending"]["accounts"]
+      VoltProgram["instruction"]["claimPendingDeposit"]["accounts"]
     >[0]]: PublicKey;
   };
   claimPendingWithdrawal: {
@@ -156,21 +218,7 @@ export type VoltIXAccounts = {
       VoltProgram["instruction"]["rebalanceEnter"]["accounts"]
     >[0]]: PublicKey;
   };
-  settleEnterFunds: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["settleEnterFunds"]["accounts"]
-    >[0]]: PublicKey;
-  };
-  settlePermissionedMarketPremiumFunds: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["settlePermissionedMarketPremiumFunds"]["accounts"]
-    >[0]]: PublicKey;
-  };
-  settleSwapPremiumFunds: {
-    [A in keyof Parameters<
-      VoltProgram["instruction"]["settleSwapPremiumFunds"]["accounts"]
-    >[0]]: PublicKey;
-  };
+
   initSerumMarket: {
     [A in keyof Parameters<
       VoltProgram["instruction"]["initSerumMarket"]["accounts"]

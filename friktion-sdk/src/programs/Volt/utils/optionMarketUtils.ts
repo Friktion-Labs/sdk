@@ -1,4 +1,4 @@
-import type { AnchorProvider } from "@project-serum/anchor";
+import type { AnchorProvider } from "@friktion-labs/anchor";
 import { getMint } from "@solana/spl-token";
 import Decimal from "decimal.js";
 

@@ -1,11 +1,14 @@
-import type { Provider } from "@project-serum/anchor";
+import type { AnchorProvider } from "@project-serum/anchor";
 import {
   createAssociatedTokenAccountInstruction,
   getAccount,
   getAssociatedTokenAddress,
+  TokenAccountNotFoundError,
 } from "@solana/spl-token";
 import type { PublicKey, Signer } from "@solana/web3.js";
 import { Transaction } from "@solana/web3.js";
+
+import { sendInsList } from "./instructionHelpers";
 
 interface AccountParams {
   mint: PublicKey;
@@ -14,7 +17,7 @@ interface AccountParams {
 }
 
 export const getOrCreateAssociatedTokenAccounts = async (
-  provider: Provider,
+  provider: AnchorProvider,
   {
     accountParams,
     signers,
@@ -32,11 +35,20 @@ export const getOrCreateAssociatedTokenAccounts = async (
 
   for (const { mint, owner, payer } of accountParams) {
     const address = await getAssociatedTokenAddress(mint, owner);
+    if (
+      addresses.length > 0 &&
+      addresses
+        .map((p) => p.toString() === address.toString())
+        .reduce((a, b) => a || b)
+    )
+      continue;
     addresses.push(address);
+
     try {
       await getAccount(provider.connection, address);
     } catch (e) {
-      if (e instanceof Error) {
+      if (e instanceof TokenAccountNotFoundError) {
+        console.log("address not found, creating ", address.toString());
         tx.add(
           createAssociatedTokenAccountInstruction(
             payer || owner,
@@ -51,8 +63,7 @@ export const getOrCreateAssociatedTokenAccounts = async (
     }
   }
   if (tx.instructions.length) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    await provider.sendAndConfirm!(tx, signers);
+    await sendInsList(provider, tx.instructions, signers);
   }
 
   return addresses;

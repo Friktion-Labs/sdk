@@ -1,4 +1,4 @@
-import { BN } from "@project-serum/anchor";
+import { BN } from "@friktion-labs/anchor";
 import type { Market, Middleware } from "@project-serum/serum";
 import {
   Logger,
@@ -30,27 +30,26 @@ import { ShortOptionsVoltSDK } from "../ShortOptionsVoltSDK";
 
 export const marketLoaderFunction = (
   sdk: ShortOptionsVoltSDK | ConnectedShortOptionsVoltSDK,
+  optionMarketKey: PublicKey,
   whitelistTokenAccountKey: PublicKey
 ) => {
-  return async (serumMarketKey: PublicKey) => {
-    const optionMarketKey = sdk.voltVault.optionMarket;
-    const [marketKey] = await ShortOptionsVoltSDK.findSerumMarketAddress(
-      sdk.voltKey,
-      sdk.sdk.net.MM_TOKEN_MINT,
-      optionMarketKey
-    );
+  return async (serumMarketKeyGiven: PublicKey) => {
+    const { serumMarketKey, marketAuthorityBump } =
+      await sdk.getMarketAndAuthorityInfo(optionMarketKey);
 
-    if (marketKey.toString() !== serumMarketKey.toString())
+    console.log(
+      "serum markets: ",
+      serumMarketKey.toString(),
+      " ",
+      serumMarketKeyGiven.toString()
+    );
+    if (serumMarketKey.toString() !== serumMarketKeyGiven.toString())
       throw new Error(
         "serum market should equal the PDA based on current option"
       );
 
     const [auctionMetadataKey] =
       await ShortOptionsVoltSDK.findAuctionMetadataAddress(sdk.voltKey);
-
-    const { marketAuthorityBump } = await sdk.getMarketAndAuthorityInfo(
-      optionMarketKey
-    );
 
     return new MarketProxyBuilder()
       .middleware(
@@ -71,7 +70,7 @@ export const marketLoaderFunction = (
       .middleware(new Logger())
       .load({
         connection: sdk.sdk.readonlyProvider.connection,
-        market: marketKey,
+        market: serumMarketKey,
         dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
         proxyProgramId: sdk.sdk.programs.Volt.programId,
         options: { commitment: "recent" },
@@ -91,11 +90,13 @@ export const marketLoaderFunction = (
  */
 export const marketLoader = async (
   sdk: ShortOptionsVoltSDK | ConnectedShortOptionsVoltSDK,
+  optionMarketKey: PublicKey,
   serumMarketKey: PublicKey,
   whitelistTokenAccountKey: PublicKey
 ) => {
   return await marketLoaderFunction(
     sdk,
+    optionMarketKey,
     whitelistTokenAccountKey
   )(serumMarketKey);
 };
@@ -319,4 +320,45 @@ export const getVaultOwnerAndNonceForSpot = async (market: Market) => {
       nonce.iaddn(1);
     }
   }
+};
+export const getSerumMarketAccountsWithQueues = async (market: Market) => {
+  return {
+    ...(await getSerumMarketAccountsForSettleFunds(market)),
+    ...{
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      requestQueue: market._decoded.requestQueue as PublicKey,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      eventQueue: market._decoded.eventQueue as PublicKey,
+      bids: market.bidsAddress,
+      asks: market.asksAddress,
+    },
+  };
+};
+
+export const getSerumMarketAccountsForSettleFunds = async (market: Market) => {
+  const [vaultOwner] = await getVaultOwnerAndNonce(
+    market.address,
+    market.programId
+  );
+
+  return {
+    dexProgram: market.programId,
+
+    market: market.address,
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    coinVault: market._decoded.baseVault as PublicKey,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    pcVault: market._decoded.quoteVault as PublicKey,
+
+    serumVaultSigner: vaultOwner as PublicKey,
+  };
 };

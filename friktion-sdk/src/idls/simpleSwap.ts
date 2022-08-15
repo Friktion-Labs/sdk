@@ -8,12 +8,17 @@ export type SimpleSwapIDL = {
         {
           name: "payer";
           isMut: true;
-          isSigner: false;
+          isSigner: true;
         },
         {
           name: "authority";
           isMut: false;
           isSigner: true;
+        },
+        {
+          name: "admin";
+          isMut: false;
+          isSigner: false;
         },
         {
           name: "userOrders";
@@ -179,6 +184,11 @@ export type SimpleSwapIDL = {
           isSigner: false;
         },
         {
+          name: "counterpartyWallet";
+          isMut: false;
+          isSigner: false;
+        },
+        {
           name: "givePool";
           isMut: true;
           isSigner: false;
@@ -226,7 +236,7 @@ export type SimpleSwapIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -401,7 +411,7 @@ export type SimpleSwapIDL = {
             type: "bool";
           },
           {
-            name: "whitelistTokenMint";
+            name: "admin";
             type: "publicKey";
           },
           {
@@ -567,6 +577,26 @@ export type SimpleSwapIDL = {
       code: 6022;
       name: "OptionAndGiveMintDontMatch";
       msg: "option and give mint don't match";
+    },
+    {
+      code: 6023;
+      name: "DisabledInstruction";
+    },
+    {
+      code: 6024;
+      name: "InvalidCounterparty";
+    },
+    {
+      code: 6025;
+      name: "InvalidSigner";
+    },
+    {
+      code: 6026;
+      name: "InvalidParam";
+    },
+    {
+      code: 6027;
+      name: "InvalidCounterpartyPool";
     }
   ];
 };
@@ -580,12 +610,17 @@ export const SimpleSwapIDLJsonRaw = {
         {
           name: "payer",
           isMut: true,
-          isSigner: false,
+          isSigner: true,
         },
         {
           name: "authority",
           isMut: false,
           isSigner: true,
+        },
+        {
+          name: "admin",
+          isMut: false,
+          isSigner: false,
         },
         {
           name: "userOrders",
@@ -751,6 +786,11 @@ export const SimpleSwapIDLJsonRaw = {
           isSigner: false,
         },
         {
+          name: "counterpartyWallet",
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: "givePool",
           isMut: true,
           isSigner: false,
@@ -798,7 +838,7 @@ export const SimpleSwapIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -973,7 +1013,7 @@ export const SimpleSwapIDLJsonRaw = {
             type: "bool",
           },
           {
-            name: "whitelistTokenMint",
+            name: "admin",
             type: "publicKey",
           },
           {
@@ -1139,6 +1179,26 @@ export const SimpleSwapIDLJsonRaw = {
       code: 6022,
       name: "OptionAndGiveMintDontMatch",
       msg: "option and give mint don't match",
+    },
+    {
+      code: 6023,
+      name: "DisabledInstruction",
+    },
+    {
+      code: 6024,
+      name: "InvalidCounterparty",
+    },
+    {
+      code: 6025,
+      name: "InvalidSigner",
+    },
+    {
+      code: 6026,
+      name: "InvalidParam",
+    },
+    {
+      code: 6027,
+      name: "InvalidCounterpartyPool",
     },
   ],
 };

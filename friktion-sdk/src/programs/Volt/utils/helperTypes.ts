@@ -2,15 +2,25 @@
 
 export type NetworkName = "devnet" | "mainnet-beta" | "testnet" | "localnet";
 
+export const OptionTypeValues = {
+  Call: { call: {} },
+  Put: { put: {} },
+};
+
+export const DovParticipantTypeValues = {
+  OptionBuyer: { optionBuyer: {} },
+  OptionSeller: { optionSeller: {} },
+};
+
 // serum types
-export const OrderType = {
+export const OrderTypeValues = {
   Limit: { limit: {} },
   ImmediateOrCancel: { immediateOrCancel: {} },
   PostOnly: { postOnly: {} },
 };
 
-export const SelfTradeBehavior = {
-  DecrementTake: { decremenTtake: {} },
+export const SelfTradeBehaviorValues = {
+  DecrementTake: { decrementTake: {} },
   CancelProvide: { cancelProvide: {} },
   AbortTransaction: { abortTransaction: {} },
 };

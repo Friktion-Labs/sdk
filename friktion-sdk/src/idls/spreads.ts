@@ -117,7 +117,7 @@ export type SpreadsIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -164,11 +164,6 @@ export type SpreadsIDL = {
           name: "tokenProgram";
           isMut: false;
           isSigner: false;
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -183,7 +178,7 @@ export type SpreadsIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
           docs: ["The authority of the [option_token_source] account."];
         },
@@ -235,11 +230,6 @@ export type SpreadsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -254,7 +244,7 @@ export type SpreadsIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -301,11 +291,6 @@ export type SpreadsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token Program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [];
@@ -315,7 +300,7 @@ export type SpreadsIDL = {
       accounts: [
         {
           name: "authority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
         },
         {
@@ -362,11 +347,6 @@ export type SpreadsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token Program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -426,11 +406,6 @@ export type SpreadsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -445,7 +420,7 @@ export type SpreadsIDL = {
       accounts: [
         {
           name: "exerciserAuthority";
-          isMut: true;
+          isMut: false;
           isSigner: true;
           docs: ["The authority of the [option_token_source] account."];
         },
@@ -483,11 +458,6 @@ export type SpreadsIDL = {
           isMut: false;
           isSigner: false;
           docs: ["Token program."];
-        },
-        {
-          name: "clock";
-          isMut: false;
-          isSigner: false;
         }
       ];
       args: [
@@ -1057,7 +1027,7 @@ export const SpreadsIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1105,11 +1075,6 @@ export const SpreadsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1123,7 +1088,7 @@ export const SpreadsIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
           docs: ["The authority of the [option_token_source] account."],
         },
@@ -1176,11 +1141,6 @@ export const SpreadsIDLJsonRaw = {
           isSigner: false,
           docs: ["Token program."],
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1194,7 +1154,7 @@ export const SpreadsIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1241,11 +1201,6 @@ export const SpreadsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
           docs: ["Token Program."],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [],
@@ -1255,7 +1210,7 @@ export const SpreadsIDLJsonRaw = {
       accounts: [
         {
           name: "authority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
         },
         {
@@ -1302,11 +1257,6 @@ export const SpreadsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
           docs: ["Token Program."],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [
@@ -1367,11 +1317,6 @@ export const SpreadsIDLJsonRaw = {
           isSigner: false,
           docs: ["Token program."],
         },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
-        },
       ],
       args: [
         {
@@ -1385,7 +1330,7 @@ export const SpreadsIDLJsonRaw = {
       accounts: [
         {
           name: "exerciserAuthority",
-          isMut: true,
+          isMut: false,
           isSigner: true,
           docs: ["The authority of the [option_token_source] account."],
         },
@@ -1423,11 +1368,6 @@ export const SpreadsIDLJsonRaw = {
           isMut: false,
           isSigner: false,
           docs: ["Token program."],
-        },
-        {
-          name: "clock",
-          isMut: false,
-          isSigner: false,
         },
       ],
       args: [

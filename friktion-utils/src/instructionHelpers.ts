@@ -1,12 +1,11 @@
 import type * as anchor from "@project-serum/anchor";
-import type { AnchorProvider } from "@project-serum/anchor";
 import type {
   Commitment,
   Signer,
   TransactionInstruction,
   TransactionSignature,
 } from "@solana/web3.js";
-import { ComputeBudgetProgram, Transaction } from "@solana/web3.js";
+import { ComputeBudgetProgram, PublicKey, Transaction } from "@solana/web3.js";
 
 import { makeAndSendTx, sleep } from "./sendTransactionHelpers";
 
@@ -19,16 +18,20 @@ export type TransactionMachineParams = {
   signers?: Signer[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class TransactionMachine {
   static BLAST_TIMEOUT = 250;
-  readonly provider: AnchorProvider;
+  readonly provider: anchor.AnchorProvider;
   blastAway: boolean | undefined;
   blastInterval: number | undefined;
   commitmentLevel: Commitment;
   signers: Signer[];
   timeout?: number;
 
-  constructor(provider: AnchorProvider, params: TransactionMachineParams) {
+  constructor(
+    provider: anchor.AnchorProvider,
+    params: TransactionMachineParams
+  ) {
     this.provider = provider;
     this.timeout = params.timeout;
     this.setBlastAway(params.blastAway ?? false, params.blastInterval ?? 500);
@@ -60,9 +63,7 @@ class TransactionMachine {
       try {
         const thisTxid = await this.sendInsList(insList, signers);
         txid = thisTxid;
-      } catch (err) {
-        const i = 1;
-      }
+      } catch (err) {}
     }, this.blastInterval);
 
     // eslint-disable-next-line no-constant-condition
@@ -140,7 +141,7 @@ export const sendInsCatching = async (
   computeUnits?: number
 ): Promise<{
   success: boolean;
-  error: unknown | undefined;
+  error: string | undefined;
   txid: TransactionSignature | undefined;
 }> => {
   try {
@@ -151,10 +152,8 @@ export const sendInsCatching = async (
       txid,
     };
   } catch (err) {
-    console.log("error but fuck it");
     return {
       success: false,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       error: (err as Error).message,
       txid: undefined,
     };
@@ -249,3 +248,18 @@ export const sendInsList = async (
     timeout
   );
 };
+
+export type AnchorContext<T extends keyof any> = {
+  [K in T]: PublicKey | AnchorContext<T>;
+};
+
+export function printAnchorAccounts<AnchorContext>(ctx: AnchorContext) {
+  // @ts-ignore
+  Object.entries(ctx).forEach(([key, value]) => {
+    if (value instanceof PublicKey) console.log(`${key}: ${value}`);
+    else {
+      console.log(`${key}`);
+      printAnchorAccounts(value);
+    }
+  });
+}
