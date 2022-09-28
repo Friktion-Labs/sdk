@@ -1,13 +1,13 @@
 import {
   FriktionSDK,
   PendingWithdrawal,
-  toConnectedSDK
+  toConnectedSDK,
 } from "@friktion-labs/friktion-sdk";
-import { AnchorProvider, Wallet } from "@project-serum/anchor";
+import { AnchorProvider, Wallet } from "@friktion-labs/anchor";
 import {
   createAssociatedTokenAccountInstruction,
   getAccount,
-  getAssociatedTokenAddress
+  getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
@@ -51,7 +51,7 @@ const withdrawAmount: Decimal = new Decimal(0.00001);
     : cVoltSDK.wallet;
 
   const voltVault = cVoltSDK.voltVault;
-  const depositMint = voltVault.underlyingAssetMint;
+  const depositMint = voltVault.depositMint;
   const vaultMint = voltVault.vaultMint;
 
   const withdrawalInstructions: TransactionInstruction[] = [];

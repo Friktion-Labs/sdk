@@ -63,7 +63,9 @@ export const getOrCreateAssociatedTokenAccounts = async (
     }
   }
   if (tx.instructions.length) {
-    await sendInsList(provider, tx.instructions, signers);
+    await sendInsList(provider, tx.instructions, {
+      signers,
+    });
   }
 
   return addresses;

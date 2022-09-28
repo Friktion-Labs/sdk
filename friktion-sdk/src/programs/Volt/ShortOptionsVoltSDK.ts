@@ -301,8 +301,12 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       this.voltVault.haveTakenWithdrawalFees,
       "\n, isSettled: ",
       this.voltVault.finishedSettlingOption,
-      "\n, must swap premium post settle: ",
+      "\n, must swap quote asset post settle: ",
       this.voltVault.mustSwapQuoteAssetAfterSettle,
+      "\n, must swap premium post enter: ",
+      this.voltVault.mustSwapPremiumAfterEnter,
+      "\n, must swap usdc fees: ",
+      this.voltVault.mustSwapUsdcFeesAfterSettle,
       "\n, preparedIsFinished: ",
       this.voltVault.prepareIsFinished,
       "\n, enterIsFinished: ",
@@ -338,6 +342,25 @@ export class ShortOptionsVoltSDK extends VoltSDK {
           .div(await this.getDepositTokenNormalizationFactor())
           .toString()
       );
+
+      const aMdata = await this.getAuctionMetadata();
+      console.log(
+        "swap order = ",
+        aMdata.currSwapOrder.toString(),
+        ", creator = ",
+        this.voltVault.vaultAuthority.toString()
+      );
+      if (
+        aMdata.currSwapOrder.toString() !== SystemProgram.programId.toString()
+      ) {
+        const swapOrder = (await this.sdk.loadSwapByKey(aMdata.currSwapOrder))
+          .swapOrder;
+        console.log(swapOrder);
+        console.log(
+          "options contract = ",
+          swapOrder.optionsContract.toString()
+        );
+      }
 
       await this.printOptionsContract(optionMarket.key);
     } catch (err) {
@@ -629,7 +652,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
         seed,
       });
 
-    await sendInsList(provider, [instruction]);
+    await sendInsList(provider, [instruction], {
+      computeUnits: 400_000,
+    });
 
     return voltKey;
   }
@@ -638,10 +663,13 @@ export class ShortOptionsVoltSDK extends VoltSDK {
    * For an admin to create a volt
    *
    * spotMarket and seed are dynamically generated. Change the code if you want custom.
+   *
+   * NOTE: requires 400k CU
    */
   static async getInitializeVoltInstruction({
     sdk,
     adminKey,
+    seed,
     underlyingAssetMint,
     quoteAssetMint,
     permissionedMarketPremiumMint,
@@ -651,7 +679,6 @@ export class ShortOptionsVoltSDK extends VoltSDK {
     capacity,
     individualCapacity,
     permissionlessAuctions,
-    seed,
   }: {
     sdk: FriktionSDK;
     adminKey: PublicKey;

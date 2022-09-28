@@ -43,7 +43,7 @@ import type {
 // 5. setupRebalanceOtcEntropy
 // 6. rebalanceOtcEntropy
 // 7. checkRebalanceOtcHealth
-// 8. initializeVolt (initialize for volt 1 & 2)
+// 8. initializeVolt (initialize for volt 1,2,3,4,5)
 // 9. rebalanceEnter
 // MAYBE:
 // 1. depositWithClaim (when it claims or cancels and does instant deposit)
@@ -900,14 +900,20 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       await this.fullDepositInstructions(
         depositAmount,
         solTransferAuthorityReplacement
-      )
+      ),
+      {
+        computeUnits: 400_000,
+      }
     );
   }
 
   async doFullWithdraw(withdrawAmount: Decimal) {
     await sendInsList(
       this.sdk.readonlyProvider,
-      await this.fullWithdrawInstructions(withdrawAmount)
+      await this.fullWithdrawInstructions(withdrawAmount),
+      {
+        computeUnits: 400_000,
+      }
     );
   }
 

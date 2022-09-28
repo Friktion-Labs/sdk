@@ -1,5 +1,5 @@
 import { FriktionSDK } from "@friktion-labs/friktion-sdk";
-import { AnchorProvider, Wallet } from "@project-serum/anchor";
+import { AnchorProvider, Wallet } from "@friktion-labs/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 

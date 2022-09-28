@@ -377,7 +377,7 @@ export class ConnectedShortOptionsVoltSDK {
     });
   }
 
-  async rebalanceSettle(): Promise<TransactionInstruction> {
+  async rebalanceSettle(bypassCode?: number): Promise<TransactionInstruction> {
     const optionMarket = await this.getOptionsContractByKey(
       this.voltVault.optionsContract
     );
@@ -412,9 +412,12 @@ export class ConnectedShortOptionsVoltSDK {
       extraVoltData: extraVoltKey,
     };
 
-    return this.sdk.programs.Volt.instruction.rebalanceSettle({
-      accounts: rebalanceSettleStruct,
-    });
+    return this.sdk.programs.Volt.instruction.rebalanceSettle(
+      bypassCode ? new BN(bypassCode) : new BN(0),
+      {
+        accounts: rebalanceSettleStruct,
+      }
+    );
   }
 
   async rebalanceSwapPremium(
@@ -686,6 +689,8 @@ export class ConnectedShortOptionsVoltSDK {
       newSwapOrder,
       userOrders: userOrdersKey,
 
+      permissionedMarketPremiumMint:
+        this.voltVault.permissionedMarketPremiumMint,
       systemProgram: SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
       rent: SYSVAR_RENT_PUBKEY,
@@ -693,8 +698,6 @@ export class ConnectedShortOptionsVoltSDK {
       givePool,
       optionMint: this.voltVault.optionMint,
       receivePool,
-      permissionedMarketPremiumMint:
-        this.voltVault.permissionedMarketPremiumMint,
       counterparty: counterparty ?? SystemProgram.programId,
       swapProgram: SIMPLE_SWAP_PROGRAM_ID,
       auctionMetadata: auctionMetadataKey,

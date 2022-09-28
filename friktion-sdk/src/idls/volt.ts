@@ -1639,7 +1639,12 @@ export type VoltIDL = {
           isSigner: false;
         }
       ];
-      args: [];
+      args: [
+        {
+          name: "bypassCode";
+          type: "u64";
+        }
+      ];
     },
     {
       name: "endRoundShortOptions";
@@ -1971,11 +1976,11 @@ export type VoltIDL = {
         },
         {
           name: "shouldHedge";
-          type: "bool";
+          type: "u64";
         },
         {
           name: "hedgeWithSpot";
-          type: "bool";
+          type: "u64";
         }
       ];
     },
@@ -6505,513 +6510,504 @@ export type VoltIDL = {
   errors: [
     {
       code: 6000;
+      name: "InvalidVoltType";
+      msg: "invalid volt type";
+    },
+    {
+      code: 6001;
+      name: "VaultNameMustBeNonZeroLength";
+      msg: "vault name must be zero length";
+    },
+    {
+      code: 6002;
       name: "ExpirationIsInThePast";
       msg: "Expiration must be in the future";
     },
     {
-      code: 6001;
-      name: "QuoteAndUnderlyingAssetMustDiffer";
-      msg: "Same quote and underlying asset, cannot create market";
-    },
-    {
-      code: 6002;
-      name: "QuoteOrUnderlyingAmountCannotBe0";
-      msg: "Quote amount and underlying amount per contract must be > 0";
-    },
-    {
       code: 6003;
-      name: "OptionMarketMustBeMintAuthority";
-      msg: "OptionMarket must be the mint authority";
-    },
-    {
-      code: 6004;
-      name: "OptionMarketMustOwnUnderlyingAssetPool";
-      msg: "OptionMarket must own the underlying asset pool";
-    },
-    {
-      code: 6005;
-      name: "OptionMarketMustOwnQuoteAssetPool";
-      msg: "OptionMarket must own the quote asset pool";
-    },
-    {
-      code: 6006;
-      name: "ExpectedSPLTokenProgramId";
-      msg: "Stop trying to spoof the SPL Token program! Shame on you";
-    },
-    {
-      code: 6007;
-      name: "MintFeeMustBeOwnedByFeeOwner";
-      msg: "Mint fee account must be owned by the FEE_OWNER";
-    },
-    {
-      code: 6008;
-      name: "ExerciseFeeMustBeOwnedByFeeOwner";
-      msg: "Exercise fee account must be owned by the FEE_OWNER";
-    },
-    {
-      code: 6009;
-      name: "MintFeeTokenMustMatchUnderlyingAsset";
-      msg: "Mint fee token must be the same as the underlying asset";
-    },
-    {
-      code: 6010;
-      name: "ExerciseFeeTokenMustMatchQuoteAsset";
-      msg: "Exercise fee token must be the same as the quote asset";
-    },
-    {
-      code: 6011;
-      name: "OptionMarketExpiredCantMint";
-      msg: "OptionMarket is expired, can't mint";
-    },
-    {
-      code: 6012;
-      name: "UnderlyingPoolAccountDoesNotMatchMarket";
-      msg: "Underlying pool account does not match the value on the OptionMarket";
-    },
-    {
-      code: 6013;
-      name: "OptionTokenMintDoesNotMatchMarket";
-      msg: "OptionToken mint does not match the value on the OptionMarket";
-    },
-    {
-      code: 6014;
-      name: "WriterTokenMintDoesNotMatchMarket";
-      msg: "WriterToken mint does not match the value on the OptionMarket";
-    },
-    {
-      code: 6015;
-      name: "MintFeeKeyDoesNotMatchOptionMarket";
-      msg: "MintFee key does not match the value on the OptionMarket";
-    },
-    {
-      code: 6016;
-      name: "SizeCantBeLessThanEqZero";
-      msg: "The size argument must be > 0";
-    },
-    {
-      code: 6017;
-      name: "ExerciseFeeKeyDoesNotMatchOptionMarket";
-      msg: "exerciseFee key does not match the value on the OptionMarket";
-    },
-    {
-      code: 6018;
-      name: "QuotePoolAccountDoesNotMatchMarket";
-      msg: "Quote pool account does not match the value on the OptionMarket";
-    },
-    {
-      code: 6019;
-      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset";
-      msg: "Underlying destination mint must match underlying asset mint address";
-    },
-    {
-      code: 6020;
       name: "FeeOwnerDoesNotMatchProgram";
       msg: "Fee owner does not match the program's fee owner";
     },
     {
-      code: 6021;
-      name: "OptionMarketExpiredCantExercise";
-      msg: "OptionMarket is expired, can't exercise";
+      code: 6004;
+      name: "MintFeeMustBeOwnedByFeeOwner";
+      msg: "Mint fee account must be owned by the FEE_OWNER";
     },
     {
-      code: 6022;
-      name: "OptionMarketNotExpiredCantClose";
-      msg: "OptionMarket has not expired, can't close";
+      code: 6005;
+      name: "ExerciseFeeMustBeOwnedByFeeOwner";
+      msg: "Exercise fee account must be owned by the FEE_OWNER";
     },
     {
-      code: 6023;
-      name: "NotEnoughQuoteAssetsInPool";
-      msg: "Not enough assets in the quote asset pool";
+      code: 6006;
+      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset";
+      msg: "Underlying destination mint must match underlying asset mint address";
     },
     {
-      code: 6024;
-      name: "InvalidAuth";
-      msg: "Invalid auth token provided";
+      code: 6007;
+      name: "FeeAccountOwnerDoesNotMatch";
+      msg: "fee account owner does not match expected";
     },
     {
-      code: 6025;
-      name: "CoinMintIsNotOptionMint";
-      msg: "Coin mint must match option mint";
+      code: 6008;
+      name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium";
+      msg: "fee account mint does not match deposit pool or permissioned market premium";
     },
     {
-      code: 6026;
-      name: "CannotPruneActiveMarket";
-      msg: "Cannot prune the market while it's still active";
+      code: 6009;
+      name: "MustHaveLastTimeTookAumFees";
+      msg: "please end an epoch and get a time last took aum fees";
     },
     {
-      code: 6027;
+      code: 6010;
+      name: "InvalidFeeAccount";
+    },
+    {
+      code: 6011;
       name: "NumberOverflow";
       msg: "Numerical overflow";
     },
     {
-      code: 6028;
+      code: 6012;
       name: "InvalidOrderType";
       msg: "Invalid order type";
     },
     {
-      code: 6029;
+      code: 6013;
       name: "InvalidSelfTradeBehavior";
       msg: "Invalid self trade behavior";
     },
     {
-      code: 6030;
+      code: 6014;
       name: "Unauthorized";
       msg: "Unauthorized.";
     },
     {
-      code: 6031;
-      name: "InsufficientCollateralForWriting";
-      msg: "Insufficient collateral to write options.";
-    },
-    {
-      code: 6032;
+      code: 6015;
       name: "InsufficientVaultTokens";
       msg: "Insufficient Vault tokens to redeem.";
     },
     {
-      code: 6033;
-      name: "ContractExpired";
-      msg: "Options contract is expired.";
-    },
-    {
-      code: 6034;
-      name: "ContractNotYetExpired";
-      msg: "Cannot redeem until contract expiry.";
-    },
-    {
-      code: 6035;
-      name: "InvalidMintAmount";
-      msg: "mint amount was 0, skipping mint_helper()...";
-    },
-    {
-      code: 6036;
-      name: "InvalidRebalanceExitTime";
-      msg: "invalid time to exit position rebalanceExit()";
-    },
-    {
-      code: 6037;
-      name: "InvalidRebalanceEntryTime";
-      msg: "invalid time to enter position rebalanceEnter()";
-    },
-    {
-      code: 6038;
-      name: "InvalidRebalancePrepareTime";
-      msg: "invalid time to call rebalancePrepare()";
-    },
-    {
-      code: 6039;
-      name: "InvalidWithdrawalTime";
-      msg: "invalid time to withdraw";
-    },
-    {
-      code: 6040;
-      name: "InvalidDepositTime";
-      msg: "invalid time to deposit";
-    },
-    {
-      code: 6041;
-      name: "InvalidSetNextOptionTime";
+      code: 6016;
+      name: "InvalidSetNextOptionState";
       msg: "invalid time to set next option";
     },
     {
-      code: 6042;
-      name: "InvalidDepositAmount";
-      msg: "invalid deposit amount";
+      code: 6017;
+      name: "InvalidRebalancePrepareState";
+      msg: "invalid time to call rebalancePrepare()";
     },
     {
-      code: 6043;
-      name: "InvalidRebalanceSettleTime";
-      msg: "invalid rebalance settle time";
-    },
-    {
-      code: 6044;
+      code: 6018;
       name: "InvalidRebalanceSettleState";
       msg: "invalid rebalance settle state";
     },
     {
-      code: 6045;
+      code: 6019;
       name: "InvalidRebalanceEnterState";
       msg: "invalid rebalance enter state";
     },
     {
-      code: 6046;
-      name: "OptionsPositionNotSettled";
-      msg: "options position not settled, must be before withdrawal";
-    },
-    {
-      code: 6047;
-      name: "NonUnderlyingPoolsHaveAssets";
-      msg: "non underlying pools have assets when attempting withdraw";
-    },
-    {
-      code: 6048;
-      name: "VaultAuthorityMustBeVaultMintAuthority";
-      msg: "volt must be vault mint authority";
-    },
-    {
-      code: 6049;
-      name: "VaultAuthorityMustOwnDepositPool";
-      msg: "volt must own deposit pool";
-    },
-    {
-      code: 6050;
-      name: "VaultAuthorityMustOwnPremiumPool";
-      msg: "volt must own premium pool";
-    },
-    {
-      code: 6051;
-      name: "VoltVaulttMustOwnWriterTokenPool";
-      msg: "volt must own writer token pool";
-    },
-    {
-      code: 6052;
-      name: "VoltVaultMustOwnOptionPool";
-      msg: "volt must own option pool";
-    },
-    {
-      code: 6053;
-      name: "DepositPoolDoesNotMatchVoltVault";
-      msg: "DepositPoolDoesNotMatchVoltVault";
-    },
-    {
-      code: 6054;
-      name: "OptionPoolDoesNotMatchVoltVault";
-      msg: "OptionPoolDoesNotMatchVoltVault";
-    },
-    {
-      code: 6055;
-      name: "PremiumPoolDoesNotMatchVoltVault";
-      msg: "PremiumPoolDoesNotMatchVoltVault";
-    },
-    {
-      code: 6056;
-      name: "TraidngPoolDoesNotMatchVoltVault";
-      msg: "TradingPoolDoesNotMatchVoltVault";
-    },
-    {
-      code: 6057;
-      name: "OptionMintDoesNotMatchOptionMarket";
-      msg: "option mint does not match option market";
-    },
-    {
-      code: 6058;
-      name: "NoOrdersInOptionOrderBook";
-      msg: "NoBidsInOptionOrderBook";
-    },
-    {
-      code: 6059;
-      name: "CpiProgramMustBeSomeInPlaceOrder";
-      msg: "cpi program must be Some in place order";
-    },
-    {
-      code: 6060;
-      name: "NewOptionMustNotBeExpired";
-      msg: "new option must not be expired";
-    },
-    {
-      code: 6061;
-      name: "NewOptionMustHaveExactExpiry";
-      msg: "new option has roughly target expiry (within lower/upper bounds)";
-    },
-    {
-      code: 6062;
-      name: "NewOptionHasWrongUnderlyingAsset";
-      msg: "new option has wrong underlying asset";
-    },
-    {
-      code: 6063;
-      name: "NewOptionHasWrongQuoteAsset";
-      msg: "new option has wrong quote asset";
-    },
-    {
-      code: 6064;
-      name: "NewOptionHasWrongContractSize";
-      msg: "new option has wrong contract size";
-    },
-    {
-      code: 6065;
-      name: "NewOptionHasInvalidStrike";
-      msg: "new option has invalid strike";
-    },
-    {
-      code: 6066;
-      name: "RebalanceSettleHasLeftoverWriterTokens";
-      msg: "rebalance settle has leftover writer tokens";
-    },
-    {
-      code: 6067;
-      name: "CurrentOptionMustNotBeExpired";
-      msg: "current option must not be expired";
-    },
-    {
-      code: 6068;
-      name: "CannotReinitializeVolt";
-      msg: "cannot reinitialize an (already initialized) volt";
-    },
-    {
-      code: 6069;
-      name: "OldOptionAndWriterTokenPoolsMustBeEmpty";
-      msg: "cannot reinitialize an (already initialized) volt";
-    },
-    {
-      code: 6070;
-      name: "InvalidOldOptionWriterTokenPools";
-      msg: "invalid old option writer token pools";
-    },
-    {
-      code: 6071;
-      name: "VaultMintDoesNotMatchUserTokenAccount";
-      msg: "vault mint does not match user token account";
-    },
-    {
-      code: 6072;
-      name: "DepositPoolMintDoesNotMatchUserTokenAccount";
-      msg: "deposit pool mint does not match user token account";
-    },
-    {
-      code: 6073;
-      name: "VaultAuthorityDoesNotMatch";
-      msg: "vault authority does not match";
-    },
-    {
-      code: 6074;
-      name: "DexProgramIdDoesNotMatchAnchor";
-      msg: "DEX program id does not match";
-    },
-    {
-      code: 6075;
-      name: "InertiaProgramIdDoesNotMatch";
-      msg: "Inertia program id does not match";
-    },
-    {
-      code: 6076;
-      name: "InvalidAuthorityForPermissionedInstruction";
-      msg: "Invalid authority for permissioned instruction";
-    },
-    {
-      code: 6077;
-      name: "WriterTokenMintDoesNotMatchOptionMarket";
-      msg: "writer token mint does not match option market";
-    },
-    {
-      code: 6078;
-      name: "OptionMarketMustBeOwnedByProtocol";
-      msg: "option market should be owned by protocol (e.g inertia)";
-    },
-    {
-      code: 6079;
-      name: "UnderlyingAssetMintDoesNotMatchVoltVault";
-      msg: "underlying asset mint does not match voltvault";
-    },
-    {
-      code: 6080;
-      name: "QuoteAssetMintDoesNotMatchVoltVault";
-      msg: "quote asset mint does not match voltvault";
-    },
-    {
-      code: 6081;
-      name: "VaultMintDoesNotMatchVoltVault";
-      msg: "vault mint does not match volt vault";
-    },
-    {
-      code: 6082;
-      name: "OptionMarketDoesNotMatchVoltVault";
-      msg: "option market does not match volt vault";
-    },
-    {
-      code: 6083;
-      name: "WriterTokenPoolDoesNotMatchVoltVault";
-      msg: "writer token pool does not match volt vault";
-    },
-    {
-      code: 6084;
-      name: "InvalidRebalanceSwapPremiumState";
+      code: 6020;
+      name: "InvalidSwapPremiumState";
       msg: "invalid rebalance swap premium state";
     },
     {
-      code: 6085;
-      name: "ShouldBeUnreachable";
-      msg: "should be unreachable code";
-    },
-    {
-      code: 6086;
-      name: "CantHaveMultiplePendingDeposits";
-      msg: "shouldn't have multiple pending deposits";
-    },
-    {
-      code: 6087;
+      code: 6021;
       name: "InvalidStartRoundState";
       msg: "invalid start round state";
     },
     {
-      code: 6088;
-      name: "InvalidSetNextOptionState";
-      msg: "invalid set next option state";
-    },
-    {
-      code: 6089;
-      name: "InvalidClaimPendingState";
-      msg: "invalid claim pending state";
-    },
-    {
-      code: 6090;
+      code: 6022;
       name: "InvalidEndRoundState";
       msg: "invalid end round state";
     },
     {
-      code: 6091;
+      code: 6023;
+      name: "InvalidInitSerumMarketState";
+      msg: "invalid init serum market state";
+    },
+    {
+      code: 6024;
+      name: "InvalidResetOptionMarketState";
+      msg: "must not have sold option tokens to reset";
+    },
+    {
+      code: 6025;
+      name: "PermissionedMarketPremiumPoolAmountMustBeZero";
+      msg: "permissioned market premium pool amount must be zero";
+    },
+    {
+      code: 6026;
+      name: "PremiumPoolAmountMustBeZero";
+      msg: "premium pool amount must be zero";
+    },
+    {
+      code: 6027;
+      name: "PremiumPoolAmountMustBeGreaterThanZero";
+      msg: "premium pool amount must be greater than zero";
+    },
+    {
+      code: 6028;
+      name: "MintOptionMustMatchSetOption";
+      msg: "mint option must match set option";
+    },
+    {
+      code: 6029;
+      name: "RoundHasNotEnded";
+    },
+    {
+      code: 6030;
+      name: "MustSwapPremiumAfterEnter";
+    },
+    {
+      code: 6031;
+      name: "NoValidShortOptionsEpochStage";
+      msg: "no valid short options epoch stage";
+    },
+    {
+      code: 6032;
+      name: "InvalidCallToShortOptionsEpochStage";
+      msg: "invalid call to short options epoch stage";
+    },
+    {
+      code: 6033;
+      name: "InvalidSettleFeesEarly";
+    },
+    {
+      code: 6034;
+      name: "InsufficientCollateralForDeposit";
+      msg: "Insufficient collateral to deposit.";
+    },
+    {
+      code: 6035;
+      name: "InstantTransfersMustBeDisabled";
+      msg: "instant transfers must be enabled";
+    },
+    {
+      code: 6036;
+      name: "VaultCapacityWouldBeExceeded";
+      msg: "vault capacity would be exceeded";
+    },
+    {
+      code: 6037;
+      name: "IndividualDepositCapacityWouldBeExceeded";
+      msg: "individual deposit capacity would be exceeded";
+    },
+    {
+      code: 6038;
+      name: "DepositsAndWithdrawalsAreTurnedOff";
+      msg: "deposits and withdrawals are turned off";
+    },
+    {
+      code: 6039;
+      name: "WithdrawalsDisabled";
+      msg: "invalid time to withdraw";
+    },
+    {
+      code: 6040;
+      name: "DepositsDisabled";
+      msg: "invalid time to deposit";
+    },
+    {
+      code: 6041;
+      name: "InvalidDepositAmount";
+      msg: "invalid deposit amount (must be greater than zero)";
+    },
+    {
+      code: 6042;
+      name: "InvalidWithdrawAmount";
+      msg: "invalid withdraw amount";
+    },
+    {
+      code: 6043;
+      name: "InvalidPendingDepositKey";
+      msg: "invalid pending deposit key";
+    },
+    {
+      code: 6044;
+      name: "CantHaveMultiplePendingDeposits";
+      msg: "shouldn't have multiple pending deposits";
+    },
+    {
+      code: 6045;
+      name: "InvalidClaimPendingDepositState";
+      msg: "invalid claim pending state";
+    },
+    {
+      code: 6046;
       name: "CantHaveMultiplePendingWithdrawals";
       msg: "shouldn't have multiple pending deposits";
     },
     {
-      code: 6092;
+      code: 6047;
       name: "InvalidClaimPendingWithdrawalState";
       msg: "invalid claim pending withdrawal state";
     },
     {
-      code: 6093;
-      name: "InvalidNextOptionMarket";
-      msg: "invalid next option market";
+      code: 6048;
+      name: "PendingWithdrawalInfoNotInitialized";
+      msg: "pending withdrawal info must be initialized";
     },
     {
-      code: 6094;
-      name: "TokenNotRevoked";
-      msg: "Auth token not revoked";
+      code: 6049;
+      name: "PendingWithdrawalDoesNotExist";
+      msg: "pending withdrawal does not exist";
     },
     {
-      code: 6095;
-      name: "NonWhitelistedUser";
-      msg: "user is not whitelisted";
+      code: 6050;
+      name: "CannotCancelPendingWithdrawalFromOldRound";
+      msg: "cannot cancel pending withdrawal from old round";
     },
     {
-      code: 6096;
-      name: "UserIsNotSigner";
-      msg: "user is not signer";
+      code: 6051;
+      name: "PendingDepositInfoNotInitialized";
+      msg: "pending deposit info not initialized";
     },
     {
-      code: 6097;
-      name: "InvalidWhitelistAuthority";
-      msg: "authority does not match whitelist admin";
+      code: 6052;
+      name: "PendingDepositDoesNotExist";
+      msg: "pending deposits does not exist";
     },
     {
-      code: 6098;
-      name: "InvalidWhitelistAndOptionMarketCombination";
-      msg: "whitelist and option market do not generate correct PDA";
+      code: 6053;
+      name: "CannotCancelPendingDepositFromOldRound";
+      msg: "cannot cancel pending deposit from old round";
     },
     {
-      code: 6099;
+      code: 6054;
+      name: "InvalidRoundForCancel";
+      msg: "invalid round number for cancel pending deposit/withdrawal";
+    },
+    {
+      code: 6055;
+      name: "InvalidEpochForCancel";
+      msg: "invalid epoch number for cancel pending deposit/withdrawal";
+    },
+    {
+      code: 6056;
+      name: "PendingDepositAlreadyExists";
+      msg: "pending deposit already exists";
+    },
+    {
+      code: 6057;
+      name: "InvalidPendingWithdrawalKey";
+      msg: "invalid pending withdrawal key";
+    },
+    {
+      code: 6058;
+      name: "InvalidPendingWithdrawalState";
+    },
+    {
+      code: 6059;
+      name: "InvalidExpiry";
+      msg: "invalid expiry for contract";
+    },
+    {
+      code: 6060;
+      name: "NewOptionMustHaveExactExpiry";
+      msg: "new option has roughly target expiry (within lower/upper bounds)";
+    },
+    {
+      code: 6061;
+      name: "InvalidUnderlyingAsset";
+      msg: "new option has wrong underlying asset";
+    },
+    {
+      code: 6062;
+      name: "InvalidQuoteAsset";
+      msg: "new option has wrong quote asset";
+    },
+    {
+      code: 6063;
+      name: "InvalidContractSize";
+      msg: "new option has wrong contract size";
+    },
+    {
+      code: 6064;
+      name: "InvalidStrike";
+      msg: "new option has invalid strike";
+    },
+    {
+      code: 6065;
+      name: "InvalidVaultTokenAccount";
+      msg: "vault mint does not match user token account";
+    },
+    {
+      code: 6066;
+      name: "InvalidDepositTokenAccount";
+      msg: "deposit pool mint does not match user token account";
+    },
+    {
+      code: 6067;
+      name: "InvalidSerumProgramId";
+      msg: "DEX program id does not match";
+    },
+    {
+      code: 6068;
+      name: "InvalidOptionsProtocol";
+      msg: "option market should be owned by a whitelisted protocol (e.g soloptions, spreads, inertia)";
+    },
+    {
+      code: 6069;
+      name: "InvalidDepositMint";
+      msg: "underlying asset mint does not match voltvault";
+    },
+    {
+      code: 6070;
+      name: "InvalidVaultMint";
+      msg: "vault mint does not match volt vault";
+    },
+    {
+      code: 6071;
+      name: "InvalidVaultAuthority";
+      msg: "vault authority does not match";
+    },
+    {
+      code: 6072;
+      name: "InvalidOptionsContract";
+      msg: "option market does not match volt vault";
+    },
+    {
+      code: 6073;
+      name: "InvalidWriterTokenPool";
+      msg: "writer token pool does not match volt vault";
+    },
+    {
+      code: 6074;
+      name: "InvalidWriterTokenMint";
+      msg: "writer token mint does not match volt vault";
+    },
+    {
+      code: 6075;
+      name: "InvalidOptionTokenMint";
+      msg: "option token mint does not match volt vault";
+    },
+    {
+      code: 6076;
+      name: "InvalidPermissionedMarketPremiumMint";
+      msg: "invalid permissioned market premium mint";
+    },
+    {
+      code: 6077;
       name: "RoundVoltTokensMintDoesNotMatchVoltVault";
       msg: "round volt tokens mint does not match volt vault";
     },
     {
-      code: 6100;
+      code: 6078;
       name: "RoundUnderlyingTokensMintDoesNotMatchVoltVault";
       msg: "round underlying tokens mint does not match volt vault";
     },
     {
-      code: 6101;
-      name: "UnderlyingAssetPoolDoesNotMatchOptionMarket";
+      code: 6079;
+      name: "DepositPoolDoesNotMatchOptionMarket";
       msg: "UnderlyingAssetPoolDoesNotMatchOptionMarket";
+    },
+    {
+      code: 6080;
+      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault";
+      msg: "underlying open orders does not match volt vault";
+    },
+    {
+      code: 6081;
+      name: "DepositPoolDoesNotMatchVoltVault";
+      msg: "DepositPoolDoesNotMatchVoltVault";
+    },
+    {
+      code: 6082;
+      name: "MintDoesNotMatchOptionsContract";
+      msg: "option mint does not match option market";
+    },
+    {
+      code: 6083;
+      name: "VaultDestinationDoesNotMatchVoltVault";
+      msg: "vault destination does not match volt vault";
+    },
+    {
+      code: 6084;
+      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram";
+      msg: "sol transfer authority must be owned by volt program";
+    },
+    {
+      code: 6085;
+      name: "SolTransferAuthorityMustBeWritableAndSigner";
+      msg: "sol transfer authority must be writable/signer";
+    },
+    {
+      code: 6086;
+      name: "ShouldBeUnreachable";
+      msg: "should be unreachable code";
+    },
+    {
+      code: 6087;
+      name: "UserIsNotSigner";
+      msg: "user is not signer";
+    },
+    {
+      code: 6088;
+      name: "CantCloseNonEmptyTokenAccount";
+      msg: "can't close non empty token account";
+    },
+    {
+      code: 6089;
+      name: "CantCloseAccountUnlessEmpty";
+      msg: "cannot close account unless empty";
+    },
+    {
+      code: 6090;
+      name: "DiscriminatorDoesNotMatch";
+      msg: "discriminator does not match";
+    },
+    {
+      code: 6091;
+      name: "InvalidOracleType";
+      msg: "invalid oracle type";
+    },
+    {
+      code: 6092;
+      name: "UnexpectedRemainingAssets";
+      msg: "unexpected remaining assets";
+    },
+    {
+      code: 6093;
+      name: "AlreadyInitialized";
+      msg: "cannot reinitialize an (already initialized) volt";
+    },
+    {
+      code: 6094;
+      name: "TransferAuthorityMustSign";
+      msg: "transfer authority must sign";
+    },
+    {
+      code: 6095;
+      name: "InvalidRoundNumber";
+    },
+    {
+      code: 6096;
+      name: "InvalidTokenAccount";
+    },
+    {
+      code: 6097;
+      name: "InvalidPDA";
+    },
+    {
+      code: 6098;
+      name: "InvalidAccount";
+    },
+    {
+      code: 6099;
+      name: "InvalidWhitelistAuthority";
+      msg: "authority does not match whitelist admin";
+    },
+    {
+      code: 6100;
+      name: "InvalidSerumMarketPda";
+      msg: "whitelist and option market do not generate correct PDA";
+    },
+    {
+      code: 6101;
+      name: "InvalidMiddlewareProgramId";
+      msg: "middleware program id does not match expected";
     },
     {
       code: 6102;
@@ -7030,673 +7026,298 @@ export type VoltIDL = {
     },
     {
       code: 6105;
-      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault";
-      msg: "underlying open orders does not match volt vault";
-    },
-    {
-      code: 6106;
-      name: "MustHaveAtLeastOneMarketMakerAccessToken";
+      name: "RequiresMakerAccessToken";
       msg: "must have at least one market maker access token";
     },
     {
-      code: 6107;
-      name: "MiddlewareProgramIdDoesNotMatch";
-      msg: "middleware program id does not match expected";
-    },
-    {
-      code: 6108;
-      name: "FeeAccountOwnerDoesNotMatch";
-      msg: "fee account owner does not match expected";
-    },
-    {
-      code: 6109;
-      name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium";
-      msg: "fee account mint does not match deposit pool or permissioned market premium";
-    },
-    {
-      code: 6110;
-      name: "VaultCapacityWouldBeExceeded";
-      msg: "vault capacity would be exceeded";
-    },
-    {
-      code: 6111;
-      name: "IndividualDepositCapacityWouldBeExceeded";
-      msg: "individual deposit capacity would be exceeded";
-    },
-    {
-      code: 6112;
-      name: "UnsupportedOptionMarketProgramId";
-      msg: "unsupported option market program ID";
-    },
-    {
-      code: 6113;
-      name: "InvalidEndDcaRoundState";
-      msg: "invalid end dca round state";
-    },
-    {
-      code: 6114;
-      name: "RoundHasNotStarted";
-      msg: "round has not started";
-    },
-    {
-      code: 6115;
-      name: "PermissionedMarketPremiumPoolDoesNotMatchVoltVault";
-      msg: "permissioned makret premium pool does not match volt";
-    },
-    {
-      code: 6116;
-      name: "TokenAccountOwnersDoNotMatch";
-      msg: "token account owners do not match";
-    },
-    {
-      code: 6117;
-      name: "InvalidPermissionedMarketPremiumMint";
-      msg: "invalid permissioned market premium mint";
-    },
-    {
-      code: 6118;
-      name: "PremiumPoolAmountMustBeGreaterThanZero";
-      msg: "premium pool amount must be greater than zero";
-    },
-    {
-      code: 6119;
-      name: "CantCloseNonEmptyTokenAccount";
-      msg: "can't close non empty token account";
-    },
-    {
-      code: 6120;
-      name: "MustFinishEnteringBeforeSettlingPermissionedMarketPremium";
-      msg: "must finish entering before settling permissioned market premium funds";
-    },
-    {
-      code: 6121;
-      name: "PendingWithdrawalInfoNotInitialized";
-      msg: "pending withdrawal info must be initialized";
-    },
-    {
-      code: 6122;
-      name: "PendingWithdrawalDoesNotExist";
-      msg: "pending withdrawal does not exist";
-    },
-    {
-      code: 6123;
-      name: "CannotCancelPendingWithdrawalFromOldRound";
-      msg: "cannot cancel pending withdrawal from old round";
-    },
-    {
-      code: 6124;
-      name: "PendingDepositInfoNotInitialized";
-      msg: "pending deposit info not initialized";
-    },
-    {
-      code: 6125;
-      name: "PendingDepositDoesNotExist";
-      msg: "pending deposits does not exist";
-    },
-    {
-      code: 6126;
-      name: "CannotCancelPendingDepositFromOldRound";
-      msg: "cannot cancel pending deposit from old round";
-    },
-    {
-      code: 6127;
-      name: "VaultDestinationDoesNotMatchVoltVault";
-      msg: "vault destination does not match volt vault";
-    },
-    {
-      code: 6128;
-      name: "MustTakeWithdrawalFeesBeforeStartingRound";
-      msg: "must take withdrawal fees before starting round";
-    },
-    {
-      code: 6129;
-      name: "RoundMustBeEnded";
-      msg: "round must be ended";
-    },
-    {
-      code: 6130;
-      name: "MustNotHaveSoldOptionTokens";
-      msg: "must not have sold option tokens to reset";
-    },
-    {
-      code: 6131;
-      name: "CantCloseAccountUnlessEmpty";
-      msg: "cannot close account unless empty";
-    },
-    {
-      code: 6132;
+      code: 6106;
       name: "OpenOrderMustBeEmptyToClose";
       msg: "open orders must be empty to close";
     },
     {
-      code: 6133;
-      name: "InvalidWhitelistAccountVector";
-      msg: "invalid whitelist account (vector)";
+      code: 6107;
+      name: "PriceTooLow";
     },
     {
-      code: 6134;
-      name: "InvalidDaoProgramId";
-      msg: "invalid dao program ID";
+      code: 6108;
+      name: "PriceTooHigh";
     },
     {
-      code: 6135;
-      name: "VoltMustBeForDao";
-      msg: "volt must be for dao";
+      code: 6109;
+      name: "OrderSizeZero";
     },
     {
-      code: 6136;
-      name: "InvalidDaoAuthority";
-      msg: "invalid dao authority";
+      code: 6110;
+      name: "UnsupportedOrderStrategy";
     },
     {
-      code: 6137;
-      name: "DaoAuthorityMustSign";
-      msg: "dao authority must sign";
+      code: 6111;
+      name: "InvalidMarketType";
     },
     {
-      code: 6138;
-      name: "InvalidPendingDepositKey";
-      msg: "invalid pending deposit key";
+      code: 6112;
+      name: "InvalidOpenOrders";
     },
     {
-      code: 6139;
-      name: "InvalidAuthorityCheck";
-      msg: "invalid authority check";
+      code: 6113;
+      name: "NoOpenOrders";
     },
     {
-      code: 6140;
+      code: 6114;
+      name: "InsufficientFundsToBid";
+    },
+    {
+      code: 6115;
+      name: "InsufficientFundsToOffer";
+    },
+    {
+      code: 6116;
+      name: "MustTakeWithdrawalFeesBeforeStartingRound";
+      msg: "must take withdrawal fees before starting round";
+    },
+    {
+      code: 6117;
       name: "InvalidEndEntropyRoundState";
       msg: "entropy: invalid end entropy round state";
     },
     {
-      code: 6141;
-      name: "InvalidVoltType";
-      msg: "invalid volt type";
-    },
-    {
-      code: 6142;
+      code: 6118;
       name: "CantFindPerpMarketIndex";
       msg: "can't find perp market index";
     },
     {
-      code: 6143;
+      code: 6119;
       name: "AccountEquityLessThanZero";
       msg: "account equity less than zero";
     },
     {
-      code: 6144;
+      code: 6120;
       name: "QuotePositionChangedTooMuch";
       msg: "quote position changed too much";
     },
     {
-      code: 6145;
+      code: 6121;
       name: "MustMoveCloserToTargetCollateralization";
       msg: "must move closer to target collateralization";
     },
     {
-      code: 6146;
+      code: 6122;
       name: "CollateralNotWithinLenience";
       msg: "collateral not within lenience";
     },
     {
-      code: 6147;
+      code: 6123;
       name: "InvalidRebalanceEntropyState";
       msg: "invalid rebalance entropy state";
     },
     {
-      code: 6148;
+      code: 6124;
       name: "BasePositionMustBeNegative";
       msg: "volt must have negative base position (be short)";
     },
     {
-      code: 6149;
+      code: 6125;
       name: "QuotePositionMustBePositive";
       msg: "volt must have positive quote position (be short)";
     },
     {
-      code: 6150;
+      code: 6126;
       name: "TargetCollateralRatioMustBeNegative";
       msg: "target collateral ratio must be neggat";
     },
     {
-      code: 6151;
+      code: 6127;
       name: "NewEquityMustBeHigherThanDepositAmount";
       msg: "new equity must be higher than deposit amt";
     },
     {
-      code: 6152;
-      name: "InstantTransfersMustBeDisabled";
-      msg: "instant transfers must be enabled";
-    },
-    {
-      code: 6153;
+      code: 6128;
       name: "RebalanceMustBeReady";
       msg: "rebalance must be ready";
     },
     {
-      code: 6154;
+      code: 6129;
       name: "IncorrectHedge";
       msg: "spot hedge unbalanced";
     },
     {
-      code: 6155;
-      name: "VaultNameMustBeNonZeroLength";
-      msg: "vault name must be zero length";
-    },
-    {
-      code: 6156;
+      code: 6130;
       name: "VaultDoesNotSupportOverLeveragedStrategies";
       msg: "vault does not support over leveraged strategies";
     },
     {
-      code: 6157;
+      code: 6131;
       name: "LenienceMustBeGreaterThanZero";
       msg: "lenience must be greater than zero";
     },
     {
-      code: 6158;
+      code: 6132;
       name: "LenienceShouldNotBeGreaterThanLeverage";
       msg: "lenience should not be greater than leverage";
     },
     {
-      code: 6159;
+      code: 6133;
       name: "HedgeLenienceMustBeGreaterThanZero";
       msg: "hedge lenience should be greater than leverage";
     },
     {
-      code: 6160;
+      code: 6134;
       name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies";
       msg: "exit early ratio must be < 1.0";
     },
     {
-      code: 6161;
-      name: "RoundNumberMustNotOverflow";
-      msg: "round number must not overflow";
-    },
-    {
-      code: 6162;
-      name: "InvalidWhitelistTokenAccountMint";
-      msg: "invalid whitelist token account mint";
-    },
-    {
-      code: 6163;
-      name: "SoloptionsProgramIdDoesNotMatch";
-      msg: "soloptions program id does not matchf";
-    },
-    {
-      code: 6164;
-      name: "WhitelistTokenAccountOwnerIsNotUser";
-      msg: "whitelist token account owner is not user";
-    },
-    {
-      code: 6165;
-      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram";
-      msg: "sol transfer authority must be owned by volt program";
-    },
-    {
-      code: 6166;
-      name: "InsufficientCollateralForDeposit";
-      msg: "Insufficient collateral to deposit.";
-    },
-    {
-      code: 6167;
-      name: "SolTransferAuthorityMustBeWritableAndSigner";
-      msg: "sol transfer authority must be writable/signer";
-    },
-    {
-      code: 6168;
-      name: "VoltMustBeOfEntropyType";
-      msg: "volt must be entropy type";
-    },
-    {
-      code: 6169;
-      name: "VoltMustBeofShortOptionsType";
-      msg: "volt must be of short options type";
-    },
-    {
-      code: 6170;
-      name: "DepositsAndWithdrawalsAreTurnedOff";
-      msg: "deposits and withdrawals are turned off";
-    },
-    {
-      code: 6171;
+      code: 6135;
       name: "ShouldBeDoneRebalancing";
       msg: "should be done rebalancing";
     },
     {
-      code: 6172;
+      code: 6136;
       name: "UnrecognizedEntropyProgramId";
       msg: "unrecognized entropy program id";
     },
     {
-      code: 6173;
+      code: 6137;
       name: "InvalidTakePerformanceFeesState";
       msg: "invalid take performance fees state";
     },
     {
-      code: 6174;
-      name: "DiscriminatorDoesNotMatch";
-      msg: "discriminator does not match";
-    },
-    {
-      code: 6175;
+      code: 6138;
       name: "RealizedOraclePriceTooFarOffClientProvided";
       msg: "realized oracle price too far off client provided";
     },
     {
-      code: 6176;
-      name: "VaultMintSupplyMustBeZeroIfEquityIsZero";
-      msg: "vault mint supply must be zero if equity is zero";
-    },
-    {
-      code: 6177;
+      code: 6139;
       name: "InvalidSetupRebalanceEntropyState";
       msg: "invalid setup rebalance entropy state";
     },
     {
-      code: 6178;
+      code: 6140;
       name: "HedgeWithSpotMustBeTrue";
       msg: "hedge with spot must be true";
     },
     {
-      code: 6179;
+      code: 6141;
       name: "PowerPerpMustBeDoneRebalancing";
       msg: "power perp must be done rebalancing";
     },
     {
-      code: 6180;
+      code: 6142;
       name: "HedgingMustBeOn";
       msg: "hedging must be on";
     },
     {
-      code: 6181;
+      code: 6143;
       name: "DepositedAmountOfHedgeAssetShouldBeZero";
       msg: "deposited amount of hedge asset should be zero";
     },
     {
-      code: 6182;
+      code: 6144;
       name: "BorrowedAmountOfHedgeAssetShouldBeZero";
       msg: "borrowed amount of hedge asset should be zero";
     },
     {
-      code: 6183;
-      name: "SwapPremiumMustHaveBeenCalledAtLeastOnce";
-      msg: "swap premium must have been called at least once";
+      code: 6145;
+      name: "VaultMintSupplyMustBeZeroIfEquityIsZero";
+      msg: "vault mint supply must be zero if equity is zero";
     },
     {
-      code: 6184;
+      code: 6146;
       name: "ShouldHedgeWithSpotNotPerp";
       msg: "should hedge with spot not perp";
     },
     {
-      code: 6185;
+      code: 6147;
       name: "InvalidRebalanceSpotEntropyState";
       msg: "invalid rebalane spot entropy state";
     },
     {
-      code: 6186;
+      code: 6148;
       name: "CompleteBasePositionDoesNotMatchNormal";
       msg: "complete base position does not match normal";
     },
     {
-      code: 6187;
-      name: "InvalidUserUnderlyingTokens";
-      msg: "invalid user underlying tokens";
-    },
-    {
-      code: 6188;
-      name: "InvalidRoundForCancel";
-      msg: "invalid round number for cancel";
-    },
-    {
-      code: 6189;
-      name: "InvalidEpochForCancel";
-      msg: "invalid epoch number for cancel";
-    },
-    {
-      code: 6190;
-      name: "PendingDepositAlreadyExists";
-      msg: "pending deposit already exists";
-    },
-    {
-      code: 6191;
-      name: "InvalidPendingWithdrawalKey";
-      msg: "invalid pending withdrawal key";
-    },
-    {
-      code: 6192;
+      code: 6149;
       name: "InvalidDepositDiscretionaryState";
       msg: "invalid deposit discretionary state";
     },
     {
-      code: 6193;
-      name: "InvalidInitSerumMarketState";
-      msg: "invalid init serum market state";
-    },
-    {
-      code: 6194;
+      code: 6150;
       name: "QuotePositionMustMoveCloserToDesired";
       msg: "quote position must move closer to desired";
     },
     {
-      code: 6195;
-      name: "PermissionedMarketPremiumPoolAmountMustBeZero";
-      msg: "permissioned market premium pool amount must be zero";
-    },
-    {
-      code: 6196;
-      name: "PremiumPoolAmountMustBeZero";
-      msg: "premium pool amount must be zero";
-    },
-    {
-      code: 6197;
-      name: "WriterTokenMintDoesNotMatchVoltVault";
-      msg: "writer token mint doesn't match vv";
-    },
-    {
-      code: 6198;
-      name: "InvalidTargetPoolForSwapOrder";
-      msg: "invalid target pool for swap order";
-    },
-    {
-      code: 6199;
-      name: "GivePoolMustBeEmpty";
-      msg: "give pool must be empty";
-    },
-    {
-      code: 6200;
-      name: "ReceivePoolMustBeEmpty";
-      msg: "receive pool must be empty";
-    },
-    {
-      code: 6201;
-      name: "InvalidOracleType";
-      msg: "invalid oracle type";
-    },
-    {
-      code: 6202;
-      name: "MustNotBeLendingUnderlyingAssetMint";
-      msg: "must not be lending underlying asset mint";
-    },
-    {
-      code: 6203;
-      name: "MustNotBeLendingQuoteAssetMint";
-      msg: "must not be lending quote asset mint";
-    },
-    {
-      code: 6204;
-      name: "InvalidSettleEnterFundsState";
-      msg: "invalid settle enter funds state";
-    },
-    {
-      code: 6205;
-      name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount";
-      msg: "premium farmed must match permissioned market premium pool";
-    },
-    {
-      code: 6206;
-      name: "InvalidWithdrawAmount";
-      msg: "invalid withdraw amount";
-    },
-    {
-      code: 6207;
+      code: 6151;
       name: "InvalidOtcOrderPrice";
       msg: "invalid OTC order price";
     },
     {
-      code: 6208;
+      code: 6152;
       name: "UnhealthyEntropyAccount";
       msg: "unhealthy entropy account";
     },
     {
-      code: 6209;
-      name: "TransferAuthorityMustSign";
-      msg: "transfer authority must sign";
-    },
-    {
-      code: 6210;
-      name: "MustHaveLastTimeTookAumFees";
-      msg: "please end an epoch and get a time last took aum fees";
-    },
-    {
-      code: 6211;
-      name: "TradingPoolAmountMustBeGreaterThanZero";
-      msg: "trading pool amount must be greater than 0";
-    },
-    {
-      code: 6212;
-      name: "VoltMustBeADOV";
-      msg: "volt must be a dov (defi options volt)";
-    },
-    {
-      code: 6213;
-      name: "MintOptionMustMatchSetOption";
-      msg: "mint option must match set option";
-    },
-    {
-      code: 6214;
-      name: "NoMatchingPool";
-    },
-    {
-      code: 6215;
-      name: "RoundHasNotEnded";
-    },
-    {
-      code: 6216;
-      name: "InvalidPerformanceFeeMint";
-    },
-    {
-      code: 6217;
-      name: "InsufficientFundsToOffer";
-    },
-    {
-      code: 6218;
-      name: "InsufficientFundsToBid";
-    },
-    {
-      code: 6219;
-      name: "PriceTooLow";
-    },
-    {
-      code: 6220;
-      name: "PriceTooHigh";
-    },
-    {
-      code: 6221;
-      name: "OrderSizeZero";
-    },
-    {
-      code: 6222;
-      name: "MustSwapPremiumAfterEnter";
-    },
-    {
-      code: 6223;
-      name: "NoValidShortOptionsEpochStage";
-      msg: "no valid short options epoch stage";
-    },
-    {
-      code: 6224;
-      name: "InvalidCallToShortOptionsEpochStage";
-      msg: "invalid call to short options epoch stage";
-    },
-    {
-      code: 6225;
-      name: "InvalidPendingWithdrawalState";
-    },
-    {
-      code: 6226;
-      name: "InvalidRoundNumber";
-    },
-    {
-      code: 6227;
-      name: "InvalidTokenAccount";
-    },
-    {
-      code: 6228;
-      name: "InvalidPDA";
-    },
-    {
-      code: 6229;
-      name: "InvalidOpenOrders";
-    },
-    {
-      code: 6230;
+      code: 6153;
       name: "InvalidHedgingStrategy";
     },
     {
-      code: 6231;
-      name: "UnsupportedOrderStrategy";
-    },
-    {
-      code: 6232;
-      name: "InvalidMarketType";
-    },
-    {
-      code: 6233;
-      name: "InvalidFeeAccount";
-    },
-    {
-      code: 6234;
-      name: "InvalidSettleFeesEarly";
-    },
-    {
-      code: 6235;
-      name: "InvalidVaultMint";
-    },
-    {
-      code: 6236;
-      name: "InvalidWriterTokenPool";
-    },
-    {
-      code: 6237;
-      name: "NoOpenOrders";
-    },
-    {
-      code: 6238;
+      code: 6154;
       name: "InvalidTargetPerpMarket";
     },
     {
-      code: 6239;
+      code: 6155;
       name: "InvalidHedgingPerpMarket";
     },
     {
-      code: 6240;
-      name: "AlreadyInitialized";
+      code: 6156;
+      name: "InvalidWhitelistAccountVector";
+      msg: "invalid whitelist account (vector)";
     },
     {
-      code: 6241;
-      name: "InvalidAccount";
+      code: 6157;
+      name: "InvalidDaoProgramId";
+      msg: "invalid dao program ID";
     },
     {
-      code: 6242;
-      name: "InvalidDepositMint";
+      code: 6158;
+      name: "VoltMustBeForDao";
+      msg: "volt must be for dao";
     },
     {
-      code: 6243;
+      code: 6159;
+      name: "InvalidDaoAuthority";
+      msg: "invalid dao authority";
+    },
+    {
+      code: 6160;
+      name: "DaoAuthorityMustSign";
+      msg: "dao authority must sign";
+    },
+    {
+      code: 6161;
+      name: "InvalidWhitelistTokenAccountMint";
+      msg: "invalid whitelist token account mint";
+    },
+    {
+      code: 6162;
+      name: "WhitelistTokenAccountOwnerIsNotUser";
+      msg: "whitelist token account owner is not user";
+    },
+    {
+      code: 6163;
+      name: "MustNotBeLendingUnderlyingAssetMint";
+      msg: "must not be lending underlying asset mint";
+    },
+    {
+      code: 6164;
+      name: "MustNotBeLendingQuoteAssetMint";
+      msg: "must not be lending quote asset mint";
+    },
+    {
+      code: 6165;
       name: "InvalidEnterSwapClaimState";
     },
     {
-      code: 6244;
+      code: 6166;
       name: "InvalidCurrSwapOrder";
     }
   ];
@@ -9342,7 +8963,12 @@ export const VoltIDLJsonRaw = {
           isSigner: false,
         },
       ],
-      args: [],
+      args: [
+        {
+          name: "bypassCode",
+          type: "u64",
+        },
+      ],
     },
     {
       name: "endRoundShortOptions",
@@ -9674,11 +9300,11 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "shouldHedge",
-          type: "bool",
+          type: "u64",
         },
         {
           name: "hedgeWithSpot",
-          type: "bool",
+          type: "u64",
         },
       ],
     },
@@ -14208,513 +13834,504 @@ export const VoltIDLJsonRaw = {
   errors: [
     {
       code: 6000,
+      name: "InvalidVoltType",
+      msg: "invalid volt type",
+    },
+    {
+      code: 6001,
+      name: "VaultNameMustBeNonZeroLength",
+      msg: "vault name must be zero length",
+    },
+    {
+      code: 6002,
       name: "ExpirationIsInThePast",
       msg: "Expiration must be in the future",
     },
     {
-      code: 6001,
-      name: "QuoteAndUnderlyingAssetMustDiffer",
-      msg: "Same quote and underlying asset, cannot create market",
-    },
-    {
-      code: 6002,
-      name: "QuoteOrUnderlyingAmountCannotBe0",
-      msg: "Quote amount and underlying amount per contract must be > 0",
-    },
-    {
       code: 6003,
-      name: "OptionMarketMustBeMintAuthority",
-      msg: "OptionMarket must be the mint authority",
-    },
-    {
-      code: 6004,
-      name: "OptionMarketMustOwnUnderlyingAssetPool",
-      msg: "OptionMarket must own the underlying asset pool",
-    },
-    {
-      code: 6005,
-      name: "OptionMarketMustOwnQuoteAssetPool",
-      msg: "OptionMarket must own the quote asset pool",
-    },
-    {
-      code: 6006,
-      name: "ExpectedSPLTokenProgramId",
-      msg: "Stop trying to spoof the SPL Token program! Shame on you",
-    },
-    {
-      code: 6007,
-      name: "MintFeeMustBeOwnedByFeeOwner",
-      msg: "Mint fee account must be owned by the FEE_OWNER",
-    },
-    {
-      code: 6008,
-      name: "ExerciseFeeMustBeOwnedByFeeOwner",
-      msg: "Exercise fee account must be owned by the FEE_OWNER",
-    },
-    {
-      code: 6009,
-      name: "MintFeeTokenMustMatchUnderlyingAsset",
-      msg: "Mint fee token must be the same as the underlying asset",
-    },
-    {
-      code: 6010,
-      name: "ExerciseFeeTokenMustMatchQuoteAsset",
-      msg: "Exercise fee token must be the same as the quote asset",
-    },
-    {
-      code: 6011,
-      name: "OptionMarketExpiredCantMint",
-      msg: "OptionMarket is expired, can't mint",
-    },
-    {
-      code: 6012,
-      name: "UnderlyingPoolAccountDoesNotMatchMarket",
-      msg: "Underlying pool account does not match the value on the OptionMarket",
-    },
-    {
-      code: 6013,
-      name: "OptionTokenMintDoesNotMatchMarket",
-      msg: "OptionToken mint does not match the value on the OptionMarket",
-    },
-    {
-      code: 6014,
-      name: "WriterTokenMintDoesNotMatchMarket",
-      msg: "WriterToken mint does not match the value on the OptionMarket",
-    },
-    {
-      code: 6015,
-      name: "MintFeeKeyDoesNotMatchOptionMarket",
-      msg: "MintFee key does not match the value on the OptionMarket",
-    },
-    {
-      code: 6016,
-      name: "SizeCantBeLessThanEqZero",
-      msg: "The size argument must be > 0",
-    },
-    {
-      code: 6017,
-      name: "ExerciseFeeKeyDoesNotMatchOptionMarket",
-      msg: "exerciseFee key does not match the value on the OptionMarket",
-    },
-    {
-      code: 6018,
-      name: "QuotePoolAccountDoesNotMatchMarket",
-      msg: "Quote pool account does not match the value on the OptionMarket",
-    },
-    {
-      code: 6019,
-      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset",
-      msg: "Underlying destination mint must match underlying asset mint address",
-    },
-    {
-      code: 6020,
       name: "FeeOwnerDoesNotMatchProgram",
       msg: "Fee owner does not match the program's fee owner",
     },
     {
-      code: 6021,
-      name: "OptionMarketExpiredCantExercise",
-      msg: "OptionMarket is expired, can't exercise",
+      code: 6004,
+      name: "MintFeeMustBeOwnedByFeeOwner",
+      msg: "Mint fee account must be owned by the FEE_OWNER",
     },
     {
-      code: 6022,
-      name: "OptionMarketNotExpiredCantClose",
-      msg: "OptionMarket has not expired, can't close",
+      code: 6005,
+      name: "ExerciseFeeMustBeOwnedByFeeOwner",
+      msg: "Exercise fee account must be owned by the FEE_OWNER",
     },
     {
-      code: 6023,
-      name: "NotEnoughQuoteAssetsInPool",
-      msg: "Not enough assets in the quote asset pool",
+      code: 6006,
+      name: "UnderlyingDestMintDoesNotMatchUnderlyingAsset",
+      msg: "Underlying destination mint must match underlying asset mint address",
     },
     {
-      code: 6024,
-      name: "InvalidAuth",
-      msg: "Invalid auth token provided",
+      code: 6007,
+      name: "FeeAccountOwnerDoesNotMatch",
+      msg: "fee account owner does not match expected",
     },
     {
-      code: 6025,
-      name: "CoinMintIsNotOptionMint",
-      msg: "Coin mint must match option mint",
+      code: 6008,
+      name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium",
+      msg: "fee account mint does not match deposit pool or permissioned market premium",
     },
     {
-      code: 6026,
-      name: "CannotPruneActiveMarket",
-      msg: "Cannot prune the market while it's still active",
+      code: 6009,
+      name: "MustHaveLastTimeTookAumFees",
+      msg: "please end an epoch and get a time last took aum fees",
     },
     {
-      code: 6027,
+      code: 6010,
+      name: "InvalidFeeAccount",
+    },
+    {
+      code: 6011,
       name: "NumberOverflow",
       msg: "Numerical overflow",
     },
     {
-      code: 6028,
+      code: 6012,
       name: "InvalidOrderType",
       msg: "Invalid order type",
     },
     {
-      code: 6029,
+      code: 6013,
       name: "InvalidSelfTradeBehavior",
       msg: "Invalid self trade behavior",
     },
     {
-      code: 6030,
+      code: 6014,
       name: "Unauthorized",
       msg: "Unauthorized.",
     },
     {
-      code: 6031,
-      name: "InsufficientCollateralForWriting",
-      msg: "Insufficient collateral to write options.",
-    },
-    {
-      code: 6032,
+      code: 6015,
       name: "InsufficientVaultTokens",
       msg: "Insufficient Vault tokens to redeem.",
     },
     {
-      code: 6033,
-      name: "ContractExpired",
-      msg: "Options contract is expired.",
-    },
-    {
-      code: 6034,
-      name: "ContractNotYetExpired",
-      msg: "Cannot redeem until contract expiry.",
-    },
-    {
-      code: 6035,
-      name: "InvalidMintAmount",
-      msg: "mint amount was 0, skipping mint_helper()...",
-    },
-    {
-      code: 6036,
-      name: "InvalidRebalanceExitTime",
-      msg: "invalid time to exit position rebalanceExit()",
-    },
-    {
-      code: 6037,
-      name: "InvalidRebalanceEntryTime",
-      msg: "invalid time to enter position rebalanceEnter()",
-    },
-    {
-      code: 6038,
-      name: "InvalidRebalancePrepareTime",
-      msg: "invalid time to call rebalancePrepare()",
-    },
-    {
-      code: 6039,
-      name: "InvalidWithdrawalTime",
-      msg: "invalid time to withdraw",
-    },
-    {
-      code: 6040,
-      name: "InvalidDepositTime",
-      msg: "invalid time to deposit",
-    },
-    {
-      code: 6041,
-      name: "InvalidSetNextOptionTime",
+      code: 6016,
+      name: "InvalidSetNextOptionState",
       msg: "invalid time to set next option",
     },
     {
-      code: 6042,
-      name: "InvalidDepositAmount",
-      msg: "invalid deposit amount",
+      code: 6017,
+      name: "InvalidRebalancePrepareState",
+      msg: "invalid time to call rebalancePrepare()",
     },
     {
-      code: 6043,
-      name: "InvalidRebalanceSettleTime",
-      msg: "invalid rebalance settle time",
-    },
-    {
-      code: 6044,
+      code: 6018,
       name: "InvalidRebalanceSettleState",
       msg: "invalid rebalance settle state",
     },
     {
-      code: 6045,
+      code: 6019,
       name: "InvalidRebalanceEnterState",
       msg: "invalid rebalance enter state",
     },
     {
-      code: 6046,
-      name: "OptionsPositionNotSettled",
-      msg: "options position not settled, must be before withdrawal",
-    },
-    {
-      code: 6047,
-      name: "NonUnderlyingPoolsHaveAssets",
-      msg: "non underlying pools have assets when attempting withdraw",
-    },
-    {
-      code: 6048,
-      name: "VaultAuthorityMustBeVaultMintAuthority",
-      msg: "volt must be vault mint authority",
-    },
-    {
-      code: 6049,
-      name: "VaultAuthorityMustOwnDepositPool",
-      msg: "volt must own deposit pool",
-    },
-    {
-      code: 6050,
-      name: "VaultAuthorityMustOwnPremiumPool",
-      msg: "volt must own premium pool",
-    },
-    {
-      code: 6051,
-      name: "VoltVaulttMustOwnWriterTokenPool",
-      msg: "volt must own writer token pool",
-    },
-    {
-      code: 6052,
-      name: "VoltVaultMustOwnOptionPool",
-      msg: "volt must own option pool",
-    },
-    {
-      code: 6053,
-      name: "DepositPoolDoesNotMatchVoltVault",
-      msg: "DepositPoolDoesNotMatchVoltVault",
-    },
-    {
-      code: 6054,
-      name: "OptionPoolDoesNotMatchVoltVault",
-      msg: "OptionPoolDoesNotMatchVoltVault",
-    },
-    {
-      code: 6055,
-      name: "PremiumPoolDoesNotMatchVoltVault",
-      msg: "PremiumPoolDoesNotMatchVoltVault",
-    },
-    {
-      code: 6056,
-      name: "TraidngPoolDoesNotMatchVoltVault",
-      msg: "TradingPoolDoesNotMatchVoltVault",
-    },
-    {
-      code: 6057,
-      name: "OptionMintDoesNotMatchOptionMarket",
-      msg: "option mint does not match option market",
-    },
-    {
-      code: 6058,
-      name: "NoOrdersInOptionOrderBook",
-      msg: "NoBidsInOptionOrderBook",
-    },
-    {
-      code: 6059,
-      name: "CpiProgramMustBeSomeInPlaceOrder",
-      msg: "cpi program must be Some in place order",
-    },
-    {
-      code: 6060,
-      name: "NewOptionMustNotBeExpired",
-      msg: "new option must not be expired",
-    },
-    {
-      code: 6061,
-      name: "NewOptionMustHaveExactExpiry",
-      msg: "new option has roughly target expiry (within lower/upper bounds)",
-    },
-    {
-      code: 6062,
-      name: "NewOptionHasWrongUnderlyingAsset",
-      msg: "new option has wrong underlying asset",
-    },
-    {
-      code: 6063,
-      name: "NewOptionHasWrongQuoteAsset",
-      msg: "new option has wrong quote asset",
-    },
-    {
-      code: 6064,
-      name: "NewOptionHasWrongContractSize",
-      msg: "new option has wrong contract size",
-    },
-    {
-      code: 6065,
-      name: "NewOptionHasInvalidStrike",
-      msg: "new option has invalid strike",
-    },
-    {
-      code: 6066,
-      name: "RebalanceSettleHasLeftoverWriterTokens",
-      msg: "rebalance settle has leftover writer tokens",
-    },
-    {
-      code: 6067,
-      name: "CurrentOptionMustNotBeExpired",
-      msg: "current option must not be expired",
-    },
-    {
-      code: 6068,
-      name: "CannotReinitializeVolt",
-      msg: "cannot reinitialize an (already initialized) volt",
-    },
-    {
-      code: 6069,
-      name: "OldOptionAndWriterTokenPoolsMustBeEmpty",
-      msg: "cannot reinitialize an (already initialized) volt",
-    },
-    {
-      code: 6070,
-      name: "InvalidOldOptionWriterTokenPools",
-      msg: "invalid old option writer token pools",
-    },
-    {
-      code: 6071,
-      name: "VaultMintDoesNotMatchUserTokenAccount",
-      msg: "vault mint does not match user token account",
-    },
-    {
-      code: 6072,
-      name: "DepositPoolMintDoesNotMatchUserTokenAccount",
-      msg: "deposit pool mint does not match user token account",
-    },
-    {
-      code: 6073,
-      name: "VaultAuthorityDoesNotMatch",
-      msg: "vault authority does not match",
-    },
-    {
-      code: 6074,
-      name: "DexProgramIdDoesNotMatchAnchor",
-      msg: "DEX program id does not match",
-    },
-    {
-      code: 6075,
-      name: "InertiaProgramIdDoesNotMatch",
-      msg: "Inertia program id does not match",
-    },
-    {
-      code: 6076,
-      name: "InvalidAuthorityForPermissionedInstruction",
-      msg: "Invalid authority for permissioned instruction",
-    },
-    {
-      code: 6077,
-      name: "WriterTokenMintDoesNotMatchOptionMarket",
-      msg: "writer token mint does not match option market",
-    },
-    {
-      code: 6078,
-      name: "OptionMarketMustBeOwnedByProtocol",
-      msg: "option market should be owned by protocol (e.g inertia)",
-    },
-    {
-      code: 6079,
-      name: "UnderlyingAssetMintDoesNotMatchVoltVault",
-      msg: "underlying asset mint does not match voltvault",
-    },
-    {
-      code: 6080,
-      name: "QuoteAssetMintDoesNotMatchVoltVault",
-      msg: "quote asset mint does not match voltvault",
-    },
-    {
-      code: 6081,
-      name: "VaultMintDoesNotMatchVoltVault",
-      msg: "vault mint does not match volt vault",
-    },
-    {
-      code: 6082,
-      name: "OptionMarketDoesNotMatchVoltVault",
-      msg: "option market does not match volt vault",
-    },
-    {
-      code: 6083,
-      name: "WriterTokenPoolDoesNotMatchVoltVault",
-      msg: "writer token pool does not match volt vault",
-    },
-    {
-      code: 6084,
-      name: "InvalidRebalanceSwapPremiumState",
+      code: 6020,
+      name: "InvalidSwapPremiumState",
       msg: "invalid rebalance swap premium state",
     },
     {
-      code: 6085,
-      name: "ShouldBeUnreachable",
-      msg: "should be unreachable code",
-    },
-    {
-      code: 6086,
-      name: "CantHaveMultiplePendingDeposits",
-      msg: "shouldn't have multiple pending deposits",
-    },
-    {
-      code: 6087,
+      code: 6021,
       name: "InvalidStartRoundState",
       msg: "invalid start round state",
     },
     {
-      code: 6088,
-      name: "InvalidSetNextOptionState",
-      msg: "invalid set next option state",
-    },
-    {
-      code: 6089,
-      name: "InvalidClaimPendingState",
-      msg: "invalid claim pending state",
-    },
-    {
-      code: 6090,
+      code: 6022,
       name: "InvalidEndRoundState",
       msg: "invalid end round state",
     },
     {
-      code: 6091,
+      code: 6023,
+      name: "InvalidInitSerumMarketState",
+      msg: "invalid init serum market state",
+    },
+    {
+      code: 6024,
+      name: "InvalidResetOptionMarketState",
+      msg: "must not have sold option tokens to reset",
+    },
+    {
+      code: 6025,
+      name: "PermissionedMarketPremiumPoolAmountMustBeZero",
+      msg: "permissioned market premium pool amount must be zero",
+    },
+    {
+      code: 6026,
+      name: "PremiumPoolAmountMustBeZero",
+      msg: "premium pool amount must be zero",
+    },
+    {
+      code: 6027,
+      name: "PremiumPoolAmountMustBeGreaterThanZero",
+      msg: "premium pool amount must be greater than zero",
+    },
+    {
+      code: 6028,
+      name: "MintOptionMustMatchSetOption",
+      msg: "mint option must match set option",
+    },
+    {
+      code: 6029,
+      name: "RoundHasNotEnded",
+    },
+    {
+      code: 6030,
+      name: "MustSwapPremiumAfterEnter",
+    },
+    {
+      code: 6031,
+      name: "NoValidShortOptionsEpochStage",
+      msg: "no valid short options epoch stage",
+    },
+    {
+      code: 6032,
+      name: "InvalidCallToShortOptionsEpochStage",
+      msg: "invalid call to short options epoch stage",
+    },
+    {
+      code: 6033,
+      name: "InvalidSettleFeesEarly",
+    },
+    {
+      code: 6034,
+      name: "InsufficientCollateralForDeposit",
+      msg: "Insufficient collateral to deposit.",
+    },
+    {
+      code: 6035,
+      name: "InstantTransfersMustBeDisabled",
+      msg: "instant transfers must be enabled",
+    },
+    {
+      code: 6036,
+      name: "VaultCapacityWouldBeExceeded",
+      msg: "vault capacity would be exceeded",
+    },
+    {
+      code: 6037,
+      name: "IndividualDepositCapacityWouldBeExceeded",
+      msg: "individual deposit capacity would be exceeded",
+    },
+    {
+      code: 6038,
+      name: "DepositsAndWithdrawalsAreTurnedOff",
+      msg: "deposits and withdrawals are turned off",
+    },
+    {
+      code: 6039,
+      name: "WithdrawalsDisabled",
+      msg: "invalid time to withdraw",
+    },
+    {
+      code: 6040,
+      name: "DepositsDisabled",
+      msg: "invalid time to deposit",
+    },
+    {
+      code: 6041,
+      name: "InvalidDepositAmount",
+      msg: "invalid deposit amount (must be greater than zero)",
+    },
+    {
+      code: 6042,
+      name: "InvalidWithdrawAmount",
+      msg: "invalid withdraw amount",
+    },
+    {
+      code: 6043,
+      name: "InvalidPendingDepositKey",
+      msg: "invalid pending deposit key",
+    },
+    {
+      code: 6044,
+      name: "CantHaveMultiplePendingDeposits",
+      msg: "shouldn't have multiple pending deposits",
+    },
+    {
+      code: 6045,
+      name: "InvalidClaimPendingDepositState",
+      msg: "invalid claim pending state",
+    },
+    {
+      code: 6046,
       name: "CantHaveMultiplePendingWithdrawals",
       msg: "shouldn't have multiple pending deposits",
     },
     {
-      code: 6092,
+      code: 6047,
       name: "InvalidClaimPendingWithdrawalState",
       msg: "invalid claim pending withdrawal state",
     },
     {
-      code: 6093,
-      name: "InvalidNextOptionMarket",
-      msg: "invalid next option market",
+      code: 6048,
+      name: "PendingWithdrawalInfoNotInitialized",
+      msg: "pending withdrawal info must be initialized",
     },
     {
-      code: 6094,
-      name: "TokenNotRevoked",
-      msg: "Auth token not revoked",
+      code: 6049,
+      name: "PendingWithdrawalDoesNotExist",
+      msg: "pending withdrawal does not exist",
     },
     {
-      code: 6095,
-      name: "NonWhitelistedUser",
-      msg: "user is not whitelisted",
+      code: 6050,
+      name: "CannotCancelPendingWithdrawalFromOldRound",
+      msg: "cannot cancel pending withdrawal from old round",
     },
     {
-      code: 6096,
-      name: "UserIsNotSigner",
-      msg: "user is not signer",
+      code: 6051,
+      name: "PendingDepositInfoNotInitialized",
+      msg: "pending deposit info not initialized",
     },
     {
-      code: 6097,
-      name: "InvalidWhitelistAuthority",
-      msg: "authority does not match whitelist admin",
+      code: 6052,
+      name: "PendingDepositDoesNotExist",
+      msg: "pending deposits does not exist",
     },
     {
-      code: 6098,
-      name: "InvalidWhitelistAndOptionMarketCombination",
-      msg: "whitelist and option market do not generate correct PDA",
+      code: 6053,
+      name: "CannotCancelPendingDepositFromOldRound",
+      msg: "cannot cancel pending deposit from old round",
     },
     {
-      code: 6099,
+      code: 6054,
+      name: "InvalidRoundForCancel",
+      msg: "invalid round number for cancel pending deposit/withdrawal",
+    },
+    {
+      code: 6055,
+      name: "InvalidEpochForCancel",
+      msg: "invalid epoch number for cancel pending deposit/withdrawal",
+    },
+    {
+      code: 6056,
+      name: "PendingDepositAlreadyExists",
+      msg: "pending deposit already exists",
+    },
+    {
+      code: 6057,
+      name: "InvalidPendingWithdrawalKey",
+      msg: "invalid pending withdrawal key",
+    },
+    {
+      code: 6058,
+      name: "InvalidPendingWithdrawalState",
+    },
+    {
+      code: 6059,
+      name: "InvalidExpiry",
+      msg: "invalid expiry for contract",
+    },
+    {
+      code: 6060,
+      name: "NewOptionMustHaveExactExpiry",
+      msg: "new option has roughly target expiry (within lower/upper bounds)",
+    },
+    {
+      code: 6061,
+      name: "InvalidUnderlyingAsset",
+      msg: "new option has wrong underlying asset",
+    },
+    {
+      code: 6062,
+      name: "InvalidQuoteAsset",
+      msg: "new option has wrong quote asset",
+    },
+    {
+      code: 6063,
+      name: "InvalidContractSize",
+      msg: "new option has wrong contract size",
+    },
+    {
+      code: 6064,
+      name: "InvalidStrike",
+      msg: "new option has invalid strike",
+    },
+    {
+      code: 6065,
+      name: "InvalidVaultTokenAccount",
+      msg: "vault mint does not match user token account",
+    },
+    {
+      code: 6066,
+      name: "InvalidDepositTokenAccount",
+      msg: "deposit pool mint does not match user token account",
+    },
+    {
+      code: 6067,
+      name: "InvalidSerumProgramId",
+      msg: "DEX program id does not match",
+    },
+    {
+      code: 6068,
+      name: "InvalidOptionsProtocol",
+      msg: "option market should be owned by a whitelisted protocol (e.g soloptions, spreads, inertia)",
+    },
+    {
+      code: 6069,
+      name: "InvalidDepositMint",
+      msg: "underlying asset mint does not match voltvault",
+    },
+    {
+      code: 6070,
+      name: "InvalidVaultMint",
+      msg: "vault mint does not match volt vault",
+    },
+    {
+      code: 6071,
+      name: "InvalidVaultAuthority",
+      msg: "vault authority does not match",
+    },
+    {
+      code: 6072,
+      name: "InvalidOptionsContract",
+      msg: "option market does not match volt vault",
+    },
+    {
+      code: 6073,
+      name: "InvalidWriterTokenPool",
+      msg: "writer token pool does not match volt vault",
+    },
+    {
+      code: 6074,
+      name: "InvalidWriterTokenMint",
+      msg: "writer token mint does not match volt vault",
+    },
+    {
+      code: 6075,
+      name: "InvalidOptionTokenMint",
+      msg: "option token mint does not match volt vault",
+    },
+    {
+      code: 6076,
+      name: "InvalidPermissionedMarketPremiumMint",
+      msg: "invalid permissioned market premium mint",
+    },
+    {
+      code: 6077,
       name: "RoundVoltTokensMintDoesNotMatchVoltVault",
       msg: "round volt tokens mint does not match volt vault",
     },
     {
-      code: 6100,
+      code: 6078,
       name: "RoundUnderlyingTokensMintDoesNotMatchVoltVault",
       msg: "round underlying tokens mint does not match volt vault",
     },
     {
-      code: 6101,
-      name: "UnderlyingAssetPoolDoesNotMatchOptionMarket",
+      code: 6079,
+      name: "DepositPoolDoesNotMatchOptionMarket",
       msg: "UnderlyingAssetPoolDoesNotMatchOptionMarket",
+    },
+    {
+      code: 6080,
+      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault",
+      msg: "underlying open orders does not match volt vault",
+    },
+    {
+      code: 6081,
+      name: "DepositPoolDoesNotMatchVoltVault",
+      msg: "DepositPoolDoesNotMatchVoltVault",
+    },
+    {
+      code: 6082,
+      name: "MintDoesNotMatchOptionsContract",
+      msg: "option mint does not match option market",
+    },
+    {
+      code: 6083,
+      name: "VaultDestinationDoesNotMatchVoltVault",
+      msg: "vault destination does not match volt vault",
+    },
+    {
+      code: 6084,
+      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram",
+      msg: "sol transfer authority must be owned by volt program",
+    },
+    {
+      code: 6085,
+      name: "SolTransferAuthorityMustBeWritableAndSigner",
+      msg: "sol transfer authority must be writable/signer",
+    },
+    {
+      code: 6086,
+      name: "ShouldBeUnreachable",
+      msg: "should be unreachable code",
+    },
+    {
+      code: 6087,
+      name: "UserIsNotSigner",
+      msg: "user is not signer",
+    },
+    {
+      code: 6088,
+      name: "CantCloseNonEmptyTokenAccount",
+      msg: "can't close non empty token account",
+    },
+    {
+      code: 6089,
+      name: "CantCloseAccountUnlessEmpty",
+      msg: "cannot close account unless empty",
+    },
+    {
+      code: 6090,
+      name: "DiscriminatorDoesNotMatch",
+      msg: "discriminator does not match",
+    },
+    {
+      code: 6091,
+      name: "InvalidOracleType",
+      msg: "invalid oracle type",
+    },
+    {
+      code: 6092,
+      name: "UnexpectedRemainingAssets",
+      msg: "unexpected remaining assets",
+    },
+    {
+      code: 6093,
+      name: "AlreadyInitialized",
+      msg: "cannot reinitialize an (already initialized) volt",
+    },
+    {
+      code: 6094,
+      name: "TransferAuthorityMustSign",
+      msg: "transfer authority must sign",
+    },
+    {
+      code: 6095,
+      name: "InvalidRoundNumber",
+    },
+    {
+      code: 6096,
+      name: "InvalidTokenAccount",
+    },
+    {
+      code: 6097,
+      name: "InvalidPDA",
+    },
+    {
+      code: 6098,
+      name: "InvalidAccount",
+    },
+    {
+      code: 6099,
+      name: "InvalidWhitelistAuthority",
+      msg: "authority does not match whitelist admin",
+    },
+    {
+      code: 6100,
+      name: "InvalidSerumMarketPda",
+      msg: "whitelist and option market do not generate correct PDA",
+    },
+    {
+      code: 6101,
+      name: "InvalidMiddlewareProgramId",
+      msg: "middleware program id does not match expected",
     },
     {
       code: 6102,
@@ -14733,673 +14350,298 @@ export const VoltIDLJsonRaw = {
     },
     {
       code: 6105,
-      name: "UnderlyingOpenOrdersDoesNotMatchVoltVault",
-      msg: "underlying open orders does not match volt vault",
-    },
-    {
-      code: 6106,
-      name: "MustHaveAtLeastOneMarketMakerAccessToken",
+      name: "RequiresMakerAccessToken",
       msg: "must have at least one market maker access token",
     },
     {
-      code: 6107,
-      name: "MiddlewareProgramIdDoesNotMatch",
-      msg: "middleware program id does not match expected",
-    },
-    {
-      code: 6108,
-      name: "FeeAccountOwnerDoesNotMatch",
-      msg: "fee account owner does not match expected",
-    },
-    {
-      code: 6109,
-      name: "FeeAccountMintDoesNotMatchDepositPoolOrPermissionedPremium",
-      msg: "fee account mint does not match deposit pool or permissioned market premium",
-    },
-    {
-      code: 6110,
-      name: "VaultCapacityWouldBeExceeded",
-      msg: "vault capacity would be exceeded",
-    },
-    {
-      code: 6111,
-      name: "IndividualDepositCapacityWouldBeExceeded",
-      msg: "individual deposit capacity would be exceeded",
-    },
-    {
-      code: 6112,
-      name: "UnsupportedOptionMarketProgramId",
-      msg: "unsupported option market program ID",
-    },
-    {
-      code: 6113,
-      name: "InvalidEndDcaRoundState",
-      msg: "invalid end dca round state",
-    },
-    {
-      code: 6114,
-      name: "RoundHasNotStarted",
-      msg: "round has not started",
-    },
-    {
-      code: 6115,
-      name: "PermissionedMarketPremiumPoolDoesNotMatchVoltVault",
-      msg: "permissioned makret premium pool does not match volt",
-    },
-    {
-      code: 6116,
-      name: "TokenAccountOwnersDoNotMatch",
-      msg: "token account owners do not match",
-    },
-    {
-      code: 6117,
-      name: "InvalidPermissionedMarketPremiumMint",
-      msg: "invalid permissioned market premium mint",
-    },
-    {
-      code: 6118,
-      name: "PremiumPoolAmountMustBeGreaterThanZero",
-      msg: "premium pool amount must be greater than zero",
-    },
-    {
-      code: 6119,
-      name: "CantCloseNonEmptyTokenAccount",
-      msg: "can't close non empty token account",
-    },
-    {
-      code: 6120,
-      name: "MustFinishEnteringBeforeSettlingPermissionedMarketPremium",
-      msg: "must finish entering before settling permissioned market premium funds",
-    },
-    {
-      code: 6121,
-      name: "PendingWithdrawalInfoNotInitialized",
-      msg: "pending withdrawal info must be initialized",
-    },
-    {
-      code: 6122,
-      name: "PendingWithdrawalDoesNotExist",
-      msg: "pending withdrawal does not exist",
-    },
-    {
-      code: 6123,
-      name: "CannotCancelPendingWithdrawalFromOldRound",
-      msg: "cannot cancel pending withdrawal from old round",
-    },
-    {
-      code: 6124,
-      name: "PendingDepositInfoNotInitialized",
-      msg: "pending deposit info not initialized",
-    },
-    {
-      code: 6125,
-      name: "PendingDepositDoesNotExist",
-      msg: "pending deposits does not exist",
-    },
-    {
-      code: 6126,
-      name: "CannotCancelPendingDepositFromOldRound",
-      msg: "cannot cancel pending deposit from old round",
-    },
-    {
-      code: 6127,
-      name: "VaultDestinationDoesNotMatchVoltVault",
-      msg: "vault destination does not match volt vault",
-    },
-    {
-      code: 6128,
-      name: "MustTakeWithdrawalFeesBeforeStartingRound",
-      msg: "must take withdrawal fees before starting round",
-    },
-    {
-      code: 6129,
-      name: "RoundMustBeEnded",
-      msg: "round must be ended",
-    },
-    {
-      code: 6130,
-      name: "MustNotHaveSoldOptionTokens",
-      msg: "must not have sold option tokens to reset",
-    },
-    {
-      code: 6131,
-      name: "CantCloseAccountUnlessEmpty",
-      msg: "cannot close account unless empty",
-    },
-    {
-      code: 6132,
+      code: 6106,
       name: "OpenOrderMustBeEmptyToClose",
       msg: "open orders must be empty to close",
     },
     {
-      code: 6133,
-      name: "InvalidWhitelistAccountVector",
-      msg: "invalid whitelist account (vector)",
+      code: 6107,
+      name: "PriceTooLow",
     },
     {
-      code: 6134,
-      name: "InvalidDaoProgramId",
-      msg: "invalid dao program ID",
+      code: 6108,
+      name: "PriceTooHigh",
     },
     {
-      code: 6135,
-      name: "VoltMustBeForDao",
-      msg: "volt must be for dao",
+      code: 6109,
+      name: "OrderSizeZero",
     },
     {
-      code: 6136,
-      name: "InvalidDaoAuthority",
-      msg: "invalid dao authority",
+      code: 6110,
+      name: "UnsupportedOrderStrategy",
     },
     {
-      code: 6137,
-      name: "DaoAuthorityMustSign",
-      msg: "dao authority must sign",
+      code: 6111,
+      name: "InvalidMarketType",
     },
     {
-      code: 6138,
-      name: "InvalidPendingDepositKey",
-      msg: "invalid pending deposit key",
+      code: 6112,
+      name: "InvalidOpenOrders",
     },
     {
-      code: 6139,
-      name: "InvalidAuthorityCheck",
-      msg: "invalid authority check",
+      code: 6113,
+      name: "NoOpenOrders",
     },
     {
-      code: 6140,
+      code: 6114,
+      name: "InsufficientFundsToBid",
+    },
+    {
+      code: 6115,
+      name: "InsufficientFundsToOffer",
+    },
+    {
+      code: 6116,
+      name: "MustTakeWithdrawalFeesBeforeStartingRound",
+      msg: "must take withdrawal fees before starting round",
+    },
+    {
+      code: 6117,
       name: "InvalidEndEntropyRoundState",
       msg: "entropy: invalid end entropy round state",
     },
     {
-      code: 6141,
-      name: "InvalidVoltType",
-      msg: "invalid volt type",
-    },
-    {
-      code: 6142,
+      code: 6118,
       name: "CantFindPerpMarketIndex",
       msg: "can't find perp market index",
     },
     {
-      code: 6143,
+      code: 6119,
       name: "AccountEquityLessThanZero",
       msg: "account equity less than zero",
     },
     {
-      code: 6144,
+      code: 6120,
       name: "QuotePositionChangedTooMuch",
       msg: "quote position changed too much",
     },
     {
-      code: 6145,
+      code: 6121,
       name: "MustMoveCloserToTargetCollateralization",
       msg: "must move closer to target collateralization",
     },
     {
-      code: 6146,
+      code: 6122,
       name: "CollateralNotWithinLenience",
       msg: "collateral not within lenience",
     },
     {
-      code: 6147,
+      code: 6123,
       name: "InvalidRebalanceEntropyState",
       msg: "invalid rebalance entropy state",
     },
     {
-      code: 6148,
+      code: 6124,
       name: "BasePositionMustBeNegative",
       msg: "volt must have negative base position (be short)",
     },
     {
-      code: 6149,
+      code: 6125,
       name: "QuotePositionMustBePositive",
       msg: "volt must have positive quote position (be short)",
     },
     {
-      code: 6150,
+      code: 6126,
       name: "TargetCollateralRatioMustBeNegative",
       msg: "target collateral ratio must be neggat",
     },
     {
-      code: 6151,
+      code: 6127,
       name: "NewEquityMustBeHigherThanDepositAmount",
       msg: "new equity must be higher than deposit amt",
     },
     {
-      code: 6152,
-      name: "InstantTransfersMustBeDisabled",
-      msg: "instant transfers must be enabled",
-    },
-    {
-      code: 6153,
+      code: 6128,
       name: "RebalanceMustBeReady",
       msg: "rebalance must be ready",
     },
     {
-      code: 6154,
+      code: 6129,
       name: "IncorrectHedge",
       msg: "spot hedge unbalanced",
     },
     {
-      code: 6155,
-      name: "VaultNameMustBeNonZeroLength",
-      msg: "vault name must be zero length",
-    },
-    {
-      code: 6156,
+      code: 6130,
       name: "VaultDoesNotSupportOverLeveragedStrategies",
       msg: "vault does not support over leveraged strategies",
     },
     {
-      code: 6157,
+      code: 6131,
       name: "LenienceMustBeGreaterThanZero",
       msg: "lenience must be greater than zero",
     },
     {
-      code: 6158,
+      code: 6132,
       name: "LenienceShouldNotBeGreaterThanLeverage",
       msg: "lenience should not be greater than leverage",
     },
     {
-      code: 6159,
+      code: 6133,
       name: "HedgeLenienceMustBeGreaterThanZero",
       msg: "hedge lenience should be greater than leverage",
     },
     {
-      code: 6160,
+      code: 6134,
       name: "VaultDoesNotSupportExitEarlyOverLeveragedStrategies",
       msg: "exit early ratio must be < 1.0",
     },
     {
-      code: 6161,
-      name: "RoundNumberMustNotOverflow",
-      msg: "round number must not overflow",
-    },
-    {
-      code: 6162,
-      name: "InvalidWhitelistTokenAccountMint",
-      msg: "invalid whitelist token account mint",
-    },
-    {
-      code: 6163,
-      name: "SoloptionsProgramIdDoesNotMatch",
-      msg: "soloptions program id does not matchf",
-    },
-    {
-      code: 6164,
-      name: "WhitelistTokenAccountOwnerIsNotUser",
-      msg: "whitelist token account owner is not user",
-    },
-    {
-      code: 6165,
-      name: "SolTransferAuthorityMustNotBeOwnedByVoltProgram",
-      msg: "sol transfer authority must be owned by volt program",
-    },
-    {
-      code: 6166,
-      name: "InsufficientCollateralForDeposit",
-      msg: "Insufficient collateral to deposit.",
-    },
-    {
-      code: 6167,
-      name: "SolTransferAuthorityMustBeWritableAndSigner",
-      msg: "sol transfer authority must be writable/signer",
-    },
-    {
-      code: 6168,
-      name: "VoltMustBeOfEntropyType",
-      msg: "volt must be entropy type",
-    },
-    {
-      code: 6169,
-      name: "VoltMustBeofShortOptionsType",
-      msg: "volt must be of short options type",
-    },
-    {
-      code: 6170,
-      name: "DepositsAndWithdrawalsAreTurnedOff",
-      msg: "deposits and withdrawals are turned off",
-    },
-    {
-      code: 6171,
+      code: 6135,
       name: "ShouldBeDoneRebalancing",
       msg: "should be done rebalancing",
     },
     {
-      code: 6172,
+      code: 6136,
       name: "UnrecognizedEntropyProgramId",
       msg: "unrecognized entropy program id",
     },
     {
-      code: 6173,
+      code: 6137,
       name: "InvalidTakePerformanceFeesState",
       msg: "invalid take performance fees state",
     },
     {
-      code: 6174,
-      name: "DiscriminatorDoesNotMatch",
-      msg: "discriminator does not match",
-    },
-    {
-      code: 6175,
+      code: 6138,
       name: "RealizedOraclePriceTooFarOffClientProvided",
       msg: "realized oracle price too far off client provided",
     },
     {
-      code: 6176,
-      name: "VaultMintSupplyMustBeZeroIfEquityIsZero",
-      msg: "vault mint supply must be zero if equity is zero",
-    },
-    {
-      code: 6177,
+      code: 6139,
       name: "InvalidSetupRebalanceEntropyState",
       msg: "invalid setup rebalance entropy state",
     },
     {
-      code: 6178,
+      code: 6140,
       name: "HedgeWithSpotMustBeTrue",
       msg: "hedge with spot must be true",
     },
     {
-      code: 6179,
+      code: 6141,
       name: "PowerPerpMustBeDoneRebalancing",
       msg: "power perp must be done rebalancing",
     },
     {
-      code: 6180,
+      code: 6142,
       name: "HedgingMustBeOn",
       msg: "hedging must be on",
     },
     {
-      code: 6181,
+      code: 6143,
       name: "DepositedAmountOfHedgeAssetShouldBeZero",
       msg: "deposited amount of hedge asset should be zero",
     },
     {
-      code: 6182,
+      code: 6144,
       name: "BorrowedAmountOfHedgeAssetShouldBeZero",
       msg: "borrowed amount of hedge asset should be zero",
     },
     {
-      code: 6183,
-      name: "SwapPremiumMustHaveBeenCalledAtLeastOnce",
-      msg: "swap premium must have been called at least once",
+      code: 6145,
+      name: "VaultMintSupplyMustBeZeroIfEquityIsZero",
+      msg: "vault mint supply must be zero if equity is zero",
     },
     {
-      code: 6184,
+      code: 6146,
       name: "ShouldHedgeWithSpotNotPerp",
       msg: "should hedge with spot not perp",
     },
     {
-      code: 6185,
+      code: 6147,
       name: "InvalidRebalanceSpotEntropyState",
       msg: "invalid rebalane spot entropy state",
     },
     {
-      code: 6186,
+      code: 6148,
       name: "CompleteBasePositionDoesNotMatchNormal",
       msg: "complete base position does not match normal",
     },
     {
-      code: 6187,
-      name: "InvalidUserUnderlyingTokens",
-      msg: "invalid user underlying tokens",
-    },
-    {
-      code: 6188,
-      name: "InvalidRoundForCancel",
-      msg: "invalid round number for cancel",
-    },
-    {
-      code: 6189,
-      name: "InvalidEpochForCancel",
-      msg: "invalid epoch number for cancel",
-    },
-    {
-      code: 6190,
-      name: "PendingDepositAlreadyExists",
-      msg: "pending deposit already exists",
-    },
-    {
-      code: 6191,
-      name: "InvalidPendingWithdrawalKey",
-      msg: "invalid pending withdrawal key",
-    },
-    {
-      code: 6192,
+      code: 6149,
       name: "InvalidDepositDiscretionaryState",
       msg: "invalid deposit discretionary state",
     },
     {
-      code: 6193,
-      name: "InvalidInitSerumMarketState",
-      msg: "invalid init serum market state",
-    },
-    {
-      code: 6194,
+      code: 6150,
       name: "QuotePositionMustMoveCloserToDesired",
       msg: "quote position must move closer to desired",
     },
     {
-      code: 6195,
-      name: "PermissionedMarketPremiumPoolAmountMustBeZero",
-      msg: "permissioned market premium pool amount must be zero",
-    },
-    {
-      code: 6196,
-      name: "PremiumPoolAmountMustBeZero",
-      msg: "premium pool amount must be zero",
-    },
-    {
-      code: 6197,
-      name: "WriterTokenMintDoesNotMatchVoltVault",
-      msg: "writer token mint doesn't match vv",
-    },
-    {
-      code: 6198,
-      name: "InvalidTargetPoolForSwapOrder",
-      msg: "invalid target pool for swap order",
-    },
-    {
-      code: 6199,
-      name: "GivePoolMustBeEmpty",
-      msg: "give pool must be empty",
-    },
-    {
-      code: 6200,
-      name: "ReceivePoolMustBeEmpty",
-      msg: "receive pool must be empty",
-    },
-    {
-      code: 6201,
-      name: "InvalidOracleType",
-      msg: "invalid oracle type",
-    },
-    {
-      code: 6202,
-      name: "MustNotBeLendingUnderlyingAssetMint",
-      msg: "must not be lending underlying asset mint",
-    },
-    {
-      code: 6203,
-      name: "MustNotBeLendingQuoteAssetMint",
-      msg: "must not be lending quote asset mint",
-    },
-    {
-      code: 6204,
-      name: "InvalidSettleEnterFundsState",
-      msg: "invalid settle enter funds state",
-    },
-    {
-      code: 6205,
-      name: "PremiumFarmedMustMatchPermissionedMarketPremiumPoolAmount",
-      msg: "premium farmed must match permissioned market premium pool",
-    },
-    {
-      code: 6206,
-      name: "InvalidWithdrawAmount",
-      msg: "invalid withdraw amount",
-    },
-    {
-      code: 6207,
+      code: 6151,
       name: "InvalidOtcOrderPrice",
       msg: "invalid OTC order price",
     },
     {
-      code: 6208,
+      code: 6152,
       name: "UnhealthyEntropyAccount",
       msg: "unhealthy entropy account",
     },
     {
-      code: 6209,
-      name: "TransferAuthorityMustSign",
-      msg: "transfer authority must sign",
-    },
-    {
-      code: 6210,
-      name: "MustHaveLastTimeTookAumFees",
-      msg: "please end an epoch and get a time last took aum fees",
-    },
-    {
-      code: 6211,
-      name: "TradingPoolAmountMustBeGreaterThanZero",
-      msg: "trading pool amount must be greater than 0",
-    },
-    {
-      code: 6212,
-      name: "VoltMustBeADOV",
-      msg: "volt must be a dov (defi options volt)",
-    },
-    {
-      code: 6213,
-      name: "MintOptionMustMatchSetOption",
-      msg: "mint option must match set option",
-    },
-    {
-      code: 6214,
-      name: "NoMatchingPool",
-    },
-    {
-      code: 6215,
-      name: "RoundHasNotEnded",
-    },
-    {
-      code: 6216,
-      name: "InvalidPerformanceFeeMint",
-    },
-    {
-      code: 6217,
-      name: "InsufficientFundsToOffer",
-    },
-    {
-      code: 6218,
-      name: "InsufficientFundsToBid",
-    },
-    {
-      code: 6219,
-      name: "PriceTooLow",
-    },
-    {
-      code: 6220,
-      name: "PriceTooHigh",
-    },
-    {
-      code: 6221,
-      name: "OrderSizeZero",
-    },
-    {
-      code: 6222,
-      name: "MustSwapPremiumAfterEnter",
-    },
-    {
-      code: 6223,
-      name: "NoValidShortOptionsEpochStage",
-      msg: "no valid short options epoch stage",
-    },
-    {
-      code: 6224,
-      name: "InvalidCallToShortOptionsEpochStage",
-      msg: "invalid call to short options epoch stage",
-    },
-    {
-      code: 6225,
-      name: "InvalidPendingWithdrawalState",
-    },
-    {
-      code: 6226,
-      name: "InvalidRoundNumber",
-    },
-    {
-      code: 6227,
-      name: "InvalidTokenAccount",
-    },
-    {
-      code: 6228,
-      name: "InvalidPDA",
-    },
-    {
-      code: 6229,
-      name: "InvalidOpenOrders",
-    },
-    {
-      code: 6230,
+      code: 6153,
       name: "InvalidHedgingStrategy",
     },
     {
-      code: 6231,
-      name: "UnsupportedOrderStrategy",
-    },
-    {
-      code: 6232,
-      name: "InvalidMarketType",
-    },
-    {
-      code: 6233,
-      name: "InvalidFeeAccount",
-    },
-    {
-      code: 6234,
-      name: "InvalidSettleFeesEarly",
-    },
-    {
-      code: 6235,
-      name: "InvalidVaultMint",
-    },
-    {
-      code: 6236,
-      name: "InvalidWriterTokenPool",
-    },
-    {
-      code: 6237,
-      name: "NoOpenOrders",
-    },
-    {
-      code: 6238,
+      code: 6154,
       name: "InvalidTargetPerpMarket",
     },
     {
-      code: 6239,
+      code: 6155,
       name: "InvalidHedgingPerpMarket",
     },
     {
-      code: 6240,
-      name: "AlreadyInitialized",
+      code: 6156,
+      name: "InvalidWhitelistAccountVector",
+      msg: "invalid whitelist account (vector)",
     },
     {
-      code: 6241,
-      name: "InvalidAccount",
+      code: 6157,
+      name: "InvalidDaoProgramId",
+      msg: "invalid dao program ID",
     },
     {
-      code: 6242,
-      name: "InvalidDepositMint",
+      code: 6158,
+      name: "VoltMustBeForDao",
+      msg: "volt must be for dao",
     },
     {
-      code: 6243,
+      code: 6159,
+      name: "InvalidDaoAuthority",
+      msg: "invalid dao authority",
+    },
+    {
+      code: 6160,
+      name: "DaoAuthorityMustSign",
+      msg: "dao authority must sign",
+    },
+    {
+      code: 6161,
+      name: "InvalidWhitelistTokenAccountMint",
+      msg: "invalid whitelist token account mint",
+    },
+    {
+      code: 6162,
+      name: "WhitelistTokenAccountOwnerIsNotUser",
+      msg: "whitelist token account owner is not user",
+    },
+    {
+      code: 6163,
+      name: "MustNotBeLendingUnderlyingAssetMint",
+      msg: "must not be lending underlying asset mint",
+    },
+    {
+      code: 6164,
+      name: "MustNotBeLendingQuoteAssetMint",
+      msg: "must not be lending quote asset mint",
+    },
+    {
+      code: 6165,
       name: "InvalidEnterSwapClaimState",
     },
     {
-      code: 6244,
+      code: 6166,
       name: "InvalidCurrSwapOrder",
     },
   ],

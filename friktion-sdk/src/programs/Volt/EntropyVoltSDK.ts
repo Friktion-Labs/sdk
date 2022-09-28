@@ -174,7 +174,7 @@ export class EntropyVoltSDK extends VoltSDK {
 
   //// LOGGING ////
 
-  printHighLevelStats(): Promise<void> {
+  async printHighLevelStats(): Promise<void> {
     const ev = this.extraVoltData;
 
     console.log(
@@ -182,10 +182,14 @@ export class EntropyVoltSDK extends VoltSDK {
       ev.targetLeverage,
       "hedge ratio: ",
       this.entropyMetadata.targetHedgeRatio,
-      "leverage lenience: ",
+      "\nleverage lenience: ",
       ev.targetLeverageLenience,
       "hedge lenience: ",
-      ev.targetHedgeLenience
+      ev.targetHedgeLenience,
+      "\nshould hedge: ",
+      ev.isHedgingOn,
+      "hedge with spot?: ",
+      (await this.getEntropyMetadata()).hedgeWithSpot
     );
 
     return Promise.resolve();
@@ -371,7 +375,7 @@ export class EntropyVoltSDK extends VoltSDK {
     sdk,
     adminKey,
     vaultName,
-    underlyingAssetMint,
+    depositMint,
     entropyProgramId,
 
     entropyGroupKey,
@@ -394,7 +398,7 @@ export class EntropyVoltSDK extends VoltSDK {
     sdk: FriktionSDK;
     adminKey: PublicKey;
     vaultName: string;
-    underlyingAssetMint: PublicKey;
+    depositMint: PublicKey;
     entropyProgramId: PublicKey;
 
     entropyGroupKey: PublicKey;
@@ -453,7 +457,7 @@ export class EntropyVoltSDK extends VoltSDK {
 
         extraVoltData: extraVoltKey,
 
-        depositMint: underlyingAssetMint,
+        depositMint: depositMint,
 
         depositPool: depositPoolKey,
 
@@ -565,7 +569,7 @@ export class EntropyVoltSDK extends VoltSDK {
         sdk,
         adminKey,
         vaultName,
-        underlyingAssetMint,
+        depositMint: underlyingAssetMint,
         entropyProgramId,
         entropyGroupKey,
         targetPerpMarket,
@@ -584,7 +588,9 @@ export class EntropyVoltSDK extends VoltSDK {
         individualCapacity,
       });
 
-    await sendInsList(provider, [instruction]);
+    await sendInsList(provider, [instruction], {
+      computeUnits: 400_000,
+    });
 
     return voltKey;
   }

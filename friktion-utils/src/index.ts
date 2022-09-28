@@ -4,3 +4,4 @@ export * from "./sendTransactionHelpers";
 export * from "./token";
 export * from "./transactionErrors";
 export * from "./utils";
+export * from "./transactionMachine";

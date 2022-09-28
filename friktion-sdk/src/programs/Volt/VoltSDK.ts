@@ -506,6 +506,12 @@ export abstract class VoltSDK {
     );
 
     console.log(
+      "\n-------------------------\n STRATEGY PARAMS \n-------------------------"
+    );
+
+    this.printStrategyParams();
+
+    console.log(
       "\n-------------------------\n POSITION STATS\n-------------------------"
     );
 
@@ -1110,7 +1116,7 @@ export abstract class VoltSDK {
     });
   }
 
-  async getPnlStatsForEpochREST(roundNumber: number): Promise<PnlStats> {
+  async getPnlStatsForEpochREST(roundNumber: BN): Promise<PnlStats> {
     const auctionResult = await this.fetchAuctionResultForEpochNumber(
       roundNumber
     );
@@ -1118,9 +1124,9 @@ export abstract class VoltSDK {
   }
 
   getPnlStatsFromAuctionResult(auctionResult: AuctionResult): PnlStats {
-    const startingAum = auctionResult.BalanceStart;
+    const startingAum = auctionResult.balanceStart;
 
-    const pnlInDepositToken = new Decimal(auctionResult.RealizedPnl);
+    const pnlInDepositToken = new Decimal(auctionResult.realizedPnl);
     const pnlInDepositTokenAfterFees = pnlInDepositToken.sub(
       VoltSDK.defaultPerformanceFeeAmountFromDecimal(pnlInDepositToken)
     );
@@ -1137,7 +1143,7 @@ export abstract class VoltSDK {
   }
 
   async getPnlForEpochREST(
-    roundNumber: number,
+    roundNumber: BN,
     subtractFees = true
   ): Promise<Decimal> {
     const { pnlInDepositToken, pnlInDepositTokenAfterFees } =
@@ -1157,7 +1163,7 @@ export abstract class VoltSDK {
     const [epochInfo, pnlForRoundResult, normFactorResult] =
       await Promise.allSettled([
         this.getEpochInfoByNumber(epochNumber),
-        this.getPnlForEpochREST(epochNumber.toNumber(), subtractFees),
+        this.getPnlForEpochREST(epochNumber, subtractFees),
         this.getDepositTokenNormalizationFactor(),
       ]);
 
@@ -1619,21 +1625,22 @@ export abstract class VoltSDK {
       );
       if (response.status === 200) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data: any[][] = (await response.json()) as any[][];
-        const output: AuctionResult[] = [];
-        for (const auction of data) {
-          output.push({
-            GlobalID: auction[0] as string,
-            Product: auction[1] as string,
-            StartEpoch: auction[2] as number,
-            EndEpoch: auction[3] as number,
-            BalanceStart: auction[4] as number,
-            BalancePnl: auction[5] as number,
-            RealizedPnl: auction[6] as number,
-            SpotPriceAtAuctionEnd: auction[7] as number,
-            TxID: auction[8] as string,
-          });
-        }
+        const data: any[] = (await response.json()) as any[];
+        console.log("data = ", data);
+        const output: AuctionResult[] = data as AuctionResult[];
+        // for (const auction of data) {
+        //   output.push({
+        //     GlobalID: auction[0] as string,
+        //     Product: auction[1] as string,
+        //     StartEpoch: auction[2] as number,
+        //     EndEpoch: auction[3] as number,
+        //     BalanceStart: auction[4] as number,
+        //     BalancePnl: auction[5] as number,
+        //     RealizedPnl: auction[6] as number,
+        //     SpotPriceAtAuctionEnd: auction[7] as number,
+        //     TxID: auction[8] as string,
+        //   });
+        // }
         return output;
       } else {
         console.error(response);
@@ -1645,13 +1652,16 @@ export abstract class VoltSDK {
   }
 
   async fetchAuctionResultForEpochNumber(
-    epochNumber: number
+    epochNumber: BN
   ): Promise<AuctionResult> {
     const fullAuctionResults: AuctionResult[] =
       await this.fetchAuctionResults();
     console.log(fullAuctionResults);
-    const auctionResult = fullAuctionResults[epochNumber - 1];
-    if (fullAuctionResults.length > epochNumber || auctionResult === undefined)
+    const auctionResult = fullAuctionResults[epochNumber.subn(1).toNumber()];
+    if (
+      fullAuctionResults.length < epochNumber.toNumber() ||
+      auctionResult === undefined
+    )
       throw new Error(
         "no auction data for volt = " +
           (await this.getGlobalId()) +
@@ -1671,7 +1681,7 @@ export abstract class VoltSDK {
     ] as AuctionResult;
 
     // copied from dApp, need to remember this dependency
-    const optionMatch = lastAuction.Product.match(
+    const optionMatch = lastAuction.product.match(
       /([a-zA-Z-]*)-([\d.]*)-(CALL|PUT|CRAB|BASIS)-(\d{10})/
     );
     if (!optionMatch || optionMatch.length < 5) {

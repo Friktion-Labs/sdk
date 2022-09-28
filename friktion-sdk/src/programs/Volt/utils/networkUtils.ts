@@ -1,25 +1,30 @@
+import { sleep } from "@friktion-labs/friktion-utils";
 import Decimal from "decimal.js";
 import { FriktionSnapshot } from "../../..";
 import { FRIKTION_SNAPSHOT_URL } from "../../../constants";
+import fetch from "isomorphic-unfetch";
 
 export const getFriktionSnapshot = async (): Promise<FriktionSnapshot> => {
-  const nodeFetch = await import("node-fetch");
-
-  const response = await nodeFetch.default(FRIKTION_SNAPSHOT_URL);
+  const response = await fetch(FRIKTION_SNAPSHOT_URL);
   const snapshot: FriktionSnapshot =
     (await response.json()) as FriktionSnapshot;
   return snapshot;
 };
 
-export const getCoingeckoPrice = async (id: string): Promise<Decimal> => {
-  const nodeFetch = await import("node-fetch");
+export const getCoingeckoPrice = async (
+  id: string,
+  totalRetries: number = 5,
+  retrySleepTime: number = 2500
+): Promise<Decimal> => {
+  const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd`;
+  // const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
+  const coingeckoUrl = `https://pro-api.coingecko.com${coingeckoPath}&x_cg_pro_api_key=CG-2p6zESq7oQGkvTiYBk4GJbiS`;
+  // const coingeckoUrl = `https://coingecko.friktion.workers.dev${coingeckoPath}`;
 
-  const coingeckoPath = `/api/v3/simple/price?ids=${id}&vs_currencies=usd&`;
-  const coingeckoUrl = `https://api.coingecko.com${coingeckoPath}`;
-
-  let retries = 0;
-  while (true && retries < 5) {
-    const response = await nodeFetch.default(coingeckoUrl);
+  let attemptedRetries = 0;
+  while (true && attemptedRetries < totalRetries) {
+    console.log("attempt = ", attemptedRetries);
+    const response = await fetch(coingeckoUrl);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (response.status === 200) {
@@ -53,8 +58,11 @@ export const getCoingeckoPrice = async (id: string): Promise<Decimal> => {
     } else {
       console.error(response);
       console.error("status != 200, === ", response.status.toString());
+      await sleep(
+        retrySleepTime * (attemptedRetries + 1) * (attemptedRetries + 1)
+      );
     }
-    retries += 1;
+    attemptedRetries += 1;
   }
   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
   throw new Error("retries failed");

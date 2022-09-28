@@ -168,8 +168,8 @@ export class ConnectedEntropyVoltSDK {
       targetLeverageLenience.toNumber(),
       targetHedgeRatio.toNumber(),
       targetHedgeLenience.toNumber(),
-      shouldHedge,
-      hedgeWithSpot,
+      shouldHedge ? new BN(1) : 0,
+      hedgeWithSpot ? new BN(1) : 0,
       {
         accounts: setStrategyAccounts,
       }

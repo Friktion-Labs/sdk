@@ -6,7 +6,7 @@ import type {
 import { Program } from "@friktion-labs/anchor";
 import type { ProviderLike } from "@friktion-labs/friktion-utils";
 import { providerToAnchorProvider } from "@friktion-labs/friktion-utils";
-import type { PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 
 import type { NetworkSpecificConstants, OptionsProtocol } from "./constants";
 import {
@@ -90,6 +90,15 @@ export type FriktionSDKOpts = {
   provider: ProviderLike;
   network?: NetworkName;
   testingOpts?: TestingOpts;
+};
+
+type LoadVoltParams = {
+  voltVault?: VoltVault | undefined;
+  extraVoltData?: ExtraVoltData | undefined;
+  loadExtraVoltData?: boolean;
+  entropyMetadata?: EntropyMetadata | undefined;
+  forceIgnoreEntropyMetadata?: boolean;
+  principalProtectionVault?: PrincipalProtectionVaultV1 | undefined;
 };
 
 /**
@@ -189,9 +198,9 @@ export type FriktionSnapshot = {
   globalIdToDepositTokenCoingeckoId: Record<string, string>;
   apyByGlobalId: Record<string, number>;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  allMainnetVolts: (VoltSnapshot | {})[];
+  allMainnetVolts: VoltSnapshot[];
   // eslint-disable-next-line @typescript-eslint/ban-types
-  allDevnetVolts: (VoltSnapshot | {})[];
+  allDevnetVolts: VoltSnapshot[];
 };
 
 export const DefaultFriktionSDKOpts = {
@@ -357,6 +366,26 @@ export class FriktionSDK {
     return this.snapshot as FriktionSnapshot;
   }
 
+  async getAllVoltsInSnapshot(loadExtraVoltData = true): Promise<VoltSDK[]> {
+    const snapshot = await this.getSnapshot();
+    let allVolts: VoltSnapshot[];
+    if (this.network === "mainnet-beta") {
+      allVolts = snapshot.allMainnetVolts;
+    } else if (this.network === "devnet") {
+      allVolts = snapshot.allDevnetVolts;
+    } else {
+      throw new Error("Invalid network for snapshot");
+    }
+
+    return await Promise.all(
+      allVolts.map(async (vSnap) => {
+        return await this.loadVoltSDKByKey(new PublicKey(vSnap.voltVaultId), {
+          loadExtraVoltData,
+        });
+      })
+    );
+  }
+
   async loadUserOrdersByKey(
     key: PublicKey
   ): Promise<SimpleSwapUserOrdersWithKey> {
@@ -418,13 +447,12 @@ export class FriktionSDK {
     loadExtraVoltData = false,
     entropyMetadata?: EntropyMetadata | undefined
   ): Promise<EntropyVoltSDK> {
-    const sdk = await this.loadVoltSDKByKey(
-      key,
+    const sdk = await this.loadVoltSDKByKey(key, {
       voltVault,
       extraVoltData,
       loadExtraVoltData,
-      entropyMetadata
-    );
+      entropyMetadata,
+    });
     if (!(sdk instanceof EntropyVoltSDK)) {
       throw new Error(
         `Volt key ${key.toString()} is not an entropy volt. Got ${sdk.voltType()}`
@@ -438,12 +466,11 @@ export class FriktionSDK {
     extraVoltData?: ExtraVoltData | undefined,
     loadExtraVoltData = false
   ): Promise<ShortOptionsVoltSDK> {
-    const sdk = await this.loadVoltSDKByKey(
-      key,
+    const sdk = await this.loadVoltSDKByKey(key, {
       voltVault,
       extraVoltData,
-      loadExtraVoltData
-    );
+      loadExtraVoltData,
+    });
     if (!(sdk instanceof ShortOptionsVoltSDK)) {
       throw new Error(
         `Volt key ${key.toString()} is not a short options volt. Got ${sdk.voltType()}`
@@ -453,12 +480,9 @@ export class FriktionSDK {
   }
 
   async loadVoltSDKWithExtraDataByKey(voltKey: PublicKey): Promise<VoltSDK> {
-    const sdk = await this.loadVoltSDKByKey(
-      voltKey,
-      undefined,
-      undefined,
-      true
-    );
+    const sdk = await this.loadVoltSDKByKey(voltKey, {
+      loadExtraVoltData: true,
+    });
     return sdk;
   }
 
@@ -471,16 +495,14 @@ export class FriktionSDK {
    */
   async loadVoltSDKByKey(
     voltKey: PublicKey,
-    voltVault?: VoltVault | undefined,
-    extraVoltData?: ExtraVoltData | undefined,
-    loadExtraVoltData = false,
-    entropyMetadata?: EntropyMetadata | undefined,
-    principalProtectionVault?: PrincipalProtectionVaultV1 | undefined,
-    forceIgnoreEntropyMetadata = false
+    params?: LoadVoltParams
   ): Promise<VoltSDK> {
     if (!voltKey) {
       throw new Error("falsy voltKey passed into loadVoltByKey");
     }
+
+    let voltVault = params?.voltVault;
+    let extraVoltData = params?.extraVoltData;
 
     if (voltVault === undefined) {
       voltVault = await this.programs.Volt.account.voltVault.fetch(voltKey);
@@ -491,7 +513,7 @@ export class FriktionSDK {
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(voltKey);
 
     if (voltType === VoltType.ShortOptions) {
-      if (loadExtraVoltData) {
+      if (params?.loadExtraVoltData) {
         extraVoltData = await this.programs.Volt.account.extraVoltData.fetch(
           extraVoltKey
         );
@@ -504,8 +526,10 @@ export class FriktionSDK {
         );
       }
 
+      let entropyMetadata = params?.entropyMetadata;
+
       if (entropyMetadata === undefined) {
-        if (forceIgnoreEntropyMetadata) {
+        if (params?.forceIgnoreEntropyMetadata) {
           entropyMetadata = entropyMetadata as unknown as EntropyMetadata;
         } else {
           const [entropyMetadataKey] =
@@ -530,6 +554,9 @@ export class FriktionSDK {
           extraVoltKey
         );
       }
+
+      let principalProtectionVault = params?.principalProtectionVault;
+
       if (principalProtectionVault === undefined) {
         const [principalProtectionVaultKey] =
           PrincipalProtectionVoltSDK.findPrincipalProtectionVaultAddress(
@@ -555,7 +582,6 @@ export class FriktionSDK {
   async getPrincipalProtectionVaultByKey(
     key: PublicKey
   ): Promise<PrincipalProtectionVaultV1> {
-    console.log(" account = ", this.programs.VoltWithNewIdl.account);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -564,18 +590,17 @@ export class FriktionSDK {
     )) as PrincipalProtectionVaultV1;
   }
 
-  async getAllVoltVaults(loadExtravoltData = false): Promise<VoltSDK[]> {
+  // DEPRECATED: please do not use this, look at getAllVoltsInSnapshot() instead
+  async getAllVoltVaults(loadExtraVoltData = false): Promise<VoltSDK[]> {
     const accts =
       (await this.programs.Volt?.account?.voltVault?.all()) as unknown as ProgramAccount<VoltVault>[];
 
     return await Promise.all(
       accts.map(async (acct) => {
-        return await this.loadVoltSDKByKey(
-          acct.publicKey,
-          acct.account,
-          undefined,
-          loadExtravoltData
-        );
+        return await this.loadVoltSDKByKey(acct.publicKey, {
+          voltVault: acct.account,
+          loadExtraVoltData,
+        });
       })
     );
   }
@@ -758,14 +783,12 @@ export class FriktionSDK {
     loadExtraVoltData = false,
     principalProtectionVault?: PrincipalProtectionVaultV1
   ): Promise<PrincipalProtectionVoltSDK> {
-    const sdk = await this.loadVoltSDKByKey(
-      key,
+    const sdk = await this.loadVoltSDKByKey(key, {
       voltVault,
       extraVoltData,
       loadExtraVoltData,
-      undefined,
-      principalProtectionVault
-    );
+      principalProtectionVault,
+    });
     if (!(sdk instanceof PrincipalProtectionVoltSDK)) {
       throw new Error(
         `Volt key ${key.toString()} is not a Principal Protected volt. Got ${sdk.voltType()}`

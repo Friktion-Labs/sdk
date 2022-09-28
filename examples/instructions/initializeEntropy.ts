@@ -1,10 +1,11 @@
 import { FriktionSDK, VoltSDK } from "@friktion-labs/friktion-sdk";
-import { AnchorProvider, Wallet } from "@project-serum/anchor";
+import { AnchorProvider, Wallet } from "@friktion-labs/anchor";
 import { getMint } from "@solana/spl-token";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { BN } from "bn.js";
 import { ENTROPY_PROGRAM_ID } from "@friktion-labs/friktion-sdk";
 import { EntropyVoltSDK } from "@friktion-labs/friktion-sdk";
+import { getRandomInt } from "../../tests/utils/volt_helpers";
 
 const PROVIDER_URL = "https://api.mainnet-beta.solana.com";
 const CLUSTER = "mainnet-beta";
@@ -32,7 +33,11 @@ const user = provider.wallet.publicKey;
     sdk: friktionSDK,
     provider,
     adminKey: user,
-    vaultName: "testEntropyVolt" + user.toString().slice(0, 5),
+    vaultName:
+      "testEntropy" +
+      user.toString().slice(0, 5) +
+      "_" +
+      getRandomInt(100_000).toString(),
     underlyingAssetMint: ulMint,
     capacity: new BN(10000 * ulNormFactor), // 10000 USDC
     individualCapacity: new BN(100 * ulNormFactor), // 100 USDC

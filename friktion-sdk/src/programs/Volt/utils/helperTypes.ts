@@ -35,15 +35,15 @@ export type OptionsContractDetails = {
 };
 
 export type AuctionResult = {
-  GlobalID: string;
-  Product: string;
-  StartEpoch: number;
-  EndEpoch: number;
-  BalanceStart: number;
-  BalancePnl: number;
-  RealizedPnl: number;
-  SpotPriceAtAuctionEnd: number;
-  TxID: string;
+  globalId: string;
+  product: string;
+  startEpoch: number;
+  endEpoch: number;
+  balanceStart: number;
+  balancePnl: number;
+  realizedPnl: number;
+  spotPriceAtAuctionEnd: number;
+  txid: string;
 };
 
 export type CrabResult = {

@@ -3,13 +3,15 @@ import {
   PendingDeposit,
   toConnectedSDK,
 } from "@friktion-labs/friktion-sdk";
-import { AnchorProvider, Wallet } from "@project-serum/anchor";
+import { TimeoutError } from "@friktion-labs/friktion-utils";
+import { AnchorProvider, Wallet } from "@friktion-labs/anchor";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
   getAssociatedTokenAddress,
+  TokenAccountNotFoundError,
 } from "@solana/spl-token";
 import type { TransactionInstruction } from "@solana/web3.js";
 import {
@@ -56,7 +58,7 @@ const user = provider.wallet.publicKey;
   const authority = user;
   const solTransferAuthority = user;
   const voltVault = cVoltSDK.voltVault;
-  const depositMint = voltVault.underlyingAssetMint;
+  const depositMint = voltVault.depositMint;
   const vaultMint = voltVault.vaultMint;
 
   const isWrappedSol =
@@ -96,13 +98,27 @@ const user = provider.wallet.publicKey;
           })
         );
         depositInstructions.push(
-          createSyncNativeInstruction(
-            depositTokenAccountKey,
-            ASSOCIATED_TOKEN_PROGRAM_ID
-          )
+          createSyncNativeInstruction(depositTokenAccountKey)
         );
       }
     } catch (err) {
+      if (
+        !(
+          err instanceof TimeoutError ||
+          err instanceof TokenAccountNotFoundError
+        )
+      ) {
+        throw err;
+      }
+
+      depositInstructions.push(
+        createAssociatedTokenAccountInstruction(
+          payer,
+          depositTokenAccountKey,
+          authority,
+          depositMint
+        )
+      );
       depositInstructions.push(
         SystemProgram.transfer({
           fromPubkey: solTransferAuthority,
@@ -111,12 +127,7 @@ const user = provider.wallet.publicKey;
         })
       );
       depositInstructions.push(
-        createAssociatedTokenAccountInstruction(
-          payer,
-          depositTokenAccountKey,
-          authority,
-          depositMint
-        )
+        createSyncNativeInstruction(depositTokenAccountKey)
       );
     }
   }
@@ -154,7 +165,7 @@ const user = provider.wallet.publicKey;
       // if is claimable, then claim it first
       if (pendingDepositInfo.roundNumber.lt(voltVault.roundNumber)) {
         depositInstructions.push(
-          await cVoltSDK.claimPending(vaultTokenAccountKey)
+          await cVoltSDK.claimPendingDeposit(vaultTokenAccountKey)
         );
       }
       // else, cancel the deposit or throw an error
