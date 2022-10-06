@@ -173,7 +173,6 @@ export type VoltIDL = {
                   name: "authority";
                   isMut: true;
                   isSigner: true;
-                  docs: ["signator of transaction"];
                 },
                 {
                   name: "adminKey";
@@ -357,7 +356,6 @@ export type VoltIDL = {
     },
     {
       name: "startRoundShortOptions";
-      docs: ["* start next epoch. opens transfer window and adjusts FSM state"];
       accounts: [
         {
           name: "authority";
@@ -479,7 +477,6 @@ export type VoltIDL = {
     },
     {
       name: "setNextOption";
-      docs: ["* sets the next option market this volt will trade"];
       accounts: [
         {
           name: "authority";
@@ -581,7 +578,6 @@ export type VoltIDL = {
     },
     {
       name: "resetOptionMarket";
-      docs: ["* resets option market on the volt"];
       accounts: [
         {
           name: "authority";
@@ -738,9 +734,6 @@ export type VoltIDL = {
     },
     {
       name: "rebalancePrepare";
-      docs: [
-        "* prepares to invest in the current options market. For covered calls, this would involve minting"
-      ];
       accounts: [
         {
           name: "authority";
@@ -867,9 +860,6 @@ export type VoltIDL = {
     },
     {
       name: "rebalanceSwapPremium";
-      docs: [
-        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc."
-      ];
       accounts: [
         {
           name: "authority";
@@ -928,10 +918,6 @@ export type VoltIDL = {
               name: "market";
               isMut: true;
               isSigner: false;
-              docs: [
-                "Serum Market Account",
-                "admin instruction so no attack vector"
-              ];
             },
             {
               name: "requestQueue";
@@ -1020,7 +1006,6 @@ export type VoltIDL = {
     },
     {
       name: "rebalanceEnter";
-      docs: ["* enter options position. buys/sells on serum"];
       accounts: [
         {
           name: "authority";
@@ -1099,10 +1084,6 @@ export type VoltIDL = {
               name: "market";
               isMut: true;
               isSigner: false;
-              docs: [
-                "Serum Market Account",
-                "admin instruction so no attack vector"
-              ];
             },
             {
               name: "requestQueue";
@@ -1140,19 +1121,16 @@ export type VoltIDL = {
           name: "market";
           isMut: true;
           isSigner: false;
-          docs: ["The Serum Market"];
         },
         {
           name: "openOrders";
           isMut: true;
           isSigner: false;
-          docs: ["The vault's OpenOrders account"];
         },
         {
           name: "serumMarketAuthority";
           isMut: true;
           isSigner: false;
-          docs: ["The Serum Market market authority"];
         },
         {
           name: "whitelistTokenAccount";
@@ -1474,9 +1452,6 @@ export type VoltIDL = {
     },
     {
       name: "rebalanceSettle";
-      docs: [
-        "* settles the current options position. redeems writer tokens for underlying or quote asset."
-      ];
       accounts: [
         {
           name: "authority";
@@ -1648,7 +1623,6 @@ export type VoltIDL = {
     },
     {
       name: "endRoundShortOptions";
-      docs: ["* ends current epoch. settles pending deposits & withdrawals."];
       accounts: [
         {
           name: "authority";
@@ -1808,7 +1782,6 @@ export type VoltIDL = {
               name: "authority";
               isMut: true;
               isSigner: true;
-              docs: ["signator of transaction"];
             },
             {
               name: "adminKey";
@@ -1939,7 +1912,6 @@ export type VoltIDL = {
           name: "authority";
           isMut: true;
           isSigner: true;
-          docs: ["signator of transaction"];
         },
         {
           name: "voltVault";
@@ -2298,7 +2270,6 @@ export type VoltIDL = {
           name: "authority";
           isMut: true;
           isSigner: true;
-          docs: ["signator of transaction"];
         },
         {
           name: "voltVault";
@@ -2636,7 +2607,6 @@ export type VoltIDL = {
           name: "authority";
           isMut: true;
           isSigner: true;
-          docs: ["signator of transaction"];
         },
         {
           name: "voltVault";
@@ -2779,7 +2749,6 @@ export type VoltIDL = {
           name: "voltVault";
           isMut: true;
           isSigner: false;
-          docs: ["Volt Vault data"];
         },
         {
           name: "vaultAuthority";
@@ -2943,7 +2912,6 @@ export type VoltIDL = {
           name: "voltVault";
           isMut: true;
           isSigner: false;
-          docs: ["Volt Vault data"];
         },
         {
           name: "extraVoltData";
@@ -2964,7 +2932,6 @@ export type VoltIDL = {
           name: "entropyProgram";
           isMut: false;
           isSigner: false;
-          docs: ["Entropy program"];
         },
         {
           name: "entropyGroup";
@@ -3037,7 +3004,6 @@ export type VoltIDL = {
                   name: "authority";
                   isMut: true;
                   isSigner: true;
-                  docs: ["signator of transaction"];
                 },
                 {
                   name: "adminKey";
@@ -3699,9 +3665,6 @@ export type VoltIDL = {
     },
     {
       name: "deposit";
-      docs: [
-        "* deposits into volt, receives volt tokens or a receipt for a pending deposit"
-      ];
       accounts: [
         {
           name: "payerAuthority";
@@ -3742,9 +3705,6 @@ export type VoltIDL = {
           name: "whitelist";
           isMut: false;
           isSigner: false;
-          docs: [
-            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token"
-          ];
         },
         {
           name: "depositPool";
@@ -3931,9 +3891,6 @@ export type VoltIDL = {
     },
     {
       name: "withdraw";
-      docs: [
-        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal"
-      ];
       accounts: [
         {
           name: "payerAuthority";
@@ -3944,15 +3901,11 @@ export type VoltIDL = {
           name: "nonPayerAuthority";
           isMut: false;
           isSigner: true;
-          docs: [
-            "if is authority on token accounts (aka === authority_check), should be a signer"
-          ];
         },
         {
           name: "authorityCheck";
           isMut: false;
           isSigner: false;
-          docs: ["should be equal to 1 of authority or non_payer_authority"];
         },
         {
           name: "vaultMint";
@@ -4059,7 +4012,6 @@ export type VoltIDL = {
           name: "authorityCheck";
           isMut: false;
           isSigner: false;
-          docs: ["should be equal to 1 of authority or non_payer_authority"];
         },
         {
           name: "vaultMint";
@@ -4156,7 +4108,6 @@ export type VoltIDL = {
     },
     {
       name: "cancelPendingDeposit";
-      docs: ["* cancels a users pending deposit"];
       accounts: [
         {
           name: "authority";
@@ -4218,7 +4169,6 @@ export type VoltIDL = {
     },
     {
       name: "cancelPendingWithdrawal";
-      docs: ["* cancels a users pending withdrawal"];
       accounts: [
         {
           name: "authority";
@@ -4280,7 +4230,6 @@ export type VoltIDL = {
     },
     {
       name: "claimPendingDeposit";
-      docs: ["* claims volt tokens from a previously pending deposit"];
       accounts: [
         {
           name: "authority";
@@ -4337,7 +4286,6 @@ export type VoltIDL = {
     },
     {
       name: "claimPendingWithdrawal";
-      docs: ["* claims underlying from a previously pending withdrawal"];
       accounts: [
         {
           name: "authority";
@@ -4456,7 +4404,6 @@ export type VoltIDL = {
     },
     {
       name: "initSerumMarket";
-      docs: ["* initialize serum market for the current option token"];
       accounts: [
         {
           name: "authority";
@@ -5290,7 +5237,6 @@ export type VoltIDL = {
           },
           {
             name: "hedgingPerpMarket";
-            docs: ["pubkey of perp market to hedge"];
             type: "publicKey";
           },
           {
@@ -5402,9 +5348,6 @@ export type VoltIDL = {
     },
     {
       name: "PendingDeposit";
-      docs: [
-        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"'
-      ];
       type: {
         kind: "struct";
         fields: [
@@ -5425,9 +5368,6 @@ export type VoltIDL = {
     },
     {
       name: "PendingWithdrawal";
-      docs: [
-        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"'
-      ];
       type: {
         kind: "struct";
         fields: [
@@ -5482,9 +5422,6 @@ export type VoltIDL = {
     },
     {
       name: "Round";
-      docs: [
-        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal"
-      ];
       type: {
         kind: "struct";
         fields: [
@@ -5642,9 +5579,6 @@ export type VoltIDL = {
           },
           {
             name: "underlyingAmountPerContract";
-            docs: [
-              "The amount of the **underlying asset** that derives a single option"
-            ];
             type: "u64";
           },
           {
@@ -5653,9 +5587,6 @@ export type VoltIDL = {
           },
           {
             name: "expirationUnixTimestamp";
-            docs: [
-              "The Unix timestamp at which the contracts in this market expire"
-            ];
             type: "i64";
           },
           {
@@ -5668,10 +5599,6 @@ export type VoltIDL = {
           },
           {
             name: "haveTakenWithdrawalFees";
-            docs: [
-              "A flag to set and use to when running a memcmp query.",
-              "This will be set when Serum markets are closed and expiration is validated"
-            ];
             type: "bool";
           },
           {
@@ -5756,7 +5683,6 @@ export type VoltIDL = {
           },
           {
             name: "addresses";
-            docs: ["The storage for information on reserves in the market"];
             type: {
               vec: "publicKey";
             };
@@ -7497,7 +7423,6 @@ export const VoltIDLJsonRaw = {
                   name: "authority",
                   isMut: true,
                   isSigner: true,
-                  docs: ["signator of transaction"],
                 },
                 {
                   name: "adminKey",
@@ -7681,7 +7606,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "startRoundShortOptions",
-      docs: ["* start next epoch. opens transfer window and adjusts FSM state"],
       accounts: [
         {
           name: "authority",
@@ -7803,7 +7727,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "setNextOption",
-      docs: ["* sets the next option market this volt will trade"],
       accounts: [
         {
           name: "authority",
@@ -7905,7 +7828,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "resetOptionMarket",
-      docs: ["* resets option market on the volt"],
       accounts: [
         {
           name: "authority",
@@ -8062,9 +7984,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "rebalancePrepare",
-      docs: [
-        "* prepares to invest in the current options market. For covered calls, this would involve minting",
-      ],
       accounts: [
         {
           name: "authority",
@@ -8191,9 +8110,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "rebalanceSwapPremium",
-      docs: [
-        "* swap from premium to underlying. for covered calls, would swap USDC -> BTC/SOL/etc.",
-      ],
       accounts: [
         {
           name: "authority",
@@ -8252,10 +8168,6 @@ export const VoltIDLJsonRaw = {
               name: "market",
               isMut: true,
               isSigner: false,
-              docs: [
-                "Serum Market Account",
-                "admin instruction so no attack vector",
-              ],
             },
             {
               name: "requestQueue",
@@ -8344,7 +8256,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "rebalanceEnter",
-      docs: ["* enter options position. buys/sells on serum"],
       accounts: [
         {
           name: "authority",
@@ -8423,10 +8334,6 @@ export const VoltIDLJsonRaw = {
               name: "market",
               isMut: true,
               isSigner: false,
-              docs: [
-                "Serum Market Account",
-                "admin instruction so no attack vector",
-              ],
             },
             {
               name: "requestQueue",
@@ -8464,19 +8371,16 @@ export const VoltIDLJsonRaw = {
           name: "market",
           isMut: true,
           isSigner: false,
-          docs: ["The Serum Market"],
         },
         {
           name: "openOrders",
           isMut: true,
           isSigner: false,
-          docs: ["The vault's OpenOrders account"],
         },
         {
           name: "serumMarketAuthority",
           isMut: true,
           isSigner: false,
-          docs: ["The Serum Market market authority"],
         },
         {
           name: "whitelistTokenAccount",
@@ -8798,9 +8702,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "rebalanceSettle",
-      docs: [
-        "* settles the current options position. redeems writer tokens for underlying or quote asset.",
-      ],
       accounts: [
         {
           name: "authority",
@@ -8972,7 +8873,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "endRoundShortOptions",
-      docs: ["* ends current epoch. settles pending deposits & withdrawals."],
       accounts: [
         {
           name: "authority",
@@ -9132,7 +9032,6 @@ export const VoltIDLJsonRaw = {
               name: "authority",
               isMut: true,
               isSigner: true,
-              docs: ["signator of transaction"],
             },
             {
               name: "adminKey",
@@ -9263,7 +9162,6 @@ export const VoltIDLJsonRaw = {
           name: "authority",
           isMut: true,
           isSigner: true,
-          docs: ["signator of transaction"],
         },
         {
           name: "voltVault",
@@ -9622,7 +9520,6 @@ export const VoltIDLJsonRaw = {
           name: "authority",
           isMut: true,
           isSigner: true,
-          docs: ["signator of transaction"],
         },
         {
           name: "voltVault",
@@ -9960,7 +9857,6 @@ export const VoltIDLJsonRaw = {
           name: "authority",
           isMut: true,
           isSigner: true,
-          docs: ["signator of transaction"],
         },
         {
           name: "voltVault",
@@ -10103,7 +9999,6 @@ export const VoltIDLJsonRaw = {
           name: "voltVault",
           isMut: true,
           isSigner: false,
-          docs: ["Volt Vault data"],
         },
         {
           name: "vaultAuthority",
@@ -10267,7 +10162,6 @@ export const VoltIDLJsonRaw = {
           name: "voltVault",
           isMut: true,
           isSigner: false,
-          docs: ["Volt Vault data"],
         },
         {
           name: "extraVoltData",
@@ -10288,7 +10182,6 @@ export const VoltIDLJsonRaw = {
           name: "entropyProgram",
           isMut: false,
           isSigner: false,
-          docs: ["Entropy program"],
         },
         {
           name: "entropyGroup",
@@ -10361,7 +10254,6 @@ export const VoltIDLJsonRaw = {
                   name: "authority",
                   isMut: true,
                   isSigner: true,
-                  docs: ["signator of transaction"],
                 },
                 {
                   name: "adminKey",
@@ -11023,9 +10915,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "deposit",
-      docs: [
-        "* deposits into volt, receives volt tokens or a receipt for a pending deposit",
-      ],
       accounts: [
         {
           name: "payerAuthority",
@@ -11066,9 +10955,6 @@ export const VoltIDLJsonRaw = {
           name: "whitelist",
           isMut: false,
           isSigner: false,
-          docs: [
-            "NOTE: this is a vector of pubkeys that can interact with the volt, NOT related to the whitelist MM token",
-          ],
         },
         {
           name: "depositPool",
@@ -11255,9 +11141,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "withdraw",
-      docs: [
-        "* withdraws from volt. receives underlying or a receipt for a pending withdrawal",
-      ],
       accounts: [
         {
           name: "payerAuthority",
@@ -11268,15 +11151,11 @@ export const VoltIDLJsonRaw = {
           name: "nonPayerAuthority",
           isMut: false,
           isSigner: true,
-          docs: [
-            "if is authority on token accounts (aka === authority_check), should be a signer",
-          ],
         },
         {
           name: "authorityCheck",
           isMut: false,
           isSigner: false,
-          docs: ["should be equal to 1 of authority or non_payer_authority"],
         },
         {
           name: "vaultMint",
@@ -11383,7 +11262,6 @@ export const VoltIDLJsonRaw = {
           name: "authorityCheck",
           isMut: false,
           isSigner: false,
-          docs: ["should be equal to 1 of authority or non_payer_authority"],
         },
         {
           name: "vaultMint",
@@ -11480,7 +11358,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "cancelPendingDeposit",
-      docs: ["* cancels a users pending deposit"],
       accounts: [
         {
           name: "authority",
@@ -11542,7 +11419,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "cancelPendingWithdrawal",
-      docs: ["* cancels a users pending withdrawal"],
       accounts: [
         {
           name: "authority",
@@ -11604,7 +11480,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "claimPendingDeposit",
-      docs: ["* claims volt tokens from a previously pending deposit"],
       accounts: [
         {
           name: "authority",
@@ -11661,7 +11536,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "claimPendingWithdrawal",
-      docs: ["* claims underlying from a previously pending withdrawal"],
       accounts: [
         {
           name: "authority",
@@ -11780,7 +11654,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "initSerumMarket",
-      docs: ["* initialize serum market for the current option token"],
       accounts: [
         {
           name: "authority",
@@ -12614,7 +12487,6 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "hedgingPerpMarket",
-            docs: ["pubkey of perp market to hedge"],
             type: "publicKey",
           },
           {
@@ -12726,9 +12598,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "PendingDeposit",
-      docs: [
-        '* User-specific PDA. Tracks information about their pending deposits.\n *  NOTES:\n *  1. There may only be one pending deposit (across all rounds) at any point in time\n *  2. However, pending deposits will accumulate if made in same round.\n *  3. Pending deposits from previous rounds may be claimed with the instruction "claim_pending"',
-      ],
       type: {
         kind: "struct",
         fields: [
@@ -12749,9 +12618,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "PendingWithdrawal",
-      docs: [
-        '* User-specific PDA. Tracks information about their pending withdrawals.\n *  NOTES:\n *  1. There may only be one pending withdrawal (across all rounds) at any point in time\n *  2. However, pending withdrawals will accumulate if made in same round.\n *  3. Pending withdrawals from previous rounds may be claimed with the instruction "claim_pending_withdrawal"',
-      ],
       type: {
         kind: "struct",
         fields: [
@@ -12806,9 +12672,6 @@ export const VoltIDLJsonRaw = {
     },
     {
       name: "Round",
-      docs: [
-        "* Epoch-specific PDA. Stores all information specific to that epoch.\n * New rounds are initialized in start_round.\n * Modified in deposit, withdraw, claim_pending, claim_pending_withdrawal",
-      ],
       type: {
         kind: "struct",
         fields: [
@@ -12966,9 +12829,6 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "underlyingAmountPerContract",
-            docs: [
-              "The amount of the **underlying asset** that derives a single option",
-            ],
             type: "u64",
           },
           {
@@ -12977,9 +12837,6 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "expirationUnixTimestamp",
-            docs: [
-              "The Unix timestamp at which the contracts in this market expire",
-            ],
             type: "i64",
           },
           {
@@ -12992,10 +12849,6 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "haveTakenWithdrawalFees",
-            docs: [
-              "A flag to set and use to when running a memcmp query.",
-              "This will be set when Serum markets are closed and expiration is validated",
-            ],
             type: "bool",
           },
           {
@@ -13080,7 +12933,6 @@ export const VoltIDLJsonRaw = {
           },
           {
             name: "addresses",
-            docs: ["The storage for information on reserves in the market"],
             type: {
               vec: "publicKey",
             },

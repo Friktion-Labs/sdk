@@ -310,6 +310,10 @@ export abstract class VoltSDK {
     return this.voltType() === VoltType.ShortOptions;
   }
 
+  getWhitelistTokenMint(): PublicKey {
+    return this.voltVault.whitelistTokenMint;
+  }
+
   tryAsEntropySdk(): EntropyVoltSDK {
     // NOTE: this or instanceof check?
     if (this.voltType() !== VoltType.Entropy) {

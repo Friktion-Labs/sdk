@@ -111,8 +111,8 @@ export async function sendTransaction(
   const startTime = getUnixTs();
 
   const txid: TransactionSignature = await connection.sendRawTransaction(
-    rawTransaction
-    // { skipPreflight: true },
+    rawTransaction,
+    { skipPreflight: true }
   );
 
   // if (postSendTxCallback) {

@@ -248,15 +248,29 @@ export class SwapSDK {
     counterpartyReceivePool: PublicKey,
     rawMsg: Uint8Array,
     signature: Uint8Array,
+    counterpartyWallet?: PublicKey,
     whitelistTokenAccount?: PublicKey
   ): Promise<TransactionInstruction[]> {
-    if (!this.swapOrder.isCounterpartyProvided)
-      throw new Error("if using execMsg counterparty must be provided");
+    // if (!this.swapOrder.isCounterpartyProvided)
+    //   throw new Error("if using execMsg counterparty must be provided");
 
     if (this.swapOrder.admin.toString() !== user.toString())
       throw new Error("admin must sign execMsg instruction");
 
-    const signer = this.swapOrder.counterparty;
+    const expectedCounterparty = this.swapOrder.counterparty;
+    let actualCounterparty: PublicKey;
+    console.log("expected counterparty = ", expectedCounterparty.toString());
+    if (
+      expectedCounterparty.toString() === SystemProgram.programId.toString()
+    ) {
+      if (counterpartyWallet === undefined)
+        throw new Error(
+          "counterparty wallet must be provided if there is none expected"
+        );
+      actualCounterparty = counterpartyWallet;
+    } else {
+      actualCounterparty = expectedCounterparty;
+    }
     const [delegate] = await SwapSDK.findDelegateAuthorityAddress();
     const execMsgAccounts: SimpleSwapIXAccounts["execMsg"] = {
       authority: user,
@@ -269,7 +283,7 @@ export class SwapSDK {
 
       delegateAuthority: delegate,
 
-      counterpartyWallet: this.swapOrder.counterparty,
+      counterpartyWallet: actualCounterparty,
       whitelistTokenAccount: whitelistTokenAccount ?? SystemProgram.programId,
 
       instructionSysvar: SYSVAR_INSTRUCTIONS_PUBKEY,
@@ -277,9 +291,11 @@ export class SwapSDK {
       systemProgram: SystemProgram.programId,
     };
 
+    console.log("using counterparty = ", actualCounterparty.toString());
+    console.log("signature = ", signature);
     const edIx: TransactionInstruction =
       Ed25519Program.createInstructionWithPublicKey({
-        publicKey: signer.toBuffer(),
+        publicKey: actualCounterparty.toBuffer(),
         message: rawMsg,
         signature: signature,
       });

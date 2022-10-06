@@ -150,6 +150,23 @@ class TransactionMachine {
   }
 }
 
+export const sendInsListUntilSuccess = async (
+  provider: anchor.AnchorProvider,
+  insList: TransactionInstruction[],
+  params?: SendInsParams
+): Promise<string> => {
+  while (true) {
+    const { success, txid } = await sendInsListCatching(
+      provider,
+      insList,
+      params
+    );
+    if (success) {
+      return txid as string;
+    }
+  }
+};
+
 export const sendInsCatching = async (
   provider: anchor.AnchorProvider,
   ins: TransactionInstruction,

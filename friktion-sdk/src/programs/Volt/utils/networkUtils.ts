@@ -23,9 +23,7 @@ export const getCoingeckoPrice = async (
 
   let attemptedRetries = 0;
   while (true && attemptedRetries < totalRetries) {
-    console.log("attempt = ", attemptedRetries);
     const response = await fetch(coingeckoUrl);
-
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (response.status === 200) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
@@ -56,7 +54,6 @@ export const getCoingeckoPrice = async (
         throw new Error("received undefined response = " + response.toString());
       }
     } else {
-      console.error(response);
       console.error("status != 200, === ", response.status.toString());
       await sleep(
         retrySleepTime * (attemptedRetries + 1) * (attemptedRetries + 1)

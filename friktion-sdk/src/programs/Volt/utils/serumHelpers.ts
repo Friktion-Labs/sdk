@@ -37,12 +37,12 @@ export const marketLoaderFunction = (
     const { serumMarketKey, marketAuthorityBump } =
       await sdk.getMarketAndAuthorityInfo(optionMarketKey);
 
-    console.log(
-      "serum markets: ",
-      serumMarketKey.toString(),
-      " ",
-      serumMarketKeyGiven.toString()
-    );
+    // console.log(
+    //   "serum markets: ",
+    //   serumMarketKey.toString(),
+    //   " ",
+    //   serumMarketKeyGiven.toString()
+    // );
     if (serumMarketKey.toString() !== serumMarketKeyGiven.toString())
       throw new Error(
         "serum market should equal the PDA based on current option"
@@ -51,30 +51,32 @@ export const marketLoaderFunction = (
     const [auctionMetadataKey] =
       await ShortOptionsVoltSDK.findAuctionMetadataAddress(sdk.voltKey);
 
-    return new MarketProxyBuilder()
-      .middleware(
-        new OpenOrdersPda({
-          proxyProgramId: sdk.sdk.programs.Volt.programId,
-          dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
-        })
-      )
-      .middleware(new ReferralFees())
-      .middleware(
-        new Validation(
-          auctionMetadataKey,
-          optionMarketKey,
-          whitelistTokenAccountKey,
-          marketAuthorityBump
+    return (
+      new MarketProxyBuilder()
+        .middleware(
+          new OpenOrdersPda({
+            proxyProgramId: sdk.sdk.programs.Volt.programId,
+            dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
+          })
         )
-      )
-      .middleware(new Logger())
-      .load({
-        connection: sdk.sdk.readonlyProvider.connection,
-        market: serumMarketKey,
-        dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
-        proxyProgramId: sdk.sdk.programs.Volt.programId,
-        options: { commitment: "recent" },
-      });
+        .middleware(new ReferralFees())
+        .middleware(
+          new Validation(
+            auctionMetadataKey,
+            optionMarketKey,
+            whitelistTokenAccountKey,
+            marketAuthorityBump
+          )
+        )
+        // .middleware(new  Logger())
+        .load({
+          connection: sdk.sdk.readonlyProvider.connection,
+          market: serumMarketKey,
+          dexProgramId: sdk.sdk.net.SERUM_DEX_PROGRAM_ID,
+          proxyProgramId: sdk.sdk.programs.Volt.programId,
+          options: { commitment: "recent" },
+        })
+    );
   };
 };
 

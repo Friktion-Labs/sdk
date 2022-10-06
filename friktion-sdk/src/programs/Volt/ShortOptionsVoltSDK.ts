@@ -333,6 +333,10 @@ export class ShortOptionsVoltSDK extends VoltSDK {
         this.sdk.readonlyProvider.connection,
         this.voltVault.writerTokenPool
       );
+      const optionTokenBalance = await getAccountBalance(
+        this.sdk.readonlyProvider.connection,
+        this.voltVault.optionPool
+      );
       console.log(
         "minted options: (#)",
         writerTokenBalance.toString(),
@@ -340,7 +344,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
         new Decimal(writerTokenBalance.toString())
           .mul(new Decimal(optionMarket.underlyingAmountPerContract.toString()))
           .div(await this.getDepositTokenNormalizationFactor())
-          .toString()
+          .toString(),
+        "\nunsold options: (#)",
+        optionTokenBalance.toString()
       );
 
       const aMdata = await this.getAuctionMetadata();
@@ -358,7 +364,9 @@ export class ShortOptionsVoltSDK extends VoltSDK {
         console.log(swapOrder);
         console.log(
           "options contract = ",
-          swapOrder.optionsContract.toString()
+          swapOrder.optionsContract.toString(),
+          "swap bid mint = ",
+          swapOrder.receiveMint.toString()
         );
       }
 
