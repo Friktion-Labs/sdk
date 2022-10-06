@@ -1,6 +1,6 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "2.3.6",
+  "version": "2.3.9",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/friktion-sdk/src/index.js",
