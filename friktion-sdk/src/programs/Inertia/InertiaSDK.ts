@@ -25,7 +25,7 @@ import type {
   InertiaStubOracleWithKey,
 } from "./inertiaTypes";
 import {
-  convertInertiaContractToOptionMarket,
+  convertInertiaContractToGenericOptionsContract,
   getInertiaMarketByKey,
 } from "./inertiaUtils";
 
@@ -127,7 +127,7 @@ export class InertiaSDK {
   }
 
   asOptionMarket(): GenericOptionsContractWithKey {
-    return convertInertiaContractToOptionMarket(this.optionsContract);
+    return convertInertiaContractToGenericOptionsContract(this.optionsContract);
   }
 
   canExercise(): boolean {
@@ -226,6 +226,10 @@ export class InertiaSDK {
 
   static async getGenericInertiaExerciseFeeAccount(quoteAssetMint: PublicKey) {
     return await getAssociatedTokenAddress(quoteAssetMint, INERTIA_FEE_OWNER);
+  }
+
+  toGenericOptionsContract(): GenericOptionsContractWithKey {
+    return convertInertiaContractToGenericOptionsContract(this.optionsContract);
   }
 
   isCall(): boolean {
@@ -571,7 +575,7 @@ export class InertiaSDK {
       }
     );
 
-    const optionsContract = convertInertiaContractToOptionMarket(
+    const optionsContract = convertInertiaContractToGenericOptionsContract(
       genericOptionsContractStruct
     );
 

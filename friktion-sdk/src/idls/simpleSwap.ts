@@ -597,6 +597,14 @@ export type SimpleSwapIDL = {
     {
       code: 6027;
       name: "InvalidCounterpartyPool";
+    },
+    {
+      code: 6028;
+      name: "InvalidSwapOrder";
+    },
+    {
+      code: 6029;
+      name: "InvalidOrderId";
     }
   ];
 };
@@ -1199,6 +1207,14 @@ export const SimpleSwapIDLJsonRaw = {
     {
       code: 6027,
       name: "InvalidCounterpartyPool",
+    },
+    {
+      code: 6028,
+      name: "InvalidSwapOrder",
+    },
+    {
+      code: 6029,
+      name: "InvalidOrderId",
     },
   ],
 };

@@ -27,8 +27,9 @@ export const getReasonForErrorCode = (err: number): string | undefined => {
   if (err in AnchorLangErrorMessage) {
     return AnchorLangErrorMessage.get(err);
   } else {
-    return VoltIDLJsonRaw.errors.find((e) => e.code === parseErrorCode(err))
-      ?.msg;
+    return VoltIDLJsonRaw.errors.find(
+      (e: any) => e.code === parseErrorCode(err)
+    )?.msg;
   }
 };
 
@@ -36,8 +37,9 @@ export const getNameForErrorCode = (err: number): string | undefined => {
   if (err in AnchorLangErrorMessage) {
     return AnchorLangErrorMessage.get(err);
   } else {
-    return VoltIDLJsonRaw.errors.find((e) => e.code === parseErrorCode(err))
-      ?.name;
+    return VoltIDLJsonRaw.errors.find(
+      (e: any) => e.code === parseErrorCode(err)
+    )?.name;
   }
 };
 

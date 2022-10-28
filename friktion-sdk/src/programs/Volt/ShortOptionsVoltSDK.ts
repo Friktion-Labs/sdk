@@ -299,6 +299,8 @@ export class ShortOptionsVoltSDK extends VoltSDK {
       this.voltVault.roundHasStarted,
       "\n, taken withdrawal fees: ",
       this.voltVault.haveTakenWithdrawalFees,
+      "\n, settled first time: ",
+      this.voltVault.currOptionWasSettledFirstTime,
       "\n, isSettled: ",
       this.voltVault.finishedSettlingOption,
       "\n, must swap quote asset post settle: ",

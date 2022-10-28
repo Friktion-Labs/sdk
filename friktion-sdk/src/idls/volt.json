@@ -586,7 +586,7 @@
         },
         {
           "name": "voltVault",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1300,6 +1300,10 @@
           "type": {
             "defined": "CreateSwapParams"
           }
+        },
+        {
+          "name": "shouldKeepCancelled",
+          "type": "u64"
         }
       ]
     },

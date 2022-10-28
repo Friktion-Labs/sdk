@@ -131,6 +131,9 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
   SERUM_DEX_PROGRAM_ID: new PublicKey(
     "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"
   ),
+  DEFAULT_ENTROPY_LENDING_PROGRAM_ID: new PublicKey(
+    "mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68"
+  ),
   COINGECKO_IDS: {
     BTC: "bitcoin",
     SOL: "solana",
@@ -153,6 +156,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     AVAX: "avalanche-2",
     SAMO: "samoyedcoin",
     NEAR: "near",
+    APT: "aptos",
   },
   REFERRAL_SRM_OR_MSRM_ACCOUNT: SystemProgram.programId,
   MM_TOKEN_MINT: GLOBAL_MM_TOKEN_MINT,
@@ -191,6 +195,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     UXD: new PublicKey("7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
     AVAX: new PublicKey("KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE"),
+    APT: new PublicKey("6LNeTYMqtNm1pBFN8PfhQaoLyegAH8GD32WmHU9erXKN"),
   },
   SERUM_REFERRER_IDS: {
     EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: new PublicKey(
@@ -258,6 +263,9 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
     ),
     StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT: new PublicKey(
       "2nRHbu47Wt9jVJtcLxdmhn1YWbC1gzAuPKSuycyL4GGa"
+    ),
+    "6LNeTYMqtNm1pBFN8PfhQaoLyegAH8GD32WmHU9erXKN": new PublicKey(
+      "7nPCaCBXCUSnF23nmyZ9KdnU4KEdEiSHDL1A2EMkoR3b"
     ),
   },
 
@@ -348,6 +356,10 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_MAINNET = {
         "BYPsjxa3YuZESQz1dKuBw1QSFCSpecsm8nCQhY5xbU1Z",
         new PublicKey("5UCW44c43tus4sZxg8497nCnKZUa352QACew8nyU8Vzq"),
       ],
+      [
+        "6LNeTYMqtNm1pBFN8PfhQaoLyegAH8GD32WmHU9erXKN",
+        new PublicKey("BzT659MUu7duaqcoGUBviSouJHcibLKnc5W4SDFkXH12"),
+      ],
     ]),
   },
 };
@@ -369,6 +381,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
   SERUM_DEX_PROGRAM_ID: new PublicKey(
     "DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY"
   ),
+  DEFAULT_ENTROPY_LENDING_PROGRAM_ID: SystemProgram.programId,
   COINGECKO_IDS: {
     BTC: "bitcoin",
     SOL: "solana",
@@ -420,6 +433,7 @@ export const USE_SDK_NET_TO_GET_CONSTANTS_DEVNET: NetworkSpecificConstants = {
     UXD: new PublicKey("7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT"),
     STEP: new PublicKey("StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT"),
     AVAX: new PublicKey("KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE"),
+    APT: new PublicKey("6LNeTYMqtNm1pBFN8PfhQaoLyegAH8GD32WmHU9erXKN"),
   },
   SERUM_REFERRER_IDS: {
     E6Z6zLzk8MWY3TY8E87mr88FhGowEPJTeMWzkqtL6qkF: new PublicKey(

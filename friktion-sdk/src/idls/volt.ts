@@ -586,7 +586,7 @@ export type VoltIDL = {
         },
         {
           name: "voltVault";
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -1300,6 +1300,10 @@ export type VoltIDL = {
           type: {
             defined: "CreateSwapParams";
           };
+        },
+        {
+          name: "shouldKeepCancelled";
+          type: "u64";
         }
       ];
     },
@@ -7836,7 +7840,7 @@ export const VoltIDLJsonRaw = {
         },
         {
           name: "voltVault",
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
@@ -8550,6 +8554,10 @@ export const VoltIDLJsonRaw = {
           type: {
             defined: "CreateSwapParams",
           },
+        },
+        {
+          name: "shouldKeepCancelled",
+          type: "u64",
         },
       ],
     },

@@ -33,7 +33,7 @@ import {
   getVaultOwnerAndNonce,
 } from "./utils/serumHelpers";
 import { VoltSDK } from "./VoltSDK";
-import type { ExtraVoltData, VoltProgram, VoltVault } from "./voltTypes";
+import type { ExtraVoltData, VoltIXAccounts, VoltVault } from "./voltTypes";
 
 // create typescript class that uses multiple inheritance via mixins
 export interface ConnectedShortOptionsVoltSDK
@@ -89,9 +89,7 @@ export class ConnectedShortOptionsVoltSDK {
   //// REBALANCING INSTRUCTIONS ////
 
   async startRound(): Promise<TransactionInstruction> {
-    const startRoundStruct: Parameters<
-      VoltProgram["instruction"]["startRoundShortOptions"]["accounts"]
-    >[0] = {
+    const startRoundStruct: VoltIXAccounts["startRoundShortOptions"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -132,9 +130,7 @@ export class ConnectedShortOptionsVoltSDK {
       );
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
-    const setNextOptionStruct: Parameters<
-      VoltProgram["instruction"]["setNextOption"]["accounts"]
-    >[0] = {
+    const setNextOptionStruct: VoltIXAccounts["setNextOption"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -172,9 +168,7 @@ export class ConnectedShortOptionsVoltSDK {
         this.voltVault
       );
 
-    const resetOptionMarketAccounts: Parameters<
-      VoltProgram["instruction"]["resetOptionMarket"]["accounts"]
-    >[0] = {
+    const resetOptionMarketAccounts: VoltIXAccounts["resetOptionMarket"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -206,9 +200,7 @@ export class ConnectedShortOptionsVoltSDK {
       this.voltVault.roundNumber,
       this.sdk.programs.Volt.programId
     );
-    const rebalancePrepareStruct: Parameters<
-      VoltProgram["instruction"]["rebalancePrepare"]["accounts"]
-    >[0] = {
+    const rebalancePrepareStruct: VoltIXAccounts["rebalancePrepare"] = {
       authority: this.wallet,
 
       voltVault: this.voltKey,
@@ -297,11 +289,7 @@ export class ConnectedShortOptionsVoltSDK {
       this.sdk.net.SERUM_DEX_PROGRAM_ID
     );
 
-    const initSerumAccounts: {
-      [K in keyof Parameters<
-        VoltProgram["instruction"]["initSerumMarket"]["accounts"]
-      >[0]]: PublicKey;
-    } = {
+    const initSerumAccounts: VoltIXAccounts["initSerumMarket"] = {
       authority: this.wallet,
       whitelist: this.sdk.net.MM_TOKEN_MINT,
       serumMarket: serumMarketKey,
@@ -358,9 +346,7 @@ export class ConnectedShortOptionsVoltSDK {
       this.voltKey
     );
 
-    const changeAuctionParamsAccounts: Parameters<
-      VoltProgram["instruction"]["changeAuctionParams"]["accounts"]
-    >[0] = {
+    const changeAuctionParamsAccounts: VoltIXAccounts["changeAuctionParams"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -389,9 +375,7 @@ export class ConnectedShortOptionsVoltSDK {
 
     const [temporaryUsdcFeePoolKey] =
       await ShortOptionsVoltSDK.findTemporaryUsdcFeePoolAddress(this.voltKey);
-    const rebalanceSettleStruct: Parameters<
-      VoltProgram["instruction"]["rebalanceSettle"]["accounts"]
-    >[0] = {
+    const rebalanceSettleStruct: VoltIXAccounts["rebalanceSettle"] = {
       authority: this.wallet,
 
       voltVault: this.voltKey,
@@ -478,9 +462,7 @@ export class ConnectedShortOptionsVoltSDK {
       srmReferralAcct: srmReferralAcct,
       pcReferrerWallet: referrerQuoteAcct,
     };
-    const rebalanceSwapPremiumStruct: Parameters<
-      VoltProgram["instruction"]["rebalanceSwapPremium"]["accounts"]
-    >[0] = {
+    const rebalanceSwapPremiumStruct: VoltIXAccounts["rebalanceSwapPremium"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -543,9 +525,7 @@ export class ConnectedShortOptionsVoltSDK {
     const [auctionMetadataKey] =
       await ShortOptionsVoltSDK.findAuctionMetadataAddress(this.voltKey);
 
-    const rebalanceEnterStruct: Parameters<
-      VoltProgram["instruction"]["rebalanceEnter"]["accounts"]
-    >[0] = {
+    const rebalanceEnterStruct: VoltIXAccounts["rebalanceEnter"] = {
       authority: this.wallet,
       middlewareProgram: this.sdk.programs.Volt.programId,
       voltVault: this.voltKey,
@@ -603,9 +583,7 @@ export class ConnectedShortOptionsVoltSDK {
     const [temporaryUsdcFeePoolKey] =
       await ShortOptionsVoltSDK.findTemporaryUsdcFeePoolAddress(this.voltKey);
 
-    const endRoundStruct: Parameters<
-      VoltProgram["instruction"]["endRoundShortOptions"]["accounts"]
-    >[0] = {
+    const endRoundStruct: VoltIXAccounts["endRoundShortOptions"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -643,7 +621,8 @@ export class ConnectedShortOptionsVoltSDK {
   async rebalanceEnterCreateSwap(
     expiry: BN,
     counterparty?: PublicKey,
-    whitelistToken?: PublicKey
+    whitelistToken?: PublicKey,
+    shouldKeepCancelled = false
   ): Promise<TransactionInstruction> {
     const {
       roundInfoKey,
@@ -677,37 +656,36 @@ export class ConnectedShortOptionsVoltSDK {
 
     const auctionMetadata = await this.getAuctionMetadata();
     console.log("curr swap order = ", auctionMetadata.currSwapOrder.toString());
-    const createSwapOrderAccounts: Parameters<
-      VoltProgram["instruction"]["rebalanceEnterCreateSwap"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+    const createSwapOrderAccounts: VoltIXAccounts["rebalanceEnterCreateSwap"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      swapAdmin: GLOBAL_VOLT_ADMIN,
-      newSwapOrder,
-      userOrders: userOrdersKey,
+        swapAdmin: GLOBAL_VOLT_ADMIN,
+        newSwapOrder,
+        userOrders: userOrdersKey,
 
-      permissionedMarketPremiumMint:
-        this.voltVault.permissionedMarketPremiumMint,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
-      optionsContract: this.voltVault.optionsContract,
-      givePool,
-      optionMint: this.voltVault.optionMint,
-      receivePool,
-      counterparty: counterparty ?? SystemProgram.programId,
-      swapProgram: SIMPLE_SWAP_PROGRAM_ID,
-      auctionMetadata: auctionMetadataKey,
-      optionPool: this.voltVault.optionPool,
-      permissionedMarketPremiumPool:
-        this.voltVault.permissionedMarketPremiumPool,
-      roundInfo: roundInfoKey,
-      epochInfo: epochInfoKey,
-      temporaryUsdcFeePool: temporaryUsdcFeePoolKey,
-    };
+        permissionedMarketPremiumMint:
+          this.voltVault.permissionedMarketPremiumMint,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+        optionsContract: this.voltVault.optionsContract,
+        givePool,
+        optionMint: this.voltVault.optionMint,
+        receivePool,
+        counterparty: counterparty ?? SystemProgram.programId,
+        swapProgram: SIMPLE_SWAP_PROGRAM_ID,
+        auctionMetadata: auctionMetadataKey,
+        optionPool: this.voltVault.optionPool,
+        permissionedMarketPremiumPool:
+          this.voltVault.permissionedMarketPremiumPool,
+        roundInfo: roundInfoKey,
+        epochInfo: epochInfoKey,
+        temporaryUsdcFeePool: temporaryUsdcFeePoolKey,
+      };
 
     const isCancelling = !isDefaultPubkey(auctionMetadata.currSwapOrder);
     let remainingAccounts: AccountMeta[] = [];
@@ -750,6 +728,7 @@ export class ConnectedShortOptionsVoltSDK {
         isWhitelisted: whitelistToken !== undefined,
         enforceMintMatch: true,
       },
+      shouldKeepCancelled ? new BN(1) : new BN(0),
       {
         accounts: createSwapOrderAccounts,
         remainingAccounts,
@@ -777,9 +756,7 @@ export class ConnectedShortOptionsVoltSDK {
       this.voltVault.vaultAuthority
     );
 
-    const claimSwapOrderAccounts: Parameters<
-      VoltProgram["instruction"]["rebalanceEnterClaimSwap"]["accounts"]
-    >[0] = {
+    const claimSwapOrderAccounts: VoltIXAccounts["rebalanceEnterClaimSwap"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,

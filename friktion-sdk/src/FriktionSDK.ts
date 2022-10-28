@@ -43,7 +43,7 @@ import type {
   SpreadsProgram,
 } from "./programs/Spreads/spreadsTypes";
 import {
-  convertSpreadsContractToOptionMarket,
+  convertSpreadsContractToGenericOptionsContract,
   getSpreadsContractByKey,
 } from "./programs/Spreads/spreadsUtils";
 import { SwapSDK } from "./programs/Swap/SwapSDK";
@@ -197,9 +197,7 @@ export type FriktionSnapshot = {
   usdValueByGlobalId: Record<string, number>;
   globalIdToDepositTokenCoingeckoId: Record<string, string>;
   apyByGlobalId: Record<string, number>;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   allMainnetVolts: VoltSnapshot[];
-  // eslint-disable-next-line @typescript-eslint/ban-types
   allDevnetVolts: VoltSnapshot[];
 };
 
@@ -368,6 +366,7 @@ export class FriktionSDK {
 
   async getAllVoltsInSnapshot(loadExtraVoltData = true): Promise<VoltSDK[]> {
     const snapshot = await this.getSnapshot();
+    // eslint-disable-next-line @typescript-eslint/ban-types
     let allVolts: VoltSnapshot[];
     if (this.network === "mainnet-beta") {
       allVolts = snapshot.allMainnetVolts;
@@ -378,11 +377,17 @@ export class FriktionSDK {
     }
 
     return await Promise.all(
-      allVolts.map(async (vSnap) => {
-        return await this.loadVoltSDKByKey(new PublicKey(vSnap.voltVaultId), {
-          loadExtraVoltData,
-        });
-      })
+      allVolts
+        .filter(
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          (vSnap: VoltSnapshot) => vSnap?.voltVaultId !== undefined
+        )
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        .map(async (vSnap: VoltSnapshot) => {
+          return await this.loadVoltSDKByKey(new PublicKey(vSnap.voltVaultId), {
+            loadExtraVoltData,
+          });
+        })
     );
   }
 
@@ -652,7 +657,7 @@ export class FriktionSDK {
         key
       );
     } else if (optionsProtocol === "Spreads") {
-      optionMarket = convertSpreadsContractToOptionMarket(
+      optionMarket = convertSpreadsContractToGenericOptionsContract(
         await SpreadsSDK.getSpreadsContractByKey(this.programs.Spreads, key)
       );
     } else {

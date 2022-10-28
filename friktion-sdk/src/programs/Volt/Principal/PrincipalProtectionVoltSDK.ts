@@ -182,29 +182,29 @@ export class PrincipalProtectionVoltSDK extends VoltSDK {
     return this.voltVault.depositMint;
   }
   printHighLevelStats(): Promise<void> {
-    throw new Error("Method not implemented.");
+    console.log("highLevelStats() not implemented");
+    return new Promise((resolve) => resolve());
   }
-  printStrategyParams(): void {
-    throw new Error("Method not implemented.");
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  printStrategyParams(): void {}
   printPositionStats(): Promise<void> {
-    throw new Error("Method not implemented.");
+    console.log("printPositionStats() not implemented");
+    return new Promise((resolve) => resolve());
   }
   printAuctionDetails(): Promise<void> {
-    throw new Error("Method not implemented.");
+    console.log("printAuctionDetails() not implemented");
+    return new Promise((resolve) => resolve());
   }
-  printStateMachine(): void {
-    throw new Error("Method not implemented.");
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  printStateMachine(): void {}
+
   voltStrategy(): VoltStrategy {
     return VoltStrategy.ProtectionAndPuts;
   }
 
   specificVoltName(): Promise<string> {
-    return new Promise(
-      () =>
-        "principal protection vault (lending details) (option market details)"
-    );
+    console.log("calling specificVoltName()");
+    return new Promise((resolve) => resolve("principal protection vault"));
   }
 
   async getPrimaryStrategyTvlWithNormFactor(

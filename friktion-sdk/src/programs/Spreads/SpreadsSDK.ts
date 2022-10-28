@@ -7,21 +7,25 @@ import type { TransactionInstruction } from "@solana/web3.js";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
-import type { FriktionSDK } from "../..";
 import {
   OPTIONS_PROGRAM_IDS,
   OTHER_IDLS,
   SPREADS_FEE_OWNER,
   SPREADS_MINT_FEE_BPS,
-} from "../..";
+} from "../../constants";
+import type { FriktionSDK } from "../../FriktionSDK";
 import type { NetworkName } from "../Volt/utils/helperTypes";
-import type { SpreadsIXAccounts } from ".";
+import type { GenericOptionsContractWithKey } from "../Volt/voltTypes";
 import type {
   SpreadsContractWithKey,
+  SpreadsIXAccounts,
   SpreadsProgram,
   SpreadsStubOracleWithKey,
 } from "./spreadsTypes";
-import { getSpreadsContractByKeyOrNull } from "./spreadsUtils";
+import {
+  convertSpreadsContractToGenericOptionsContract,
+  getSpreadsContractByKeyOrNull,
+} from "./spreadsUtils";
 
 export interface SpreadsNewMarketParams {
   user: PublicKey;
@@ -211,6 +215,10 @@ export class SpreadsSDK {
       ix: newContractIx,
       spreadsKey: contract,
     };
+  }
+
+  toGenericOptionsContract(): GenericOptionsContractWithKey {
+    return convertSpreadsContractToGenericOptionsContract(this.spreadsContract);
   }
 
   canExercise(): boolean {

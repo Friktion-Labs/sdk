@@ -30,7 +30,7 @@ import type {
   PendingDepositWithKey,
   PendingWithdrawal,
   PendingWithdrawalWithKey,
-  VoltProgram,
+  VoltIXAccounts,
   VoltWithNewIdlProgram,
 } from "./voltTypes";
 
@@ -506,9 +506,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const withdrawAccountsStruct: Parameters<
-      VoltProgram["instruction"]["withdraw"]["accounts"]
-    >[0] = {
+    const withdrawAccountsStruct: VoltIXAccounts["withdraw"] = {
       // tx fee + rent payer, optionally authority on underlyingTokenSource token account
       payerAuthority: this.wallet,
       // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
@@ -600,54 +598,53 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    const withdrawWithClaimAccountsStruct: Parameters<
-      VoltProgram["instruction"]["withdrawWithClaim"]["accounts"]
-    >[0] = {
-      // tx fee + rent payer, optionally authority on underlyingTokenSource token account
-      payerAuthority: this.wallet,
-      // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
-      nonPayerAuthority:
-        nonPayerAuthority !== undefined
-          ? nonPayerAuthority
-          : this.extraVoltData?.isForDao
-          ? this.extraVoltData.daoAuthority
-          : this.wallet,
-      // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
-      authorityCheck:
-        nonPayerAuthority !== undefined
-          ? nonPayerAuthority
-          : this.extraVoltData?.isForDao
-          ? this.extraVoltData.daoAuthority
-          : this.wallet,
+    const withdrawWithClaimAccountsStruct: VoltIXAccounts["withdrawWithClaim"] =
+      {
+        // tx fee + rent payer, optionally authority on underlyingTokenSource token account
+        payerAuthority: this.wallet,
+        // NOTE: daoAuthority must be a signer on this instruction if it is the owner of underlyingTokenSource token account
+        nonPayerAuthority:
+          nonPayerAuthority !== undefined
+            ? nonPayerAuthority
+            : this.extraVoltData?.isForDao
+            ? this.extraVoltData.daoAuthority
+            : this.wallet,
+        // NOTE: this field must match the address that is the authority on underlyingTokenSource token account. It is used to generate the pending deposit PDA.
+        authorityCheck:
+          nonPayerAuthority !== undefined
+            ? nonPayerAuthority
+            : this.extraVoltData?.isForDao
+            ? this.extraVoltData.daoAuthority
+            : this.wallet,
 
-      vaultMint: this.voltVault.vaultMint,
+        vaultMint: this.voltVault.vaultMint,
 
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+        voltVault: this.voltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      extraVoltData: extraVoltKey,
+        extraVoltData: extraVoltKey,
 
-      depositPool: this.voltVault.depositPool,
-      vaultTokenSource: userVaultTokens,
+        depositPool: this.voltVault.depositPool,
+        vaultTokenSource: userVaultTokens,
 
-      underlyingTokenDestination: underlyingTokenDestination,
+        underlyingTokenDestination: underlyingTokenDestination,
 
-      roundInfo: roundInfoKey,
-      roundUnderlyingTokens: roundUnderlyingTokensKey,
+        roundInfo: roundInfoKey,
+        roundUnderlyingTokens: roundUnderlyingTokensKey,
 
-      epochInfo: epochInfoKey,
+        epochInfo: epochInfoKey,
 
-      pendingWithdrawalInfo: pendingWithdrawalInfoKey,
-      pendingWithdrawalRoundInfo: pendingWithdrawalRoundInfoKey,
-      pendingWithdrawalRoundUnderlyingTokensForPws:
-        pendingWithdrawalRoundUnderlyingForPendingKey,
+        pendingWithdrawalInfo: pendingWithdrawalInfoKey,
+        pendingWithdrawalRoundInfo: pendingWithdrawalRoundInfoKey,
+        pendingWithdrawalRoundUnderlyingTokensForPws:
+          pendingWithdrawalRoundUnderlyingForPendingKey,
 
-      feeAcct: await this.getFeeTokenAccount(),
+        feeAcct: await this.getFeeTokenAccount(),
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      rent: SYSVAR_RENT_PUBKEY,
-    };
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+      };
 
     return this.sdk.programs.Volt.instruction.withdrawWithClaim(
       withdrawAmount,
@@ -675,27 +672,26 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const cancelPendingWithdrawalAccountsStruct: Parameters<
-      VoltProgram["instruction"]["cancelPendingWithdrawal"]["accounts"]
-    >[0] = {
-      authority: authority,
+    const cancelPendingWithdrawalAccountsStruct: VoltIXAccounts["cancelPendingWithdrawal"] =
+      {
+        authority: authority,
 
-      vaultMint: this.voltVault.vaultMint,
+        vaultMint: this.voltVault.vaultMint,
 
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      vaultTokenDestination: userVaultTokens,
+        vaultTokenDestination: userVaultTokens,
 
-      roundInfo: roundInfoKey,
+        roundInfo: roundInfoKey,
 
-      pendingWithdrawalInfo: pendingWithdrawalInfoKey,
+        pendingWithdrawalInfo: pendingWithdrawalInfoKey,
 
-      epochInfo: epochInfoKey,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
+        epochInfo: epochInfoKey,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      };
 
     return this.sdk.programs.Volt.instruction.cancelPendingWithdrawal({
       accounts: cancelPendingWithdrawalAccountsStruct,
@@ -724,25 +720,24 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const cancelPendingDepositAccountsStruct: Parameters<
-      VoltProgram["instruction"]["cancelPendingDeposit"]["accounts"]
-    >[0] = {
-      authority: authority,
+    const cancelPendingDepositAccountsStruct: VoltIXAccounts["cancelPendingDeposit"] =
+      {
+        authority: authority,
 
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      underlyingTokenDestination: userUnderlyingTokens,
+        underlyingTokenDestination: userUnderlyingTokens,
 
-      roundInfo: roundInfoKey,
-      roundUnderlyingTokens: roundUnderlyingTokensKey,
-      pendingDepositInfo: pendingDepositInfoKey,
+        roundInfo: roundInfoKey,
+        roundUnderlyingTokens: roundUnderlyingTokensKey,
+        pendingDepositInfo: pendingDepositInfoKey,
 
-      epochInfo: epochInfoKey,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
+        epochInfo: epochInfoKey,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      };
 
     return this.sdk.programs.Volt.instruction.cancelPendingDeposit({
       accounts: cancelPendingDepositAccountsStruct,
@@ -807,9 +802,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const claimPendingStruct: Parameters<
-      VoltProgram["instruction"]["claimPendingDeposit"]["accounts"]
-    >[0] = {
+    const claimPendingStruct: VoltIXAccounts["claimPendingDeposit"] = {
       authority: authority,
 
       voltVault: this.voltKey,
@@ -861,28 +854,27 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const claimPendingWithdrawalStruct: Parameters<
-      VoltProgram["instruction"]["claimPendingWithdrawal"]["accounts"]
-    >[0] = {
-      authority: authority,
+    const claimPendingWithdrawalStruct: VoltIXAccounts["claimPendingWithdrawal"] =
+      {
+        authority: authority,
 
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      vaultMint: this.voltVault.vaultMint,
+        vaultMint: this.voltVault.vaultMint,
 
-      pendingWithdrawalRoundInfo: roundInfoKey,
-      roundUnderlyingTokensForPendingWithdrawals:
-        roundUnderlyingPendingWithdrawalsKey,
+        pendingWithdrawalRoundInfo: roundInfoKey,
+        roundUnderlyingTokensForPendingWithdrawals:
+          roundUnderlyingPendingWithdrawalsKey,
 
-      pendingWithdrawalInfo: pendingWithdrawalInfoKey,
+        pendingWithdrawalInfo: pendingWithdrawalInfoKey,
 
-      underlyingTokenDestination: underlyingTokenDestinationKey,
+        underlyingTokenDestination: underlyingTokenDestinationKey,
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      };
 
     return this.sdk.programs.Volt.instruction.claimPendingWithdrawal({
       accounts: claimPendingWithdrawalStruct,
@@ -1167,17 +1159,16 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
 
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const turnOffDepositsAndWithdrawalsAccounts: Parameters<
-      VoltProgram["instruction"]["turnOffDepositsAndWithdrawals"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-      extraVoltData: extraVoltKey,
+    const turnOffDepositsAndWithdrawalsAccounts: VoltIXAccounts["turnOffDepositsAndWithdrawals"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
+        extraVoltData: extraVoltKey,
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      };
 
     return this.sdk.programs.Volt.instruction.turnOffDepositsAndWithdrawals(
       code,
@@ -1197,9 +1188,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    const changeCapacityAccounts: Parameters<
-      VoltProgram["instruction"]["changeCapacity"]["accounts"]
-    >[0] = {
+    const changeCapacityAccounts: VoltIXAccounts["changeCapacity"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -1241,9 +1230,7 @@ export abstract class ConnectedVoltSDK extends VoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    const changeFeesAccounts: Parameters<
-      VoltProgram["instruction"]["changeFees"]["accounts"]
-    >[0] = {
+    const changeFeesAccounts: VoltIXAccounts["changeFees"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,

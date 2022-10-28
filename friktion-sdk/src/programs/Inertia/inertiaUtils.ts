@@ -18,7 +18,7 @@ export const getInertiaContractByKey = async (
   return optionsContract;
 };
 
-export const convertInertiaContractToOptionMarket = (
+export const convertInertiaContractToGenericOptionsContract = (
   inertiaContract: InertiaContractWithKey
 ): GenericOptionsContractWithKey => {
   return {
@@ -60,7 +60,7 @@ export const getInertiaMarketByKey = async (
   }
 
   const optionMarket: GenericOptionsContractWithKey =
-    convertInertiaContractToOptionMarket({
+    convertInertiaContractToGenericOptionsContract({
       ...inertiaContract,
       key: key,
     });

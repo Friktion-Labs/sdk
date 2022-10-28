@@ -132,22 +132,22 @@ export abstract class VoltSDK {
     if (this.sdk.network === "mainnet-beta") {
       friktionSnapshot.allMainnetVolts.forEach(
         // eslint-disable-next-line @typescript-eslint/ban-types
-        (voltSnapshot: VoltSnapshot | {}) => {
-          if ((voltSnapshot as VoltSnapshot)?.globalId !== undefined)
-            allVoltSnapshots.push(voltSnapshot as VoltSnapshot);
+        (voltSnapshot: VoltSnapshot) => {
+          if (voltSnapshot?.globalId !== undefined)
+            allVoltSnapshots.push(voltSnapshot);
         }
       );
     } else {
       friktionSnapshot.allDevnetVolts.forEach(
         // eslint-disable-next-line @typescript-eslint/ban-types
-        (voltSnapshot: VoltSnapshot | {}) => {
+        (voltSnapshot: VoltSnapshot) => {
           if (
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             voltSnapshot !== {} &&
-            (voltSnapshot as VoltSnapshot)?.globalId !== undefined
+            voltSnapshot?.globalId !== undefined
           )
-            allVoltSnapshots.push(voltSnapshot as VoltSnapshot);
+            allVoltSnapshots.push(voltSnapshot);
         }
       );
     }
@@ -927,7 +927,7 @@ export abstract class VoltSDK {
         entropyLendingProgramKey = entropyLendingClient.programId;
         entropyLendingGroupKey = entropyLendingAccount.entropyGroup;
       } catch (err) {
-        entropyLendingProgramKey = MANGO_PROGRAM_ID;
+        entropyLendingProgramKey = this.sdk.net.DEFAULT_ENTROPY_LENDING_PROGRAM_ID;
         entropyLendingGroupKey = this.sdk.net.MANGO_GROUP;
       }
     }

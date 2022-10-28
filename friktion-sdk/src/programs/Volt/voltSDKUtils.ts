@@ -20,14 +20,14 @@ export const toConnectedSDK = (
   | ConnectedPrincipalProtectionVoltSDK => {
   if (voltSdk.voltType() === VoltType.ShortOptions) {
     return toConnectedShortOptionsSDK(
-      voltSdk as ShortOptionsVoltSDK,
+      voltSdk as unknown as ShortOptionsVoltSDK,
       connection,
       wallet,
       daoAuthority
     );
   } else if (voltSdk.voltType() === VoltType.Entropy) {
     return toConnectedEntropySDK(
-      voltSdk as EntropyVoltSDK,
+      voltSdk as  EntropyVoltSDK,
       connection,
       wallet,
       daoAuthority

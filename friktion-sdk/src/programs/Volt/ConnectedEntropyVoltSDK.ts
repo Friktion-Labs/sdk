@@ -23,7 +23,7 @@ import { VoltSDK } from "./VoltSDK";
 import type {
   EntropyMetadata,
   ExtraVoltData,
-  VoltProgram,
+  VoltIXAccounts,
   VoltVault,
 } from "./voltTypes";
 
@@ -98,9 +98,7 @@ export class ConnectedEntropyVoltSDK {
     // const [entropyMetadataKey] =
     //   await EntropyVoltSDK.findEntropyMetadataAddress(this.voltKey);
 
-    // const changeHedgingAccounts: Parameters<
-    //   VoltProgram["instruction"]["changeHedging"]["accounts"]
-    // >[0] = {
+    // const changeHedgingAccounts: VoltIXAccounts["changeHedging"] = {
     //   authority: this.wallet,
     //   voltVault: this.voltKey,
     //   extraVoltData: extraVoltDataKey,
@@ -128,9 +126,7 @@ export class ConnectedEntropyVoltSDK {
     // const [extraVoltDataKey] = await VoltSDK.findExtraVoltDataAddress(
     //   this.voltKey
     // );
-    // const resetRebalancingAccounts: Parameters<
-    //   VoltProgram["instruction"]["resetRebalancing"]["accounts"]
-    // >[0] = {
+    // const resetRebalancingAccounts: VoltIXAccounts["resetRebalancing"] = {
     //   authority: this.wallet,
     //   voltVault: this.voltKey,
     //   extraVoltData: extraVoltDataKey,
@@ -155,9 +151,7 @@ export class ConnectedEntropyVoltSDK {
     const [entropyMetadataKey] =
       await EntropyVoltSDK.findEntropyMetadataAddress(this.voltKey);
 
-    const setStrategyAccounts: Parameters<
-      VoltProgram["instruction"]["setStrategyParams"]["accounts"]
-    >[0] = {
+    const setStrategyAccounts: VoltIXAccounts["setStrategyParams"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltDataKey,
@@ -189,9 +183,7 @@ export class ConnectedEntropyVoltSDK {
       );
     const [extraVoltKey] = await VoltSDK.findExtraVoltDataAddress(this.voltKey);
 
-    const startRoundEntropyStruct: Parameters<
-      VoltProgram["instruction"]["startRoundEntropy"]["accounts"]
-    >[0] = {
+    const startRoundEntropyStruct: VoltIXAccounts["startRoundEntropy"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,
@@ -245,9 +237,7 @@ export class ConnectedEntropyVoltSDK {
     // const [entropyMetadataKey] =
     //   await EntropyVoltSDK.findEntropyMetadataAddress(this.voltKey);
 
-    // const printEquityAccounts: Parameters<
-    //   VoltProgram["instruction"]["printEquity"]["accounts"]
-    // >[0] = {
+    // const printEquityAccounts: VoltIXAccounts["printEquity"] = {
     //   authority: this.wallet,
     //   voltVault: this.voltKey,
     //   extraVoltData: extraVoltKey,
@@ -313,37 +303,36 @@ export class ConnectedEntropyVoltSDK {
         this.voltKey,
         this.extraVoltData.hedgingSpotMarket
       );
-    const takePerformanceFeesEntropyAccounts: Parameters<
-      VoltProgram["instruction"]["takePerformanceAndAumFeesEntropy"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
+    const takePerformanceFeesEntropyAccounts: VoltIXAccounts["takePerformanceAndAumFeesEntropy"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      entropyBaseAccounts: await this.getEntropyBaseAccountsContext(),
+        entropyBaseAccounts: await this.getEntropyBaseAccountsContext(),
 
-      entropyRound: entropyRoundInfoKey,
+        entropyRound: entropyRoundInfoKey,
 
-      roundInfo: roundInfoKey,
-      roundVoltTokens: roundVoltTokensKey,
-      roundUnderlyingTokensForPendingWithdrawals:
-        roundUnderlyingPendingWithdrawalsKey,
+        roundInfo: roundInfoKey,
+        roundVoltTokens: roundVoltTokensKey,
+        roundUnderlyingTokensForPendingWithdrawals:
+          roundUnderlyingPendingWithdrawalsKey,
 
-      epochInfo: epochInfoKey,
-      entropyMetadata: entropyMetadataKey,
+        epochInfo: epochInfoKey,
+        entropyMetadata: entropyMetadataKey,
 
-      systemProgram: SystemProgram.programId,
+        systemProgram: SystemProgram.programId,
 
-      openOrders: entropySpotOpenOrders,
+        openOrders: entropySpotOpenOrders,
 
-      signer: entropyGroup.signerKey,
+        signer: entropyGroup.signerKey,
 
-      tokenProgram: TOKEN_PROGRAM_ID,
+        tokenProgram: TOKEN_PROGRAM_ID,
 
-      feeAccount: await this.getFeeTokenAccount(),
-      depositPool: this.getDepositPool(),
-    };
+        feeAccount: await this.getFeeTokenAccount(),
+        depositPool: this.getDepositPool(),
+      };
 
     return this.sdk.programs.Volt.instruction.takePerformanceAndAumFeesEntropy({
       accounts: takePerformanceFeesEntropyAccounts,
@@ -443,9 +432,7 @@ export class ConnectedEntropyVoltSDK {
       this.getDefaultEntropyClient(),
       perpMarketMint
     );
-    const rebalanceEntropyStruct: Parameters<
-      VoltProgram["instruction"]["rebalanceIntoPerpEntropy"]["accounts"]
-    >[0] = {
+    const rebalanceEntropyStruct: VoltIXAccounts["rebalanceIntoPerpEntropy"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       vaultAuthority: this.voltVault.vaultAuthority,
@@ -572,58 +559,57 @@ export class ConnectedEntropyVoltSDK {
       spotMarketMint
     );
 
-    const rebalanceSpotEntropyAccounts: Parameters<
-      VoltProgram["instruction"]["rebalanceIntoSpotEntropy"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-      extraVoltData: extraVoltKey,
+    const rebalanceSpotEntropyAccounts: VoltIXAccounts["rebalanceIntoSpotEntropy"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
+        extraVoltData: extraVoltKey,
 
-      entropyMetadata: entropyMetadataKey,
-      entropyBaseAccounts: await this.getEntropyBaseAccountsContext(
-        rootBank?.publicKey,
-        nodeBank?.publicKey,
-        nodeBank?.vault
-      ),
+        entropyMetadata: entropyMetadataKey,
+        entropyBaseAccounts: await this.getEntropyBaseAccountsContext(
+          rootBank?.publicKey,
+          nodeBank?.publicKey,
+          nodeBank?.vault
+        ),
 
-      spotMarket: this.extraVoltData.hedgingSpotMarket,
-      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+        spotMarket: this.extraVoltData.hedgingSpotMarket,
+        dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
 
-      bids: spotMarket.bidsAddress,
-      asks: spotMarket.asksAddress,
+        bids: spotMarket.bidsAddress,
+        asks: spotMarket.asksAddress,
 
-      openOrders: ulOpenOrders,
+        openOrders: ulOpenOrders,
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      dexRequestQueue: spotMarket._decoded.requestQueue,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      dexEventQueue: spotMarket._decoded.eventQueue,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        dexRequestQueue: spotMarket._decoded.requestQueue,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        dexEventQueue: spotMarket._decoded.eventQueue,
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      dexBase: spotMarket._decoded.baseVault,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      dexQuote: spotMarket._decoded.quoteVault,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        dexBase: spotMarket._decoded.baseVault,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        dexQuote: spotMarket._decoded.quoteVault,
 
-      quoteVault: quoteNodeBank?.vault as PublicKey,
+        quoteVault: quoteNodeBank?.vault as PublicKey,
 
-      signer: entropyGroup.signerKey,
-      dexSigner: dexSigner,
+        signer: entropyGroup.signerKey,
+        dexSigner: dexSigner,
 
-      msrmOrSrmVault: entropyGroup.msrmVault,
+        msrmOrSrmVault: entropyGroup.msrmVault,
 
-      tokenProgram: TOKEN_PROGRAM_ID,
-      targetPerpMarket: this.extraVoltData.targetPerpMarket,
-      targetPerpEventQueue: targetPerpMarket.eventQueue,
-    };
+        tokenProgram: TOKEN_PROGRAM_ID,
+        targetPerpMarket: this.extraVoltData.targetPerpMarket,
+        targetPerpEventQueue: targetPerpMarket.eventQueue,
+      };
 
     return this.sdk.programs.Volt.instruction.rebalanceIntoSpotEntropy(
       {
@@ -696,32 +682,31 @@ export class ConnectedEntropyVoltSDK {
       spotMarket._programId
     );
 
-    const initSpotOpenOrdersEntropyAccounts: Parameters<
-      VoltProgram["instruction"]["initSpotOpenOrdersEntropy"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
+    const initSpotOpenOrdersEntropyAccounts: VoltIXAccounts["initSpotOpenOrdersEntropy"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
 
-      entropyMetadata: entropyMetadataKey,
+        entropyMetadata: entropyMetadataKey,
 
-      vaultAuthority: this.voltVault.vaultAuthority,
+        vaultAuthority: this.voltVault.vaultAuthority,
 
-      entropyProgram: this.extraVoltData.entropyProgramId,
-      entropyGroup: this.extraVoltData.entropyGroup,
-      entropyAccount: this.extraVoltData.entropyAccount,
+        entropyProgram: this.extraVoltData.entropyProgramId,
+        entropyGroup: this.extraVoltData.entropyGroup,
+        entropyAccount: this.extraVoltData.entropyAccount,
 
-      spotMarket: this.extraVoltData.hedgingSpotMarket,
-      dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
+        spotMarket: this.extraVoltData.hedgingSpotMarket,
+        dexProgram: this.sdk.net.SERUM_DEX_PROGRAM_ID,
 
-      openOrders: ulOpenOrders,
+        openOrders: ulOpenOrders,
 
-      signer: entropyGroup.signerKey,
-      dexSigner: dexSigner,
+        signer: entropyGroup.signerKey,
+        dexSigner: dexSigner,
 
-      rent: SYSVAR_RENT_PUBKEY,
-      systemProgram: SystemProgram.programId,
-    };
+        rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      };
 
     return this.sdk.programs.Volt.instruction.initSpotOpenOrdersEntropy({
       accounts: initSpotOpenOrdersEntropyAccounts,
@@ -773,37 +758,36 @@ export class ConnectedEntropyVoltSDK {
       this.sdk.programs.Volt.programId
     );
 
-    const setupRebalanceEntropyStruct: Parameters<
-      VoltProgram["instruction"]["setupRebalanceEntropy"]["accounts"]
-    >[0] = {
-      authority: this.wallet,
-      voltVault: this.voltKey,
-      extraVoltData: extraVoltKey,
-      vaultAuthority: this.voltVault.vaultAuthority,
-      entropyMetadata: entropyMetadataKey,
+    const setupRebalanceEntropyStruct: VoltIXAccounts["setupRebalanceEntropy"] =
+      {
+        authority: this.wallet,
+        voltVault: this.voltKey,
+        extraVoltData: extraVoltKey,
+        vaultAuthority: this.voltVault.vaultAuthority,
+        entropyMetadata: entropyMetadataKey,
 
-      vaultMint: this.voltVault.vaultMint,
-      depositPool: this.voltVault.depositPool,
-      depositMint: this.extraVoltData.depositMint,
+        vaultMint: this.voltVault.vaultMint,
+        depositPool: this.voltVault.depositPool,
+        depositMint: this.extraVoltData.depositMint,
 
-      roundAccts: await this.getCurrentAllRoundAccounts(),
+        roundAccts: await this.getCurrentAllRoundAccounts(),
 
-      entropyRound: entropyRoundInfoKey,
+        entropyRound: entropyRoundInfoKey,
 
-      dexProgram: this.extraVoltData.serumProgramId,
+        dexProgram: this.extraVoltData.serumProgramId,
 
-      entropyBaseAccounts: await this.getEntropyBaseAccountsContext(),
+        entropyBaseAccounts: await this.getEntropyBaseAccountsContext(),
 
-      spotPerpMarket: this.extraVoltData.hedgingPerpMarket,
-      targetPerpMarket: this.extraVoltData.targetPerpMarket,
+        spotPerpMarket: this.extraVoltData.hedgingPerpMarket,
+        targetPerpMarket: this.extraVoltData.targetPerpMarket,
 
-      signer: entropyGroup.signerKey,
+        signer: entropyGroup.signerKey,
 
-      epochInfo: epochInfoKey,
+        epochInfo: epochInfoKey,
 
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    };
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      };
 
     return this.sdk.programs.Volt.instruction.setupRebalanceEntropy(
       clientOraclePx,
@@ -859,9 +843,7 @@ export class ConnectedEntropyVoltSDK {
         this.extraVoltData.hedgingSpotMarket
       );
 
-    const endRoundEntropyStruct: Parameters<
-      VoltProgram["instruction"]["endRoundEntropy"]["accounts"]
-    >[0] = {
+    const endRoundEntropyStruct: VoltIXAccounts["endRoundEntropy"] = {
       authority: this.wallet,
       voltVault: this.voltKey,
       extraVoltData: extraVoltKey,

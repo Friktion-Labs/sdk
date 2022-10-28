@@ -17,7 +17,7 @@ import {
 } from "../..";
 import type { NetworkName } from "../Volt/utils/helperTypes";
 import type { SoloptionsIXAccounts } from ".";
-import { convertSoloptionsContractToOptionMarket } from ".";
+import { convertSoloptionsContractToGenericOptionsContract } from ".";
 import type {
   SoloptionsContractWithKey,
   SoloptionsProgram,
@@ -122,7 +122,7 @@ export class SoloptionsSDK {
     program: SoloptionsProgram,
     key: PublicKey
   ): Promise<GenericOptionsContractWithKey> {
-    const optionMarket = convertSoloptionsContractToOptionMarket({
+    const optionMarket = convertSoloptionsContractToGenericOptionsContract({
       ...(await getSoloptionsContractByKey(program, key)),
       key: key,
     });
@@ -152,6 +152,12 @@ export class SoloptionsSDK {
         new BN(expiry.toString()).toArrayLike(Buffer, "le", 8),
       ],
       program.programId
+    );
+  }
+
+  toGenericOptionsContract(): GenericOptionsContractWithKey {
+    return convertSoloptionsContractToGenericOptionsContract(
+      this.optionsContract
     );
   }
 
@@ -265,7 +271,7 @@ export class SoloptionsSDK {
       }
     );
 
-    const optionsContract = convertSoloptionsContractToOptionMarket(
+    const optionsContract = convertSoloptionsContractToGenericOptionsContract(
       genericOptionsContractStruct
     );
 

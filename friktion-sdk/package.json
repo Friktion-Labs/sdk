@@ -1,13 +1,13 @@
 {
   "name": "@friktion-labs/friktion-sdk",
-  "version": "2.3.9",
+  "version": "2.3.14",
   "license": "proprietary",
   "repository": "https://github.com/Friktion-Labs/sdk",
   "main": "dist/cjs/friktion-sdk/src/index.js",
   "npmPublishAccess": "public",
   "dependencies": {
     "@blockworks-foundation/mango-client": "3.4.5",
-    "@friktion-labs/anchor": "0.0.4",
+    "@friktion-labs/anchor": "0.0.6",
     "@friktion-labs/entropy-client": "^1.7.3",
     "@friktion-labs/friktion-utils": "workspace:^",
     "@friktion-labs/typescript-mix": "^3.1.9",

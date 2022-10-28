@@ -16,7 +16,7 @@ export const getSoloptionsContractByKey = async (
   return optionsContract;
 };
 
-export const convertSoloptionsContractToOptionMarket = (
+export const convertSoloptionsContractToGenericOptionsContract = (
   soloptionsContract: SoloptionsContractWithKey
 ): GenericOptionsContractWithKey => {
   return {
@@ -57,7 +57,7 @@ export const getSoloptionsConractByKey = async (
   }
 
   const optionsContract: GenericOptionsContractWithKey =
-    convertSoloptionsContractToOptionMarket({
+    convertSoloptionsContractToGenericOptionsContract({
       ...soloptionsContract,
       key: key,
     });

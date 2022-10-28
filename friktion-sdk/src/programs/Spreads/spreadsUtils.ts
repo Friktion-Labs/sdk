@@ -10,7 +10,7 @@ import type {
   SpreadsProgram,
 } from "./spreadsTypes";
 
-export const convertSpreadsContractToOptionMarket = (
+export const convertSpreadsContractToGenericOptionsContract = (
   spreadsContract: SpreadsContractWithKey
 ): GenericOptionsContractWithKey => {
   return {
